@@ -1,8 +1,12 @@
 package com.zspirytus.enjoymusic.view.activity;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,6 +16,7 @@ import android.view.View;
 import com.zspirytus.enjoymusic.Interface.ViewInject;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.model.Music;
+import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.view.fragment.MusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.zspermission.PermissionGroup;
@@ -36,6 +41,8 @@ public class MainActivity extends BaseActivity implements ZSPermission.OnPermiss
 
     private long pressedBackLastTime;
 
+    private PlayMusicService.MyBinder myBinder;
+
     @Override
     public Integer getLayoutId() {
         return R.layout.activity_main;
@@ -58,6 +65,7 @@ public class MainActivity extends BaseActivity implements ZSPermission.OnPermiss
     @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
+        unbindService(serviceConnection);
         super.onDestroy();
     }
 
@@ -87,6 +95,7 @@ public class MainActivity extends BaseActivity implements ZSPermission.OnPermiss
     @Override
     public void onGranted() {
         showMusicListFragment();
+        startPlayMusicService();
     }
 
     @Override
@@ -97,6 +106,38 @@ public class MainActivity extends BaseActivity implements ZSPermission.OnPermiss
     @Override
     public void onNeverAsk() {
 
+    }
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            myBinder = (PlayMusicService.MyBinder) service;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            myBinder = null;
+        }
+    };
+
+    private void startPlayMusicService(){
+        Intent intent = new Intent(MainActivity.this, PlayMusicService.class);
+        bindService(intent,serviceConnection,BIND_AUTO_CREATE);
+    }
+
+    @Subscriber(tag = "play")
+    public void play(Music music){
+        myBinder.play(music);
+    }
+
+    @Subscriber(tag = "pause")
+    public void pause(Music music){
+        myBinder.pause();
+    }
+
+    @Subscriber(tag = "stop")
+    public void stop(Music music){
+        myBinder.stop();
     }
 
     private void initView() {

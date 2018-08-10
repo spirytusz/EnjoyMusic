@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="64dp"
     android:clickable="true"
-    android:background="@drawable/click_ripple"
-    android:orientation="vertical">
+    android:background="@drawable/click_ripple">
 
     <com.zspirytus.enjoymusic.view.customview.RoundCornerImageView
         android:id="@+id/cover"
@@ -26,10 +25,10 @@
         android:id="@+id/more_vert"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingTop="24sp"
+        android:paddingBottom="24sp"
+        android:paddingLeft="24sp"
+        android:paddingRight="24sp"
         android:clickable="true"
         android:background="@drawable/click_ripple"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -45,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:text="Music Name"
         android:textColor="@color/black"
         android:textSize="14sp"

@@ -51,7 +51,9 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     @ViewInject(R.id.next)
     private ImageView mNextButton;
 
-    private boolean isPlaying = false;
+    private Music currentPlayingMusic;
+
+    private boolean isPlaying = true;
 
     @Nullable
     @Override
@@ -93,6 +95,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
                     animator.setDuration(382);
                     animator.start();
                     isPlaying = false;
+                    EventBus.getDefault().post(currentPlayingMusic, "pause");
                 } else {
                     animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, "alpha", 1f, 0f);
                     animator.setDuration(382);
@@ -109,13 +112,14 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
         }
     }
 
-    private void initView(){
+    private void initView() {
         Music music = (Music) getArguments().getSerializable(MUSIC_KEY);
-        if(music != null){
+        if (music != null) {
             mTitle.setText(music.getmMusicName());
             Glide.with(this).load(new File(music.getmMusicThumbAlbumUri()))
                     .into(mCover);
             mTotalTime.setText(music.getDuration());
+            currentPlayingMusic = music;
         }
     }
 
@@ -139,6 +143,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
         mTitle.setText(music.getmMusicName());
         Glide.with(this).load(new File(music.getmMusicThumbAlbumUri())).into(mCover);
         mTotalTime.setText(music.getDuration());
+        currentPlayingMusic = music;
     }
 
     public static MusicPlayFragment getInstance(Music music) {

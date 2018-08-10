@@ -125,6 +125,8 @@ public class MusicListFragment extends BaseFragment implements View.OnClickListe
     public void onItemClick(View view, int position) {
         currentPlayingMusic = musicList.get(position);
         EventBus.getDefault().post(currentPlayingMusic, "music_play_fragment_show");
+        EventBus.getDefault().post(currentPlayingMusic, "play");
+        isPlaying = true;
     }
 
     @Override
@@ -148,6 +150,7 @@ public class MusicListFragment extends BaseFragment implements View.OnClickListe
                     animator.setDuration(382);
                     animator.start();
                     isPlaying = false;
+                    EventBus.getDefault().post(currentPlayingMusic, "pause");
                 } else {
                     animator = ObjectAnimator.ofFloat(musicPlayOrPause, "alpha", 1f, 0f);
                     animator.setDuration(382);
@@ -162,6 +165,7 @@ public class MusicListFragment extends BaseFragment implements View.OnClickListe
             case R.id.music_bottom:
                 if (currentPlayingMusic != null) {
                     EventBus.getDefault().post(currentPlayingMusic, "music_play_fragment_show");
+                    e(currentPlayingMusic.getPath());
                 }
                 break;
             case R.id.mainactivity_fab:
