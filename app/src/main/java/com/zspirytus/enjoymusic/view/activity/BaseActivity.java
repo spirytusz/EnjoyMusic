@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.view.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -16,6 +17,8 @@ import java.lang.reflect.Field;
 
 public abstract class BaseActivity extends RxAppCompatActivity {
 
+    private static Context context;
+
     public abstract Integer getLayoutId();
 
     @Override
@@ -23,6 +26,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         autoInjectAllField();
+        context = getApplicationContext();
     }
 
     @Override
@@ -58,6 +62,10 @@ public abstract class BaseActivity extends RxAppCompatActivity {
 
     public final void toast(String message) {
         ToastUtil.showToast(this, message);
+    }
+
+    public static Context getContext(){
+        return context;
     }
 
 }

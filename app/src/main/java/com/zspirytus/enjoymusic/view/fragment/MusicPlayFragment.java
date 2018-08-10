@@ -14,6 +14,8 @@ import com.bumptech.glide.Glide;
 import com.zspirytus.enjoymusic.Interface.ViewInject;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.model.Music;
+import com.zspirytus.enjoymusic.services.MediaPlayHelper;
+import com.zspirytus.enjoymusic.services.MusicPlayingObserver;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -24,12 +26,11 @@ import java.io.File;
  * Created by ZSpirytus on 2018/8/2.
  */
 
-public class MusicPlayFragment extends BaseFragment implements View.OnClickListener {
+public class MusicPlayFragment extends BaseFragment
+        implements View.OnClickListener,MusicPlayingObserver {
 
     private static final String MUSIC_KEY = "music_key";
-
-    /*@ViewInject(R.id.background_mask)
-    private ImageView backgroundMask;*/
+    private static MediaPlayHelper mediaPlayHelper = MediaPlayHelper.getInstance();
 
     @ViewInject(R.id.title)
     private TextView mTitle;
@@ -52,8 +53,6 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     private ImageView mNextButton;
 
     private Music currentPlayingMusic;
-
-    private boolean isPlaying = true;
 
     @Nullable
     @Override
@@ -85,31 +84,21 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
             case R.id.previous:
                 break;
             case R.id.play_pause:
-                ObjectAnimator animator;
+                boolean isPlaying = MediaPlayHelper.isPlaying();
                 if (isPlaying) {
-                    animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, "alpha", 1f, 0f);
-                    animator.setDuration(382);
-                    animator.start();
-                    Glide.with(MusicPlayFragment.this).load(R.drawable.ic_play_thin).into(mPlayOrPauseButton);
-                    animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, "alpha", 0f, 1f);
-                    animator.setDuration(382);
-                    animator.start();
-                    isPlaying = false;
-                    EventBus.getDefault().post(currentPlayingMusic, "pause");
+                    EventBus.getDefault().post(currentPlayingMusic,"pause");
                 } else {
-                    animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, "alpha", 1f, 0f);
-                    animator.setDuration(382);
-                    animator.start();
-                    Glide.with(MusicPlayFragment.this).load(R.drawable.ic_pause_thin).into(mPlayOrPauseButton);
-                    animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, "alpha", 0f, 1f);
-                    animator.setDuration(382);
-                    animator.start();
-                    isPlaying = true;
+                    EventBus.getDefault().post(currentPlayingMusic,"play");
                 }
                 break;
             case R.id.next:
                 break;
         }
+    }
+
+    @Override
+    public void update(boolean isPlaying) {
+        setButtonSrc(isPlaying);
     }
 
     private void initView() {
@@ -120,6 +109,27 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
                     .into(mCover);
             mTotalTime.setText(music.getDuration());
             currentPlayingMusic = music;
+        }
+        setButtonSrc(MediaPlayHelper.isPlaying());
+    }
+
+    private void setButtonSrc(boolean isPlaying) {
+        if (isPlaying) {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton,"alpha",1f,0f);
+            animator.setDuration(382);
+            animator.start();
+            Glide.with(this).load(R.drawable.ic_pause_thin).into(mPlayOrPauseButton);
+            animator = ObjectAnimator.ofFloat(mPlayOrPauseButton,"alpha",0f,1f);
+            animator.setDuration(382);
+            animator.start();
+        } else {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton,"alpha",1f,0f);
+            animator.setDuration(382);
+            animator.start();
+            Glide.with(this).load(R.drawable.ic_play_thin).into(mPlayOrPauseButton);
+            animator = ObjectAnimator.ofFloat(mPlayOrPauseButton,"alpha",0f,1f);
+            animator.setDuration(382);
+            animator.start();
         }
     }
 
@@ -132,10 +142,12 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
 
     private void registerEvent() {
         EventBus.getDefault().register(this);
+        MediaPlayHelper.register(this);
     }
 
     private void unRegisterEvent() {
         EventBus.getDefault().unregister(this);
+        MediaPlayHelper.unregister(this);
     }
 
     @Subscriber(tag = "music_name_set")
