@@ -55,4 +55,54 @@ public class Music implements Serializable {
         return duration;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return this.toString().equals(obj.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.toString().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        if(path!= null){
+            stringBuilder.append("path:"+path+", ");
+        } else {
+            stringBuilder.append("path:null"+", ");
+        }
+        if(mMusicName!= null){
+            stringBuilder.append("mMusicName:"+mMusicName+", ");
+        } else {
+            stringBuilder.append("mMusicName:null"+", ");
+        }
+        if(mMusicThumbAlbumUri!= null){
+            stringBuilder.append("mMusicThumbAlbumUri:"+mMusicThumbAlbumUri+", ");
+        } else {
+            stringBuilder.append("mMusicThumbAlbumUri:null"+", ");
+        }
+        if(mMusicAlbumUri!= null){
+            stringBuilder.append("mMusicAlbumUri:"+mMusicAlbumUri+", ");
+        } else {
+            stringBuilder.append("mMusicAlbumUri:null"+", ");
+        }
+        if(mMusicArtist!= null){
+            stringBuilder.append("mMusicArtist:"+mMusicArtist+", ");
+        } else {
+            stringBuilder.append("mMusicArtist:null"+", ");
+        }
+        if(duration!= null){
+            stringBuilder.append("duration:"+duration+", ");
+        } else {
+            stringBuilder.append("duration:null"+", ");
+        }
+        if(size!= null){
+            stringBuilder.append("size:"+size+" ");
+        } else {
+            stringBuilder.append("size:null ");
+        }
+        return "{"+stringBuilder.toString()+"}";
+    }
 }

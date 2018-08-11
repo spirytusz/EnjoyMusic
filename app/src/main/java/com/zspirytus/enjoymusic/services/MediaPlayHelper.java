@@ -1,7 +1,7 @@
 package com.zspirytus.enjoymusic.services;
 
 import android.media.MediaPlayer;
-import android.util.Log;
+import android.os.CountDownTimer;
 
 import com.zspirytus.enjoymusic.model.Music;
 
@@ -22,6 +22,8 @@ public class MediaPlayHelper implements MediaPlayer.OnPreparedListener {
     private static MediaPlayer mediaPlayer = new MediaPlayer();
     private static List<MusicPlayingObserver> musicPlayingObservers = new ArrayList<>();
 
+    private boolean isBlockByPhone = false;
+
     private Music currentPlayingMusic;
 
     private MediaPlayHelper() {
@@ -32,40 +34,49 @@ public class MediaPlayHelper implements MediaPlayer.OnPreparedListener {
         return INSTANCE;
     }
 
-    public static boolean register(MusicPlayingObserver musicPlayingObserver){
-        if(!musicPlayingObservers.contains(musicPlayingObserver)){
+    public static boolean register(MusicPlayingObserver musicPlayingObserver) {
+        if (!musicPlayingObservers.contains(musicPlayingObserver)) {
             musicPlayingObservers.add(musicPlayingObserver);
             return true;
         }
         return false;
     }
 
-    public static boolean unregister(MusicPlayingObserver musicPlayingObserver){
+    public static boolean unregister(MusicPlayingObserver musicPlayingObserver) {
         musicPlayingObservers.remove(musicPlayingObserver);
         return true;
+    }
+
+    public static boolean isPlaying() {
+        return mediaPlayer.isPlaying();
     }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
         notifyAllMusicPlayingObserver(true);
         mp.start();
+        mp.setLooping(true);
     }
 
-    public void play(Music music) throws IOException {
-        if (currentPlayingMusic != null) {
-            if (!currentPlayingMusic.getPath().equals(music.getPath())) {
-                mediaPlayer.reset();
+    public void play(Music music) {
+        try {
+            if (currentPlayingMusic != null) {
+                if (!currentPlayingMusic.equals(music)) {
+                    mediaPlayer.reset();
+                    prepareMusic(music);
+                    currentPlayingMusic = music;
+                } else if (!mediaPlayer.isPlaying()) {
+                    notifyAllMusicPlayingObserver(true);
+                    mediaPlayer.start();
+                }
+            } else {
                 prepareMusic(music);
                 currentPlayingMusic = music;
-            } else if (!mediaPlayer.isPlaying()) {
-                notifyAllMusicPlayingObserver(true);
-                mediaPlayer.start();
             }
-        } else {
-            prepareMusic(music);
-            currentPlayingMusic = music;
+            mediaPlayer.setOnPreparedListener(this);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        mediaPlayer.setOnPreparedListener(this);
     }
 
     public void pause() {
@@ -83,8 +94,12 @@ public class MediaPlayHelper implements MediaPlayer.OnPreparedListener {
         }
     }
 
-    public static boolean isPlaying() {
-        return mediaPlayer.isPlaying();
+    public void interruptByEvent() {
+        pause();
+    }
+
+    public void resumeAfterEvent() {
+        play(currentPlayingMusic);
     }
 
     private void prepareMusic(Music music) throws IOException {
@@ -92,9 +107,9 @@ public class MediaPlayHelper implements MediaPlayer.OnPreparedListener {
         mediaPlayer.prepareAsync();
     }
 
-    private void notifyAllMusicPlayingObserver(boolean isPlaying){
+    private void notifyAllMusicPlayingObserver(boolean isPlaying) {
         Iterator<MusicPlayingObserver> observerIterator = musicPlayingObservers.iterator();
-        while(observerIterator.hasNext()){
+        while (observerIterator.hasNext()) {
             observerIterator.next().update(isPlaying);
         }
     }

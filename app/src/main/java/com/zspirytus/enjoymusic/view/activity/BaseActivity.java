@@ -1,12 +1,17 @@
 package com.zspirytus.enjoymusic.view.activity;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.telephony.TelephonyManager;
 
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.zspirytus.enjoymusic.Interface.ViewInject;
+import com.zspirytus.enjoymusic.receivers.MyHeadPhoneStateReceiver;
+import com.zspirytus.enjoymusic.receivers.MyPhoneStateReceiver;
+import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 import java.lang.reflect.Field;
@@ -16,6 +21,9 @@ import java.lang.reflect.Field;
  */
 
 public abstract class BaseActivity extends RxAppCompatActivity {
+
+    private MyPhoneStateReceiver myPhoneStateReceiver = new MyPhoneStateReceiver();
+    private MyHeadPhoneStateReceiver myHeadPhoneStateReceiver = new MyHeadPhoneStateReceiver();
 
     private static Context context;
 
@@ -27,6 +35,18 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         setContentView(getLayoutId());
         autoInjectAllField();
         context = getApplicationContext();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerBroadCast();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterBroadCast();
     }
 
     @Override
@@ -55,17 +75,46 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         }
     }
 
+    /**
+     * Register or Unregister Broadcast
+     */
+
+    private void registerBroadCast() {
+        // register phone state broadcast
+        IntentFilter phoneStateFilter = new IntentFilter();
+        phoneStateFilter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
+        phoneStateFilter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
+        registerReceiver(myPhoneStateReceiver, phoneStateFilter);
+
+        // register head phone state broadcast
+        IntentFilter headPhoneFilter = new IntentFilter();
+        headPhoneFilter.addAction(Intent.ACTION_HEADSET_PLUG);
+        registerReceiver(myHeadPhoneStateReceiver, phoneStateFilter);
+    }
+
+    private void unregisterBroadCast() {
+        // unregister phone state broadcast
+        unregisterReceiver(myPhoneStateReceiver);
+
+        // unregister head phone state broadcast
+        unregisterReceiver(myHeadPhoneStateReceiver);
+    }
+
+    /**
+     * Log or Global Tools
+     */
+
+    public static Context getContext() {
+        return context;
+    }
+
     public final void e(String message) {
         String TAG = this.getClass().getSimpleName();
-        Log.e(TAG, message);
+        LogUtil.e(TAG, message);
     }
 
     public final void toast(String message) {
         ToastUtil.showToast(this, message);
-    }
-
-    public static Context getContext(){
-        return context;
     }
 
 }

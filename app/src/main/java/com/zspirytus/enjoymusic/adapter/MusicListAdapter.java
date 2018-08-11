@@ -2,9 +2,7 @@ package com.zspirytus.enjoymusic.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -99,7 +97,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         holder.mMoreVert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e(TAG, "vert_click!");
+
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {

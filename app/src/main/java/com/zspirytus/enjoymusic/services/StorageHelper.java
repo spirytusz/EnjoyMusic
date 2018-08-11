@@ -12,6 +12,7 @@ import com.zspirytus.enjoymusic.view.activity.BaseActivity;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by ZSpirytus on 2018/8/10.
@@ -19,11 +20,13 @@ import java.util.List;
 
 public class StorageHelper {
 
-    private StorageHelper(){}
+    private StorageHelper() {
+        throw new AssertionError("must not get class: " + this.getClass().getSimpleName() + " Instance!");
+    }
 
     public static List<Music> scanMusic() {
         List<Music> musicList = new ArrayList<>();
-        SimpleDateFormat sim = new SimpleDateFormat("mm:ss");
+        SimpleDateFormat sim = new SimpleDateFormat("mm:ss", Locale.CHINA);
         ContentResolver resolver = BaseActivity.getContext().getContentResolver();
         Cursor cursor = resolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null,
