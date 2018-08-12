@@ -25,7 +25,6 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static final String TAG = "MusicListAdapter";
 
     private static final int NORMAL_ITEM = 1;
-    private static final int BOTTOM_FULFILL = 2;
     private static final int HEADER_FULFILL = 4;
 
     private Context mContext;
@@ -40,10 +39,10 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (viewType == NORMAL_ITEM) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.music_list_item, parent, false);
             return new MyViewHolder(view);
-        } else if (viewType == BOTTOM_FULFILL) {
+        } /*else if (viewType == BOTTOM_FULFILL) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.bottom_fulfill, parent, false);
             return new BottomFulfill(view);
-        } else {
+        }*/ else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.header_fulfill, parent, false);
             return new HeaderFulfill(view);
         }
@@ -67,17 +66,13 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (position == 0) {
             // if it is the first item (let the first item be null in setItemList())
             return HEADER_FULFILL;
-        } else if (position < getItemCount() - 1 && position > 0) {
-            // else if it is not the last item (let the last item be null in setItemList())
+        } else  {
+            // else, it is not the last item (let the last item be null in setItemList())
             return NORMAL_ITEM;
-        } else {
-            // else, it is the last item
-            return BOTTOM_FULFILL;
         }
     }
 
     public void setItemList(List<Music> list) {
-        list.add(null);
         list.add(0, null);
         mItemList = list;
     }
@@ -130,12 +125,12 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     }
 
-    static class BottomFulfill extends RecyclerView.ViewHolder {
+    /*static class BottomFulfill extends RecyclerView.ViewHolder {
 
         public BottomFulfill(View itemView) {
             super(itemView);
         }
-    }
+    }*/
 
     static class HeaderFulfill extends RecyclerView.ViewHolder {
 

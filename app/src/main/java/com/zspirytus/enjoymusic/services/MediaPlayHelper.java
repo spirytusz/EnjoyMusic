@@ -1,7 +1,6 @@
 package com.zspirytus.enjoymusic.services;
 
 import android.media.MediaPlayer;
-import android.os.CountDownTimer;
 
 import com.zspirytus.enjoymusic.model.Music;
 

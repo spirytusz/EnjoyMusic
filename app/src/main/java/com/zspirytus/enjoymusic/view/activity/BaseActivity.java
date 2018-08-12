@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 
@@ -13,6 +14,7 @@ import com.zspirytus.enjoymusic.receivers.MyHeadPhoneStateReceiver;
 import com.zspirytus.enjoymusic.receivers.MyPhoneStateReceiver;
 import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
+import com.zspirytus.zspermission.ZSPermission;
 
 import java.lang.reflect.Field;
 
@@ -52,6 +54,12 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        ZSPermission.getInstance().onRequestPermissionResult(requestCode, permissions, grantResults);
     }
 
     public void autoInjectAllField() {
