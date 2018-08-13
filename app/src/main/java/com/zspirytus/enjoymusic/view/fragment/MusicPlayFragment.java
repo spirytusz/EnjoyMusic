@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.view.fragment;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,7 @@ import com.zspirytus.enjoymusic.Interface.ViewInject;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.model.Music;
 import com.zspirytus.enjoymusic.services.MediaPlayHelper;
-import com.zspirytus.enjoymusic.services.MusicPlayingObserver;
+import com.zspirytus.enjoymusic.services.MusicPlayStateObserver;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -27,13 +28,13 @@ import java.io.File;
  */
 
 public class MusicPlayFragment extends BaseFragment
-        implements View.OnClickListener,MusicPlayingObserver {
+        implements View.OnClickListener, MusicPlayStateObserver {
 
     private static final String MUSIC_KEY = "music_key";
     private static MediaPlayHelper mediaPlayHelper = MediaPlayHelper.getInstance();
 
-    @ViewInject(R.id.title)
-    private TextView mTitle;
+    @ViewInject(R.id.music_play_fragment_toolbar)
+    private Toolbar mToolbar;
 
     @ViewInject(R.id.cover)
     private ImageView mCover;
@@ -53,6 +54,14 @@ public class MusicPlayFragment extends BaseFragment
     private ImageView mNextButton;
 
     private Music currentPlayingMusic;
+
+    public static MusicPlayFragment getInstance(Music music) {
+        MusicPlayFragment musicPlayFragment = new MusicPlayFragment();
+        Bundle bundle = new Bundle(1);
+        bundle.putSerializable(MUSIC_KEY, music);
+        musicPlayFragment.setArguments(bundle);
+        return musicPlayFragment;
+    }
 
     @Nullable
     @Override
@@ -104,7 +113,7 @@ public class MusicPlayFragment extends BaseFragment
     private void initView() {
         Music music = (Music) getArguments().getSerializable(MUSIC_KEY);
         if (music != null) {
-            mTitle.setText(music.getmMusicName());
+            mToolbar.setTitle(music.getmMusicName());
             Glide.with(this).load(new File(music.getmMusicThumbAlbumUri()))
                     .into(mCover);
             mTotalTime.setText(music.getDuration());
@@ -152,18 +161,10 @@ public class MusicPlayFragment extends BaseFragment
 
     @Subscriber(tag = "music_name_set")
     public void setView(Music music) {
-        mTitle.setText(music.getmMusicName());
+        mToolbar.setTitle(music.getmMusicName());
         Glide.with(this).load(new File(music.getmMusicThumbAlbumUri())).into(mCover);
         mTotalTime.setText(music.getDuration());
         currentPlayingMusic = music;
-    }
-
-    public static MusicPlayFragment getInstance(Music music) {
-        MusicPlayFragment musicPlayFragment = new MusicPlayFragment();
-        Bundle bundle = new Bundle(1);
-        bundle.putSerializable(MUSIC_KEY, music);
-        musicPlayFragment.setArguments(bundle);
-        return musicPlayFragment;
     }
 
 }

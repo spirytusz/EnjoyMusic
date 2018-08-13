@@ -19,7 +19,7 @@ public class MediaPlayHelper implements MediaPlayer.OnPreparedListener {
 
     private static MediaPlayHelper INSTANCE = new MediaPlayHelper();
     private static MediaPlayer mediaPlayer = new MediaPlayer();
-    private static List<MusicPlayingObserver> musicPlayingObservers = new ArrayList<>();
+    private static List<MusicPlayStateObserver> musicPlayStateObservers = new ArrayList<>();
 
     private boolean isBlockByPhone = false;
 
@@ -33,16 +33,16 @@ public class MediaPlayHelper implements MediaPlayer.OnPreparedListener {
         return INSTANCE;
     }
 
-    public static boolean register(MusicPlayingObserver musicPlayingObserver) {
-        if (!musicPlayingObservers.contains(musicPlayingObserver)) {
-            musicPlayingObservers.add(musicPlayingObserver);
+    public static boolean register(MusicPlayStateObserver musicPlayStateObserver) {
+        if (!musicPlayStateObservers.contains(musicPlayStateObserver)) {
+            musicPlayStateObservers.add(musicPlayStateObserver);
             return true;
         }
         return false;
     }
 
-    public static boolean unregister(MusicPlayingObserver musicPlayingObserver) {
-        musicPlayingObservers.remove(musicPlayingObserver);
+    public static boolean unregister(MusicPlayStateObserver musicPlayStateObserver) {
+        musicPlayStateObservers.remove(musicPlayStateObserver);
         return true;
     }
 
@@ -107,7 +107,7 @@ public class MediaPlayHelper implements MediaPlayer.OnPreparedListener {
     }
 
     private void notifyAllMusicPlayingObserver(boolean isPlaying) {
-        Iterator<MusicPlayingObserver> observerIterator = musicPlayingObservers.iterator();
+        Iterator<MusicPlayStateObserver> observerIterator = musicPlayStateObservers.iterator();
         while (observerIterator.hasNext()) {
             observerIterator.next().update(isPlaying);
         }

@@ -2,16 +2,11 @@ package com.zspirytus.enjoymusic.view.activity;
 
 import android.animation.ObjectAnimator;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -27,12 +22,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import com.zspirytus.enjoymusic.Interface.ViewInject;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.cache.CurrentMusicCache;
 import com.zspirytus.enjoymusic.model.Music;
 import com.zspirytus.enjoymusic.services.MediaPlayHelper;
-import com.zspirytus.enjoymusic.services.MusicPlayingObserver;
+import com.zspirytus.enjoymusic.services.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.view.fragment.MusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
@@ -46,34 +41,16 @@ import java.io.File;
 
 public class MainActivity extends BaseActivity
         implements ZSPermission.OnPermissionListener, NavigationView.OnNavigationItemSelectedListener,
-        View.OnClickListener, MusicPlayingObserver {
-
-    private static final String TAG = "MainActivity";
-    private static final String CURRENT_PLAYING_MUSIC = "currentPlayingMusic";
-    private static final String CURRENT_PLAYING_MUSIC_STRING_KEY = "currentPlayingMusicString";
-
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            myBinder = (PlayMusicService.MyBinder) service;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            myBinder = null;
-        }
-    };
+        View.OnClickListener, MusicPlayStateObserver {
 
     // init view in activity_main.xml
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
     @ViewInject(R.id.nav_view)
     private NavigationView mNavigationView;
-
-    // init view in include_collapsing_toolbar_layout.xml
+    // init view in include_main_container.xml
     @ViewInject(R.id.main_activity_toolbar)
     private Toolbar mToolbar;
-
     // init view in bottom_music_bar.xml
     @ViewInject(R.id.music_bottom)
     private ConstraintLayout mConstraintLayout;
@@ -91,15 +68,23 @@ public class MainActivity extends BaseActivity
     private TextView mMusicArtist;
     @ViewInject(R.id.music_progressBar)
     private ProgressBar mMusicProgress;
-
     // Fragments and Fragment Manager
     private FragmentManager mFragmentManager = getSupportFragmentManager();
     private MusicListFragment mMusicListFragment;
     private MusicPlayFragment mMusicPlayFragment;
-
     // Service's Binder
     private PlayMusicService.MyBinder myBinder;
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            myBinder = (PlayMusicService.MyBinder) service;
+        }
 
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            myBinder = null;
+        }
+    };
     private boolean isMusicPlayFragment = false;
     private long pressedBackLastTime;
 
@@ -113,7 +98,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
+        registerEvent();
         ZSPermission.getInstance()
                 .at(this)
                 .requestCode(123)
@@ -127,8 +112,9 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onDestroy() {
-        EventBus.getDefault().unregister(this);
+        unregisterEvent();
         unbindService(serviceConnection);
+        CurrentMusicCache.saveCurrentPlayingMusic(currentPlayingMusic);
         super.onDestroy();
     }
 
@@ -166,7 +152,7 @@ public class MainActivity extends BaseActivity
             case R.id.music_play_pause:
                 boolean isPlaying = MediaPlayHelper.isPlaying();
                 if (isPlaying) {
-                    pause();
+                    pause(currentPlayingMusic);
                 } else {
                     play(currentPlayingMusic);
                 }
@@ -208,29 +194,19 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void update(boolean isPlaying) {
-        setButtonSrc(MediaPlayHelper.isPlaying());
+        setButtonSrc(isPlaying);
     }
 
     @Subscriber(tag = "set current Playing Music")
     private void setCurrentPlayingMusic(Music music) {
         currentPlayingMusic = music;
+        setMusicBarView(currentPlayingMusic);
         play(currentPlayingMusic);
     }
 
     private void initView() {
-        // set status bar style
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            View decorView = getWindow().getDecorView();
-            int option = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            decorView.setSystemUiVisibility(option);
-            getWindow().setNavigationBarColor(Color.BLACK);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }*/
 
         // init toolbar
-        mToolbar.setTitle(R.string.app_name);
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_menu_white_48dp);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -244,44 +220,23 @@ public class MainActivity extends BaseActivity
         musicPrevious.setOnClickListener(this);
         musicPlayOrPause.setOnClickListener(this);
         musicNext.setOnClickListener(this);
-    }
 
-    private void restoreCurrentPlayingMusic() {
-        SharedPreferences pref = getSharedPreferences(CURRENT_PLAYING_MUSIC, Context.MODE_PRIVATE);
-        String json = pref.getString(CURRENT_PLAYING_MUSIC_STRING_KEY, null);
-        if (json != null) {
-            Gson gson = new Gson();
-            Music music = gson.fromJson(json, Music.class);
-            if (music != null) {
-                File file = new File(music.getPath());
-                if (file.exists()) {
-                    currentPlayingMusic = music;
-
-                }
-            }
-        }
-    }
-
-    private void showMusicListFragment() {
-        FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-        // set animation and show MusicListFragment
-        if (mMusicListFragment == null) {
-            mMusicListFragment = MusicListFragment.getInstance();
-            mFragmentTransaction.add(R.id.fragment_container, mMusicListFragment);
-            mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_up, 0);
-        } else {
-            mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_down, R.anim.anim_fragment_alpha_hide);
-        }
-        if (mMusicPlayFragment != null)
-            mFragmentTransaction.hide(mMusicPlayFragment);
-        mFragmentTransaction.show(mMusicListFragment);
-        mFragmentTransaction.commitAllowingStateLoss();
-        isMusicPlayFragment = false;
+        // restore currentPlayingMusic
+        currentPlayingMusic = CurrentMusicCache.restoreCurrentPlayingMusic();
+        setMusicBarView(currentPlayingMusic);
     }
 
     private void startPlayMusicService() {
         Intent intent = new Intent(MainActivity.this, PlayMusicService.class);
         bindService(intent, serviceConnection, BIND_AUTO_CREATE);
+    }
+
+    private void setMusicBarView(Music music) {
+        if (music != null) {
+            Glide.with(this).load(new File(music.getmMusicThumbAlbumUri())).into(mCover);
+            mMusicName.setText(music.getmMusicName());
+            mMusicArtist.setText(music.getmMusicArtist());
+        }
     }
 
     private void setButtonSrc(boolean isPlaying) {
@@ -304,7 +259,26 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    public void showMusicPlayFragment(Music music) {
+    private void showMusicListFragment() {
+        FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
+        // set animation and show MusicListFragment
+        if (mMusicListFragment == null) {
+            mMusicListFragment = MusicListFragment.getInstance();
+            mFragmentTransaction.add(R.id.fragment_container, mMusicListFragment);
+            mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_up, 0);
+        } else {
+            mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_down, R.anim.anim_fragment_alpha_hide);
+        }
+        if (mMusicPlayFragment != null)
+            mFragmentTransaction.hide(mMusicPlayFragment);
+        mFragmentTransaction.show(mMusicListFragment);
+        mFragmentTransaction.commitAllowingStateLoss();
+        setmConstraintLayoutToolbarVisible(true);
+        mToolbar.setVisibility(View.VISIBLE);
+        isMusicPlayFragment = false;
+    }
+
+    private void showMusicPlayFragment(Music music) {
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_up, R.anim.anim_fragment_alpha_hide);
         if (mMusicPlayFragment == null) {
@@ -316,19 +290,57 @@ public class MainActivity extends BaseActivity
             mFragmentTransaction.hide(mMusicListFragment);
         mFragmentTransaction.show(mMusicPlayFragment);
         mFragmentTransaction.commitAllowingStateLoss();
+        setmConstraintLayoutToolbarVisible(false);
+        mToolbar.setVisibility(View.GONE);
         isMusicPlayFragment = true;
     }
 
-    public void play(@NonNull Music music) {
-        myBinder.play(music);
+    private void setmConstraintLayoutToolbarVisible(boolean visible) {
+        if (visible) {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mConstraintLayout, "alpha", 0f, 1f);
+            animator.setDuration(618);
+            animator.start();
+            animator = ObjectAnimator.ofFloat(mToolbar, "alpha", 0f, 1f);
+            animator.setDuration(618);
+            animator.start();
+            mConstraintLayout.setVisibility(View.VISIBLE);
+            mToolbar.setVisibility(View.VISIBLE);
+        } else {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mConstraintLayout, "alpha", 1f, 0f);
+            animator.setDuration(618);
+            animator.start();
+            animator = ObjectAnimator.ofFloat(mToolbar, "alpha", 1f, 0f);
+            animator.setDuration(618);
+            animator.start();
+            mConstraintLayout.setVisibility(View.GONE);
+            mToolbar.setVisibility(View.GONE);
+        }
     }
 
-    public void pause() {
+    @Subscriber(tag = "play")
+    public void play(Music music) {
+        if (music != null)
+            myBinder.play(music);
+    }
+
+    @Subscriber(tag = "pause")
+    public void pause(Music music) {
         myBinder.pause();
     }
 
+    @Subscriber(tag = "stop")
     public void stop(Music music) {
         myBinder.stop();
+    }
+
+    private void registerEvent() {
+        EventBus.getDefault().register(this);
+        MediaPlayHelper.register(this);
+    }
+
+    private void unregisterEvent() {
+        EventBus.getDefault().unregister(this);
+        MediaPlayHelper.unregister(this);
     }
 
 }

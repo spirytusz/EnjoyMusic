@@ -8,12 +8,11 @@
     android:gravity="center"
     tools:layout_editor_absoluteY="81dp">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/music_play_fragment_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:layout_marginLeft="0dp"
         android:text="Title"
         android:textAlignment="viewStart"
         android:textAllCaps="false"
