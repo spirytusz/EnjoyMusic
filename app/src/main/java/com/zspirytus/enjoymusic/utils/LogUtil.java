@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.utils;
 import android.util.Log;
 
 /**
+ * 日志工具类
  * Created by ZSpirytus on 2018/8/11.
  */
 

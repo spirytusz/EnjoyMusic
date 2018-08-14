@@ -1,12 +1,12 @@
-package com.zspirytus.enjoymusic.view.customview;
+package com.zspirytus.enjoymusic.view.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Path;
 import android.os.Build;
 import android.support.annotation.Nullable;
-import android.util.AttributeSet;
 import android.support.v7.widget.AppCompatImageView;
+import android.util.AttributeSet;
 import android.view.View;
 
 /**

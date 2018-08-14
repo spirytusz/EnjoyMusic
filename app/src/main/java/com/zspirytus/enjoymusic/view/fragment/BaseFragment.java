@@ -3,11 +3,14 @@ package com.zspirytus.enjoymusic.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.zspirytus.enjoymusic.Interface.ViewInject;
+import com.zspirytus.enjoymusic.interfaces.ViewInject;
+import com.zspirytus.enjoymusic.utils.LogUtil;
+import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.activity.BaseActivity;
 
 import java.lang.reflect.Field;
@@ -16,7 +19,7 @@ import java.lang.reflect.Field;
  * Created by ZSpirytus on 2018/8/2.
  */
 
-public abstract class BaseFragment extends com.trello.rxlifecycle2.components.support.RxFragment {
+public abstract class BaseFragment extends Fragment {
 
     private BaseActivity parentActivity;
 
@@ -56,11 +59,12 @@ public abstract class BaseFragment extends com.trello.rxlifecycle2.components.su
     }
 
     public final void e(String message) {
-        parentActivity.e(message);
+        String TAG = this.getClass().getSimpleName();
+        LogUtil.e(TAG, message);
     }
 
     public final void toast(String message) {
-        parentActivity.toast(message);
+        ToastUtil.showToast(parentActivity, message);
     }
 
     public BaseActivity getParentActivity() {

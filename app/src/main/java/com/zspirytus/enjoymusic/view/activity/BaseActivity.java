@@ -1,17 +1,12 @@
 package com.zspirytus.enjoymusic.view.activity;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.telephony.TelephonyManager;
+import android.support.v7.app.AppCompatActivity;
 
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
-import com.zspirytus.enjoymusic.Interface.ViewInject;
-import com.zspirytus.enjoymusic.receivers.MyHeadPhoneStateReceiver;
-import com.zspirytus.enjoymusic.receivers.MyPhoneStateReceiver;
+import com.zspirytus.enjoymusic.interfaces.ViewInject;
 import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.zspermission.ZSPermission;
@@ -19,13 +14,12 @@ import com.zspirytus.zspermission.ZSPermission;
 import java.lang.reflect.Field;
 
 /**
+ * 所有Activity的基类，负责权限申请回调、view注入以及全局Tool的定义
  * Created by ZSpirytus on 2018/8/2.
  */
 
-public abstract class BaseActivity extends RxAppCompatActivity {
-
-    private MyPhoneStateReceiver myPhoneStateReceiver = new MyPhoneStateReceiver();
-    private MyHeadPhoneStateReceiver myHeadPhoneStateReceiver = new MyHeadPhoneStateReceiver();
+public abstract class BaseActivity extends AppCompatActivity
+        implements ZSPermission.OnPermissionListener {
 
     private static Context context;
 
@@ -40,18 +34,6 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        registerBroadCast();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterBroadCast();
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
     }
@@ -60,6 +42,21 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         ZSPermission.getInstance().onRequestPermissionResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onGranted() {
+        // do nothing, processed by child activity if necessary
+    }
+
+    @Override
+    public void onDenied() {
+        // do nothing, processed by child activity if necessary
+    }
+
+    @Override
+    public void onNeverAsk() {
+        // do nothing, processed by child activity if necessary
     }
 
     public void autoInjectAllField() {
@@ -81,31 +78,6 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Register or Unregister Broadcast
-     */
-
-    private void registerBroadCast() {
-        // register phone state broadcast
-        IntentFilter phoneStateFilter = new IntentFilter();
-        phoneStateFilter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
-        phoneStateFilter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
-        registerReceiver(myPhoneStateReceiver, phoneStateFilter);
-
-        // register head phone state broadcast
-        IntentFilter headPhoneFilter = new IntentFilter();
-        headPhoneFilter.addAction(Intent.ACTION_HEADSET_PLUG);
-        registerReceiver(myHeadPhoneStateReceiver, phoneStateFilter);
-    }
-
-    private void unregisterBroadCast() {
-        // unregister phone state broadcast
-        unregisterReceiver(myPhoneStateReceiver);
-
-        // unregister head phone state broadcast
-        unregisterReceiver(myHeadPhoneStateReceiver);
     }
 
     /**

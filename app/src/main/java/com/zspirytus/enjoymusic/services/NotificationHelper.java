@@ -9,12 +9,13 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.model.Music;
+import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.view.activity.BaseActivity;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
+ * Notification帮助类，负责显示Notification
  * Created by ZSpirytus on 2018/8/11.
  */
 

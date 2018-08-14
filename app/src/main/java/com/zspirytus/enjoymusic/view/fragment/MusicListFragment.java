@@ -2,22 +2,17 @@ package com.zspirytus.enjoymusic.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.zspirytus.enjoymusic.Interface.ViewInject;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
-import com.zspirytus.enjoymusic.model.Music;
-import com.zspirytus.enjoymusic.services.StorageHelper;
+import com.zspirytus.enjoymusic.cache.MusicCache;
+import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.interfaces.ViewInject;
 
 import org.simple.eventbus.EventBus;
 
@@ -32,6 +27,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ * Fragment: 显示本地音乐列表
  * Created by ZSpirytus on 2018/8/2.
  */
 
@@ -40,8 +36,6 @@ public class MusicListFragment extends BaseFragment
 
     @ViewInject(R.id.music_list)
     private RecyclerView mMusicList;
-    @ViewInject(R.id.main_activity_toolbar)
-    private Toolbar mToolbar;
 
     private List<Music> musicList;
     private MusicListAdapter adapter;
@@ -66,7 +60,7 @@ public class MusicListFragment extends BaseFragment
     @Override
     public void onItemClick(View view, int position) {
         Music music = musicList.get(position);
-        EventBus.getDefault().post(music, "set current Playing Music");
+        EventBus.getDefault().post(music, "play");
     }
 
     private void initView() {
@@ -78,7 +72,7 @@ public class MusicListFragment extends BaseFragment
         Observable.create(new ObservableOnSubscribe<List<Music>>() {
             @Override
             public void subscribe(ObservableEmitter<List<Music>> emitter) throws Exception {
-                List<Music> musicList = StorageHelper.scanMusic();
+                List<Music> musicList = MusicCache.getInstance().getMusicList();
                 emitter.onNext(musicList);
                 emitter.onComplete();
             }

@@ -1,8 +1,9 @@
-package com.zspirytus.enjoymusic.model;
+package com.zspirytus.enjoymusic.entity;
 
 import java.io.Serializable;
 
 /**
+ * Music实体类
  * Created by ZSpirytus on 2018/8/4.
  */
 

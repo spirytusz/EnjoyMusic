@@ -6,7 +6,7 @@
     android:clickable="true"
     android:background="@drawable/click_ripple">
 
-    <com.zspirytus.enjoymusic.view.customview.RoundCornerImageView
+    <com.zspirytus.enjoymusic.view.widget.RoundCornerImageView
         android:id="@+id/cover"
         android:layout_width="56dp"
         android:layout_height="56dp"
@@ -46,6 +46,9 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
         android:text="Music Name"
+        android:singleLine="true"
+        android:maxEms="9"
+        android:ellipsize="marquee"
         android:textColor="@color/black"
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/cover"

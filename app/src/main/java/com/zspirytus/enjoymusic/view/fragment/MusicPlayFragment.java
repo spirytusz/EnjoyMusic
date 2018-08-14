@@ -12,11 +12,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.zspirytus.enjoymusic.Interface.ViewInject;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.model.Music;
-import com.zspirytus.enjoymusic.services.MediaPlayHelper;
-import com.zspirytus.enjoymusic.services.MusicPlayStateObserver;
+import com.zspirytus.enjoymusic.cache.MusicCache;
+import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.interfaces.ViewInject;
+import com.zspirytus.enjoymusic.receivers.MusicPlayStateObserver;
+import com.zspirytus.enjoymusic.services.MediaPlayController;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -24,6 +25,7 @@ import org.simple.eventbus.Subscriber;
 import java.io.File;
 
 /**
+ * Fragment: 显示音乐播放界面
  * Created by ZSpirytus on 2018/8/2.
  */
 
@@ -31,7 +33,7 @@ public class MusicPlayFragment extends BaseFragment
         implements View.OnClickListener, MusicPlayStateObserver {
 
     private static final String MUSIC_KEY = "music_key";
-    private static MediaPlayHelper mediaPlayHelper = MediaPlayHelper.getInstance();
+    private static MediaPlayController mediaPlayController = MediaPlayController.getInstance();
 
     @ViewInject(R.id.music_play_fragment_toolbar)
     private Toolbar mToolbar;
@@ -52,8 +54,6 @@ public class MusicPlayFragment extends BaseFragment
     private ImageView mPlayOrPauseButton;
     @ViewInject(R.id.next)
     private ImageView mNextButton;
-
-    private Music currentPlayingMusic;
 
     public static MusicPlayFragment getInstance(Music music) {
         MusicPlayFragment musicPlayFragment = new MusicPlayFragment();
@@ -93,11 +93,12 @@ public class MusicPlayFragment extends BaseFragment
             case R.id.previous:
                 break;
             case R.id.play_pause:
-                boolean isPlaying = MediaPlayHelper.isPlaying();
+                boolean isPlaying = MediaPlayController.isPlaying();
+                MusicCache musicCache = MusicCache.getInstance();
                 if (isPlaying) {
-                    EventBus.getDefault().post(currentPlayingMusic,"pause");
+                    EventBus.getDefault().post(musicCache.getCurrentPlayingMusic(), "pause");
                 } else {
-                    EventBus.getDefault().post(currentPlayingMusic,"play");
+                    EventBus.getDefault().post(musicCache.getCurrentPlayingMusic(), "play");
                 }
                 break;
             case R.id.next:
@@ -106,8 +107,13 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     @Override
-    public void update(boolean isPlaying) {
+    public void onPlayingState(boolean isPlaying) {
         setButtonSrc(isPlaying);
+    }
+
+    @Override
+    public void onPlayCompleted() {
+        // TODO: 2018/8/13 music loop or next or random play 
     }
 
     private void initView() {
@@ -117,9 +123,8 @@ public class MusicPlayFragment extends BaseFragment
             Glide.with(this).load(new File(music.getmMusicThumbAlbumUri()))
                     .into(mCover);
             mTotalTime.setText(music.getDuration());
-            currentPlayingMusic = music;
         }
-        setButtonSrc(MediaPlayHelper.isPlaying());
+        setButtonSrc(MediaPlayController.isPlaying());
     }
 
     private void setButtonSrc(boolean isPlaying) {
@@ -151,12 +156,12 @@ public class MusicPlayFragment extends BaseFragment
 
     private void registerEvent() {
         EventBus.getDefault().register(this);
-        MediaPlayHelper.register(this);
+        MediaPlayController.getInstance().register(this);
     }
 
     private void unRegisterEvent() {
         EventBus.getDefault().unregister(this);
-        MediaPlayHelper.unregister(this);
+        MediaPlayController.getInstance().unregister(this);
     }
 
     @Subscriber(tag = "music_name_set")
@@ -164,7 +169,6 @@ public class MusicPlayFragment extends BaseFragment
         mToolbar.setTitle(music.getmMusicName());
         Glide.with(this).load(new File(music.getmMusicThumbAlbumUri())).into(mCover);
         mTotalTime.setText(music.getDuration());
-        currentPlayingMusic = music;
     }
 
 }

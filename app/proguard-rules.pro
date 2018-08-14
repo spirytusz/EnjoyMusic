@@ -19,3 +19,19 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Glide proguard
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+
+# AndroidEventBus
+-keep class org.simple.** { *; }
+-keep interface org.simple.** { *; }
+-keepclassmembers class * {
+    @org.simple.eventbus.Subscriber <methods>;
+}
+-keepattributes *Annotation*

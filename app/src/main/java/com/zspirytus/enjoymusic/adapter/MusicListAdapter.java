@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,8 +11,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.model.Music;
-import com.zspirytus.enjoymusic.view.customview.RoundCornerImageView;
+import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.view.widget.RoundCornerImageView;
 
 import java.io.File;
 import java.util.List;
@@ -22,11 +23,6 @@ import java.util.List;
 
 public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final String TAG = "MusicListAdapter";
-
-    private static final int NORMAL_ITEM = 1;
-    private static final int HEADER_FULFILL = 4;
-
     private Context mContext;
     private List<Music> mItemList;
     private OnItemClickListener onItemClickListener;
@@ -36,24 +32,13 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (mContext == null) {
             mContext = parent.getContext();
         }
-        if (viewType == NORMAL_ITEM) {
-            View view = LayoutInflater.from(mContext).inflate(R.layout.music_list_item, parent, false);
-            return new MyViewHolder(view);
-        } /*else if (viewType == BOTTOM_FULFILL) {
-            View view = LayoutInflater.from(mContext).inflate(R.layout.bottom_fulfill, parent, false);
-            return new BottomFulfill(view);
-        }*/ else {
-            View view = LayoutInflater.from(mContext).inflate(R.layout.header_fulfill, parent, false);
-            return new HeaderFulfill(view);
-        }
+        View view = LayoutInflater.from(mContext).inflate(R.layout.music_list_item, parent, false);
+        return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        int type = getItemViewType(position);
-        if (type == NORMAL_ITEM) {
-            bindNormalItem((MyViewHolder) holder, position);
-        }
+        bindNormalItem((MyViewHolder) holder, position);
     }
 
     @Override
@@ -61,19 +46,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return mItemList.size();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (position == 0) {
-            // if it is the first item (let the first item be null in setItemList())
-            return HEADER_FULFILL;
-        } else  {
-            // else, it is not the last item (let the last item be null in setItemList())
-            return NORMAL_ITEM;
-        }
-    }
-
     public void setItemList(List<Music> list) {
-        list.add(0, null);
         mItemList = list;
     }
 
@@ -92,7 +65,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         holder.mMoreVert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                AlertDialog dialog = new AlertDialog.Builder(mContext).show();
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -123,20 +96,6 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             mMoreVert = itemView.findViewById(R.id.more_vert);
         }
 
-    }
-
-    /*static class BottomFulfill extends RecyclerView.ViewHolder {
-
-        public BottomFulfill(View itemView) {
-            super(itemView);
-        }
-    }*/
-
-    static class HeaderFulfill extends RecyclerView.ViewHolder {
-
-        public HeaderFulfill(View itemView) {
-            super(itemView);
-        }
     }
 
     public interface OnItemClickListener {
