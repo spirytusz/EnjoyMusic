@@ -148,13 +148,13 @@ public class MainActivity extends BaseActivity
         Music currentPlayingMusic = MusicCache.getInstance().getCurrentPlayingMusic();
         switch (id) {
             case R.id.music_previous:
-                e("musicPrevious");
+                play(MusicCache.getInstance().getPreviousMusic(MusicCache.MODE_ORDER));
                 break;
             case R.id.music_next:
-                e("musicNext");
+                play(MusicCache.getInstance().getNextMusic(MusicCache.MODE_ORDER));
                 break;
             case R.id.music_play_pause:
-                boolean isPlaying = MediaPlayController.isPlaying();
+                boolean isPlaying = MediaPlayController.getInstance().isPlaying();
                 if (isPlaying) {
                     pause(currentPlayingMusic);
                 } else {
@@ -195,7 +195,8 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onPlayCompleted() {
-        // do nothing, processed by PlayMusicService
+        // set the play or pause button src be pause(play src) state
+        setButtonSrc(false);
     }
 
     private void initView() {
@@ -343,6 +344,11 @@ public class MainActivity extends BaseActivity
     @Subscriber(tag = "stop")
     public void stop(Music music) {
         myBinder.stop();
+    }
+
+    @Subscriber(tag = "seek to")
+    public void seekTo(int progress) {
+        myBinder.seekTo(progress);
     }
 
     private void registerEvent() {

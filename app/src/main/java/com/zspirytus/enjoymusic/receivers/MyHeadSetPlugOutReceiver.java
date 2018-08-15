@@ -18,7 +18,7 @@ public class MyHeadSetPlugOutReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(action)) {
-            if (MediaPlayController.isPlaying()) {
+            if (MediaPlayController.getInstance().isPlaying()) {
                 MediaPlayController.getInstance().pause();
             }
         }

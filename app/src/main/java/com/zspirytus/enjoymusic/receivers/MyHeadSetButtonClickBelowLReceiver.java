@@ -29,7 +29,7 @@ public class MyHeadSetButtonClickBelowLReceiver extends BroadcastReceiver {
                 case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
                 case KeyEvent.KEYCODE_HEADSETHOOK:
                     // play or pause
-                    if (MediaPlayController.isPlaying()) {
+                    if (MediaPlayController.getInstance().isPlaying()) {
                         MediaPlayController.getInstance().pause();
                     } else {
                         MediaPlayController.getInstance().play(MusicCache.getInstance().getCurrentPlayingMusic());

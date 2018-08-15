@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.services;
 import android.app.Service;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.PowerManager;
 
 import com.zspirytus.enjoymusic.cache.MusicCache;
@@ -75,10 +76,6 @@ public class MediaPlayController
         }
     }
 
-    public static boolean isPlaying() {
-        return mediaPlayer.isPlaying();
-    }
-
     @Override
     public void onPrepared(MediaPlayer mp) {
         beginPlay(mp);
@@ -88,11 +85,24 @@ public class MediaPlayController
     public void onCompletion(MediaPlayer mp) {
         audioManager.abandonAudioFocus(this);
         notifyAllMusicPlayingObserverPlayCompleted();
+        play(MusicCache.getInstance().getCurrentPlayingMusic());
     }
 
     @Override
     public void onAudioFocusChange(int focusChange) {
 
+    }
+
+    public boolean isPlaying() {
+        return mediaPlayer.isPlaying();
+    }
+
+    public int getCurrentPosition() {
+        if (isPlaying()) {
+            return mediaPlayer.getCurrentPosition();
+        } else {
+            return 0;
+        }
     }
 
     public void play(Music music) {
@@ -113,8 +123,12 @@ public class MediaPlayController
                 MusicCache.getInstance().setCurrentPlayingMusic(music);
                 state = STATE_PREPARING;
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                MyMediaSession.getInstance().setMetaData(music);
+                MyMediaSession.getInstance().setPlaybackState();
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+
         }
     }
 
@@ -123,7 +137,23 @@ public class MediaPlayController
             mediaPlayer.pause();
             notifyAllMusicPlayingObserverPlayingState(false);
             state = STATE_PAUSE;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                MyMediaSession.getInstance().setPlaybackState();
+            }
         }
+    }
+
+    public void seekTo(int progress) {
+        int position = (int) ((MusicCache.getInstance().getCurrentPlayingMusic().getDuration() * progress) / 100);
+        mediaPlayer.seekTo(position);
+    }
+
+    public void playNext() {
+
+    }
+
+    public void playPrevious() {
+
     }
 
     public void stop() {

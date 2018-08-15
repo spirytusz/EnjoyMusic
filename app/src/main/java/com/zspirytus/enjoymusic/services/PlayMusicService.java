@@ -36,6 +36,7 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
     public void onCreate() {
         super.onCreate();
         registerEvent();
+        MyMediaSession.getInstance().init(this);
     }
 
     @Override
@@ -105,6 +106,10 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
 
         public void stop() {
             mediaPlayController.stop();
+        }
+
+        public void seekTo(int progress) {
+            mediaPlayController.seekTo(progress);
         }
 
     }

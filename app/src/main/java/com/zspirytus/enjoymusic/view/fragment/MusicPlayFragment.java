@@ -23,6 +23,7 @@ import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 
 /**
  * Fragment: 显示音乐播放界面
@@ -33,6 +34,7 @@ public class MusicPlayFragment extends BaseFragment
         implements View.OnClickListener, MusicPlayStateObserver {
 
     private static final String MUSIC_KEY = "music_key";
+    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
     private static MediaPlayController mediaPlayController = MediaPlayController.getInstance();
 
     @ViewInject(R.id.music_play_fragment_toolbar)
@@ -88,12 +90,11 @@ public class MusicPlayFragment extends BaseFragment
     public void onClick(View view) {
         int id = view.getId();
         switch (id) {
-            case R.id.cover:
-                break;
             case R.id.previous:
+                EventBus.getDefault().post(MusicCache.getInstance().getPreviousMusic(MusicCache.MODE_ORDER), "play");
                 break;
             case R.id.play_pause:
-                boolean isPlaying = MediaPlayController.isPlaying();
+                boolean isPlaying = MediaPlayController.getInstance().isPlaying();
                 MusicCache musicCache = MusicCache.getInstance();
                 if (isPlaying) {
                     EventBus.getDefault().post(musicCache.getCurrentPlayingMusic(), "pause");
@@ -102,6 +103,7 @@ public class MusicPlayFragment extends BaseFragment
                 }
                 break;
             case R.id.next:
+                EventBus.getDefault().post(MusicCache.getInstance().getNextMusic(MusicCache.MODE_ORDER), "play");
                 break;
         }
     }
@@ -122,9 +124,25 @@ public class MusicPlayFragment extends BaseFragment
             mToolbar.setTitle(music.getmMusicName());
             Glide.with(this).load(new File(music.getmMusicThumbAlbumUri()))
                     .into(mCover);
-            mTotalTime.setText(music.getDuration());
+            mTotalTime.setText(music.getDuration() + "");
         }
-        setButtonSrc(MediaPlayController.isPlaying());
+        setButtonSrc(MediaPlayController.getInstance().isPlaying());
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                EventBus.getDefault().post(progress, "seek to");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     private void setButtonSrc(boolean isPlaying) {
@@ -168,7 +186,7 @@ public class MusicPlayFragment extends BaseFragment
     public void setView(Music music) {
         mToolbar.setTitle(music.getmMusicName());
         Glide.with(this).load(new File(music.getmMusicThumbAlbumUri())).into(mCover);
-        mTotalTime.setText(music.getDuration());
+        mTotalTime.setText(simpleDateFormat.format(music.getDuration()));
     }
 
 }

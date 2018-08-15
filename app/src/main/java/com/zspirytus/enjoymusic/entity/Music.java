@@ -12,16 +12,14 @@ public class Music implements Serializable {
     private String path;
     private String mMusicName;
     private String mMusicThumbAlbumUri;
-    private String mMusicAlbumUri;
     private String mMusicArtist;
-    private String duration;
+    private long duration;
     private String size;
 
-    public Music(String path, String mMusicName, String mMusicArtist, String mMusicThumbAlbumUri, String mMusicAlbumUri, String duration, String size) {
+    public Music(String path, String mMusicName, String mMusicArtist, String mMusicThumbAlbumUri, long duration, String size) {
         this.path = path;
         this.mMusicName = mMusicName;
         this.mMusicThumbAlbumUri = mMusicThumbAlbumUri;
-        this.mMusicAlbumUri = mMusicAlbumUri;
         this.mMusicArtist = mMusicArtist;
         this.duration = duration;
         this.size = size;
@@ -40,10 +38,6 @@ public class Music implements Serializable {
         return mMusicThumbAlbumUri;
     }
 
-    public String getmMusicAlbumUri() {
-        return mMusicAlbumUri;
-    }
-
     public String getmMusicArtist() {
         return mMusicArtist;
     }
@@ -52,7 +46,7 @@ public class Music implements Serializable {
         return size;
     }
 
-    public String getDuration() {
+    public long getDuration() {
         return duration;
     }
 
@@ -84,20 +78,15 @@ public class Music implements Serializable {
         } else {
             stringBuilder.append("mMusicThumbAlbumUri:null"+", ");
         }
-        if(mMusicAlbumUri!= null){
-            stringBuilder.append("mMusicAlbumUri:"+mMusicAlbumUri+", ");
-        } else {
-            stringBuilder.append("mMusicAlbumUri:null"+", ");
-        }
         if(mMusicArtist!= null){
             stringBuilder.append("mMusicArtist:"+mMusicArtist+", ");
         } else {
             stringBuilder.append("mMusicArtist:null"+", ");
         }
-        if(duration!= null){
+        if (duration != 0) {
             stringBuilder.append("duration:"+duration+", ");
         } else {
-            stringBuilder.append("duration:null"+", ");
+            stringBuilder.append("duration:0" + ", ");
         }
         if(size!= null){
             stringBuilder.append("size:"+size+" ");

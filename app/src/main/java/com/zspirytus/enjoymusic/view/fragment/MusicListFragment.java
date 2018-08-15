@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
@@ -36,6 +38,8 @@ public class MusicListFragment extends BaseFragment
 
     @ViewInject(R.id.music_list)
     private RecyclerView mMusicList;
+    @ViewInject(R.id.music_list_load_progress_bar)
+    private ProgressBar mMusicListLoadProgressBar;
 
     private List<Music> musicList;
     private MusicListAdapter adapter;
@@ -72,11 +76,12 @@ public class MusicListFragment extends BaseFragment
         Observable.create(new ObservableOnSubscribe<List<Music>>() {
             @Override
             public void subscribe(ObservableEmitter<List<Music>> emitter) throws Exception {
+                playAnimator(false);
                 List<Music> musicList = MusicCache.getInstance().getMusicList();
                 emitter.onNext(musicList);
                 emitter.onComplete();
             }
-        }).subscribeOn(Schedulers.newThread())
+        }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<Music>>() {
 
@@ -107,9 +112,25 @@ public class MusicListFragment extends BaseFragment
 
                     @Override
                     public void onComplete() {
-
+                        playAnimator(true);
                     }
                 });
+    }
+
+    private void playAnimator(boolean isLoadFinish) {
+        if (isLoadFinish) {
+            ObjectAnimator animatorOfProgressBar = ObjectAnimator.ofFloat(mMusicListLoadProgressBar, "alpha", 1f, 0f);
+            animatorOfProgressBar.setDuration(382);
+            ObjectAnimator animatorOfList = ObjectAnimator.ofFloat(mMusicList, "alpha", 0f, 1f);
+            animatorOfList.setDuration(382);
+            animatorOfProgressBar.start();
+            mMusicListLoadProgressBar.setVisibility(View.GONE);
+            animatorOfList.start();
+            mMusicList.setVisibility(View.VISIBLE);
+        } else {
+            mMusicList.setVisibility(View.GONE);
+            mMusicListLoadProgressBar.setVisibility(View.VISIBLE);
+        }
     }
 
     public static MusicListFragment getInstance() {

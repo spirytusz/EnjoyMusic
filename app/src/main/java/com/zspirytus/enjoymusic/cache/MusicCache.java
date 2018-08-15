@@ -13,10 +13,8 @@ import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.view.activity.BaseActivity;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * 音乐缓存类，缓存当前播放音乐、历史播放记录；获取本机所有音乐等
@@ -24,6 +22,9 @@ import java.util.Locale;
  */
 
 public class MusicCache {
+
+    public static final int MODE_ORDER = 1;
+    public static final int MODE_RANDOM = 2;
 
     private static final MusicCache INSTANCE = new MusicCache();
     private static final String CURRENT_PLAYING_MUSIC = "currentPlayingMusic";
@@ -38,21 +39,6 @@ public class MusicCache {
 
     public static MusicCache getInstance() {
         return INSTANCE;
-    }
-
-    private void restoreCurrentPlayingMusic() {
-        SharedPreferences pref = BaseActivity.getContext().getSharedPreferences(CURRENT_PLAYING_MUSIC, Context.MODE_PRIVATE);
-        String json = pref.getString(CURRENT_PLAYING_MUSIC_STRING_KEY, null);
-        if (json != null) {
-            Gson gson = new Gson();
-            Music music = gson.fromJson(json, Music.class);
-            if (music != null) {
-                File file = new File(music.getPath());
-                if (file.exists()) {
-                    currentPlayingMusic = music;
-                }
-            }
-        }
     }
 
     public void saveCurrentPlayingMusic(Music currentPlayingMusic) {
@@ -80,24 +66,39 @@ public class MusicCache {
         return musicList;
     }
 
+    public Music getPreviousMusic(int type) {
+        int previousPosition = (getCurrentPlayingMusicPosition() - 1) % musicList.size();
+        return musicList.get(previousPosition);
+    }
+
+    public Music getNextMusic(int type) {
+        int previousPosition = (getCurrentPlayingMusicPosition() + 1) % musicList.size();
+        return musicList.get(previousPosition);
+    }
+
+    private int getCurrentPlayingMusicPosition() {
+        return musicList.indexOf(currentPlayingMusic);
+    }
+
     private void scanMusic() {
         musicList = new ArrayList<>();
-        SimpleDateFormat sim = new SimpleDateFormat("mm:ss", Locale.CHINA);
         ContentResolver resolver = BaseActivity.getContext().getContentResolver();
         Cursor cursor = resolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null,
                 null);
-        while (cursor.moveToNext()) {
-            String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-            String name = cursor.getString(cursor
-                    .getColumnIndex(MediaStore.Audio.Media.TITLE));
-            String albumId = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
-            String thumbAlbum = getThumbAlbum(albumId);
-            String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-            long time = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-            String duration = sim.format(time);
-            String size = Formatter.formatFileSize(BaseActivity.getContext(), cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE)));
-            musicList.add(new Music(path, name, artist, thumbAlbum, null, duration, size));
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                String name = cursor.getString(cursor
+                        .getColumnIndex(MediaStore.Audio.Media.TITLE));
+                String albumId = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                String thumbAlbum = getThumbAlbum(albumId);
+                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                String size = Formatter.formatFileSize(BaseActivity.getContext(), cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE)));
+                musicList.add(new Music(path, name, artist, thumbAlbum, duration, size));
+            }
+            cursor.close();
         }
     }
 
@@ -112,6 +113,21 @@ public class MusicCache {
             str = cursor.getString(cursor.getColumnIndex(thumbnail));
         }
         return str;
+    }
+
+    private void restoreCurrentPlayingMusic() {
+        SharedPreferences pref = BaseActivity.getContext().getSharedPreferences(CURRENT_PLAYING_MUSIC, Context.MODE_PRIVATE);
+        String json = pref.getString(CURRENT_PLAYING_MUSIC_STRING_KEY, null);
+        if (json != null) {
+            Gson gson = new Gson();
+            Music music = gson.fromJson(json, Music.class);
+            if (music != null) {
+                File file = new File(music.getPath());
+                if (file.exists()) {
+                    currentPlayingMusic = music;
+                }
+            }
+        }
     }
 
 }
