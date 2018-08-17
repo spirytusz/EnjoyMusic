@@ -1,11 +1,11 @@
 package com.zspirytus.enjoymusic.services;
 
-import android.annotation.TargetApi;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadata;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import com.zspirytus.enjoymusic.cache.MusicCache;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -14,7 +14,7 @@ import com.zspirytus.enjoymusic.entity.Music;
  * Created by ZSpirytus on 2018/8/14.
  */
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 public class MyMediaSession {
 
     private static final MyMediaSession INSTANCE = new MyMediaSession();
@@ -73,31 +73,37 @@ public class MyMediaSession {
     private MediaSession.Callback callback = new MediaSession.Callback() {
         @Override
         public void onPlay() {
+            super.onPlay();
             MediaPlayController.getInstance().play(MusicCache.getInstance().getCurrentPlayingMusic());
         }
 
         @Override
         public void onPause() {
+            super.onPause();
             MediaPlayController.getInstance().pause();
         }
 
         @Override
         public void onSkipToNext() {
+            super.onSkipToNext();
             MediaPlayController.getInstance().playNext();
         }
 
         @Override
         public void onSkipToPrevious() {
+            super.onSkipToPrevious();
             MediaPlayController.getInstance().playPrevious();
         }
 
         @Override
         public void onStop() {
+            super.onStop();
             MediaPlayController.getInstance().stop();
         }
 
         @Override
         public void onSeekTo(long pos) {
+            super.onSeekTo(pos);
             MediaPlayController.getInstance().seekTo((int) pos);
         }
     };

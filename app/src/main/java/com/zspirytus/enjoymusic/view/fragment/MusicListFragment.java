@@ -68,7 +68,6 @@ public class MusicListFragment extends BaseFragment
     }
 
     private void initView() {
-
         initRecyclerView();
     }
 
