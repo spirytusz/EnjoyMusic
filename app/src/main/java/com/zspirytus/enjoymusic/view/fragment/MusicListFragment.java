@@ -65,6 +65,7 @@ public class MusicListFragment extends BaseFragment
     public void onItemClick(View view, int position) {
         Music music = musicList.get(position);
         EventBus.getDefault().post(music, "play");
+        EventBus.getDefault().post(music, "show music play fragment");
     }
 
     private void initView() {

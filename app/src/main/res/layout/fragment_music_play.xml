@@ -47,7 +47,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:srcCompat="@drawable/ic_play_thin" />
+        app:srcCompat="@drawable/ic_play_arrow_white_48dp" />
 
     <ImageView
         android:id="@+id/previous"
@@ -58,7 +58,7 @@
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/play_pause"
-        app:srcCompat="@drawable/ic_previous_thin" />
+        app:srcCompat="@drawable/ic_skip_previous_white_48dp" />
 
     <ImageView
         android:id="@+id/next"
@@ -69,7 +69,7 @@
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/play_pause"
-        app:srcCompat="@drawable/ic_next_thin" />
+        app:srcCompat="@drawable/ic_skip_next_white_48dp" />
 
     <include
         layout="@layout/seekbar_with_timestamp"

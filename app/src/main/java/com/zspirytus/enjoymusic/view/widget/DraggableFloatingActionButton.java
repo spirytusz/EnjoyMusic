@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.listeners.OnDraggableFABEventListener;
+import com.zspirytus.enjoymusic.services.MediaPlayController;
 
 /**
  * Created by ZSpirytus on 2018/8/17.
@@ -16,8 +17,13 @@ import com.zspirytus.enjoymusic.listeners.OnDraggableFABEventListener;
 
 public class DraggableFloatingActionButton extends FloatingActionButton implements View.OnTouchListener {
 
-    private final static float CLICK_DRAG_TOLERANCE = 61.8f;
-    private float damping = 0.618f;
+    private static final float CLICK_DRAG_TOLERANCE = 38.2f;
+    private static final int RESET_ANIMATOR_DURATION = 382;
+    private static final int RESPONSE_ACTION_MOVE_DELAY = 0;
+    private static final float DEFAULT_DAMPING = 0.618f;
+    private static final float DEFAULT_BORDER = 200f;
+
+    private float damping;
     private float border;
 
     private static float initRawX;
@@ -48,8 +54,8 @@ public class DraggableFloatingActionButton extends FloatingActionButton implemen
     private void loadAttrs(Context context, AttributeSet attrs) {
         if (attrs != null) {
             TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.DraggableFloatingActionButton);
-            damping = array.getFloat(R.styleable.DraggableFloatingActionButton_damping, 0.618f);
-            border = array.getDimension(R.styleable.DraggableFloatingActionButton_border, 200f);
+            damping = array.getFloat(R.styleable.DraggableFloatingActionButton_damping, DEFAULT_DAMPING);
+            border = array.getDimension(R.styleable.DraggableFloatingActionButton_border, DEFAULT_BORDER);
             array.recycle();
         }
     }
@@ -61,6 +67,7 @@ public class DraggableFloatingActionButton extends FloatingActionButton implemen
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
+        // get mFab initial location X
         initRawX = getX();
     }
 
@@ -70,46 +77,34 @@ public class DraggableFloatingActionButton extends FloatingActionButton implemen
         int action = motionEvent.getAction();
         if (action == MotionEvent.ACTION_DOWN) {
             downRawX = motionEvent.getRawX();
-            dX = view.getX() - downRawX;
+            dX = initRawX - downRawX;
             return true;
         } else if (action == MotionEvent.ACTION_MOVE) {
-            int viewWidth = view.getWidth();
-
-            View viewParent = (View) view.getParent();
-            int parentWidth = viewParent.getWidth();
-
             deltaX = motionEvent.getRawX() + dX;
-            deltaX = Math.max(0, deltaX);
-            deltaX = Math.min(parentWidth - viewWidth, deltaX);
             deltaX = (deltaX - initRawX) * damping;
-            if (deltaX > border) {
-                deltaX = border;
-            } else if (deltaX < -border) {
+            if (deltaX < -border) {
                 deltaX = -border;
+            } else if (deltaX < -CLICK_DRAG_TOLERANCE) {
+                setImageResource(R.drawable.ic_skip_previous_white_48dp);
+            } else if (deltaX > CLICK_DRAG_TOLERANCE && deltaX <= border) {
+                setImageResource(R.drawable.ic_skip_next_white_48dp);
+            } else if (deltaX > border) {
+                deltaX = border;
             }
-            // compute delta X and multiply damping
-
-            view.animate()
-                    .x(initRawX + deltaX)
-                    .setDuration(0)
-                    .start();
-            // show animator
+            if (Math.abs(deltaX) >= CLICK_DRAG_TOLERANCE) {
+                view.animate()
+                        .x(initRawX + deltaX)
+                        .setDuration(RESPONSE_ACTION_MOVE_DELAY)
+                        .start();
+            }
             return true;
         } else if (action == MotionEvent.ACTION_UP) {
-            float upRawX = motionEvent.getRawX();
-            float upDX = upRawX - downRawX;
-
-            view.animate()
-                    .x(initRawX)
-                    .setDuration(382)
-                    .start();
-            // show reset place animator
-
-            if (Math.abs(upDX) < CLICK_DRAG_TOLERANCE) {
+            int resId = MediaPlayController.getInstance().isPlaying() ? R.drawable.ic_pause_white_48dp : R.drawable.ic_play_arrow_white_48dp;
+            setImageResource(resId);
+            if (Math.abs(deltaX) < CLICK_DRAG_TOLERANCE) {
                 if (onDraggableFABEventListener != null) {
                     onDraggableFABEventListener.onClick();
                 }
-                return performClick();
             } else {
                 if (onDraggableFABEventListener != null) {
                     if (deltaX == border) {
@@ -118,8 +113,12 @@ public class DraggableFloatingActionButton extends FloatingActionButton implemen
                         onDraggableFABEventListener.onDraggedLeft();
                     }
                 }
-                return true;
             }
+            view.animate()
+                    .x(initRawX)
+                    .setDuration(RESET_ANIMATOR_DURATION)
+                    .start();
+            return true;
 
         } else {
             return super.onTouchEvent(motionEvent);

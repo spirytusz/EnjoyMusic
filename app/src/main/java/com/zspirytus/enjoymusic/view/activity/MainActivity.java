@@ -1,13 +1,11 @@
 package com.zspirytus.enjoymusic.view.activity;
 
-import android.animation.ObjectAnimator;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,27 +15,23 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCache;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
+import com.zspirytus.enjoymusic.listeners.OnDraggableFABEventListener;
 import com.zspirytus.enjoymusic.receivers.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.services.MediaPlayController;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.view.fragment.MusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
+import com.zspirytus.enjoymusic.view.widget.DraggableFloatingActionButton;
 import com.zspirytus.zspermission.PermissionGroup;
 import com.zspirytus.zspermission.ZSPermission;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
-
-import java.io.File;
 
 /**
  * Activity: 控制显示、隐藏MusicPlayingFragment、MusicListFragment
@@ -46,7 +40,7 @@ import java.io.File;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        View.OnClickListener, MusicPlayStateObserver {
+        MusicPlayStateObserver {
 
     // init view in activity_main.xml
     @ViewInject(R.id.main_drawer)
@@ -58,23 +52,9 @@ public class MainActivity extends BaseActivity
     @ViewInject(R.id.main_activity_toolbar)
     private Toolbar mToolbar;
 
-    // init view in bottom_music_bar.xml
-    @ViewInject(R.id.music_bottom)
-    private ConstraintLayout mConstraintLayout;
-    @ViewInject(R.id.music_previous)
-    private ImageView musicPrevious;
-    @ViewInject(R.id.music_play_pause)
-    private ImageView musicPlayOrPause;
-    @ViewInject(R.id.music_next)
-    private ImageView musicNext;
-    @ViewInject(R.id.music_thumb_cover)
-    private ImageView mCover;
-    @ViewInject(R.id.music_name)
-    private TextView mMusicName;
-    @ViewInject(R.id.music_artist)
-    private TextView mMusicArtist;
-    @ViewInject(R.id.music_progressBar)
-    private ProgressBar mMusicProgress;
+    // init draggable fab
+    @ViewInject(R.id.dragged_fab)
+    private DraggableFloatingActionButton mFab;
 
     // Fragments and Fragment Manager
     private FragmentManager mFragmentManager = getSupportFragmentManager();
@@ -142,35 +122,6 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    @Override
-    public void onClick(View view) {
-        int id = view.getId();
-        Music currentPlayingMusic = MusicCache.getInstance().getCurrentPlayingMusic();
-        switch (id) {
-            case R.id.music_previous:
-                play(MusicCache.getInstance().getPreviousMusic(MusicCache.MODE_ORDER));
-                break;
-            case R.id.music_next:
-                play(MusicCache.getInstance().getNextMusic(MusicCache.MODE_ORDER));
-                break;
-            case R.id.music_play_pause:
-                boolean isPlaying = MediaPlayController.getInstance().isPlaying();
-                if (isPlaying) {
-                    pause(currentPlayingMusic);
-                } else {
-                    play(currentPlayingMusic);
-                }
-                break;
-            case R.id.music_bottom:
-                if (currentPlayingMusic != null) {
-                    showMusicPlayFragment(currentPlayingMusic);
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
     // permission granted state listener
     @Override
     public void onGranted() {
@@ -190,13 +141,13 @@ public class MainActivity extends BaseActivity
     @Override
     public void onPlayingState(boolean isPlaying) {
         // set the play or pause button src
-        setButtonSrc(isPlaying);
+        int resId = isPlaying ? R.drawable.ic_pause_white_48dp : R.drawable.ic_play_arrow_white_48dp;
+        mFab.setImageResource(resId);
     }
 
     @Override
     public void onPlayCompleted() {
         // set the play or pause button src be pause(play src) state
-        setButtonSrc(false);
     }
 
     private void initView() {
@@ -221,52 +172,35 @@ public class MainActivity extends BaseActivity
         );
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        onPlayingState(MediaPlayController.getInstance().isPlaying());
 
-        // set navigation view menu listener
+        // set listener
         mNavigationView.setNavigationItemSelectedListener(this);
-        mConstraintLayout.setOnClickListener(this);
-        musicPrevious.setOnClickListener(this);
-        musicPlayOrPause.setOnClickListener(this);
-        musicNext.setOnClickListener(this);
+        mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListener() {
+            @Override
+            public void onClick() {
+                if (MediaPlayController.getInstance().isPlaying()) {
+                    pause(MusicCache.getInstance().getCurrentPlayingMusic());
+                } else {
+                    play(MusicCache.getInstance().getCurrentPlayingMusic());
+                }
+            }
 
-        // restore currentPlayingMusic
-        setMusicBarView(MusicCache.getInstance().getCurrentPlayingMusic());
+            @Override
+            public void onDraggedLeft() {
+                play(MusicCache.getInstance().getPreviousMusic(MusicCache.MODE_ORDER));
+            }
+
+            @Override
+            public void onDraggedRight() {
+                play(MusicCache.getInstance().getNextMusic(MusicCache.MODE_ORDER));
+            }
+        });
     }
 
     private void startPlayMusicService() {
         Intent intent = new Intent(MainActivity.this, PlayMusicService.class);
         bindService(intent, serviceConnection, BIND_AUTO_CREATE);
-    }
-
-    private void setMusicBarView(Music music) {
-        if (music != null) {
-            String albumDir = music.getmMusicThumbAlbumUri();
-            if (albumDir != null) {
-                Glide.with(this).load(new File(albumDir)).into(mCover);
-            }
-            mMusicName.setText(music.getmMusicName());
-            mMusicArtist.setText(music.getmMusicArtist());
-        }
-    }
-
-    private void setButtonSrc(boolean isPlaying) {
-        if (isPlaying) {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(musicPlayOrPause, "alpha", 1f, 0f);
-            animator.setDuration(382);
-            animator.start();
-            Glide.with(this).load(R.drawable.ic_pause_thin).into(musicPlayOrPause);
-            animator = ObjectAnimator.ofFloat(musicPlayOrPause, "alpha", 0f, 1f);
-            animator.setDuration(382);
-            animator.start();
-        } else {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(musicPlayOrPause, "alpha", 1f, 0f);
-            animator.setDuration(382);
-            animator.start();
-            Glide.with(this).load(R.drawable.ic_play_thin).into(musicPlayOrPause);
-            animator = ObjectAnimator.ofFloat(musicPlayOrPause, "alpha", 0f, 1f);
-            animator.setDuration(382);
-            animator.start();
-        }
     }
 
     private void showMusicListFragment() {
@@ -281,15 +215,16 @@ public class MainActivity extends BaseActivity
         }
         if (mMusicPlayFragment != null) {
             mFragmentTransaction.hide(mMusicPlayFragment);
-            setmConstraintLayoutAndToolbarVisible(true);
         }
         mFragmentTransaction.show(mMusicListFragment);
         mFragmentTransaction.commitAllowingStateLoss();
         mToolbar.setVisibility(View.VISIBLE);
+        mFab.setVisibility(View.VISIBLE);
         isMusicPlayFragment = false;
     }
 
-    private void showMusicPlayFragment(Music music) {
+    @Subscriber(tag = "show music play fragment")
+    public void showMusicPlayFragment(Music music) {
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_up, R.anim.anim_fragment_alpha_hide);
         if (mMusicPlayFragment == null) {
@@ -301,38 +236,15 @@ public class MainActivity extends BaseActivity
             mFragmentTransaction.hide(mMusicListFragment);
         mFragmentTransaction.show(mMusicPlayFragment);
         mFragmentTransaction.commitAllowingStateLoss();
-        setmConstraintLayoutAndToolbarVisible(false);
         mToolbar.setVisibility(View.GONE);
+        mFab.setVisibility(View.GONE);
         isMusicPlayFragment = true;
-    }
-
-    private void setmConstraintLayoutAndToolbarVisible(boolean visible) {
-        if (visible) {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(mConstraintLayout, "alpha", 0f, 1f);
-            animator.setDuration(618);
-            animator.start();
-            animator = ObjectAnimator.ofFloat(mToolbar, "alpha", 0f, 1f);
-            animator.setDuration(618);
-            animator.start();
-            mConstraintLayout.setVisibility(View.VISIBLE);
-            mToolbar.setVisibility(View.VISIBLE);
-        } else {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(mConstraintLayout, "alpha", 1f, 0f);
-            animator.setDuration(618);
-            animator.start();
-            animator = ObjectAnimator.ofFloat(mToolbar, "alpha", 1f, 0f);
-            animator.setDuration(618);
-            animator.start();
-            mConstraintLayout.setVisibility(View.GONE);
-            mToolbar.setVisibility(View.GONE);
-        }
     }
 
     @Subscriber(tag = "play")
     public void play(Music music) {
         if (music != null) {
             myBinder.play(music);
-            setMusicBarView(music);
         }
     }
 

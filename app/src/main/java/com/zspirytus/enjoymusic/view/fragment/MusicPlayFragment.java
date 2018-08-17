@@ -20,7 +20,6 @@ import com.zspirytus.enjoymusic.receivers.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.services.MediaPlayController;
 
 import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -91,7 +90,9 @@ public class MusicPlayFragment extends BaseFragment
         int id = view.getId();
         switch (id) {
             case R.id.previous:
-                EventBus.getDefault().post(MusicCache.getInstance().getPreviousMusic(MusicCache.MODE_ORDER), "play");
+                Music previousMusic = MusicCache.getInstance().getPreviousMusic(MusicCache.MODE_ORDER);
+                EventBus.getDefault().post(previousMusic, "play");
+                setView(previousMusic);
                 break;
             case R.id.play_pause:
                 boolean isPlaying = MediaPlayController.getInstance().isPlaying();
@@ -103,7 +104,9 @@ public class MusicPlayFragment extends BaseFragment
                 }
                 break;
             case R.id.next:
-                EventBus.getDefault().post(MusicCache.getInstance().getNextMusic(MusicCache.MODE_ORDER), "play");
+                Music nextMusic = MusicCache.getInstance().getNextMusic(MusicCache.MODE_ORDER);
+                EventBus.getDefault().post(nextMusic, "play");
+                setView(nextMusic);
                 break;
         }
     }
@@ -150,7 +153,7 @@ public class MusicPlayFragment extends BaseFragment
             ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton,"alpha",1f,0f);
             animator.setDuration(382);
             animator.start();
-            Glide.with(this).load(R.drawable.ic_pause_thin).into(mPlayOrPauseButton);
+            Glide.with(this).load(R.drawable.ic_pause_white_48dp).into(mPlayOrPauseButton);
             animator = ObjectAnimator.ofFloat(mPlayOrPauseButton,"alpha",0f,1f);
             animator.setDuration(382);
             animator.start();
@@ -158,7 +161,7 @@ public class MusicPlayFragment extends BaseFragment
             ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton,"alpha",1f,0f);
             animator.setDuration(382);
             animator.start();
-            Glide.with(this).load(R.drawable.ic_play_thin).into(mPlayOrPauseButton);
+            Glide.with(this).load(R.drawable.ic_play_arrow_white_48dp).into(mPlayOrPauseButton);
             animator = ObjectAnimator.ofFloat(mPlayOrPauseButton,"alpha",0f,1f);
             animator.setDuration(382);
             animator.start();
@@ -173,16 +176,15 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     private void registerEvent() {
-        EventBus.getDefault().register(this);
+        //EventBus.getDefault().register(this);
         MediaPlayController.getInstance().register(this);
     }
 
     private void unRegisterEvent() {
-        EventBus.getDefault().unregister(this);
+        //EventBus.getDefault().unregister(this);
         MediaPlayController.getInstance().unregister(this);
     }
 
-    @Subscriber(tag = "music_name_set")
     public void setView(Music music) {
         mToolbar.setTitle(music.getmMusicName());
         Glide.with(this).load(new File(music.getmMusicThumbAlbumUri())).into(mCover);
