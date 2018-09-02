@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 
-import com.zspirytus.enjoymusic.services.MediaPlayController;
+import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
 /**
  * 耳机拔出事件接收广播

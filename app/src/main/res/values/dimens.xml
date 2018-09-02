@@ -2,5 +2,16 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="bottom_music_bar_height">58dp</dimen>
+
+    <!--notification dimen-->
+    <dimen name="notification_cover_size">96dp</dimen>
+    <dimen name="notification_divider_height">0.1dp</dimen>
+    <dimen name="notification_text_margin_start_dimen">12dp</dimen>
+
+    <!--notification control pane dimen-->
+    <dimen name="previous_next_button_margin_dimen">48dp</dimen>
+    <dimen name="previous_next_button_marginTop_dimen">6dp</dimen>
+    <dimen name="play_pause_button_marginTop_dimen">2dp</dimen>
+    <dimen name="previous_next_button_size">32dp</dimen>
+    <dimen name="play_pause_button_size">40dp</dimen>
 </resources>

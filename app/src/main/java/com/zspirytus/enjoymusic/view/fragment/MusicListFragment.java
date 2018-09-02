@@ -65,6 +65,7 @@ public class MusicListFragment extends BaseFragment
     public void onItemClick(View view, int position) {
         Music music = musicList.get(position);
         EventBus.getDefault().post(music, "play");
+        EventBus.getDefault().post(music, "music_name_set");
         EventBus.getDefault().post(music, "show music play fragment");
     }
 
@@ -103,6 +104,7 @@ public class MusicListFragment extends BaseFragment
                         mMusicList.setNestedScrollingEnabled(false);
                         adapter.setOnItemClickListener(MusicListFragment.this);
                         mMusicList.setAdapter(adapter);
+                        EventBus.getDefault().post(!s.isEmpty(), "set dFab listener");
                     }
 
                     @Override

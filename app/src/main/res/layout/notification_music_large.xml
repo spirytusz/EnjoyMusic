@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/notification_music_cover"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+        android:layout_width="@dimen/notification_cover_size"
+        android:layout_height="@dimen/notification_cover_size"
         android:background="@color/grey"/>
 
     <TextView
@@ -17,9 +16,14 @@
         android:text="Music Name"
         android:textSize="16sp"
         android:textColor="@color/black"
-        android:layout_toRightOf="@+id/notification_music_cover"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="8dp"/>
+        android:layout_toEndOf="@+id/notification_music_cover"
+        android:layout_marginStart="@dimen/notification_text_margin_start_dimen"
+        android:layout_marginTop="4dp"
+
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
     <TextView
         android:id="@+id/notification_music_artist"
@@ -27,18 +31,26 @@
         android:layout_height="wrap_content"
         android:text="Music Artist"
         android:textSize="12sp"
-        android:layout_toRightOf="@+id/notification_music_cover"
+        android:layout_toEndOf="@+id/notification_music_cover"
         android:layout_below="@+id/notification_music_name"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="6dp"
-        android:layout_marginLeft="12dp"/>
+        android:layout_marginStart="@dimen/notification_text_margin_start_dimen" />
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="0.1dp"
-        android:layout_toRightOf="@+id/notification_music_cover"
+        android:layout_height="@dimen/notification_divider_height"
+        android:layout_toEndOf="@+id/notification_music_cover"
         android:layout_below="@+id/notification_music_artist"
-        android:layout_marginLeft="8dp"
-        android:background="@color/grey"/>
+        android:layout_marginStart="8dp"
+        android:background="@color/grey"
+        android:id="@+id/imageView2" />
+
+    <include
+        layout="@layout/notification_control_pane"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/notification_music_cover"
+        android:layout_below="@id/imageView2" />
 
 </RelativeLayout>

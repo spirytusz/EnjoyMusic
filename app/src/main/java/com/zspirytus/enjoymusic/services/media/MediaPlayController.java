@@ -1,13 +1,14 @@
-package com.zspirytus.enjoymusic.services;
+package com.zspirytus.enjoymusic.services.media;
 
 import android.app.Service;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.PowerManager;
+import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.zspirytus.enjoymusic.cache.MusicCache;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.receivers.MusicPlayProgressObserver;
 import com.zspirytus.enjoymusic.receivers.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.view.activity.BaseActivity;
 
@@ -31,18 +32,20 @@ public class MediaPlayController
     private static final int STATE_PREPARING = 4;
 
     private static MediaPlayer mediaPlayer;
-    private static List<MusicPlayStateObserver> musicPlayStateObservers;
-
     private static AudioManager audioManager;
+    private static List<MusicPlayStateObserver> musicPlayStateObservers;
+    private static List<MusicPlayProgressObserver> musicPlayProgressObservers;
+
     private int state;
 
-    private static MediaPlayController INSTANCE = new MediaPlayController();
+    private static final MediaPlayController INSTANCE = new MediaPlayController();
 
     private MediaPlayController() {
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setWakeMode(BaseActivity.getContext(), PowerManager.PARTIAL_WAKE_LOCK);
         audioManager = (AudioManager) BaseActivity.getContext().getSystemService(Service.AUDIO_SERVICE);
         musicPlayStateObservers = new ArrayList<>();
+        musicPlayProgressObservers = new ArrayList<>();
     }
 
     public static MediaPlayController getInstance() {
@@ -62,6 +65,19 @@ public class MediaPlayController
         return true;
     }
 
+    public boolean registerProgressChange(MusicPlayProgressObserver musicPlayProgressObserver) {
+        if (!musicPlayProgressObservers.contains(musicPlayProgressObserver)) {
+            musicPlayProgressObservers.add(musicPlayProgressObserver);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean unregisterProgressChange(MusicPlayProgressObserver musicPlayProgressObserver) {
+        musicPlayProgressObservers.remove(musicPlayProgressObserver);
+        return true;
+    }
+
     private void notifyAllMusicPlayingObserverPlayingState(boolean isPlaying) {
         Iterator<MusicPlayStateObserver> observerIterator = musicPlayStateObservers.iterator();
         while (observerIterator.hasNext()) {
@@ -73,6 +89,13 @@ public class MediaPlayController
         Iterator<MusicPlayStateObserver> observerIterator = musicPlayStateObservers.iterator();
         while (observerIterator.hasNext()) {
             observerIterator.next().onPlayCompleted();
+        }
+    }
+
+    private void notifyAllMusicPlayProgressChange(int progress) {
+        Iterator<MusicPlayProgressObserver> observerIterator = musicPlayProgressObservers.iterator();
+        while (observerIterator.hasNext()) {
+            observerIterator.next().onProgressChange(progress);
         }
     }
 
@@ -90,19 +113,25 @@ public class MediaPlayController
 
     @Override
     public void onAudioFocusChange(int focusChange) {
-
+        switch (focusChange) {
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                // pause
+                break;
+            case AudioManager.AUDIOFOCUS_GAIN:
+                // play
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS:
+                //stop
+                break;
+        }
     }
 
     public boolean isPlaying() {
-        return mediaPlayer.isPlaying();
+        return state == STATE_PLAYING;
     }
 
     public int getCurrentPosition() {
-        if (isPlaying()) {
-            return mediaPlayer.getCurrentPosition();
-        } else {
-            return 0;
-        }
+        return mediaPlayer.getCurrentPosition();
     }
 
     public void play(Music music) {
@@ -121,14 +150,13 @@ public class MediaPlayController
                 mediaPlayer.reset();
                 prepareMusic(music);
                 MusicCache.getInstance().setCurrentPlayingMusic(music);
+                MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_BUFFERING);
                 state = STATE_PREPARING;
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                MyMediaSession.getInstance().setMetaData(music);
-                MyMediaSession.getInstance().setPlaybackState();
-            }
+            MyMediaSession.getInstance().setMetaData(music);
+            MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -137,9 +165,7 @@ public class MediaPlayController
             mediaPlayer.pause();
             notifyAllMusicPlayingObserverPlayingState(false);
             state = STATE_PAUSE;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                MyMediaSession.getInstance().setPlaybackState();
-            }
+            MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PAUSED);
         }
     }
 
@@ -149,18 +175,20 @@ public class MediaPlayController
     }
 
     public void playNext() {
-
+        play(MusicCache.getInstance().getNextMusic(MusicCache.MODE_ORDER));
     }
 
     public void playPrevious() {
-
+        play(MusicCache.getInstance().getPreviousMusic(MusicCache.MODE_ORDER));
     }
 
     public void stop() {
-        if (mediaPlayer.isPlaying()) {
+        if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.reset();
             mediaPlayer.release();
+            mediaPlayer = null;
+            MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_STOPPED);
         }
     }
 

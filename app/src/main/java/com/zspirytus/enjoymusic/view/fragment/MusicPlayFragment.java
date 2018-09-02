@@ -16,13 +16,17 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCache;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
+import com.zspirytus.enjoymusic.receivers.MusicPlayProgressObserver;
 import com.zspirytus.enjoymusic.receivers.MusicPlayStateObserver;
-import com.zspirytus.enjoymusic.services.MediaPlayController;
+import com.zspirytus.enjoymusic.services.media.MediaPlayController;
+import com.zspirytus.enjoymusic.utils.LogUtil;
 
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Fragment: 显示音乐播放界面
@@ -30,11 +34,11 @@ import java.text.SimpleDateFormat;
  */
 
 public class MusicPlayFragment extends BaseFragment
-        implements View.OnClickListener, MusicPlayStateObserver {
+        implements View.OnClickListener, MusicPlayStateObserver,
+        MusicPlayProgressObserver {
 
     private static final String MUSIC_KEY = "music_key";
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
-    private static MediaPlayController mediaPlayController = MediaPlayController.getInstance();
 
     @ViewInject(R.id.music_play_fragment_toolbar)
     private Toolbar mToolbar;
@@ -81,6 +85,11 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     @Override
+    public void onProgressChange(int progress) {
+        mSeekBar.setProgress(progress);
+    }
+
+    @Override
     public Integer getLayoutId() {
         return R.layout.fragment_music_play;
     }
@@ -122,12 +131,13 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     private void initView() {
-        Music music = (Music) getArguments().getSerializable(MUSIC_KEY);
+        final Music music = (Music) getArguments().getSerializable(MUSIC_KEY);
         if (music != null) {
+            String musicAlbumUri = music.getmMusicThumbAlbumUri();
             mToolbar.setTitle(music.getmMusicName());
-            Glide.with(this).load(new File(music.getmMusicThumbAlbumUri()))
+            Glide.with(this).load(new File(musicAlbumUri != null ? musicAlbumUri : ""))
                     .into(mCover);
-            mTotalTime.setText(music.getDuration() + "");
+            mTotalTime.setText(simpleDateFormat.format(new Date(music.getDuration())));
         }
         setButtonSrc(MediaPlayController.getInstance().isPlaying());
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -138,7 +148,10 @@ public class MusicPlayFragment extends BaseFragment
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                float progress = seekBar.getProgress() / 100;
+                long seekPosition = (long) (music.getDuration() * progress);
+                LogUtil.e(this.getClass().getSimpleName(), seekPosition + "");
+                mNowTime.setText(simpleDateFormat.format(new Date(seekPosition)));
             }
 
             @Override
@@ -150,19 +163,19 @@ public class MusicPlayFragment extends BaseFragment
 
     private void setButtonSrc(boolean isPlaying) {
         if (isPlaying) {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton,"alpha",1f,0f);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, "alpha", 1f, 0f);
             animator.setDuration(382);
             animator.start();
             Glide.with(this).load(R.drawable.ic_pause_white_48dp).into(mPlayOrPauseButton);
-            animator = ObjectAnimator.ofFloat(mPlayOrPauseButton,"alpha",0f,1f);
+            animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, "alpha", 0f, 1f);
             animator.setDuration(382);
             animator.start();
         } else {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton,"alpha",1f,0f);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, "alpha", 1f, 0f);
             animator.setDuration(382);
             animator.start();
             Glide.with(this).load(R.drawable.ic_play_arrow_white_48dp).into(mPlayOrPauseButton);
-            animator = ObjectAnimator.ofFloat(mPlayOrPauseButton,"alpha",0f,1f);
+            animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, "alpha", 0f, 1f);
             animator.setDuration(382);
             animator.start();
         }
@@ -176,15 +189,18 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     private void registerEvent() {
-        //EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
         MediaPlayController.getInstance().register(this);
+        MediaPlayController.getInstance().registerProgressChange(this);
     }
 
     private void unRegisterEvent() {
-        //EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this);
         MediaPlayController.getInstance().unregister(this);
+        MediaPlayController.getInstance().unregisterProgressChange(this);
     }
 
+    @Subscriber(tag = "music_name_set")
     public void setView(Music music) {
         mToolbar.setTitle(music.getmMusicName());
         Glide.with(this).load(new File(music.getmMusicThumbAlbumUri())).into(mCover);

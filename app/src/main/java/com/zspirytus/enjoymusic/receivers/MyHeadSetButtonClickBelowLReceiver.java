@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.view.KeyEvent;
 
 import com.zspirytus.enjoymusic.cache.MusicCache;
-import com.zspirytus.enjoymusic.services.MediaPlayController;
+import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
 /**
  * Created by ZSpirytus  on 2018/8/11.

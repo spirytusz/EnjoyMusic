@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/notification_music_previous"
+        android:layout_width="@dimen/previous_next_button_size"
+        android:layout_height="@dimen/previous_next_button_size"
+        android:src="@drawable/ic_skip_previous_black_48dp"
+        android:layout_marginStart="@dimen/previous_next_button_margin_dimen"
+        android:layout_marginTop="@dimen/previous_next_button_marginTop_dimen" />
+
+    <ImageView
+        android:id="@+id/notification_music_play_pause"
+        android:layout_width="@dimen/play_pause_button_size"
+        android:layout_height="@dimen/play_pause_button_size"
+        android:src="@drawable/ic_pause_black_48dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/play_pause_button_marginTop_dimen" />
+
+    <ImageView
+        android:id="@+id/notification_music_next"
+        android:layout_width="@dimen/previous_next_button_size"
+        android:layout_height="@dimen/previous_next_button_size"
+        android:src="@drawable/ic_skip_next_black_48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/previous_next_button_margin_dimen"
+        android:layout_marginTop="@dimen/previous_next_button_marginTop_dimen" />
+
+</RelativeLayout>

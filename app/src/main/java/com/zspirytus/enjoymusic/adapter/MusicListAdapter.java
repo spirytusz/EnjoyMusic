@@ -72,6 +72,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             @Override
             public void onClick(View view) {
                 if (onItemClickListener != null) {
+
                     onItemClickListener.onItemClick(view, holder.getLayoutPosition());
                 }
             }
@@ -82,6 +83,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         private View itemView;
 
+        private ImageView mTag;
         private RoundCornerImageView mCover;
         private TextView mMusicName;
         private TextView mMusicArtist;
@@ -90,6 +92,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public MyViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
+            mTag = itemView.findViewById(R.id.tag);
             mCover = itemView.findViewById(R.id.cover);
             mMusicName = itemView.findViewById(R.id.music_name);
             mMusicArtist = itemView.findViewById(R.id.music_artist);

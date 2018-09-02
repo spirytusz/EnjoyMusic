@@ -19,14 +19,14 @@ import android.view.View;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCache;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.impl.OnDraggableFABEventListenerImpl;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
-import com.zspirytus.enjoymusic.listeners.OnDraggableFABEventListener;
 import com.zspirytus.enjoymusic.receivers.MusicPlayStateObserver;
-import com.zspirytus.enjoymusic.services.MediaPlayController;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
+import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.view.fragment.MusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
-import com.zspirytus.enjoymusic.view.widget.DraggableFloatingActionButton;
+import com.zspirytus.mylibrary.DraggableFloatingActionButton;
 import com.zspirytus.zspermission.PermissionGroup;
 import com.zspirytus.zspermission.ZSPermission;
 
@@ -87,6 +87,7 @@ public class MainActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerEvent();
+        initData();
 
         initView();
     }
@@ -176,26 +177,10 @@ public class MainActivity extends BaseActivity
 
         // set listener
         mNavigationView.setNavigationItemSelectedListener(this);
-        mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListener() {
-            @Override
-            public void onClick() {
-                if (MediaPlayController.getInstance().isPlaying()) {
-                    pause(MusicCache.getInstance().getCurrentPlayingMusic());
-                } else {
-                    play(MusicCache.getInstance().getCurrentPlayingMusic());
-                }
-            }
+    }
 
-            @Override
-            public void onDraggedLeft() {
-                play(MusicCache.getInstance().getPreviousMusic(MusicCache.MODE_ORDER));
-            }
+    private void initData() {
 
-            @Override
-            public void onDraggedRight() {
-                play(MusicCache.getInstance().getNextMusic(MusicCache.MODE_ORDER));
-            }
-        });
     }
 
     private void startPlayMusicService() {
@@ -231,7 +216,6 @@ public class MainActivity extends BaseActivity
             mMusicPlayFragment = MusicPlayFragment.getInstance(music);
             mFragmentTransaction.add(R.id.fragment_container, mMusicPlayFragment);
         }
-        EventBus.getDefault().post(music, "music_name_set");
         if (mMusicListFragment != null)
             mFragmentTransaction.hide(mMusicListFragment);
         mFragmentTransaction.show(mMusicPlayFragment);
@@ -246,11 +230,13 @@ public class MainActivity extends BaseActivity
         if (music != null) {
             myBinder.play(music);
         }
+        /*mController.getController().play();*/
     }
 
     @Subscriber(tag = "pause")
     public void pause(Music music) {
         myBinder.pause();
+        e(this.getClass().getSimpleName() + "\tpause");
     }
 
     @Subscriber(tag = "stop")
@@ -261,6 +247,13 @@ public class MainActivity extends BaseActivity
     @Subscriber(tag = "seek to")
     public void seekTo(int progress) {
         myBinder.seekTo(progress);
+    }
+
+    @Subscriber(tag = "set dFab listener")
+    public void setDraggableFabListener(boolean hasMusicInDevice) {
+        if (hasMusicInDevice) {
+            mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListenerImpl(this));
+        }
     }
 
     private void registerEvent() {

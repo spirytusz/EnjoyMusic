@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:dFab="http://schemas.android.com/apk/res-auto"
     tools:layout_editor_absoluteY="0dp">
 
     <android.support.design.widget.AppBarLayout
@@ -34,7 +35,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/app_bar_layout" />
 
-    <com.zspirytus.enjoymusic.view.widget.DraggableFloatingActionButton
+    <com.zspirytus.mylibrary.DraggableFloatingActionButton
         android:id="@+id/dragged_fab"
         android:layout_width="64dp"
         android:layout_height="64dp"
@@ -42,15 +43,11 @@
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <!--<include
-        android:id="@+id/music_bottom"
-        layout="@layout/bottom_music_bar"
-        android:layout_width="0dp"
-        android:layout_height="58dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />-->
+        app:layout_constraintRight_toRightOf="parent"
+        dFab:damping="0.618"
+        dFab:border="100dp"
+        dFab:leftDragSrc="@drawable/ic_skip_previous_white_48dp"
+        dFab:rightDragSrc="@drawable/ic_skip_next_white_48dp"
+        dFab:src="@drawable/ic_play_arrow_white_48dp" />
 
 </android.support.constraint.ConstraintLayout>

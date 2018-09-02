@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="DraggableFloatingActionButton">
+    <declare-styleable name="dFab">
         <attr name="damping" format="float" />
         <attr name="border" format="dimension" />
+        <attr name="draggable" format="boolean" />
     </declare-styleable>
 
 </resources>

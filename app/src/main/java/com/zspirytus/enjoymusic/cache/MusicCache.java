@@ -4,8 +4,11 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaMetadataCompat;
 import android.text.format.Formatter;
 
 import com.google.gson.Gson;
@@ -34,6 +37,7 @@ public class MusicCache {
     private static List<Music> musicList;
 
     private MusicCache() {
+        scanMusic();
         restoreCurrentPlayingMusic();
     }
 
@@ -60,14 +64,12 @@ public class MusicCache {
     }
 
     public List<Music> getMusicList() {
-        if (musicList == null) {
-            scanMusic();
-        }
         return musicList;
     }
 
     public Music getPreviousMusic(int type) {
-        int previousPosition = (getCurrentPlayingMusicPosition() - 1) % musicList.size();
+        int position = getCurrentPlayingMusicPosition() - 1;
+        int previousPosition = position >= 0 ? position : musicList.size() - 1;
         return musicList.get(previousPosition);
     }
 
@@ -102,6 +104,39 @@ public class MusicCache {
         }
     }
 
+    public List<MediaBrowserCompat.MediaItem> scanMusicToMediaService() {
+        ArrayList<MediaBrowserCompat.MediaItem> mediaItems = new ArrayList<>();
+        ContentResolver resolver = BaseActivity.getContext().getContentResolver();
+        Cursor cursor = resolver.query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null,
+                null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                String albumId = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                String thumbAlbumPath = getThumbAlbum(albumId);
+                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                MediaMetadataCompat mediaMetadataCompat = new MediaMetadataCompat.Builder()
+                        .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
+                        .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
+                        .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration)
+                        .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeFile(thumbAlbumPath))
+                        .build();
+                mediaItems.add(createMediaItem(mediaMetadataCompat));
+            }
+            cursor.close();
+        }
+        return mediaItems;
+    }
+
+    private MediaBrowserCompat.MediaItem createMediaItem(MediaMetadataCompat metadata) {
+        return new MediaBrowserCompat.MediaItem(
+                metadata.getDescription(),
+                MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+        );
+    }
+
     private String getThumbAlbum(String album_id) {
         ContentResolver resolver = BaseActivity.getContext().getContentResolver();
         Uri albumUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -127,6 +162,8 @@ public class MusicCache {
                     currentPlayingMusic = music;
                 }
             }
+        } else if (musicList != null && musicList.size() > 0) {
+            currentPlayingMusic = musicList.get(0);
         }
     }
 

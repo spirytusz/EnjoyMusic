@@ -8,6 +8,8 @@ public interface OnDraggableFABEventListener {
 
     void onClick();
 
+    void onLongClick();
+
     void onDraggedLeft();
 
     void onDraggedRight();

@@ -7,11 +7,16 @@ import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.MediaMetadataCompat;
 
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.receivers.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
+import com.zspirytus.enjoymusic.services.media.MediaPlayController;
+import com.zspirytus.enjoymusic.services.media.MyMediaSession;
+import com.zspirytus.enjoymusic.utils.LogUtil;
 
 import org.simple.eventbus.EventBus;
 
@@ -23,7 +28,7 @@ import org.simple.eventbus.EventBus;
 public class PlayMusicService extends Service implements MusicPlayStateObserver {
 
     private MyBinder binder = new MyBinder();
-    private MediaPlayController mediaPlayController = MediaPlayController.getInstance();
+    private MediaPlayController mMediaPlayController = MediaPlayController.getInstance();
 
     private MyHeadSetPlugOutReceiver myHeadSetPlugOutReceiver;
     private MyHeadSetButtonClickBelowLReceiver myHeadSetButtonClickBelowLReceiver;
@@ -48,6 +53,7 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
     public void onDestroy() {
         super.onDestroy();
         unregisterEvent();
+        NotificationHelper.updateNotificationClearable(true);
     }
 
     @Override
@@ -60,10 +66,17 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
         // TODO: 2018/8/13 music loop or next or random play
     }
 
+    private MediaBrowserCompat.MediaItem createMediaItem(MediaMetadataCompat metadata) {
+        return new MediaBrowserCompat.MediaItem(
+                metadata.getDescription(),
+                MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+        );
+    }
+
     private void registerEvent() {
         EventBus.getDefault().register(this);
 
-        MediaPlayController.getInstance().register(this);
+        mMediaPlayController.register(this);
 
         myHeadSetPlugOutReceiver = new MyHeadSetPlugOutReceiver();
         IntentFilter headsetPlugOutFilter = new IntentFilter();
@@ -81,7 +94,7 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
     private void unregisterEvent() {
         EventBus.getDefault().unregister(this);
 
-        MediaPlayController.getInstance().unregister(this);
+        mMediaPlayController.unregister(this);
 
         unregisterReceiver(myHeadSetPlugOutReceiver);
 
@@ -92,24 +105,26 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
 
     public class MyBinder extends Binder {
 
-        private MediaPlayController mediaPlayController = MediaPlayController.getInstance();
+        private MediaPlayController mBinderMediaPlayController = MediaPlayController.getInstance();
 
         public void play(Music music) {
-            NotificationHelper.showNotificationOnO(null, false);
-            mediaPlayController.play(music);
+            NotificationHelper.showNotification(music);
+            NotificationHelper.updateNotificationClearable(false);
+            mBinderMediaPlayController.play(music);
         }
 
         public void pause() {
-            NotificationHelper.showNotificationOnO(null, true);
-            mediaPlayController.pause();
+            LogUtil.e(this.getClass().getSimpleName(), this.getClass().getSimpleName() + "\tpause");
+            NotificationHelper.updateNotificationClearable(true);
+            mBinderMediaPlayController.pause();
         }
 
         public void stop() {
-            mediaPlayController.stop();
+            mBinderMediaPlayController.stop();
         }
 
         public void seekTo(int progress) {
-            mediaPlayController.seekTo(progress);
+            mBinderMediaPlayController.seekTo(progress);
         }
 
     }
