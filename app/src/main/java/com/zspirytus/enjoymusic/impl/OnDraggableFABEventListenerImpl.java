@@ -33,6 +33,11 @@ public class OnDraggableFABEventListenerImpl implements OnDraggableFABEventListe
     }
 
     @Override
+    public void onLongClick() {
+
+    }
+
+    @Override
     public void onDraggedLeft() {
         mParentActivity.play(MusicCache.getInstance().getPreviousMusic(MusicCache.MODE_ORDER));
     }

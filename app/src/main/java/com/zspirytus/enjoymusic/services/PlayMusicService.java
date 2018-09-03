@@ -16,7 +16,6 @@ import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 
 import org.simple.eventbus.EventBus;
 
@@ -114,7 +113,6 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
         }
 
         public void pause() {
-            LogUtil.e(this.getClass().getSimpleName(), this.getClass().getSimpleName() + "\tpause");
             NotificationHelper.updateNotificationClearable(true);
             mBinderMediaPlayController.pause();
         }

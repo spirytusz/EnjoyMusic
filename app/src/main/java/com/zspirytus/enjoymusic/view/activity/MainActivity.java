@@ -90,6 +90,7 @@ public class MainActivity extends BaseActivity
         initData();
 
         initView();
+        loadData();
     }
 
     @Override
@@ -180,6 +181,10 @@ public class MainActivity extends BaseActivity
     }
 
     private void initData() {
+
+    }
+
+    private void loadData() {
 
     }
 
