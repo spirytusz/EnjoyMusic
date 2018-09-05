@@ -1,6 +1,5 @@
 package com.zspirytus.enjoymusic.adapter;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.view.widget.DialogBuilder;
 import com.zspirytus.enjoymusic.view.widget.RoundCornerImageView;
 
 import java.io.File;
@@ -65,14 +65,13 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         holder.mMoreVert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog dialog = new AlertDialog.Builder(mContext).show();
+                DialogBuilder.showSelectDialog(mContext);
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (onItemClickListener != null) {
-
                     onItemClickListener.onItemClick(view, holder.getLayoutPosition());
                 }
             }

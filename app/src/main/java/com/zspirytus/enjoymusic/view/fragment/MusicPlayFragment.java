@@ -38,6 +38,8 @@ public class MusicPlayFragment extends BaseFragment
 
     private static final float SEEK_BAR_MAX = 1000;
 
+    @ViewInject(R.id.background)
+    private ImageView mBackground;
     @ViewInject(R.id.music_play_fragment_toolbar)
     private Toolbar mToolbar;
 

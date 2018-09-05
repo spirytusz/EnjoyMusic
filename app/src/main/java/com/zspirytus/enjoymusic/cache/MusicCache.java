@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.text.format.Formatter;
 
 import com.google.gson.Gson;
+import com.zspirytus.enjoymusic.engine.MusicPlayedHistoryProvider;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.view.activity.BaseActivity;
 
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 音乐缓存类，缓存当前播放音乐、历史播放记录；获取本机所有音乐等
+ * 音乐缓存类，缓存当前播放音乐；获取本机所有音乐.
  * Created by ZSpirytus on 2018/8/12.
  */
 
@@ -39,18 +40,9 @@ public class MusicCache {
         return INSTANCE;
     }
 
-    public void saveCurrentPlayingMusic(Music currentPlayingMusic) {
-        if (currentPlayingMusic != null) {
-            SharedPreferences.Editor editor = BaseActivity.getContext().getSharedPreferences(CURRENT_PLAYING_MUSIC, Context.MODE_PRIVATE).edit();
-            Gson gson = new Gson();
-            String json = gson.toJson(currentPlayingMusic, currentPlayingMusic.getClass());
-            editor.putString(CURRENT_PLAYING_MUSIC_STRING_KEY, json);
-            editor.commit();
-        }
-    }
-
     public void setCurrentPlayingMusic(Music music) {
         currentPlayingMusic = music;
+        MusicPlayedHistoryProvider.getInstance().put(music);
     }
 
     public Music getCurrentPlayingMusic() {
@@ -143,6 +135,16 @@ public class MusicCache {
             }
         } else if (musicList != null && musicList.size() > 0) {
             currentPlayingMusic = musicList.get(0);
+        }
+    }
+
+    public void saveCurrentPlayingMusic(Music currentPlayingMusic) {
+        if (currentPlayingMusic != null) {
+            SharedPreferences.Editor editor = BaseActivity.getContext().getSharedPreferences(CURRENT_PLAYING_MUSIC, Context.MODE_PRIVATE).edit();
+            Gson gson = new Gson();
+            String json = gson.toJson(currentPlayingMusic, currentPlayingMusic.getClass());
+            editor.putString(CURRENT_PLAYING_MUSIC_STRING_KEY, json);
+            editor.apply();
         }
     }
 

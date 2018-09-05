@@ -74,7 +74,7 @@ public class MusicPlayOrderManager {
     private void saveMode() {
         SharedPreferences.Editor editor = BaseActivity.getContext().getSharedPreferences(MODE_FILE_NAME, Context.MODE_PRIVATE).edit();
         editor.putInt(MODE_KEY, mMode);
-        editor.commit();
+        editor.apply();
     }
 
     private int restoreMode() {

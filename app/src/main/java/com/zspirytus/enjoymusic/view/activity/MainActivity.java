@@ -123,6 +123,7 @@ public class MainActivity extends BaseActivity
         }
     }
 
+
     // permission granted state listener
     @Override
     public void onGranted() {
