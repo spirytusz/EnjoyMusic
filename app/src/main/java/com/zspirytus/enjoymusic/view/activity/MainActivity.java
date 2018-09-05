@@ -230,7 +230,6 @@ public class MainActivity extends BaseActivity
         if (music != null) {
             myBinder.play(music);
         }
-        /*mController.getController().play();*/
     }
 
     @Subscriber(tag = "pause")
@@ -249,6 +248,7 @@ public class MainActivity extends BaseActivity
         myBinder.seekTo(msec);
     }
 
+    // if there is no music in device, it will not set DraggableFabListener.
     @Subscriber(tag = "set dFab listener")
     public void setDraggableFabListener(boolean hasMusicInDevice) {
         if (hasMusicInDevice) {

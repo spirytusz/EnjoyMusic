@@ -26,7 +26,6 @@ public class MediaPlayController
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
         AudioManager.OnAudioFocusChangeListener {
 
-    private static final int STATE_NOT_INIT = 0;
     private static final int STATE_PLAYING = 1;
     private static final int STATE_PAUSE = 2;
     private static final int STATE_PREPARING = 4;
@@ -154,24 +153,23 @@ public class MediaPlayController
     public void play(Music music) {
         try {
             Music currentPlayingMusic = MusicCache.getInstance().getCurrentPlayingMusic();
-            if (currentPlayingMusic != null && currentPlayingMusic.equals(music) && state > STATE_NOT_INIT) {
+            if (currentPlayingMusic != null && currentPlayingMusic.equals(music)) {
+                // selected music is currently playing or pausing
                 if (!isPlaying()) {
                     beginPlay(mediaPlayer);
                     MusicCache.getInstance().setCurrentPlayingMusic(music);
                 }
             } else {
-                if (state == STATE_NOT_INIT) {
-                    mediaPlayer.setOnPreparedListener(this);
-                    mediaPlayer.setOnCompletionListener(this);
-                }
+                // selected music is NOT currently playing or pausing
+                mediaPlayer.setOnPreparedListener(this);
+                mediaPlayer.setOnCompletionListener(this);
                 mediaPlayer.reset();
                 prepareMusic(music);
                 MusicCache.getInstance().setCurrentPlayingMusic(music);
                 MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_BUFFERING);
+                MyMediaSession.getInstance().setMetaData(music);
                 state = STATE_PREPARING;
             }
-            MyMediaSession.getInstance().setMetaData(music);
-            MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -220,6 +218,7 @@ public class MediaPlayController
                 AudioManager.AUDIOFOCUS_GAIN);
         notifyAllMusicPlayingObserverPlayingState(true);
         mp.start();
+        MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
         state = STATE_PLAYING;
         mPlayingTimer.start();
     }

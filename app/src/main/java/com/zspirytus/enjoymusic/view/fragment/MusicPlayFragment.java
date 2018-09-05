@@ -25,9 +25,6 @@ import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Fragment: 显示音乐播放界面
@@ -38,8 +35,6 @@ public class MusicPlayFragment extends BaseFragment
         implements View.OnClickListener, MusicPlayStateObserver,
         MusicPlayProgressObserver {
 
-    private static final String MUSIC_KEY = "music_key";
-    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss", Locale.CHINA);
     private static final float SEEK_BAR_MAX = 1000;
 
     @ViewInject(R.id.music_play_fragment_toolbar)
@@ -62,11 +57,14 @@ public class MusicPlayFragment extends BaseFragment
     @ViewInject(R.id.next)
     private ImageView mNextButton;
 
+    private MusicCache mMusicCache;
+    private Music mCurrentPlayingMusic;
+
     public static MusicPlayFragment getInstance(Music music) {
         MusicPlayFragment musicPlayFragment = new MusicPlayFragment();
-        Bundle bundle = new Bundle(1);
+        /*Bundle bundle = new Bundle(1);
         bundle.putSerializable(MUSIC_KEY, music);
-        musicPlayFragment.setArguments(bundle);
+        musicPlayFragment.setArguments(bundle);*/
         return musicPlayFragment;
     }
 
@@ -75,6 +73,7 @@ public class MusicPlayFragment extends BaseFragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         registerEvent();
+        initData();
         initView();
         setListener();
         return view;
@@ -135,13 +134,13 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     private void initView() {
-        final Music music = (Music) getArguments().getSerializable(MUSIC_KEY);
-        if (music != null) {
-            String musicAlbumUri = music.getmMusicThumbAlbumUri();
-            mToolbar.setTitle(music.getmMusicName());
+        // final Music music = (Music) getArguments().getSerializable(MUSIC_KEY);
+        if (mCurrentPlayingMusic != null) {
+            String musicAlbumUri = mCurrentPlayingMusic.getmMusicThumbAlbumUri();
+            mToolbar.setTitle(mCurrentPlayingMusic.getmMusicName());
             Glide.with(this).load(new File(musicAlbumUri != null ? musicAlbumUri : ""))
                     .into(mCover);
-            mTotalTime.setText(simpleDateFormat.format(new Date(music.getDuration())));
+            mTotalTime.setText(TimeUtil.convertLongToMinsSec(mCurrentPlayingMusic.getDuration()));
         }
         setButtonSrc(MediaPlayController.getInstance().isPlaying());
         mSeekBar.setMax((int) SEEK_BAR_MAX);
@@ -159,13 +158,18 @@ public class MusicPlayFragment extends BaseFragment
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 float percent = (float) seekBar.getProgress() / SEEK_BAR_MAX;
-                int nowTimeIntValue = (int) (MusicCache.getInstance().getCurrentPlayingMusic().getDuration() * percent);
+                int nowTimeIntValue = (int) (mCurrentPlayingMusic.getDuration() * percent);
                 String nowTimeStringValue = TimeUtil.convertIntToMinsSec(nowTimeIntValue);
                 mSeekBar.setProgress(seekBar.getProgress());
                 mNowTime.setText(nowTimeStringValue);
                 EventBus.getDefault().post(nowTimeIntValue, "seek to");
             }
         });
+    }
+
+    private void initData() {
+        mMusicCache = MusicCache.getInstance();
+        mCurrentPlayingMusic = mMusicCache.getCurrentPlayingMusic();
     }
 
     private void setButtonSrc(boolean isPlaying) {
@@ -211,7 +215,7 @@ public class MusicPlayFragment extends BaseFragment
     public void setView(Music music) {
         mToolbar.setTitle(music.getmMusicName());
         Glide.with(this).load(new File(music.getmMusicThumbAlbumUri())).into(mCover);
-        mTotalTime.setText(simpleDateFormat.format(music.getDuration()));
+        mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getDuration()));
     }
 
 }
