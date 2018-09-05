@@ -34,7 +34,7 @@ public class OnDraggableFABEventListenerImpl implements OnDraggableFABEventListe
 
     @Override
     public void onLongClick() {
-
+        mParentActivity.showMusicPlayFragment(MusicCache.getInstance().getCurrentPlayingMusic());
     }
 
     @Override

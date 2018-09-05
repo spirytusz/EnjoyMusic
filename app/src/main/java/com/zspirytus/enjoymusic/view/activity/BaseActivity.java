@@ -22,6 +22,7 @@ public abstract class BaseActivity extends AppCompatActivity
         implements ZSPermission.OnPermissionListener {
 
     private static Context context;
+    private static AppCompatActivity appCompatActivity;
 
     public abstract Integer getLayoutId();
 
@@ -31,6 +32,7 @@ public abstract class BaseActivity extends AppCompatActivity
         setContentView(getLayoutId());
         autoInjectAllField();
         context = getApplicationContext();
+        appCompatActivity = this;
     }
 
     @Override
@@ -86,6 +88,10 @@ public abstract class BaseActivity extends AppCompatActivity
 
     public static Context getContext() {
         return context;
+    }
+
+    public static AppCompatActivity getActivity() {
+        return appCompatActivity;
     }
 
     public final void e(String message) {

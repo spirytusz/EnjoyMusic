@@ -121,8 +121,8 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
             mBinderMediaPlayController.stop();
         }
 
-        public void seekTo(int progress) {
-            mBinderMediaPlayController.seekTo(progress);
+        public void seekTo(int msec) {
+            mBinderMediaPlayController.seekTo(msec);
         }
 
     }

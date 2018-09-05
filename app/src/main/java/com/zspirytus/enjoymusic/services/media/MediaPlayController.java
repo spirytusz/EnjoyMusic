@@ -35,36 +35,48 @@ public class MediaPlayController
     private static AudioManager audioManager;
     private static List<MusicPlayStateObserver> musicPlayStateObservers;
     private static List<MusicPlayProgressObserver> musicPlayProgressObservers;
+    private static PlayingTimer mPlayingTimer;
 
     private int state;
 
     private static final MediaPlayController INSTANCE = new MediaPlayController();
 
     private MediaPlayController() {
+
+        // init media obj
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setWakeMode(BaseActivity.getContext(), PowerManager.PARTIAL_WAKE_LOCK);
         audioManager = (AudioManager) BaseActivity.getContext().getSystemService(Service.AUDIO_SERVICE);
+
+        // init observers collectors
         musicPlayStateObservers = new ArrayList<>();
         musicPlayProgressObservers = new ArrayList<>();
+
+        // init timer
+        mPlayingTimer = PlayingTimer.getInstance();
+        mPlayingTimer.init(this);
     }
 
     public static MediaPlayController getInstance() {
         return INSTANCE;
     }
 
-    public boolean register(MusicPlayStateObserver MusicPlayStateObserver) {
-        if (!musicPlayStateObservers.contains(MusicPlayStateObserver)) {
-            musicPlayStateObservers.add(MusicPlayStateObserver);
+    // register MusicPlayStateObserver
+    public boolean register(MusicPlayStateObserver musicPlayStateObserver) {
+        if (!musicPlayStateObservers.contains(musicPlayStateObserver)) {
+            musicPlayStateObservers.add(musicPlayStateObserver);
             return true;
         }
         return false;
     }
 
-    public boolean unregister(MusicPlayStateObserver MusicPlayStateObserver) {
-        musicPlayStateObservers.remove(MusicPlayStateObserver);
+    // unregister MusicPlayStateObserver
+    public boolean unregister(MusicPlayStateObserver musicPlayStateObserver) {
+        musicPlayStateObservers.remove(musicPlayStateObserver);
         return true;
     }
 
+    // register MusicPlayProgressObserver
     public boolean registerProgressChange(MusicPlayProgressObserver musicPlayProgressObserver) {
         if (!musicPlayProgressObservers.contains(musicPlayProgressObserver)) {
             musicPlayProgressObservers.add(musicPlayProgressObserver);
@@ -73,11 +85,13 @@ public class MediaPlayController
         return false;
     }
 
+    // unregister MusicPlayProgressObserver
     public boolean unregisterProgressChange(MusicPlayProgressObserver musicPlayProgressObserver) {
         musicPlayProgressObservers.remove(musicPlayProgressObserver);
         return true;
     }
 
+    // notify all MusicPlayStateObserver play state
     private void notifyAllMusicPlayingObserverPlayingState(boolean isPlaying) {
         Iterator<MusicPlayStateObserver> observerIterator = musicPlayStateObservers.iterator();
         while (observerIterator.hasNext()) {
@@ -85,6 +99,7 @@ public class MediaPlayController
         }
     }
 
+    // notify all MusicPlayStateObserver play completed
     private void notifyAllMusicPlayingObserverPlayCompleted() {
         Iterator<MusicPlayStateObserver> observerIterator = musicPlayStateObservers.iterator();
         while (observerIterator.hasNext()) {
@@ -92,10 +107,11 @@ public class MediaPlayController
         }
     }
 
-    private void notifyAllMusicPlayProgressChange(int progress) {
+    // notify all MusicPlayProgressObserver playing progress
+    protected void notifyAllMusicPlayProgressChange(int currentPlayingMillis) {
         Iterator<MusicPlayProgressObserver> observerIterator = musicPlayProgressObservers.iterator();
         while (observerIterator.hasNext()) {
-            observerIterator.next().onProgressChange(progress);
+            observerIterator.next().onProgressChange(currentPlayingMillis);
         }
     }
 
@@ -106,6 +122,7 @@ public class MediaPlayController
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+        mPlayingTimer.stop();
         audioManager.abandonAudioFocus(this);
         notifyAllMusicPlayingObserverPlayCompleted();
         play(MusicCache.getInstance().getCurrentPlayingMusic());
@@ -163,15 +180,16 @@ public class MediaPlayController
     public void pause() {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
+            mPlayingTimer.pause();
             notifyAllMusicPlayingObserverPlayingState(false);
             state = STATE_PAUSE;
             MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PAUSED);
+
         }
     }
 
-    public void seekTo(int progress) {
-        int position = (int) ((MusicCache.getInstance().getCurrentPlayingMusic().getDuration() * progress) / 100);
-        mediaPlayer.seekTo(position);
+    public void seekTo(int msec) {
+        mediaPlayer.seekTo(msec);
     }
 
     public void playNext() {
@@ -203,6 +221,7 @@ public class MediaPlayController
         notifyAllMusicPlayingObserverPlayingState(true);
         mp.start();
         state = STATE_PLAYING;
+        mPlayingTimer.start();
     }
 
 }

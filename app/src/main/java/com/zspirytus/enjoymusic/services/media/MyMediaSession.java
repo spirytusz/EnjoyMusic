@@ -104,7 +104,7 @@ public class MyMediaSession {
         @Override
         public void onSeekTo(long pos) {
             super.onSeekTo(pos);
-            MediaPlayController.getInstance().seekTo((int) pos);
+            //MediaPlayController.getInstance().seekTo((int) pos);
         }
     };
 

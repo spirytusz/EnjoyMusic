@@ -19,7 +19,7 @@ import com.zspirytus.enjoymusic.interfaces.ViewInject;
 import com.zspirytus.enjoymusic.receivers.MusicPlayProgressObserver;
 import com.zspirytus.enjoymusic.receivers.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
-import com.zspirytus.enjoymusic.utils.LogUtil;
+import com.zspirytus.enjoymusic.utils.TimeUtil;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
@@ -27,6 +27,7 @@ import org.simple.eventbus.Subscriber;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Fragment: 显示音乐播放界面
@@ -38,7 +39,8 @@ public class MusicPlayFragment extends BaseFragment
         MusicPlayProgressObserver {
 
     private static final String MUSIC_KEY = "music_key";
-    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
+    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss", Locale.CHINA);
+    private static final float SEEK_BAR_MAX = 1000;
 
     @ViewInject(R.id.music_play_fragment_toolbar)
     private Toolbar mToolbar;
@@ -85,8 +87,10 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     @Override
-    public void onProgressChange(int progress) {
+    public void onProgressChange(int currentPlayingMills) {
+        int progress = (int) (currentPlayingMills * SEEK_BAR_MAX / MusicCache.getInstance().getCurrentPlayingMusic().getDuration());
         mSeekBar.setProgress(progress);
+        mNowTime.setText(TimeUtil.convertIntToMinsSec(currentPlayingMills));
     }
 
     @Override
@@ -140,23 +144,26 @@ public class MusicPlayFragment extends BaseFragment
             mTotalTime.setText(simpleDateFormat.format(new Date(music.getDuration())));
         }
         setButtonSrc(MediaPlayController.getInstance().isPlaying());
+        mSeekBar.setMax((int) SEEK_BAR_MAX);
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                EventBus.getDefault().post(progress, "seek to");
+
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                float progress = seekBar.getProgress() / 100;
-                long seekPosition = (long) (music.getDuration() * progress);
-                LogUtil.e(this.getClass().getSimpleName(), seekPosition + "");
-                mNowTime.setText(simpleDateFormat.format(new Date(seekPosition)));
+
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                float percent = (float) seekBar.getProgress() / SEEK_BAR_MAX;
+                int nowTimeIntValue = (int) (MusicCache.getInstance().getCurrentPlayingMusic().getDuration() * percent);
+                String nowTimeStringValue = TimeUtil.convertIntToMinsSec(nowTimeIntValue);
+                mSeekBar.setProgress(seekBar.getProgress());
+                mNowTime.setText(nowTimeStringValue);
+                EventBus.getDefault().post(nowTimeIntValue, "seek to");
             }
         });
     }

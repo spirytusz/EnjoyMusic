@@ -90,7 +90,6 @@ public class MainActivity extends BaseActivity
         initData();
 
         initView();
-        loadData();
     }
 
     @Override
@@ -184,10 +183,6 @@ public class MainActivity extends BaseActivity
 
     }
 
-    private void loadData() {
-
-    }
-
     private void startPlayMusicService() {
         Intent intent = new Intent(MainActivity.this, PlayMusicService.class);
         bindService(intent, serviceConnection, BIND_AUTO_CREATE);
@@ -250,8 +245,8 @@ public class MainActivity extends BaseActivity
     }
 
     @Subscriber(tag = "seek to")
-    public void seekTo(int progress) {
-        myBinder.seekTo(progress);
+    public void seekTo(int msec) {
+        myBinder.seekTo(msec);
     }
 
     @Subscriber(tag = "set dFab listener")
