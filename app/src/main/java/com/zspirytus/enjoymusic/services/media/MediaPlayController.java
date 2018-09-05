@@ -190,14 +190,6 @@ public class MediaPlayController
         mediaPlayer.seekTo(msec);
     }
 
-    public void playNext() {
-        play(MusicCache.getInstance().getNextMusic(MusicCache.MODE_ORDER));
-    }
-
-    public void playPrevious() {
-        play(MusicCache.getInstance().getPreviousMusic(MusicCache.MODE_ORDER));
-    }
-
     public void stop() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();

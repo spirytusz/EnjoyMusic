@@ -2,6 +2,7 @@ package com.zspirytus.enjoymusic.impl;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCache;
+import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.view.activity.MainActivity;
 import com.zspirytus.mylibrary.DraggableFloatingActionButton;
@@ -39,11 +40,11 @@ public class OnDraggableFABEventListenerImpl implements OnDraggableFABEventListe
 
     @Override
     public void onDraggedLeft() {
-        mParentActivity.play(MusicCache.getInstance().getPreviousMusic(MusicCache.MODE_ORDER));
+        mParentActivity.play(MusicPlayOrderManager.getInstance().getPreviousMusic());
     }
 
     @Override
     public void onDraggedRight() {
-        mParentActivity.play(MusicCache.getInstance().getNextMusic(MusicCache.MODE_ORDER));
+        mParentActivity.play(MusicPlayOrderManager.getInstance().getNextMusic());
     }
 }

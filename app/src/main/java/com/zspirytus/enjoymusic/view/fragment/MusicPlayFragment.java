@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCache;
+import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
 import com.zspirytus.enjoymusic.receivers.MusicPlayProgressObserver;
@@ -102,7 +103,7 @@ public class MusicPlayFragment extends BaseFragment
         int id = view.getId();
         switch (id) {
             case R.id.previous:
-                Music previousMusic = MusicCache.getInstance().getPreviousMusic(MusicCache.MODE_ORDER);
+                Music previousMusic = MusicPlayOrderManager.getInstance().getPreviousMusic();
                 EventBus.getDefault().post(previousMusic, "play");
                 setView(previousMusic);
                 break;
@@ -116,7 +117,7 @@ public class MusicPlayFragment extends BaseFragment
                 }
                 break;
             case R.id.next:
-                Music nextMusic = MusicCache.getInstance().getNextMusic(MusicCache.MODE_ORDER);
+                Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
                 EventBus.getDefault().post(nextMusic, "play");
                 setView(nextMusic);
                 break;

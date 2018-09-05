@@ -4,11 +4,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.MediaMetadataCompat;
 import android.text.format.Formatter;
 
 import com.google.gson.Gson;
@@ -25,9 +22,6 @@ import java.util.List;
  */
 
 public class MusicCache {
-
-    public static final int MODE_ORDER = 1;
-    public static final int MODE_RANDOM = 2;
 
     private static final MusicCache INSTANCE = new MusicCache();
     private static final String CURRENT_PLAYING_MUSIC = "currentPlayingMusic";
@@ -67,21 +61,6 @@ public class MusicCache {
         return musicList;
     }
 
-    public Music getPreviousMusic(int type) {
-        int position = getCurrentPlayingMusicPosition() - 1;
-        int previousPosition = position >= 0 ? position : musicList.size() - 1;
-        return musicList.get(previousPosition);
-    }
-
-    public Music getNextMusic(int type) {
-        int previousPosition = (getCurrentPlayingMusicPosition() + 1) % musicList.size();
-        return musicList.get(previousPosition);
-    }
-
-    private int getCurrentPlayingMusicPosition() {
-        return musicList.indexOf(currentPlayingMusic);
-    }
-
     private void scanMusic() {
         musicList = new ArrayList<>();
         ContentResolver resolver = BaseActivity.getContext().getContentResolver();
@@ -104,7 +83,7 @@ public class MusicCache {
         }
     }
 
-    public List<MediaBrowserCompat.MediaItem> scanMusicToMediaService() {
+    /*public List<MediaBrowserCompat.MediaItem> scanMusicToMediaService() {
         ArrayList<MediaBrowserCompat.MediaItem> mediaItems = new ArrayList<>();
         ContentResolver resolver = BaseActivity.getContext().getContentResolver();
         Cursor cursor = resolver.query(
@@ -135,7 +114,7 @@ public class MusicCache {
                 metadata.getDescription(),
                 MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
         );
-    }
+    }*/
 
     private String getThumbAlbum(String album_id) {
         ContentResolver resolver = BaseActivity.getContext().getContentResolver();

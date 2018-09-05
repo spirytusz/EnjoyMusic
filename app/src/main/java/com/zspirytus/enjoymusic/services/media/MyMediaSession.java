@@ -7,6 +7,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.zspirytus.enjoymusic.cache.MusicCache;
+import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 
@@ -86,13 +87,15 @@ public class MyMediaSession {
         @Override
         public void onSkipToNext() {
             super.onSkipToNext();
-            MediaPlayController.getInstance().playNext();
+            Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
+            MediaPlayController.getInstance().play(nextMusic);
         }
 
         @Override
         public void onSkipToPrevious() {
             super.onSkipToPrevious();
-            MediaPlayController.getInstance().playPrevious();
+            Music previousMusic = MusicPlayOrderManager.getInstance().getPreviousMusic();
+            MediaPlayController.getInstance().play(previousMusic);
         }
 
         @Override
