@@ -130,7 +130,7 @@ public class MusicPlayFragment extends BaseFragment
 
     @Override
     public void onPlayCompleted() {
-        // TODO: 2018/8/13 music loop or next or random play 
+        setButtonSrc(false);
     }
 
     @Subscriber(tag = FinalValue.EventBusTag.MUSIC_NAME_SET)
@@ -165,19 +165,19 @@ public class MusicPlayFragment extends BaseFragment
 
     private void setButtonSrc(boolean isPlaying) {
         if (isPlaying) {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, "alpha", 1f, 0f);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
             animator.setDuration(382);
             animator.start();
             Glide.with(this).load(R.drawable.ic_pause_white_48dp).into(mPlayOrPauseButton);
-            animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, "alpha", 0f, 1f);
+            animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
             animator.setDuration(382);
             animator.start();
         } else {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, "alpha", 1f, 0f);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
             animator.setDuration(382);
             animator.start();
             Glide.with(this).load(R.drawable.ic_play_arrow_white_48dp).into(mPlayOrPauseButton);
-            animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, "alpha", 0f, 1f);
+            animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
             animator.setDuration(382);
             animator.start();
         }
@@ -216,11 +216,11 @@ public class MusicPlayFragment extends BaseFragment
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                @SuppressWarnings("redundant")
-                int seconds = progress;
-                if (!fromUser) {
-                    String nowTimeStringValue = TimeUtil.convertIntToMinsSec(seconds * 1000);
-                    mNowTime.setText(nowTimeStringValue);
+                int milliseconds = progress * 1000;
+                String millisecondsString = TimeUtil.convertIntToMinsSec(milliseconds);
+                mNowTime.setText(millisecondsString);
+                if (fromUser) {
+                    EventBus.getDefault().post(milliseconds, FinalValue.EventBusTag.SEEK_TO);
                 }
             }
 
@@ -231,14 +231,7 @@ public class MusicPlayFragment extends BaseFragment
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                long nowTimeIntValue = (long) (seekBar.getProgress()) * 1000;
-                String nowTimeStringValue = TimeUtil.convertLongToMinsSec(nowTimeIntValue);
-                // set mNowTime text ...
-                mNowTime.setText(nowTimeStringValue);
-                // set mSeekBar progress ...
-                mSeekBar.setProgress(seekBar.getProgress());
-                // track MediaPlayer to nowTimeIntValue ...
-                EventBus.getDefault().post(nowTimeIntValue, "seek to");
+
             }
         });
     }

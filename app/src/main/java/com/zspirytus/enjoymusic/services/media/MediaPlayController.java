@@ -124,7 +124,6 @@ public class MediaPlayController
         mPlayingTimer.stop();
         audioManager.abandonAudioFocus(this);
         notifyAllMusicPlayingObserverPlayCompleted();
-        play(MusicCache.getInstance().getCurrentPlayingMusic());
     }
 
     @Override

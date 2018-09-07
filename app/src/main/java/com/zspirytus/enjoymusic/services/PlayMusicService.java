@@ -7,8 +7,6 @@ import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.MediaMetadataCompat;
 
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.receivers.MusicPlayStateObserver;
@@ -63,13 +61,6 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
     @Override
     public void onPlayCompleted() {
         // TODO: 2018/8/13 music loop or next or random play
-    }
-
-    private MediaBrowserCompat.MediaItem createMediaItem(MediaMetadataCompat metadata) {
-        return new MediaBrowserCompat.MediaItem(
-                metadata.getDescription(),
-                MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
-        );
     }
 
     private void registerEvent() {

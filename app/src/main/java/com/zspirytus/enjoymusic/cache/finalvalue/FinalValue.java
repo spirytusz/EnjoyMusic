@@ -15,4 +15,8 @@ public interface FinalValue {
         String MUSIC_NAME_SET = "music name set";
         String SHOW_MUSIC_PLAY_FRAGMENT = "show music play fragment";
     }
+
+    interface AnimationProperty {
+        String ALPHA = "alpha";
+    }
 }

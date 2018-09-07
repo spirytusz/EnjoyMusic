@@ -63,6 +63,10 @@ public abstract class BaseFragment extends Fragment {
         LogUtil.e(TAG, message);
     }
 
+    public final void out(Object message) {
+        LogUtil.out(message);
+    }
+
     public final void toast(String message) {
         ToastUtil.showToast(parentActivity, message);
     }

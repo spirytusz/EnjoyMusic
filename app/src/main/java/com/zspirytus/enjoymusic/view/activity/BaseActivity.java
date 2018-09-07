@@ -99,6 +99,10 @@ public abstract class BaseActivity extends AppCompatActivity
         LogUtil.e(TAG, message);
     }
 
+    public final void out(Object message) {
+        LogUtil.out(message);
+    }
+
     public final void toast(String message) {
         ToastUtil.showToast(this, message);
     }
