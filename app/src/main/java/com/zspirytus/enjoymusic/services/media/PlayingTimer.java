@@ -18,7 +18,6 @@ public class PlayingTimer {
     private MediaPlayController mMediaPlayController;
 
     private PlayingTimer() {
-
     }
 
     public static PlayingTimer getInstance() {
@@ -41,7 +40,7 @@ public class PlayingTimer {
                 BaseActivity.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        int currentPlayingMillis = mMediaPlayController.getCurrentPosition();
+                        int currentPlayingMillis = mMediaPlayController.getCurrentPosition() / 1000;
                         mMediaPlayController.notifyAllMusicPlayProgressChange(currentPlayingMillis);
                     }
                 });

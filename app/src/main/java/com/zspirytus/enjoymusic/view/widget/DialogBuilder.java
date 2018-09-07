@@ -11,7 +11,7 @@ import android.support.v7.app.AlertDialog;
 public class DialogBuilder {
 
     public static void showSelectDialog(Context context) {
-        final String[] items = new String[]{"信息", "获取专辑封面"};
+        final String[] items = new String[]{"音乐信息", "获取专辑封面", "获取歌词"};
         // 创建对话框构建器
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setItems(items, new DialogInterface.OnClickListener() {

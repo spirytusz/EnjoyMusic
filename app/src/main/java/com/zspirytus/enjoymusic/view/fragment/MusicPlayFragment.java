@@ -12,8 +12,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCache;
+import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
@@ -27,6 +29,8 @@ import org.simple.eventbus.Subscriber;
 
 import java.io.File;
 
+import jp.wasabeef.glide.transformations.BlurTransformation;
+
 /**
  * Fragment: 显示音乐播放界面
  * Created by ZSpirytus on 2018/8/2.
@@ -35,8 +39,6 @@ import java.io.File;
 public class MusicPlayFragment extends BaseFragment
         implements View.OnClickListener, MusicPlayStateObserver,
         MusicPlayProgressObserver {
-
-    private static final float SEEK_BAR_MAX = 1000;
 
     @ViewInject(R.id.background)
     private ImageView mBackground;
@@ -63,11 +65,8 @@ public class MusicPlayFragment extends BaseFragment
     private MusicCache mMusicCache;
     private Music mCurrentPlayingMusic;
 
-    public static MusicPlayFragment getInstance(Music music) {
+    public static MusicPlayFragment getInstance() {
         MusicPlayFragment musicPlayFragment = new MusicPlayFragment();
-        /*Bundle bundle = new Bundle(1);
-        bundle.putSerializable(MUSIC_KEY, music);
-        musicPlayFragment.setArguments(bundle);*/
         return musicPlayFragment;
     }
 
@@ -90,9 +89,7 @@ public class MusicPlayFragment extends BaseFragment
 
     @Override
     public void onProgressChange(int currentPlayingMills) {
-        int progress = (int) (currentPlayingMills * SEEK_BAR_MAX / MusicCache.getInstance().getCurrentPlayingMusic().getDuration());
-        mSeekBar.setProgress(progress);
-        mNowTime.setText(TimeUtil.convertIntToMinsSec(currentPlayingMills));
+        mSeekBar.setProgress(currentPlayingMills);
     }
 
     @Override
@@ -106,21 +103,21 @@ public class MusicPlayFragment extends BaseFragment
         switch (id) {
             case R.id.previous:
                 Music previousMusic = MusicPlayOrderManager.getInstance().getPreviousMusic();
-                EventBus.getDefault().post(previousMusic, "play");
+                EventBus.getDefault().post(previousMusic, FinalValue.EventBusTag.PLAY);
                 setView(previousMusic);
                 break;
             case R.id.play_pause:
                 boolean isPlaying = MediaPlayController.getInstance().isPlaying();
                 MusicCache musicCache = MusicCache.getInstance();
                 if (isPlaying) {
-                    EventBus.getDefault().post(musicCache.getCurrentPlayingMusic(), "pause");
+                    EventBus.getDefault().post(musicCache.getCurrentPlayingMusic(), FinalValue.EventBusTag.PAUSE);
                 } else {
-                    EventBus.getDefault().post(musicCache.getCurrentPlayingMusic(), "play");
+                    EventBus.getDefault().post(musicCache.getCurrentPlayingMusic(), FinalValue.EventBusTag.PLAY);
                 }
                 break;
             case R.id.next:
                 Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
-                EventBus.getDefault().post(nextMusic, "play");
+                EventBus.getDefault().post(nextMusic, FinalValue.EventBusTag.PLAY);
                 setView(nextMusic);
                 break;
         }
@@ -136,8 +133,20 @@ public class MusicPlayFragment extends BaseFragment
         // TODO: 2018/8/13 music loop or next or random play 
     }
 
+    @Subscriber(tag = FinalValue.EventBusTag.MUSIC_NAME_SET)
+    public void setView(Music music) {
+        mToolbar.setTitle(music.getmMusicName());
+        String path = music.getmMusicThumbAlbumUri();
+        if (path != null) {
+            File coverFile = new File(path);
+            Glide.with(this).load(coverFile).into(mCover);
+            loadBlurCover(coverFile);
+        }
+        mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getDuration()));
+        setupSeekBar(music);
+    }
+
     private void initView() {
-        // final Music music = (Music) getArguments().getSerializable(MUSIC_KEY);
         if (mCurrentPlayingMusic != null) {
             String musicAlbumUri = mCurrentPlayingMusic.getmMusicThumbAlbumUri();
             mToolbar.setTitle(mCurrentPlayingMusic.getmMusicName());
@@ -146,33 +155,12 @@ public class MusicPlayFragment extends BaseFragment
             mTotalTime.setText(TimeUtil.convertLongToMinsSec(mCurrentPlayingMusic.getDuration()));
         }
         setButtonSrc(MediaPlayController.getInstance().isPlaying());
-        mSeekBar.setMax((int) SEEK_BAR_MAX);
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                float percent = (float) seekBar.getProgress() / SEEK_BAR_MAX;
-                int nowTimeIntValue = (int) (mCurrentPlayingMusic.getDuration() * percent);
-                String nowTimeStringValue = TimeUtil.convertIntToMinsSec(nowTimeIntValue);
-                mSeekBar.setProgress(seekBar.getProgress());
-                mNowTime.setText(nowTimeStringValue);
-                EventBus.getDefault().post(nowTimeIntValue, "seek to");
-            }
-        });
     }
 
     private void initData() {
         mMusicCache = MusicCache.getInstance();
         mCurrentPlayingMusic = mMusicCache.getCurrentPlayingMusic();
+        setView(mCurrentPlayingMusic);
     }
 
     private void setButtonSrc(boolean isPlaying) {
@@ -214,11 +202,45 @@ public class MusicPlayFragment extends BaseFragment
         MediaPlayController.getInstance().unregisterProgressChange(this);
     }
 
-    @Subscriber(tag = "music_name_set")
-    public void setView(Music music) {
-        mToolbar.setTitle(music.getmMusicName());
-        Glide.with(this).load(new File(music.getmMusicThumbAlbumUri())).into(mCover);
-        mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getDuration()));
+    private void loadBlurCover(File coverFile) {
+        RequestOptions options = new RequestOptions()
+                .dontAnimate()
+                .transform(new BlurTransformation(getParentActivity(), 14, 3));
+        Glide.with(this).load(coverFile)
+                .apply(options)
+                .into(mBackground);
+    }
+
+    private void setupSeekBar(Music music) {
+        mSeekBar.setMax((int) (music.getDuration() / 1000));
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                @SuppressWarnings("redundant")
+                int seconds = progress;
+                if (!fromUser) {
+                    String nowTimeStringValue = TimeUtil.convertIntToMinsSec(seconds * 1000);
+                    mNowTime.setText(nowTimeStringValue);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                long nowTimeIntValue = (long) (seekBar.getProgress()) * 1000;
+                String nowTimeStringValue = TimeUtil.convertLongToMinsSec(nowTimeIntValue);
+                // set mNowTime text ...
+                mNowTime.setText(nowTimeStringValue);
+                // set mSeekBar progress ...
+                mSeekBar.setProgress(seekBar.getProgress());
+                // track MediaPlayer to nowTimeIntValue ...
+                EventBus.getDefault().post(nowTimeIntValue, "seek to");
+            }
+        });
     }
 
 }

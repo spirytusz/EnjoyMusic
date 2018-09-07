@@ -23,4 +23,10 @@ public class LogUtil {
         }
     }
 
+    public static void out(Object message) {
+        if (LEVEL == DEBUG) {
+            System.out.println(message);
+        }
+    }
+
 }

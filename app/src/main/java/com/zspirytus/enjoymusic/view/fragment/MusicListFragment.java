@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
 import com.zspirytus.enjoymusic.cache.MusicCache;
+import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
 
@@ -64,9 +65,9 @@ public class MusicListFragment extends BaseFragment
     @Override
     public void onItemClick(View view, int position) {
         Music music = musicList.get(position);
-        EventBus.getDefault().post(music, "play");
-        EventBus.getDefault().post(music, "music_name_set");
-        EventBus.getDefault().post(music, "show music play fragment");
+        EventBus.getDefault().post(music, FinalValue.EventBusTag.PLAY);
+        EventBus.getDefault().post(music, FinalValue.EventBusTag.MUSIC_NAME_SET);
+        EventBus.getDefault().post(music, FinalValue.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT);
     }
 
     private void initView() {
@@ -104,7 +105,7 @@ public class MusicListFragment extends BaseFragment
                         mMusicList.setNestedScrollingEnabled(false);
                         adapter.setOnItemClickListener(MusicListFragment.this);
                         mMusicList.setAdapter(adapter);
-                        EventBus.getDefault().post(!s.isEmpty(), "set dFab listener");
+                        EventBus.getDefault().post(!s.isEmpty(), FinalValue.EventBusTag.SET_DFAB_LISTENER);
                     }
 
                     @Override

@@ -18,6 +18,7 @@ import android.view.View;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCache;
+import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.impl.OnDraggableFABEventListenerImpl;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
@@ -209,12 +210,12 @@ public class MainActivity extends BaseActivity
         isMusicPlayFragment = false;
     }
 
-    @Subscriber(tag = "show music play fragment")
+    @Subscriber(tag = FinalValue.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT)
     public void showMusicPlayFragment(Music music) {
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_up, R.anim.anim_fragment_alpha_hide);
         if (mMusicPlayFragment == null) {
-            mMusicPlayFragment = MusicPlayFragment.getInstance(music);
+            mMusicPlayFragment = MusicPlayFragment.getInstance();
             mFragmentTransaction.add(R.id.fragment_container, mMusicPlayFragment);
         }
         if (mMusicListFragment != null)
@@ -226,31 +227,30 @@ public class MainActivity extends BaseActivity
         isMusicPlayFragment = true;
     }
 
-    @Subscriber(tag = "play")
+    @Subscriber(tag = FinalValue.EventBusTag.PLAY)
     public void play(Music music) {
         if (music != null) {
             myBinder.play(music);
         }
     }
 
-    @Subscriber(tag = "pause")
+    @Subscriber(tag = FinalValue.EventBusTag.PAUSE)
     public void pause(Music music) {
         myBinder.pause();
-        e(this.getClass().getSimpleName() + "\tpause");
     }
 
-    @Subscriber(tag = "stop")
+    @Subscriber(tag = FinalValue.EventBusTag.STOP)
     public void stop(Music music) {
         myBinder.stop();
     }
 
-    @Subscriber(tag = "seek to")
+    @Subscriber(tag = FinalValue.EventBusTag.SEEK_TO)
     public void seekTo(int msec) {
         myBinder.seekTo(msec);
     }
 
     // if there is no music in device, it will not set DraggableFabListener.
-    @Subscriber(tag = "set dFab listener")
+    @Subscriber(tag = FinalValue.EventBusTag.SET_DFAB_LISTENER)
     public void setDraggableFabListener(boolean hasMusicInDevice) {
         if (hasMusicInDevice) {
             mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListenerImpl(this));
