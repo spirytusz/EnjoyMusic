@@ -37,6 +37,7 @@ public class MediaPlayController
     private static PlayingTimer mPlayingTimer;
 
     private int state;
+    private boolean isPrepared = false;
 
     private static final MediaPlayController INSTANCE = new MediaPlayController();
 
@@ -120,6 +121,7 @@ public class MediaPlayController
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        isPrepared = true;
         beginPlay(mp);
     }
 
@@ -157,10 +159,16 @@ public class MediaPlayController
         try {
             Music currentPlayingMusic = MusicCache.getInstance().getCurrentPlayingMusic();
             if (currentPlayingMusic != null && currentPlayingMusic.equals(music)) {
-                // selected music is currently playing or pausing
-                if (!isPlaying()) {
-                    beginPlay(mediaPlayer);
-                    MusicCache.getInstance().setCurrentPlayingMusic(music);
+                // selected music is currently playing or pausing or has not prepared
+                if (isPrepared) {
+                    // if has prepared, play it
+                    if (!isPlaying()) {
+                        beginPlay(mediaPlayer);
+                        MusicCache.getInstance().setCurrentPlayingMusic(music);
+                    }
+                } else {
+                    // else, prepare it
+                    prepareMusic(music);
                 }
             } else {
                 // selected music is NOT currently playing or pausing
@@ -168,7 +176,9 @@ public class MediaPlayController
                 MusicCache.getInstance().setCurrentPlayingMusic(music);
                 MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_BUFFERING);
                 MyMediaSession.getInstance().setMetaData(music);
+                MusicCache.getInstance().setCurrentPlayingMusic(music);
                 state = STATE_PREPARING;
+                isPrepared = false;
             }
         } catch (IOException e) {
             e.printStackTrace();

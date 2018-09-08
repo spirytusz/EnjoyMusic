@@ -138,7 +138,7 @@ public class MusicCache {
         }
     }
 
-    public void saveCurrentPlayingMusic(Music currentPlayingMusic) {
+    public void saveCurrentPlayingMusic() {
         if (currentPlayingMusic != null) {
             SharedPreferences.Editor editor = BaseActivity.getContext().getSharedPreferences(CURRENT_PLAYING_MUSIC, Context.MODE_PRIVATE).edit();
             Gson gson = new Gson();

@@ -98,7 +98,7 @@ public class MainActivity extends BaseActivity
         unregisterEvent();
         unbindService(serviceConnection);
         MusicCache musicCache = MusicCache.getInstance();
-        musicCache.saveCurrentPlayingMusic(musicCache.getCurrentPlayingMusic());
+        musicCache.saveCurrentPlayingMusic();
         super.onDestroy();
     }
 
