@@ -39,4 +39,8 @@ public class ForegroundMusicController {
     public void seekTo(int msec) {
         EventBus.getDefault().post(msec, FinalValue.EventBusTag.SEEK_TO);
     }
+
+    public void release() {
+        INSTANCE = null;
+    }
 }

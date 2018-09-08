@@ -16,6 +16,7 @@ import android.view.View;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCache;
 import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
+import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.impl.OnDraggableFABEventListenerImpl;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
@@ -81,6 +82,7 @@ public class MainActivity extends BaseActivity
         unregisterEvent();
         MusicCache musicCache = MusicCache.getInstance();
         musicCache.saveCurrentPlayingMusic();
+        ForegroundMusicController.getInstance().release();
         super.onDestroy();
     }
 

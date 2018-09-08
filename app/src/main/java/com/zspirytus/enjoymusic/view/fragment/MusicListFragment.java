@@ -14,6 +14,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
 import com.zspirytus.enjoymusic.cache.MusicCache;
 import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
+import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
 
@@ -65,7 +66,7 @@ public class MusicListFragment extends BaseFragment
     @Override
     public void onItemClick(View view, int position) {
         Music music = musicList.get(position);
-        EventBus.getDefault().post(music, FinalValue.EventBusTag.PLAY);
+        ForegroundMusicController.getInstance().play(music);
         EventBus.getDefault().post(music, FinalValue.EventBusTag.MUSIC_NAME_SET);
         EventBus.getDefault().post(music, FinalValue.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT);
     }
