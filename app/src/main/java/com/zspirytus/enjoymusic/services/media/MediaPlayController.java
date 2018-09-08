@@ -47,6 +47,10 @@ public class MediaPlayController
         mediaPlayer.setWakeMode(BaseActivity.getContext(), PowerManager.PARTIAL_WAKE_LOCK);
         audioManager = (AudioManager) BaseActivity.getContext().getSystemService(Service.AUDIO_SERVICE);
 
+        // set listeners
+        mediaPlayer.setOnPreparedListener(this);
+        mediaPlayer.setOnCompletionListener(this);
+
         // init observers collectors
         musicPlayStateObservers = new ArrayList<>();
         musicPlayProgressObservers = new ArrayList<>();
@@ -160,9 +164,6 @@ public class MediaPlayController
                 }
             } else {
                 // selected music is NOT currently playing or pausing
-                mediaPlayer.setOnPreparedListener(this);
-                mediaPlayer.setOnCompletionListener(this);
-                mediaPlayer.reset();
                 prepareMusic(music);
                 MusicCache.getInstance().setCurrentPlayingMusic(music);
                 MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_BUFFERING);
@@ -200,6 +201,7 @@ public class MediaPlayController
     }
 
     private void prepareMusic(Music music) throws IOException {
+        mediaPlayer.reset();
         mediaPlayer.setDataSource(music.getPath());
         mediaPlayer.prepareAsync();
     }
