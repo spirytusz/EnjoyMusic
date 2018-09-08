@@ -4,10 +4,10 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
-import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 
+import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.receivers.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
@@ -16,6 +16,7 @@ import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
 
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 /**
  * Service: 负责播放、暂停音乐
@@ -24,7 +25,6 @@ import org.simple.eventbus.EventBus;
 
 public class PlayMusicService extends Service implements MusicPlayStateObserver {
 
-    private MyBinder binder = new MyBinder();
     private MediaPlayController mMediaPlayController = MediaPlayController.getInstance();
 
     private MyHeadSetPlugOutReceiver myHeadSetPlugOutReceiver;
@@ -43,7 +43,7 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
 
     @Override
     public IBinder onBind(Intent intent) {
-        return binder;
+        return null;
     }
 
     @Override
@@ -93,29 +93,27 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
         }
     }
 
-    public class MyBinder extends Binder {
+    @Subscriber(tag = FinalValue.EventBusTag.PLAY)
+    public void play(Music music) {
+        NotificationHelper.showNotification(music);
+        NotificationHelper.updateNotificationClearable(false);
+        mMediaPlayController.play(music);
+    }
 
-        private MediaPlayController mBinderMediaPlayController = MediaPlayController.getInstance();
+    @Subscriber(tag = FinalValue.EventBusTag.PAUSE)
+    public void pause(Music music) {
+        NotificationHelper.updateNotificationClearable(true);
+        mMediaPlayController.pause();
+    }
 
-        public void play(Music music) {
-            NotificationHelper.showNotification(music);
-            NotificationHelper.updateNotificationClearable(false);
-            mBinderMediaPlayController.play(music);
-        }
+    @Subscriber(tag = FinalValue.EventBusTag.STOP)
+    public void stop(Music music) {
+        mMediaPlayController.stop();
+    }
 
-        public void pause() {
-            NotificationHelper.updateNotificationClearable(true);
-            mBinderMediaPlayController.pause();
-        }
-
-        public void stop() {
-            mBinderMediaPlayController.stop();
-        }
-
-        public void seekTo(int msec) {
-            mBinderMediaPlayController.seekTo(msec);
-        }
-
+    @Subscriber(tag = FinalValue.EventBusTag.SEEK_TO)
+    public void seekTo(int msec) {
+        mMediaPlayController.seekTo(msec);
     }
 
 }

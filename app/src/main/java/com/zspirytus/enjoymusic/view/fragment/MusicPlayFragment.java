@@ -16,6 +16,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCache;
 import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
+import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
@@ -62,7 +63,6 @@ public class MusicPlayFragment extends BaseFragment
     @ViewInject(R.id.next)
     private ImageView mNextButton;
 
-    private MusicCache mMusicCache;
     private Music mCurrentPlayingMusic;
 
     public static MusicPlayFragment getInstance() {
@@ -103,21 +103,21 @@ public class MusicPlayFragment extends BaseFragment
         switch (id) {
             case R.id.previous:
                 Music previousMusic = MusicPlayOrderManager.getInstance().getPreviousMusic();
-                EventBus.getDefault().post(previousMusic, FinalValue.EventBusTag.PLAY);
+                ForegroundMusicController.getInstance().play(previousMusic);
                 setView(previousMusic);
                 break;
             case R.id.play_pause:
                 boolean isPlaying = MediaPlayController.getInstance().isPlaying();
-                MusicCache musicCache = MusicCache.getInstance();
+                Music currentPlayingMusic = MusicCache.getInstance().getCurrentPlayingMusic();
                 if (isPlaying) {
-                    EventBus.getDefault().post(musicCache.getCurrentPlayingMusic(), FinalValue.EventBusTag.PAUSE);
+                    ForegroundMusicController.getInstance().pause(currentPlayingMusic);
                 } else {
-                    EventBus.getDefault().post(musicCache.getCurrentPlayingMusic(), FinalValue.EventBusTag.PLAY);
+                    ForegroundMusicController.getInstance().play(currentPlayingMusic);
                 }
                 break;
             case R.id.next:
                 Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
-                EventBus.getDefault().post(nextMusic, FinalValue.EventBusTag.PLAY);
+                ForegroundMusicController.getInstance().play(nextMusic);
                 setView(nextMusic);
                 break;
         }
@@ -158,8 +158,7 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     private void initData() {
-        mMusicCache = MusicCache.getInstance();
-        mCurrentPlayingMusic = mMusicCache.getCurrentPlayingMusic();
+        mCurrentPlayingMusic = MusicCache.getInstance().getCurrentPlayingMusic();
         setView(mCurrentPlayingMusic);
     }
 
@@ -220,7 +219,7 @@ public class MusicPlayFragment extends BaseFragment
                 String millisecondsString = TimeUtil.convertIntToMinsSec(milliseconds);
                 mNowTime.setText(millisecondsString);
                 if (fromUser) {
-                    EventBus.getDefault().post(milliseconds, FinalValue.EventBusTag.SEEK_TO);
+                    ForegroundMusicController.getInstance().seekTo(milliseconds);
                 }
             }
 

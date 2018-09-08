@@ -1,10 +1,7 @@
 package com.zspirytus.enjoymusic.view.activity;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -62,20 +59,6 @@ public class MainActivity extends BaseActivity
     private MusicListFragment mMusicListFragment;
     private MusicPlayFragment mMusicPlayFragment;
 
-    // Service's Binder
-    private PlayMusicService.MyBinder myBinder;
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            myBinder = (PlayMusicService.MyBinder) service;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            myBinder = null;
-        }
-    };
-
     private boolean isMusicPlayFragment = false;
     private long pressedBackLastTime;
 
@@ -96,7 +79,6 @@ public class MainActivity extends BaseActivity
     @Override
     public void onDestroy() {
         unregisterEvent();
-        unbindService(serviceConnection);
         MusicCache musicCache = MusicCache.getInstance();
         musicCache.saveCurrentPlayingMusic();
         super.onDestroy();
@@ -123,7 +105,6 @@ public class MainActivity extends BaseActivity
             }
         }
     }
-
 
     // permission granted state listener
     @Override
@@ -187,7 +168,7 @@ public class MainActivity extends BaseActivity
 
     private void startPlayMusicService() {
         Intent intent = new Intent(MainActivity.this, PlayMusicService.class);
-        bindService(intent, serviceConnection, BIND_AUTO_CREATE);
+        startService(intent);
     }
 
     private void showMusicListFragment() {
@@ -227,33 +208,11 @@ public class MainActivity extends BaseActivity
         isMusicPlayFragment = true;
     }
 
-    @Subscriber(tag = FinalValue.EventBusTag.PLAY)
-    public void play(Music music) {
-        if (music != null) {
-            myBinder.play(music);
-        }
-    }
-
-    @Subscriber(tag = FinalValue.EventBusTag.PAUSE)
-    public void pause(Music music) {
-        myBinder.pause();
-    }
-
-    @Subscriber(tag = FinalValue.EventBusTag.STOP)
-    public void stop(Music music) {
-        myBinder.stop();
-    }
-
-    @Subscriber(tag = FinalValue.EventBusTag.SEEK_TO)
-    public void seekTo(int msec) {
-        myBinder.seekTo(msec);
-    }
-
     // if there is no music in device, it will not set DraggableFabListener.
     @Subscriber(tag = FinalValue.EventBusTag.SET_DFAB_LISTENER)
     public void setDraggableFabListener(boolean hasMusicInDevice) {
         if (hasMusicInDevice) {
-            mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListenerImpl(this));
+            mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListenerImpl(mFab));
         }
     }
 
