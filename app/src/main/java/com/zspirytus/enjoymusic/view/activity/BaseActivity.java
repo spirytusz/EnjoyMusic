@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
 import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
@@ -24,12 +25,10 @@ public abstract class BaseActivity extends AppCompatActivity
     private static Context context;
     private static AppCompatActivity appCompatActivity;
 
-    public abstract Integer getLayoutId();
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(getLayoutId());
+        autoInjectLayoutId();
         autoInjectAllField();
         context = getApplicationContext();
         appCompatActivity = this;
@@ -79,6 +78,17 @@ public abstract class BaseActivity extends AppCompatActivity
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void autoInjectLayoutId() {
+        Class<?> clazz = this.getClass();
+        if (clazz.isAnnotationPresent(LayoutIdInject.class)) {
+            LayoutIdInject layoutIdInject = clazz.getAnnotation(LayoutIdInject.class);
+            int layoutId = layoutIdInject.value();
+            if (layoutId > 0) {
+                setContentView(layoutId);
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
 import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
@@ -32,7 +33,7 @@ public abstract class BaseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(getLayoutId(), container, false);
+        View view = autoInjectLayoutId(inflater, container);
         autoInjectAllField(view);
         return view;
     }
@@ -58,6 +59,17 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
+    public View autoInjectLayoutId(LayoutInflater inflater, @Nullable ViewGroup container) {
+        Class<?> clazz = this.getClass();
+        if (clazz.isAnnotationPresent(LayoutIdInject.class)) {
+            LayoutIdInject layoutIdInject = clazz.getAnnotation(LayoutIdInject.class);
+            int layoutId = layoutIdInject.value();
+            return inflater.inflate(layoutId, container, false);
+        } else {
+            return null;
+        }
+    }
+
     public final void e(String message) {
         String TAG = this.getClass().getSimpleName();
         LogUtil.e(TAG, message);
@@ -74,7 +86,5 @@ public abstract class BaseFragment extends Fragment {
     public BaseActivity getParentActivity() {
         return parentActivity;
     }
-
-    public abstract Integer getLayoutId();
 
 }

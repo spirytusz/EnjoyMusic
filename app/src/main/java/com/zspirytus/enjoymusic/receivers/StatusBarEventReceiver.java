@@ -12,6 +12,8 @@ import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.services.NotificationHelper;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
+import org.simple.eventbus.EventBus;
+
 /**
  * Created by ZSpirytus on 2018/9/8.
  */
@@ -24,7 +26,7 @@ public class StatusBarEventReceiver extends BroadcastReceiver {
         if (event != null) {
             switch (event) {
                 case FinalValue.StatusBarEvent.SINGLE_CLICK:
-                    System.out.println(FinalValue.StatusBarEvent.SINGLE_CLICK);
+                    EventBus.getDefault().post(FinalValue.StatusBarEvent.SINGLE_CLICK, FinalValue.EventBusTag.START_MAIN_ACTIVITY);
                     break;
                 case FinalValue.StatusBarEvent.PREVIOUS:
                     BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getPreviousMusic());

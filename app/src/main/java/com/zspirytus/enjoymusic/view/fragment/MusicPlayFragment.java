@@ -19,9 +19,10 @@ import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
-import com.zspirytus.enjoymusic.receivers.MusicPlayProgressObserver;
-import com.zspirytus.enjoymusic.receivers.MusicPlayStateObserver;
+import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
+import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 
@@ -37,6 +38,7 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
  * Created by ZSpirytus on 2018/8/2.
  */
 
+@LayoutIdInject(R.layout.fragment_music_play)
 public class MusicPlayFragment extends BaseFragment
         implements View.OnClickListener, MusicPlayStateObserver,
         MusicPlayProgressObserver {
@@ -93,11 +95,6 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     @Override
-    public Integer getLayoutId() {
-        return R.layout.fragment_music_play;
-    }
-
-    @Override
     public void onClick(View view) {
         int id = view.getId();
         switch (id) {
@@ -126,11 +123,6 @@ public class MusicPlayFragment extends BaseFragment
     @Override
     public void onPlayingState(boolean isPlaying) {
         setButtonSrc(isPlaying);
-    }
-
-    @Override
-    public void onPlayCompleted() {
-        setButtonSrc(false);
     }
 
     @Subscriber(tag = FinalValue.EventBusTag.MUSIC_NAME_SET)
@@ -191,13 +183,13 @@ public class MusicPlayFragment extends BaseFragment
 
     private void registerEvent() {
         EventBus.getDefault().register(this);
-        MediaPlayController.getInstance().register(this);
+        MediaPlayController.getInstance().registerMusicPlayStateObserver(this);
         MediaPlayController.getInstance().registerProgressChange(this);
     }
 
     private void unRegisterEvent() {
         EventBus.getDefault().unregister(this);
-        MediaPlayController.getInstance().unregister(this);
+        MediaPlayController.getInstance().unregisterMusicPlayStateObserver(this);
         MediaPlayController.getInstance().unregisterProgressChange(this);
     }
 

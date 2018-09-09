@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,8 +20,9 @@ import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.impl.OnDraggableFABEventListenerImpl;
+import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
-import com.zspirytus.enjoymusic.receivers.MusicPlayStateObserver;
+import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.view.fragment.MusicListFragment;
@@ -37,6 +39,7 @@ import org.simple.eventbus.Subscriber;
  * Created by ZSpirytus on 2018/8/2.
  */
 
+@LayoutIdInject(R.layout.activity_main)
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         MusicPlayStateObserver {
@@ -64,11 +67,6 @@ public class MainActivity extends BaseActivity
     private long pressedBackLastTime;
 
     @Override
-    public Integer getLayoutId() {
-        return R.layout.activity_main;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerEvent();
@@ -84,6 +82,12 @@ public class MainActivity extends BaseActivity
         musicCache.saveCurrentPlayingMusic();
         ForegroundMusicController.getInstance().release();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        System.out.println("execute onNewIntent!");
     }
 
     @Override
@@ -129,11 +133,6 @@ public class MainActivity extends BaseActivity
         // set the play or pause button src
         int resId = isPlaying ? R.drawable.ic_pause_white_48dp : R.drawable.ic_play_arrow_white_48dp;
         mFab.setImageResource(resId);
-    }
-
-    @Override
-    public void onPlayCompleted() {
-        // set the play or pause button src be pause(play src) state
     }
 
     private void initView() {
@@ -220,12 +219,17 @@ public class MainActivity extends BaseActivity
 
     private void registerEvent() {
         EventBus.getDefault().register(this);
-        MediaPlayController.getInstance().register(this);
+        MediaPlayController.getInstance().registerMusicPlayStateObserver(this);
     }
 
     private void unregisterEvent() {
         EventBus.getDefault().unregister(this);
-        MediaPlayController.getInstance().unregister(this);
+        MediaPlayController.getInstance().unregisterMusicPlayStateObserver(this);
+    }
+
+    public static void startActivity(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
     }
 
 }

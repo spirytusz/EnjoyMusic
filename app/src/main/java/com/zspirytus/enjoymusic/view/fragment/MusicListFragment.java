@@ -16,6 +16,7 @@ import com.zspirytus.enjoymusic.cache.MusicCache;
 import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
 
 import org.simple.eventbus.EventBus;
@@ -35,6 +36,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by ZSpirytus on 2018/8/2.
  */
 
+@LayoutIdInject(R.layout.fragment_music_list)
 public class MusicListFragment extends BaseFragment
         implements MusicListAdapter.OnItemClickListener {
 
@@ -56,11 +58,6 @@ public class MusicListFragment extends BaseFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-    }
-
-    @Override
-    public Integer getLayoutId() {
-        return R.layout.fragment_music_list;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.receivers;
+package com.zspirytus.enjoymusic.receivers.observer;
 
 /**
  * 音乐播放状态观察接口
@@ -8,7 +8,4 @@ package com.zspirytus.enjoymusic.receivers;
 public interface MusicPlayStateObserver {
 
     void onPlayingState(boolean isPlaying);
-
-    void onPlayCompleted();
-
 }

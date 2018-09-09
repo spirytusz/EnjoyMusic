@@ -14,6 +14,7 @@ public interface FinalValue {
         String SET_DFAB_LISTENER = "set dFab listener";
         String MUSIC_NAME_SET = "music name set";
         String SHOW_MUSIC_PLAY_FRAGMENT = "show music play fragment";
+        String START_MAIN_ACTIVITY = "start MainActivity";
     }
 
     interface AnimationProperty {

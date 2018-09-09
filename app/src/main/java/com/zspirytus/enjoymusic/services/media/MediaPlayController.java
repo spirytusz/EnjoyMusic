@@ -7,22 +7,19 @@ import android.os.PowerManager;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.zspirytus.enjoymusic.cache.MusicCache;
+import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.receivers.MusicPlayProgressObserver;
-import com.zspirytus.enjoymusic.receivers.MusicPlayStateObserver;
+import com.zspirytus.enjoymusic.listeners.observable.MusicStateObservable;
 import com.zspirytus.enjoymusic.view.activity.BaseActivity;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * 音乐播放暂停控制类
  * Created by ZSpirytus on 2018/8/10.
  */
 
-public class MediaPlayController
+public class MediaPlayController extends MusicStateObservable
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
         AudioManager.OnAudioFocusChangeListener {
 
@@ -32,8 +29,6 @@ public class MediaPlayController
 
     private static MediaPlayer mediaPlayer;
     private static AudioManager audioManager;
-    private static List<MusicPlayStateObserver> musicPlayStateObservers;
-    private static List<MusicPlayProgressObserver> musicPlayProgressObservers;
     private static PlayingTimer mPlayingTimer;
 
     private int state;
@@ -52,10 +47,6 @@ public class MediaPlayController
         mediaPlayer.setOnPreparedListener(this);
         mediaPlayer.setOnCompletionListener(this);
 
-        // init observers collectors
-        musicPlayStateObservers = new ArrayList<>();
-        musicPlayProgressObservers = new ArrayList<>();
-
         // init timer
         mPlayingTimer = PlayingTimer.getInstance();
         mPlayingTimer.init(this);
@@ -63,60 +54,6 @@ public class MediaPlayController
 
     public static MediaPlayController getInstance() {
         return INSTANCE;
-    }
-
-    // register MusicPlayStateObserver
-    public boolean register(MusicPlayStateObserver musicPlayStateObserver) {
-        if (!musicPlayStateObservers.contains(musicPlayStateObserver)) {
-            musicPlayStateObservers.add(musicPlayStateObserver);
-            return true;
-        }
-        return false;
-    }
-
-    // unregister MusicPlayStateObserver
-    public boolean unregister(MusicPlayStateObserver musicPlayStateObserver) {
-        musicPlayStateObservers.remove(musicPlayStateObserver);
-        return true;
-    }
-
-    // register MusicPlayProgressObserver
-    public boolean registerProgressChange(MusicPlayProgressObserver musicPlayProgressObserver) {
-        if (!musicPlayProgressObservers.contains(musicPlayProgressObserver)) {
-            musicPlayProgressObservers.add(musicPlayProgressObserver);
-            return true;
-        }
-        return false;
-    }
-
-    // unregister MusicPlayProgressObserver
-    public boolean unregisterProgressChange(MusicPlayProgressObserver musicPlayProgressObserver) {
-        musicPlayProgressObservers.remove(musicPlayProgressObserver);
-        return true;
-    }
-
-    // notify all MusicPlayStateObserver play state
-    private void notifyAllMusicPlayingObserverPlayingState(boolean isPlaying) {
-        Iterator<MusicPlayStateObserver> observerIterator = musicPlayStateObservers.iterator();
-        while (observerIterator.hasNext()) {
-            observerIterator.next().onPlayingState(isPlaying);
-        }
-    }
-
-    // notify all MusicPlayStateObserver play completed
-    private void notifyAllMusicPlayingObserverPlayCompleted() {
-        Iterator<MusicPlayStateObserver> observerIterator = musicPlayStateObservers.iterator();
-        while (observerIterator.hasNext()) {
-            observerIterator.next().onPlayCompleted();
-        }
-    }
-
-    // notify all MusicPlayProgressObserver playing progress
-    protected void notifyAllMusicPlayProgressChange(int currentPlayingMillis) {
-        Iterator<MusicPlayProgressObserver> observerIterator = musicPlayProgressObservers.iterator();
-        while (observerIterator.hasNext()) {
-            observerIterator.next().onProgressChange(currentPlayingMillis);
-        }
     }
 
     @Override
@@ -127,9 +64,11 @@ public class MediaPlayController
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        mPlayingTimer.stop();
-        audioManager.abandonAudioFocus(this);
-        notifyAllMusicPlayingObserverPlayCompleted();
+        /*mPlayingTimer.stop();
+        audioManager.abandonAudioFocus(this);*/
+        Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
+        play(nextMusic);
+        notifyAllPlayedMusicChanged(nextMusic);
     }
 
     @Override

@@ -6,12 +6,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * View注解类
- * Created by ZSpirytus on 2018/8/2.
+ * layoutId 注解类
+ * Created by ZSpirytus on 2018/9/9.
  */
 
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ViewInject {
+public @interface LayoutIdInject {
     int value() default 0;
 }
