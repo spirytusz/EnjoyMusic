@@ -12,7 +12,6 @@ import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
-import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
 import com.zspirytus.enjoymusic.view.activity.MainActivity;
@@ -25,7 +24,7 @@ import org.simple.eventbus.Subscriber;
  * Created by ZSpirytus on 2018/8/2.
  */
 
-public class PlayMusicService extends Service implements MusicPlayStateObserver {
+public class PlayMusicService extends Service {
 
     private MediaPlayController mMediaPlayController = MediaPlayController.getInstance();
 
@@ -62,15 +61,8 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
         NotificationHelper.getInstance().updateNotificationClearable(true);
     }
 
-    @Override
-    public void onPlayingState(boolean isPlaying) {
-
-    }
-
     private void registerEvent() {
         EventBus.getDefault().register(this);
-
-        mMediaPlayController.registerMusicPlayStateObserver(this);
 
         myHeadSetPlugOutReceiver = new MyHeadSetPlugOutReceiver();
         IntentFilter headsetPlugOutFilter = new IntentFilter();
@@ -87,8 +79,6 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
 
     private void unregisterEvent() {
         EventBus.getDefault().unregister(this);
-
-        mMediaPlayController.unregisterMusicPlayStateObserver(this);
 
         unregisterReceiver(myHeadSetPlugOutReceiver);
 

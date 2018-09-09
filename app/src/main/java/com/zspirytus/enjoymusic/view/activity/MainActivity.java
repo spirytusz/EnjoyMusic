@@ -164,7 +164,8 @@ public class MainActivity extends BaseActivity
     }
 
     private void initData() {
-
+        int pid = android.os.Process.myPid();
+        e("Activity pid == " + pid);
     }
 
     private void startPlayMusicService() {
