@@ -23,6 +23,7 @@ import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
+import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 
@@ -41,7 +42,7 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
 @LayoutIdInject(R.layout.fragment_music_play)
 public class MusicPlayFragment extends BaseFragment
         implements View.OnClickListener, MusicPlayStateObserver,
-        MusicPlayProgressObserver {
+        MusicPlayProgressObserver, PlayedMusicChangeObserver {
 
     @ViewInject(R.id.background)
     private ImageView mBackground;
@@ -85,13 +86,8 @@ public class MusicPlayFragment extends BaseFragment
 
     @Override
     public void onDestroyView() {
-        unRegisterEvent();
+        unregisterEvent();
         super.onDestroyView();
-    }
-
-    @Override
-    public void onProgressChange(int currentPlayingMills) {
-        mSeekBar.setProgress(currentPlayingMills);
     }
 
     @Override
@@ -123,6 +119,17 @@ public class MusicPlayFragment extends BaseFragment
     @Override
     public void onPlayingState(boolean isPlaying) {
         setButtonSrc(isPlaying);
+    }
+
+    @Override
+    public void onProgressChange(int currentPlayingMills) {
+        mSeekBar.setProgress(currentPlayingMills);
+    }
+
+    @Override
+    public void onPlayedMusicChanged(Music music) {
+        setView(music);
+        setupSeekBar(music);
     }
 
     @Subscriber(tag = FinalValue.EventBusTag.MUSIC_NAME_SET)
@@ -185,12 +192,14 @@ public class MusicPlayFragment extends BaseFragment
         EventBus.getDefault().register(this);
         MediaPlayController.getInstance().registerMusicPlayStateObserver(this);
         MediaPlayController.getInstance().registerProgressChange(this);
+        MediaPlayController.getInstance().registerPlayedMusicChangeObserver(this);
     }
 
-    private void unRegisterEvent() {
+    private void unregisterEvent() {
         EventBus.getDefault().unregister(this);
         MediaPlayController.getInstance().unregisterMusicPlayStateObserver(this);
         MediaPlayController.getInstance().unregisterProgressChange(this);
+        MediaPlayController.getInstance().unregisterPlayedMusicChangeObserver(this);
     }
 
     private void loadBlurCover(File coverFile) {

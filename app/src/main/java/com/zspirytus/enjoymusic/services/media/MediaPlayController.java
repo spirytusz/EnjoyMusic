@@ -64,8 +64,6 @@ public class MediaPlayController extends MusicStateObservable
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        /*mPlayingTimer.stop();
-        audioManager.abandonAudioFocus(this);*/
         Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
         play(nextMusic);
         notifyAllPlayedMusicChanged(nextMusic);
@@ -111,6 +109,7 @@ public class MediaPlayController extends MusicStateObservable
                 }
             } else {
                 // selected music is NOT currently playing or pausing
+                notifyAllPlayedMusicChanged(music);
                 prepareMusic(music);
                 MusicCache.getInstance().setCurrentPlayingMusic(music);
                 MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_BUFFERING);
