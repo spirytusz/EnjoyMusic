@@ -1,6 +1,7 @@
 package com.zspirytus.enjoymusic.services;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
@@ -30,8 +31,14 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
     private MyHeadSetPlugOutReceiver myHeadSetPlugOutReceiver;
     private MyHeadSetButtonClickBelowLReceiver myHeadSetButtonClickBelowLReceiver;
 
+    private static Context mServiceContext;
+
     public PlayMusicService() {
 
+    }
+
+    public static Context getContext() {
+        return mServiceContext;
     }
 
     @Override
@@ -39,6 +46,7 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
         super.onCreate();
         registerEvent();
         MyMediaSession.getInstance().init(this);
+        mServiceContext = this.getApplicationContext();
     }
 
     @Override
@@ -50,7 +58,7 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
     public void onDestroy() {
         super.onDestroy();
         unregisterEvent();
-        NotificationHelper.updateNotificationClearable(true);
+        NotificationHelper.getInstance().updateNotificationClearable(true);
     }
 
     @Override
@@ -95,14 +103,14 @@ public class PlayMusicService extends Service implements MusicPlayStateObserver 
 
     @Subscriber(tag = FinalValue.EventBusTag.PLAY)
     public void play(Music music) {
-        NotificationHelper.showNotification(music);
-        NotificationHelper.updateNotificationClearable(false);
+        NotificationHelper.getInstance().showNotification(music);
+        NotificationHelper.getInstance().updateNotificationClearable(false);
         mMediaPlayController.play(music);
     }
 
     @Subscriber(tag = FinalValue.EventBusTag.PAUSE)
     public void pause(Music music) {
-        NotificationHelper.updateNotificationClearable(true);
+        NotificationHelper.getInstance().updateNotificationClearable(true);
         mMediaPlayController.pause();
     }
 

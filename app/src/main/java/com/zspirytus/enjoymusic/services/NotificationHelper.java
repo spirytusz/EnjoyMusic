@@ -3,7 +3,8 @@ package com.zspirytus.enjoymusic.services;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -12,8 +13,8 @@ import android.widget.RemoteViews;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCoverCache;
+import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.view.activity.BaseActivity;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -24,80 +25,109 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class NotificationHelper {
 
-    private static final Context GLOBAL_CONTEXT = BaseActivity.getContext();
+    private static NotificationHelper INSTANCE;
+
     private static final int NOTIFICATION_MANAGER_NOTIFY_ID = 1;
 
-    private static final String TAG = "PlayMusicService";
-    private static final String DEFAULT_CHANNEL_ID = "default";
-    private static final String MUSIC_NOTIFICATION_CHANNEL_ID = "music_notification";
-    private static final String MUSIC_NOTIFICATION_CHANNEL_NAME = "音乐通知栏";
-
     private static final NotificationManager notificationManager
-            = (NotificationManager) GLOBAL_CONTEXT.getSystemService(NOTIFICATION_SERVICE);
+            = (NotificationManager) PlayMusicService.getContext().getSystemService(NOTIFICATION_SERVICE);
 
-    private static Notification currentNotification;
+    private static Notification mCurrentNotification;
     private static String channelId;
+    private static RemoteViews mNotificationContentView;
 
-    public static void showNotification(Music music) {
+    private NotificationHelper() {
+
+    }
+
+    public static NotificationHelper getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new NotificationHelper();
+        }
+        return INSTANCE;
+    }
+
+    public void showNotification(Music music) {
         createNotificationChannel();
 
         createNotification(music);
-        notificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, currentNotification);
+        notificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
     }
 
-    public static void updateNotificationClearable(boolean canClear) {
+    public void updateNotificationClearable(boolean canClear) {
         if (canClear) {
-            currentNotification.flags = Notification.FLAG_AUTO_CANCEL;
+            mCurrentNotification.flags = Notification.FLAG_AUTO_CANCEL;
         } else {
-            currentNotification.flags = Notification.FLAG_NO_CLEAR;
+            mCurrentNotification.flags = Notification.FLAG_NO_CLEAR;
         }
-        notificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, currentNotification);
+        notificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
     }
 
-    private static void createNotificationChannel() {
+    public void setPlayOrPauseBtnRes(int resId) {
+        mNotificationContentView.setImageViewResource(R.id.notification_music_play_pause, resId);
+        notificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
+    }
+
+    private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channelId = MUSIC_NOTIFICATION_CHANNEL_ID;
+            channelId = "music_notification";
             int importance = NotificationManager.IMPORTANCE_MIN;
-            NotificationChannel channel = new NotificationChannel(channelId, MUSIC_NOTIFICATION_CHANNEL_NAME, importance);
+            NotificationChannel channel = new NotificationChannel(channelId, "音乐通知栏", importance);
             notificationManager.createNotificationChannel(channel);
         } else {
-            channelId = DEFAULT_CHANNEL_ID;
+            channelId = "default";
         }
     }
 
-    private static void createNotification(Music music) {
-        currentNotification = new NotificationCompat.Builder(GLOBAL_CONTEXT, channelId)
+    private void createNotification(Music music) {
+        createNotificationView(music);
+        mCurrentNotification = new NotificationCompat.Builder(PlayMusicService.getContext(), channelId)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setCustomContentView(getNotificationView(music))
+                .setCustomContentView(mNotificationContentView)
                 .build();
     }
 
-    private static RemoteViews getNotificationView(Music music) {
-        RemoteViews notificationContentView = new RemoteViews(GLOBAL_CONTEXT.getPackageName(), R.layout.notification_music_large);
+    private void createNotificationView(Music music) {
+        mNotificationContentView = new RemoteViews(PlayMusicService.getContext().getPackageName(), R.layout.notification_music_large);
         Bitmap cover = MusicCoverCache.getInstance().get(music.hashCode());
         if (cover != null) {
-            notificationContentView.setImageViewBitmap(R.id.notification_music_cover, cover);
+            mNotificationContentView.setImageViewBitmap(R.id.notification_music_cover, cover);
         } else {
             String coverUri = music.getmMusicThumbAlbumUri();
             if (coverUri != null) {
                 Bitmap newCover = BitmapFactory.decodeFile(coverUri);
                 MusicCoverCache.getInstance().put(music.hashCode(), newCover);
-                notificationContentView.setImageViewBitmap(R.id.notification_music_cover, newCover);
+                mNotificationContentView.setImageViewBitmap(R.id.notification_music_cover, newCover);
             } else {
                 // no cover, set default.
             }
         }
-
         String musicName = music.getmMusicName();
         if (musicName != null) {
-            notificationContentView.setTextViewText(R.id.notification_music_name, musicName);
+            mNotificationContentView.setTextViewText(R.id.notification_music_name, musicName);
         }
-
         String musicArtist = music.getmMusicArtist();
         if (musicArtist != null) {
-            notificationContentView.setTextViewText(R.id.notification_music_artist, musicArtist);
+            mNotificationContentView.setTextViewText(R.id.notification_music_artist, musicArtist);
         }
-        return notificationContentView;
+        Intent intent = new Intent(FinalValue.StatusBarEvent.ACTION_NAME);
+        intent.putExtra(FinalValue.StatusBarEvent.EXTRA, FinalValue.StatusBarEvent.PREVIOUS);
+        PendingIntent previousMusicPendingIntent = createPendingIntentByExtra(intent, 0, FinalValue.StatusBarEvent.EXTRA, FinalValue.StatusBarEvent.PREVIOUS);
+        mNotificationContentView.setOnClickPendingIntent(R.id.notification_music_previous, previousMusicPendingIntent);
+
+        PendingIntent playOrPauseMusicPendingIntent = createPendingIntentByExtra(intent, 1, FinalValue.StatusBarEvent.EXTRA, FinalValue.StatusBarEvent.PLAY_OR_PAUSE);
+        mNotificationContentView.setOnClickPendingIntent(R.id.notification_music_play_pause, playOrPauseMusicPendingIntent);
+
+        PendingIntent nextMusicPendingIntent = createPendingIntentByExtra(intent, 2, FinalValue.StatusBarEvent.EXTRA, FinalValue.StatusBarEvent.NEXT);
+        mNotificationContentView.setOnClickPendingIntent(R.id.notification_music_next, nextMusicPendingIntent);
+
+        PendingIntent singleClickPendingIntent = createPendingIntentByExtra(intent, 4, FinalValue.StatusBarEvent.EXTRA, FinalValue.StatusBarEvent.SINGLE_CLICK);
+        mNotificationContentView.setOnClickPendingIntent(R.id.notification, singleClickPendingIntent);
+    }
+
+    private PendingIntent createPendingIntentByExtra(Intent intent, int requestCode, String extra, String value) {
+        intent.putExtra(extra, value);
+        return PendingIntent.getBroadcast(PlayMusicService.getContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
 }

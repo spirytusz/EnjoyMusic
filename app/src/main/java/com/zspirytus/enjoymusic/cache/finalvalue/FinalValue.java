@@ -19,4 +19,13 @@ public interface FinalValue {
     interface AnimationProperty {
         String ALPHA = "alpha";
     }
+
+    interface StatusBarEvent {
+        String ACTION_NAME = "com.zspirytus.enjoymusic.STATUS_BAR_ACTION";
+        String EXTRA = "statusBarExtra";
+        String PLAY_OR_PAUSE = "playOrPause";
+        String NEXT = "next";
+        String PREVIOUS = "previous";
+        String SINGLE_CLICK = "singleClick";
+    }
 }
