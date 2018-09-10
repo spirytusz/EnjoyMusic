@@ -1,6 +1,5 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
-import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +18,7 @@ import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
+import com.zspirytus.enjoymusic.utils.ObjectAnimationUtil;
 
 import org.simple.eventbus.EventBus;
 
@@ -42,14 +42,14 @@ public class MusicListFragment extends BaseFragment
         implements MusicListAdapter.OnItemClickListener {
 
     @ViewInject(R.id.music_list)
-    private RecyclerView mMusicList;
+    private RecyclerView mMusicRecyclerView;
     @ViewInject(R.id.music_list_load_progress_bar)
     private ProgressBar mMusicListLoadProgressBar;
     @ViewInject(R.id.music_list_fragment_info_tv)
     private TextView mInfoTextView;
 
-    private List<Music> musicList;
-    private MusicListAdapter adapter;
+    private List<Music> mMusicList;
+    private MusicListAdapter mMusicRecyclerViewAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -65,7 +65,7 @@ public class MusicListFragment extends BaseFragment
 
     @Override
     public void onItemClick(View view, int position) {
-        Music music = musicList.get(position);
+        Music music = mMusicList.get(position);
         ForegroundMusicController.getInstance().play(music);
         EventBus.getDefault().post(music, FinalValue.EventBusTag.MUSIC_NAME_SET);
         EventBus.getDefault().post(music, FinalValue.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT);
@@ -95,17 +95,17 @@ public class MusicListFragment extends BaseFragment
 
                     @Override
                     public void onNext(List<Music> s) {
-                        musicList = s;
-                        adapter = new MusicListAdapter();
+                        mMusicList = s;
+                        mMusicRecyclerViewAdapter = new MusicListAdapter();
                         final LinearLayoutManager layoutManager = new LinearLayoutManager(getParentActivity());
                         layoutManager.setSmoothScrollbarEnabled(true);
                         layoutManager.setAutoMeasureEnabled(true);
-                        adapter.setItemList(s);
-                        mMusicList.setLayoutManager(layoutManager);
-                        mMusicList.setHasFixedSize(true);
-                        mMusicList.setNestedScrollingEnabled(false);
-                        adapter.setOnItemClickListener(MusicListFragment.this);
-                        mMusicList.setAdapter(adapter);
+                        mMusicRecyclerViewAdapter.setItemList(s);
+                        mMusicRecyclerView.setLayoutManager(layoutManager);
+                        mMusicRecyclerView.setHasFixedSize(true);
+                        mMusicRecyclerView.setNestedScrollingEnabled(false);
+                        mMusicRecyclerViewAdapter.setOnItemClickListener(MusicListFragment.this);
+                        mMusicRecyclerView.setAdapter(mMusicRecyclerViewAdapter);
                         EventBus.getDefault().post(!s.isEmpty(), FinalValue.EventBusTag.SET_DFAB_LISTENER);
                     }
 
@@ -125,20 +125,16 @@ public class MusicListFragment extends BaseFragment
 
     private void playAnimator(boolean isLoadFinish) {
         if (isLoadFinish) {
-            ObjectAnimator animatorOfProgressBar = ObjectAnimator.ofFloat(mMusicListLoadProgressBar, "alpha", 1f, 0f);
-            animatorOfProgressBar.setDuration(FinalValue.AnimationDuration.SHORT_DURATION);
-            ObjectAnimator animatorOfList = ObjectAnimator.ofFloat(mMusicList, "alpha", 0f, 1f);
-            animatorOfList.setDuration(FinalValue.AnimationDuration.SHORT_DURATION);
-            animatorOfProgressBar.start();
+            ObjectAnimationUtil.ofFloat(mMusicListLoadProgressBar, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
             mMusicListLoadProgressBar.setVisibility(View.GONE);
-            animatorOfList.start();
-            if (musicList != null && musicList.size() != 0) {
-                mMusicList.setVisibility(View.VISIBLE);
+            if (mMusicList != null && mMusicList.size() != 0) {
+                ObjectAnimationUtil.ofFloat(mMusicRecyclerView, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
+                mMusicRecyclerView.setVisibility(View.VISIBLE);
             } else {
                 showInfoTextView(true);
             }
         } else {
-            mMusicList.setVisibility(View.GONE);
+            mMusicRecyclerView.setVisibility(View.GONE);
             mMusicListLoadProgressBar.setVisibility(View.VISIBLE);
         }
     }

@@ -1,6 +1,5 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
-import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +24,7 @@ import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
+import com.zspirytus.enjoymusic.utils.ObjectAnimationUtil;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 
 import org.simple.eventbus.EventBus;
@@ -163,21 +163,13 @@ public class MusicPlayFragment extends BaseFragment
 
     private void setButtonSrc(boolean isPlaying) {
         if (isPlaying) {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
-            animator.setDuration(FinalValue.AnimationDuration.SHORT_DURATION);
-            animator.start();
+            ObjectAnimationUtil.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
             Glide.with(this).load(R.drawable.ic_pause_black_48dp).into(mPlayOrPauseButton);
-            animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
-            animator.setDuration(FinalValue.AnimationDuration.SHORT_DURATION);
-            animator.start();
+            ObjectAnimationUtil.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
         } else {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
-            animator.setDuration(FinalValue.AnimationDuration.SHORT_DURATION);
-            animator.start();
+            ObjectAnimationUtil.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
             Glide.with(this).load(R.drawable.ic_play_arrow_black_48dp).into(mPlayOrPauseButton);
-            animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
-            animator.setDuration(FinalValue.AnimationDuration.SHORT_DURATION);
-            animator.start();
+            ObjectAnimationUtil.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
         }
     }
 

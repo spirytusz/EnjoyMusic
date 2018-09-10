@@ -27,8 +27,8 @@ public class MusicCache {
     private static final String CURRENT_PLAYING_MUSIC = "currentPlayingMusic";
     private static final String CURRENT_PLAYING_MUSIC_STRING_KEY = "currentPlayingMusicString";
 
-    private static Music currentPlayingMusic;
-    private static List<Music> musicList;
+    private Music currentPlayingMusic;
+    private List<Music> musicList;
 
     private MusicCache() {
         musicList = new ArrayList<>();

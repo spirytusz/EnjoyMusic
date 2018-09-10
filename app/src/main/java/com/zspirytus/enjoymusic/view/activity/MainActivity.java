@@ -24,6 +24,7 @@ import com.zspirytus.enjoymusic.interfaces.ViewInject;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
+import com.zspirytus.enjoymusic.utils.ObjectAnimationUtil;
 import com.zspirytus.enjoymusic.view.fragment.MusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.mylibrary.DraggableFloatingActionButton;
@@ -184,9 +185,22 @@ public class MainActivity extends BaseActivity
         }
         mFragmentTransaction.show(mMusicListFragment);
         mFragmentTransaction.commitAllowingStateLoss();
-        mToolbar.setVisibility(View.VISIBLE);
-        mFab.setVisibility(View.VISIBLE);
+        playWidgetVisibilityAnimation(View.VISIBLE);
         isMusicPlayFragment = false;
+    }
+
+    private void playWidgetVisibilityAnimation(int visibility) {
+        if (visibility == View.VISIBLE) {
+            ObjectAnimationUtil.ofFloat(mToolbar, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
+            mToolbar.setVisibility(View.VISIBLE);
+            ObjectAnimationUtil.ofFloat(mFab, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
+            mFab.setVisibility(View.VISIBLE);
+        } else {
+            ObjectAnimationUtil.ofFloat(mToolbar, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
+            mToolbar.setVisibility(View.GONE);
+            ObjectAnimationUtil.ofFloat(mFab, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
+            mFab.setVisibility(View.GONE);
+        }
     }
 
     @Subscriber(tag = FinalValue.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT)
@@ -201,8 +215,7 @@ public class MainActivity extends BaseActivity
             mFragmentTransaction.hide(mMusicListFragment);
         mFragmentTransaction.show(mMusicPlayFragment);
         mFragmentTransaction.commitAllowingStateLoss();
-        mToolbar.setVisibility(View.GONE);
-        mFab.setVisibility(View.GONE);
+        playWidgetVisibilityAnimation(View.GONE);
         isMusicPlayFragment = true;
     }
 

@@ -31,11 +31,11 @@ public class NotificationHelper {
 
     private static final int NOTIFICATION_MANAGER_NOTIFY_ID = 1;
 
-    private static final NotificationManager notificationManager
+    private static final NotificationManager mNotificationManager
             = (NotificationManager) MyApplication.getGlobalContext().getSystemService(NOTIFICATION_SERVICE);
 
     private static Notification mCurrentNotification;
-    private static String channelId;
+    private static String mChannelId;
     private static RemoteViews mNotificationContentView;
 
     private NotificationHelper() {
@@ -50,41 +50,43 @@ public class NotificationHelper {
     }
 
     public void showNotification(Music music) {
-        if (channelId == null) {
+        if (mChannelId == null) {
             createNotificationChannel();
         }
         createNotification(music);
-        notificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
+        mNotificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
     }
 
     public void updateNotificationClearable(boolean canClear) {
-        if (canClear && mCurrentNotification != null) {
-            mCurrentNotification.flags = Notification.FLAG_AUTO_CANCEL;
-        } else {
-            mCurrentNotification.flags = Notification.FLAG_NO_CLEAR;
+        if (mCurrentNotification != null) {
+            if (canClear) {
+                mCurrentNotification.flags = Notification.FLAG_AUTO_CANCEL;
+            } else {
+                mCurrentNotification.flags = Notification.FLAG_NO_CLEAR;
+            }
         }
-        notificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
+        mNotificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
     }
 
     public void setPlayOrPauseBtnRes(int resId) {
         mNotificationContentView.setImageViewResource(R.id.notification_music_play_pause, resId);
-        notificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
+        mNotificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
     }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channelId = "music_notification";
+            mChannelId = "music_notification";
             int importance = NotificationManager.IMPORTANCE_MIN;
-            NotificationChannel channel = new NotificationChannel(channelId, "音乐通知栏", importance);
-            notificationManager.createNotificationChannel(channel);
+            NotificationChannel channel = new NotificationChannel(mChannelId, "音乐通知栏", importance);
+            mNotificationManager.createNotificationChannel(channel);
         } else {
-            channelId = "default";
+            mChannelId = "default";
         }
     }
 
     private void createNotification(Music music) {
         createNotificationView(music);
-        mCurrentNotification = new NotificationCompat.Builder(MyApplication.getGlobalContext(), channelId)
+        mCurrentNotification = new NotificationCompat.Builder(MyApplication.getGlobalContext(), mChannelId)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setCustomContentView(mNotificationContentView)
                 .build();
