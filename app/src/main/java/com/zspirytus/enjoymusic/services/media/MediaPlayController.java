@@ -7,10 +7,10 @@ import android.os.PowerManager;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.zspirytus.enjoymusic.cache.MusicCache;
+import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.listeners.observable.MusicStateObservable;
-import com.zspirytus.enjoymusic.view.activity.BaseActivity;
 
 import java.io.IOException;
 
@@ -40,8 +40,8 @@ public class MediaPlayController extends MusicStateObservable
 
         // init media obj
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setWakeMode(BaseActivity.getContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        audioManager = (AudioManager) BaseActivity.getContext().getSystemService(Service.AUDIO_SERVICE);
+        mediaPlayer.setWakeMode(MyApplication.getGlobalContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        audioManager = (AudioManager) MyApplication.getGlobalContext().getSystemService(Service.AUDIO_SERVICE);
 
         // set listeners
         mediaPlayer.setOnPreparedListener(this);
@@ -106,6 +106,7 @@ public class MediaPlayController extends MusicStateObservable
                 } else {
                     // else, prepare it
                     prepareMusic(music);
+                    notifyAllPlayedMusicChanged(music);
                 }
             } else {
                 // selected music is NOT currently playing or pausing
@@ -150,7 +151,7 @@ public class MediaPlayController extends MusicStateObservable
 
     private void prepareMusic(Music music) throws IOException {
         mediaPlayer.reset();
-        mediaPlayer.setDataSource(music.getPath());
+        mediaPlayer.setDataSource(music.getMusicFilePath());
         mediaPlayer.prepareAsync();
     }
 

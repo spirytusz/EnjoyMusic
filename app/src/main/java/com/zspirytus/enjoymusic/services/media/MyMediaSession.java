@@ -60,10 +60,10 @@ public class MyMediaSession {
 
     public void setMetaData(Music music) {
         MediaMetadataCompat.Builder metaData = new MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, music.getmMusicName())
-                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, music.getmMusicArtist())
-                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, music.getDuration())
-                .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeFile(music.getmMusicThumbAlbumUri()));
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, music.getMusicName())
+                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, music.getMusicArtist())
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, music.getMusicDuration())
+                .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeFile(music.getMusicThumbAlbumCoverPath()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             metaData.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, MusicCache.getInstance().getMusicList().size());

@@ -134,24 +134,24 @@ public class MusicPlayFragment extends BaseFragment
 
     @Subscriber(tag = FinalValue.EventBusTag.MUSIC_NAME_SET)
     public void setView(Music music) {
-        mToolbar.setTitle(music.getmMusicName());
-        String path = music.getmMusicThumbAlbumUri();
+        mToolbar.setTitle(music.getMusicName());
+        String path = music.getMusicThumbAlbumCoverPath();
         if (path != null) {
             File coverFile = new File(path);
             Glide.with(this).load(coverFile).into(mCover);
             loadBlurCover(coverFile);
         }
-        mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getDuration()));
+        mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
         setupSeekBar(music);
     }
 
     private void initView() {
         if (mCurrentPlayingMusic != null) {
-            String musicAlbumUri = mCurrentPlayingMusic.getmMusicThumbAlbumUri();
-            mToolbar.setTitle(mCurrentPlayingMusic.getmMusicName());
+            String musicAlbumUri = mCurrentPlayingMusic.getMusicThumbAlbumCoverPath();
+            mToolbar.setTitle(mCurrentPlayingMusic.getMusicName());
             Glide.with(this).load(new File(musicAlbumUri != null ? musicAlbumUri : ""))
                     .into(mCover);
-            mTotalTime.setText(TimeUtil.convertLongToMinsSec(mCurrentPlayingMusic.getDuration()));
+            mTotalTime.setText(TimeUtil.convertLongToMinsSec(mCurrentPlayingMusic.getMusicDuration()));
         }
         setButtonSrc(MediaPlayController.getInstance().isPlaying());
     }
@@ -212,7 +212,7 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     private void setupSeekBar(Music music) {
-        mSeekBar.setMax((int) (music.getDuration() / 1000));
+        mSeekBar.setMax((int) (music.getMusicDuration() / 1000));
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

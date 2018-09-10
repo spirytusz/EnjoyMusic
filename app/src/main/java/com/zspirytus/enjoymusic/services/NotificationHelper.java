@@ -13,13 +13,14 @@ import android.widget.RemoteViews;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCoverCache;
+import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
 import com.zspirytus.enjoymusic.entity.Music;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
- * Notification帮助类，负责显示Notification
+ * Notification帮助类，负责显示、更新Notification
  * Created by ZSpirytus on 2018/8/11.
  */
 
@@ -30,7 +31,7 @@ public class NotificationHelper {
     private static final int NOTIFICATION_MANAGER_NOTIFY_ID = 1;
 
     private static final NotificationManager notificationManager
-            = (NotificationManager) PlayMusicService.getContext().getSystemService(NOTIFICATION_SERVICE);
+            = (NotificationManager) MyApplication.getGlobalContext().getSystemService(NOTIFICATION_SERVICE);
 
     private static Notification mCurrentNotification;
     private static String channelId;
@@ -48,8 +49,9 @@ public class NotificationHelper {
     }
 
     public void showNotification(Music music) {
-        createNotificationChannel();
-
+        if (channelId == null) {
+            createNotificationChannel();
+        }
         createNotification(music);
         notificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
     }
@@ -81,19 +83,19 @@ public class NotificationHelper {
 
     private void createNotification(Music music) {
         createNotificationView(music);
-        mCurrentNotification = new NotificationCompat.Builder(PlayMusicService.getContext(), channelId)
+        mCurrentNotification = new NotificationCompat.Builder(MyApplication.getGlobalContext(), channelId)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setCustomContentView(mNotificationContentView)
                 .build();
     }
 
     private void createNotificationView(Music music) {
-        mNotificationContentView = new RemoteViews(PlayMusicService.getContext().getPackageName(), R.layout.notification_music_large);
+        mNotificationContentView = new RemoteViews(MyApplication.getGlobalContext().getPackageName(), R.layout.notification_music_large);
         Bitmap cover = MusicCoverCache.getInstance().get(music.hashCode());
         if (cover != null) {
             mNotificationContentView.setImageViewBitmap(R.id.notification_music_cover, cover);
         } else {
-            String coverUri = music.getmMusicThumbAlbumUri();
+            String coverUri = music.getMusicThumbAlbumCoverPath();
             if (coverUri != null) {
                 Bitmap newCover = BitmapFactory.decodeFile(coverUri);
                 MusicCoverCache.getInstance().put(music.hashCode(), newCover);
@@ -102,11 +104,11 @@ public class NotificationHelper {
                 // no cover, set default.
             }
         }
-        String musicName = music.getmMusicName();
+        String musicName = music.getMusicName();
         if (musicName != null) {
             mNotificationContentView.setTextViewText(R.id.notification_music_name, musicName);
         }
-        String musicArtist = music.getmMusicArtist();
+        String musicArtist = music.getMusicArtist();
         if (musicArtist != null) {
             mNotificationContentView.setTextViewText(R.id.notification_music_artist, musicArtist);
         }
@@ -127,7 +129,7 @@ public class NotificationHelper {
 
     private PendingIntent createPendingIntentByExtra(Intent intent, int requestCode, String extra, String value) {
         intent.putExtra(extra, value);
-        return PendingIntent.getBroadcast(PlayMusicService.getContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(MyApplication.getGlobalContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
 }

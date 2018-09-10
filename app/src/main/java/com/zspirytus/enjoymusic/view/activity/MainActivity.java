@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.cache.MusicCache;
 import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -78,8 +77,6 @@ public class MainActivity extends BaseActivity
     @Override
     public void onDestroy() {
         unregisterEvent();
-        MusicCache musicCache = MusicCache.getInstance();
-        musicCache.saveCurrentPlayingMusic();
         ForegroundMusicController.getInstance().release();
         super.onDestroy();
     }
@@ -164,8 +161,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void initData() {
-        int pid = android.os.Process.myPid();
-        e("Activity pid == " + pid);
+
     }
 
     private void startPlayMusicService() {

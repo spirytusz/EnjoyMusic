@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
@@ -44,6 +45,8 @@ public class MusicListFragment extends BaseFragment
     private RecyclerView mMusicList;
     @ViewInject(R.id.music_list_load_progress_bar)
     private ProgressBar mMusicListLoadProgressBar;
+    @ViewInject(R.id.music_list_fragment_info_tv)
+    private TextView mInfoTextView;
 
     private List<Music> musicList;
     private MusicListAdapter adapter;
@@ -108,7 +111,9 @@ public class MusicListFragment extends BaseFragment
 
                     @Override
                     public void onError(Throwable e) {
-                        e(e.getMessage());
+                        e.printStackTrace();
+                        showInfoTextView(false);
+                        mMusicListLoadProgressBar.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -127,10 +132,23 @@ public class MusicListFragment extends BaseFragment
             animatorOfProgressBar.start();
             mMusicListLoadProgressBar.setVisibility(View.GONE);
             animatorOfList.start();
-            mMusicList.setVisibility(View.VISIBLE);
+            if (musicList != null && musicList.size() != 0) {
+                mMusicList.setVisibility(View.VISIBLE);
+            } else {
+                showInfoTextView(true);
+            }
         } else {
             mMusicList.setVisibility(View.GONE);
             mMusicListLoadProgressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showInfoTextView(boolean isSuccessAndNoMusic) {
+        mInfoTextView.setVisibility(View.VISIBLE);
+        if (isSuccessAndNoMusic) {
+            mInfoTextView.setText("No music in this device");
+        } else {
+            mInfoTextView.setText("Error");
         }
     }
 

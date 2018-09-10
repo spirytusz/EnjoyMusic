@@ -1,6 +1,5 @@
 package com.zspirytus.enjoymusic.view.activity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,16 +21,11 @@ import java.lang.reflect.Field;
 public abstract class BaseActivity extends AppCompatActivity
         implements ZSPermission.OnPermissionListener {
 
-    private static Context context;
-    private static AppCompatActivity appCompatActivity;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         autoInjectLayoutId();
         autoInjectAllField();
-        context = getApplicationContext();
-        appCompatActivity = this;
     }
 
     @Override
@@ -76,8 +70,6 @@ public abstract class BaseActivity extends AppCompatActivity
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
         }
     }
 
@@ -95,14 +87,6 @@ public abstract class BaseActivity extends AppCompatActivity
     /**
      * Log or Global Tools
      */
-
-    public static Context getContext() {
-        return context;
-    }
-
-    public static AppCompatActivity getActivity() {
-        return appCompatActivity;
-    }
 
     public final void e(String message) {
         String TAG = this.getClass().getSimpleName();

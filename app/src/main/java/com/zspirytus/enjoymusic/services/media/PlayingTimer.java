@@ -1,7 +1,5 @@
 package com.zspirytus.enjoymusic.services.media;
 
-import com.zspirytus.enjoymusic.view.activity.BaseActivity;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -37,13 +35,8 @@ public class PlayingTimer {
         mTimerTask = new TimerTask() {
             @Override
             public void run() {
-                BaseActivity.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        int currentPlayingSeconds = mMediaPlayController.getCurrentPosition() / 1000;
-                        mMediaPlayController.notifyAllMusicPlayProgressChange(currentPlayingSeconds);
-                    }
-                });
+                int currentPlayingSeconds = mMediaPlayController.getCurrentPosition() / 1000;
+                mMediaPlayController.notifyAllMusicPlayProgressChange(currentPlayingSeconds);
             }
         };
         mTimer.schedule(mTimerTask, 0, SECONDS);

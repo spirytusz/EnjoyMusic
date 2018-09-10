@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.zspirytus.enjoymusic.cache.MusicCache;
+import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.utils.RandomUtil;
-import com.zspirytus.enjoymusic.view.activity.BaseActivity;
 
 import java.util.List;
 
@@ -72,13 +72,13 @@ public class MusicPlayOrderManager {
     }
 
     private void saveMode() {
-        SharedPreferences.Editor editor = BaseActivity.getContext().getSharedPreferences(MODE_FILE_NAME, Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = MyApplication.getGlobalContext().getSharedPreferences(MODE_FILE_NAME, Context.MODE_PRIVATE).edit();
         editor.putInt(MODE_KEY, mMode);
         editor.apply();
     }
 
     private int restoreMode() {
-        SharedPreferences pref = BaseActivity.getContext().getSharedPreferences(MODE_FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences pref = MyApplication.getGlobalContext().getSharedPreferences(MODE_FILE_NAME, Context.MODE_PRIVATE);
         int mode = pref.getInt(MODE_KEY, MODE_ORDER);
         return mode;
     }

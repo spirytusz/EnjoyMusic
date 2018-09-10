@@ -56,12 +56,12 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private void bindNormalItem(final MyViewHolder holder, int position) {
         Music item = mItemList.get(position);
-        if (item.getmMusicThumbAlbumUri() != null) {
-            Glide.with(mContext).load(new File(item.getmMusicThumbAlbumUri()))
+        if (item.getMusicThumbAlbumCoverPath() != null) {
+            Glide.with(mContext).load(new File(item.getMusicThumbAlbumCoverPath()))
                     .into(holder.mCover);
         }
-        holder.mMusicName.setText(item.getmMusicName());
-        holder.mMusicArtist.setText(item.getmMusicArtist());
+        holder.mMusicName.setText(item.getMusicName());
+        holder.mMusicArtist.setText(item.getMusicArtist());
         holder.mMoreVert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -9,45 +9,51 @@ import java.io.Serializable;
 
 public class Music implements Serializable {
 
-    private String path;
-    private String mMusicName;
-    private String mMusicThumbAlbumUri;
-    private String mMusicArtist;
-    private long duration;
-    private String size;
+    private String musicFilePath;
+    private String musicName;
+    private String musicAlbumName;
+    private String musicThumbAlbumCoverPath;
+    private String musicArtist;
+    private long musicDuration;
+    private String musicFileSize;
 
-    public Music(String path, String mMusicName, String mMusicArtist, String mMusicThumbAlbumUri, long duration, String size) {
-        this.path = path;
-        this.mMusicName = mMusicName;
-        this.mMusicThumbAlbumUri = mMusicThumbAlbumUri;
-        this.mMusicArtist = mMusicArtist;
-        this.duration = duration;
-        this.size = size;
+    public Music(String musicFilePath, String musicName, String musicArtist, String musicAlbumName, String musicThumbAlbumCoverPath, long musicDuration, String musicFileSize) {
+        this.musicFilePath = musicFilePath;
+        this.musicName = musicName;
+        this.musicAlbumName = musicAlbumName;
+        this.musicThumbAlbumCoverPath = musicThumbAlbumCoverPath;
+        this.musicArtist = musicArtist;
+        this.musicDuration = musicDuration;
+        this.musicFileSize = musicFileSize;
     }
 
-    public String getPath() {
-        return path;
+    public String getMusicFilePath() {
+        return musicFilePath;
     }
 
 
-    public String getmMusicName() {
-        return mMusicName;
+    public String getMusicName() {
+        return musicName;
     }
 
-    public String getmMusicThumbAlbumUri() {
-        return mMusicThumbAlbumUri;
+    public String getMusicAlbumName() {
+        return musicAlbumName;
     }
 
-    public String getmMusicArtist() {
-        return mMusicArtist;
+    public String getMusicThumbAlbumCoverPath() {
+        return musicThumbAlbumCoverPath;
     }
 
-    public String getSize() {
-        return size;
+    public String getMusicArtist() {
+        return musicArtist;
     }
 
-    public long getDuration() {
-        return duration;
+    public String getMusicFileSize() {
+        return musicFileSize;
+    }
+
+    public long getMusicDuration() {
+        return musicDuration;
     }
 
     @Override
@@ -63,36 +69,39 @@ public class Music implements Serializable {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        if(path!= null){
-            stringBuilder.append("path:"+path+", ");
+        if (musicFilePath != null) {
+            stringBuilder.append("musicFilePath:" + musicFilePath + ", ");
         } else {
-            stringBuilder.append("path:null"+", ");
+            stringBuilder.append("musicFilePath:null, ");
         }
-        if(mMusicName!= null){
-            stringBuilder.append("mMusicName:"+mMusicName+", ");
+        if (musicName != null) {
+            stringBuilder.append("musicName:" + musicName + ", ");
         } else {
-            stringBuilder.append("mMusicName:null"+", ");
+            stringBuilder.append("musicName:null, ");
         }
-        if(mMusicThumbAlbumUri!= null){
-            stringBuilder.append("mMusicThumbAlbumUri:"+mMusicThumbAlbumUri+", ");
+        if (musicAlbumName != null) {
+            stringBuilder.append("musicThumbAlbumCoverPath:" + musicThumbAlbumCoverPath + ", ");
+        }
+        if (musicThumbAlbumCoverPath != null) {
+            stringBuilder.append("musicAlbumName:" + musicAlbumName + ", ");
         } else {
-            stringBuilder.append("mMusicThumbAlbumUri:null"+", ");
+            stringBuilder.append("musicAlbumName:null, ");
         }
-        if(mMusicArtist!= null){
-            stringBuilder.append("mMusicArtist:"+mMusicArtist+", ");
+        if (musicArtist != null) {
+            stringBuilder.append("musicArtist:" + musicArtist + ", ");
         } else {
-            stringBuilder.append("mMusicArtist:null"+", ");
+            stringBuilder.append("musicArtist:null, ");
         }
-        if (duration != 0) {
-            stringBuilder.append("duration:"+duration+", ");
+        if (musicDuration != 0) {
+            stringBuilder.append("musicDuration:" + musicDuration + ", ");
         } else {
-            stringBuilder.append("duration:0" + ", ");
+            stringBuilder.append("musicDuration:0, ");
         }
-        if(size!= null){
-            stringBuilder.append("size:"+size+" ");
+        if (musicFileSize != null) {
+            stringBuilder.append("musicFileSize:" + musicFileSize + " ");
         } else {
-            stringBuilder.append("size:null ");
+            stringBuilder.append("musicFileSize:null");
         }
-        return "{"+stringBuilder.toString()+"}";
+        return "{" + stringBuilder.toString() + "}";
     }
 }
