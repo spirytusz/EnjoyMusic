@@ -135,11 +135,11 @@ public class MusicPlayFragment extends BaseFragment
     @Subscriber(tag = FinalValue.EventBusTag.MUSIC_NAME_SET)
     public void setView(Music music) {
         mToolbar.setTitle(music.getMusicName());
-        String path = music.getMusicThumbAlbumCoverPath();
-        if (path != null) {
-            File coverFile = new File(path);
+        String musicThumbAlbumCoverPath = music.getMusicThumbAlbumCoverPath();
+        if (musicThumbAlbumCoverPath != null) {
+            File coverFile = new File(musicThumbAlbumCoverPath);
             Glide.with(this).load(coverFile).into(mCover);
-            loadBlurCover(coverFile);
+            // loadBlurCover(coverFile);
         }
         mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
         setupSeekBar(music);
@@ -164,19 +164,19 @@ public class MusicPlayFragment extends BaseFragment
     private void setButtonSrc(boolean isPlaying) {
         if (isPlaying) {
             ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
-            animator.setDuration(382);
+            animator.setDuration(FinalValue.AnimationDuration.SHORT_DURATION);
             animator.start();
-            Glide.with(this).load(R.drawable.ic_pause_white_48dp).into(mPlayOrPauseButton);
+            Glide.with(this).load(R.drawable.ic_pause_black_48dp).into(mPlayOrPauseButton);
             animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
-            animator.setDuration(382);
+            animator.setDuration(FinalValue.AnimationDuration.SHORT_DURATION);
             animator.start();
         } else {
             ObjectAnimator animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
-            animator.setDuration(382);
+            animator.setDuration(FinalValue.AnimationDuration.SHORT_DURATION);
             animator.start();
-            Glide.with(this).load(R.drawable.ic_play_arrow_white_48dp).into(mPlayOrPauseButton);
+            Glide.with(this).load(R.drawable.ic_play_arrow_black_48dp).into(mPlayOrPauseButton);
             animator = ObjectAnimator.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
-            animator.setDuration(382);
+            animator.setDuration(FinalValue.AnimationDuration.SHORT_DURATION);
             animator.start();
         }
     }

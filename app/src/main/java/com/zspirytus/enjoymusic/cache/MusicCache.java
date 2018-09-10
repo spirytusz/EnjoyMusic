@@ -23,7 +23,7 @@ import java.util.List;
 
 public class MusicCache {
 
-    private static final MusicCache INSTANCE = new MusicCache();
+    private static MusicCache INSTANCE;
     private static final String CURRENT_PLAYING_MUSIC = "currentPlayingMusic";
     private static final String CURRENT_PLAYING_MUSIC_STRING_KEY = "currentPlayingMusicString";
 
@@ -32,10 +32,12 @@ public class MusicCache {
 
     private MusicCache() {
         musicList = new ArrayList<>();
-        restoreCurrentPlayingMusic();
     }
 
     public static MusicCache getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new MusicCache();
+        }
         return INSTANCE;
     }
 
@@ -103,6 +105,7 @@ public class MusicCache {
             }
             cursor.close();
         }
+        restoreCurrentPlayingMusic();
     }
 
     private String getThumbAlbum(String album_id) {

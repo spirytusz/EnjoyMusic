@@ -46,9 +46,7 @@
         </service>
 
         <receiver android:name=".receivers.StatusBarEventReceiver">
-            <intent-filter>
-                <action android:name="com.zspirytus.enjoymusic.STATUS_BAR_ACTION" />
-            </intent-filter>
+
         </receiver>
 
     </application>

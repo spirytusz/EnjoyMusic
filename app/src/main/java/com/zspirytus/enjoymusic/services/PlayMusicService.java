@@ -57,7 +57,6 @@ public class PlayMusicService extends Service
         unregisterEvent();
         NotificationHelper.getInstance().updateNotificationClearable(true);
         MusicCache.getInstance().saveCurrentPlayingMusic();
-        System.out.println("PlayMusicService#onDestroy!");
     }
 
     @Override

@@ -210,7 +210,7 @@ public class MainActivity extends BaseActivity
     @Subscriber(tag = FinalValue.EventBusTag.SET_DFAB_LISTENER)
     public void setDraggableFabListener(boolean hasMusicInDevice) {
         if (hasMusicInDevice) {
-            mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListenerImpl(mFab));
+            mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListenerImpl());
         }
     }
 

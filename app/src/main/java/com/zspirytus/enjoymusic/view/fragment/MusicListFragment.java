@@ -126,9 +126,9 @@ public class MusicListFragment extends BaseFragment
     private void playAnimator(boolean isLoadFinish) {
         if (isLoadFinish) {
             ObjectAnimator animatorOfProgressBar = ObjectAnimator.ofFloat(mMusicListLoadProgressBar, "alpha", 1f, 0f);
-            animatorOfProgressBar.setDuration(382);
+            animatorOfProgressBar.setDuration(FinalValue.AnimationDuration.SHORT_DURATION);
             ObjectAnimator animatorOfList = ObjectAnimator.ofFloat(mMusicList, "alpha", 0f, 1f);
-            animatorOfList.setDuration(382);
+            animatorOfList.setDuration(FinalValue.AnimationDuration.SHORT_DURATION);
             animatorOfProgressBar.start();
             mMusicListLoadProgressBar.setVisibility(View.GONE);
             animatorOfList.start();

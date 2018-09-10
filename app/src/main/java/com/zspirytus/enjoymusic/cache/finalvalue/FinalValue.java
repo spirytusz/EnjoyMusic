@@ -21,6 +21,12 @@ public interface FinalValue {
         String ALPHA = "alpha";
     }
 
+    interface AnimationDuration {
+        int SHORT_SHORT_DURATION = 145;
+        int SHORT_DURATION = 382;
+        int LONG_DURATION = 618;
+    }
+
     interface StatusBarEvent {
         String ACTION_NAME = "com.zspirytus.enjoymusic.STATUS_BAR_ACTION";
         String EXTRA = "statusBarExtra";

@@ -16,6 +16,7 @@ import com.zspirytus.enjoymusic.cache.MusicCoverCache;
 import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.receivers.StatusBarEventReceiver;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -57,7 +58,7 @@ public class NotificationHelper {
     }
 
     public void updateNotificationClearable(boolean canClear) {
-        if (canClear) {
+        if (canClear && mCurrentNotification != null) {
             mCurrentNotification.flags = Notification.FLAG_AUTO_CANCEL;
         } else {
             mCurrentNotification.flags = Notification.FLAG_NO_CLEAR;
@@ -112,7 +113,12 @@ public class NotificationHelper {
         if (musicArtist != null) {
             mNotificationContentView.setTextViewText(R.id.notification_music_artist, musicArtist);
         }
-        Intent intent = new Intent(FinalValue.StatusBarEvent.ACTION_NAME);
+        Intent intent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            intent = new Intent(MyApplication.getGlobalContext(), StatusBarEventReceiver.class);
+        } else {
+            intent = new Intent(FinalValue.StatusBarEvent.ACTION_NAME);
+        }
         intent.putExtra(FinalValue.StatusBarEvent.EXTRA, FinalValue.StatusBarEvent.PREVIOUS);
         PendingIntent previousMusicPendingIntent = createPendingIntentByExtra(intent, 0, FinalValue.StatusBarEvent.EXTRA, FinalValue.StatusBarEvent.PREVIOUS);
         mNotificationContentView.setOnClickPendingIntent(R.id.notification_music_previous, previousMusicPendingIntent);

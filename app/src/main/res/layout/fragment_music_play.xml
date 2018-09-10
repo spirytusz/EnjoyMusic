@@ -20,7 +20,7 @@
         android:id="@+id/music_play_fragment_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
         android:text="Title"
         android:textAlignment="viewStart"
         android:textAllCaps="false"
@@ -40,7 +40,7 @@
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_marginTop="64dp"
-        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -51,11 +51,11 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginBottom="60dp"
-        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:srcCompat="@drawable/ic_play_arrow_white_48dp" />
+        app:srcCompat="@drawable/ic_play_arrow_black_48dp" />
 
     <ImageView
         android:id="@+id/previous"
@@ -63,10 +63,10 @@
         android:layout_height="32dp"
         android:layout_marginBottom="68dp"
         android:layout_marginEnd="36dp"
-        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/play_pause"
-        app:srcCompat="@drawable/ic_skip_previous_white_48dp" />
+        app:srcCompat="@drawable/ic_skip_previous_black_48dp" />
 
     <ImageView
         android:id="@+id/next"
@@ -74,10 +74,10 @@
         android:layout_height="32dp"
         android:layout_marginBottom="68dp"
         android:layout_marginStart="36dp"
-        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/play_pause"
-        app:srcCompat="@drawable/ic_skip_next_white_48dp" />
+        app:srcCompat="@drawable/ic_skip_next_black_48dp" />
 
     <include
         layout="@layout/seekbar_with_timestamp"
@@ -93,14 +93,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.752" />
-
-    <!--<ImageView
-        android:id="@+id/background_mask"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />-->
 
 </android.support.constraint.ConstraintLayout>
