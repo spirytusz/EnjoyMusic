@@ -58,14 +58,14 @@ public class NotificationHelper {
     }
 
     public void updateNotificationClearable(boolean canClear) {
-        if (mCurrentNotification != null) {
+        if (mNotificationManager != null && mCurrentNotification != null) {
             if (canClear) {
                 mCurrentNotification.flags = Notification.FLAG_AUTO_CANCEL;
             } else {
                 mCurrentNotification.flags = Notification.FLAG_NO_CLEAR;
             }
+            mNotificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
         }
-        mNotificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
     }
 
     public void setPlayOrPauseBtnRes(int resId) {

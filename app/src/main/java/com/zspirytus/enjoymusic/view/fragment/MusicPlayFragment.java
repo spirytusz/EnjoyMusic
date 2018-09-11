@@ -23,7 +23,7 @@ import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
-import com.zspirytus.enjoymusic.utils.ObjectAnimationUtil;
+import com.zspirytus.enjoymusic.utils.AnimationUtil;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 
 import org.simple.eventbus.EventBus;
@@ -114,12 +114,12 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     @Override
-    public void onPlayingState(boolean isPlaying) {
+    public void onPlayingStateChanged(boolean isPlaying) {
         setButtonSrc(isPlaying);
     }
 
     @Override
-    public void onProgressChange(int currentPlayingMills) {
+    public void onProgressChanged(int currentPlayingMills) {
         mSeekBar.setProgress(currentPlayingMills);
     }
 
@@ -158,13 +158,13 @@ public class MusicPlayFragment extends BaseFragment
 
     private void setButtonSrc(boolean isPlaying) {
         if (isPlaying) {
-            ObjectAnimationUtil.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
+            AnimationUtil.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 1f, 0f).start();
             Glide.with(this).load(R.drawable.ic_pause_black_48dp).into(mPlayOrPauseButton);
-            ObjectAnimationUtil.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
+            AnimationUtil.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 0f, 1f).start();
         } else {
-            ObjectAnimationUtil.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
+            AnimationUtil.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 1f, 0f).start();
             Glide.with(this).load(R.drawable.ic_play_arrow_black_48dp).into(mPlayOrPauseButton);
-            ObjectAnimationUtil.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
+            AnimationUtil.ofFloat(mPlayOrPauseButton, FinalValue.AnimationProperty.ALPHA, 0f, 1f).start();
         }
     }
 

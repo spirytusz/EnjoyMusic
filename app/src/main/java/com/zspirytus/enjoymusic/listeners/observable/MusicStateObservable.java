@@ -65,7 +65,7 @@ public class MusicStateObservable {
     protected void notifyAllMusicPlayingObserverPlayingState(boolean isPlaying) {
         Iterator<MusicPlayStateObserver> observerIterator = musicPlayStateObservers.iterator();
         while (observerIterator.hasNext()) {
-            observerIterator.next().onPlayingState(isPlaying);
+            observerIterator.next().onPlayingStateChanged(isPlaying);
         }
     }
 
@@ -73,7 +73,7 @@ public class MusicStateObservable {
     public void notifyAllMusicPlayProgressChange(int currentPlayingMillis) {
         Iterator<MusicPlayProgressObserver> observerIterator = musicPlayProgressObservers.iterator();
         while (observerIterator.hasNext()) {
-            observerIterator.next().onProgressChange(currentPlayingMillis);
+            observerIterator.next().onProgressChanged(currentPlayingMillis);
         }
     }
 

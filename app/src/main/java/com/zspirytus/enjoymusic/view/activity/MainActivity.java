@@ -25,7 +25,7 @@ import com.zspirytus.enjoymusic.interfaces.ViewInject;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
-import com.zspirytus.enjoymusic.utils.ObjectAnimationUtil;
+import com.zspirytus.enjoymusic.utils.AnimationUtil;
 import com.zspirytus.enjoymusic.view.fragment.MusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.mylibrary.DraggableFloatingActionButton;
@@ -74,9 +74,8 @@ public class MainActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerEvent();
-        initData();
-
         initView();
+        initData();
     }
 
     @Override
@@ -140,7 +139,7 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onPlayingState(boolean isPlaying) {
+    public void onPlayingStateChanged(boolean isPlaying) {
         // set the play or pause button src
         int resId = isPlaying ? R.drawable.ic_pause_white_48dp : R.drawable.ic_play_arrow_white_48dp;
         mFab.setImageResource(resId);
@@ -159,7 +158,7 @@ public class MainActivity extends BaseActivity
         mFragmentTransaction.show(mMusicPlayFragment);
         mFragmentTransaction.commitAllowingStateLoss();
         playWidgetVisibilityAnimation(View.GONE);
-        changeClickToolbarButtonResponse(false);
+        changeClickToolbarButtonResponseAndToolbarStyle(false);
         isMusicPlayFragment = true;
     }
 
@@ -190,14 +189,18 @@ public class MainActivity extends BaseActivity
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close
         );
-        onPlayingState(MediaPlayController.getInstance().isPlaying());
-
-        // set listener
-        mNavigationView.setNavigationItemSelectedListener(this);
+        onPlayingStateChanged(MediaPlayController.getInstance().isPlaying());
     }
 
     private void initData() {
-
+        // set listener
+        mNavigationView.setNavigationItemSelectedListener(this);
+        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     private void startPlayMusicService() {
@@ -221,29 +224,32 @@ public class MainActivity extends BaseActivity
         mFragmentTransaction.show(mMusicListFragment);
         mFragmentTransaction.commitAllowingStateLoss();
         playWidgetVisibilityAnimation(View.VISIBLE);
-        changeClickToolbarButtonResponse(true);
+        changeClickToolbarButtonResponseAndToolbarStyle(true);
         isMusicPlayFragment = false;
     }
 
     private void playWidgetVisibilityAnimation(int visibility) {
         if (visibility == View.VISIBLE) {
-            ObjectAnimationUtil.ofFloat(mFab, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
+            AnimationUtil.ofFloat(mFab, FinalValue.AnimationProperty.ALPHA, 0f, 1f).start();
             mFab.setVisibility(View.VISIBLE);
         } else {
-            ObjectAnimationUtil.ofFloat(mFab, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
+            AnimationUtil.ofFloat(mFab, FinalValue.AnimationProperty.ALPHA, 1f, 0f).start();
             mFab.setVisibility(View.GONE);
         }
     }
 
-    private void changeClickToolbarButtonResponse(boolean isShouldShowDrawer) {
+    private void changeClickToolbarButtonResponseAndToolbarStyle(boolean isShouldShowDrawer) {
         if (isShouldShowDrawer) {
-            mToolbar.setNavigationIcon(R.drawable.ic_menu_white_48dp);
+            toggle.setDrawerIndicatorEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            mToolbar.setNavigationIcon(R.drawable.ic_rotatable_menu_white);
             mDrawerLayout.addDrawerListener(toggle);
             toggle.syncState();
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.LEFT);
         } else {
             toggle.setDrawerIndicatorEnabled(false);
-            mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            mToolbar.setNavigationIcon(R.drawable.ic_rotatable_arrow_back_white);
             mDrawerLayout.removeDrawerListener(toggle);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.LEFT);

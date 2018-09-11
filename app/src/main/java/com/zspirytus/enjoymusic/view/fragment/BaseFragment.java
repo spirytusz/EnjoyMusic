@@ -54,8 +54,6 @@ public abstract class BaseFragment extends Fragment {
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
         }
     }
 

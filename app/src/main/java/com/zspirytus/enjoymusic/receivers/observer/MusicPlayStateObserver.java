@@ -7,5 +7,5 @@ package com.zspirytus.enjoymusic.receivers.observer;
 
 public interface MusicPlayStateObserver {
 
-    void onPlayingState(boolean isPlaying);
+    void onPlayingStateChanged(boolean isPlaying);
 }

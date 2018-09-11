@@ -18,7 +18,7 @@ import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
-import com.zspirytus.enjoymusic.utils.ObjectAnimationUtil;
+import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
 import org.simple.eventbus.EventBus;
 
@@ -125,10 +125,10 @@ public class MusicListFragment extends BaseFragment
 
     private void playAnimator(boolean isLoadFinish) {
         if (isLoadFinish) {
-            ObjectAnimationUtil.ofFloat(mMusicListLoadProgressBar, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
+            AnimationUtil.ofFloat(mMusicListLoadProgressBar, FinalValue.AnimationProperty.ALPHA, 1f, 0f).start();
             mMusicListLoadProgressBar.setVisibility(View.GONE);
             if (mMusicList != null && mMusicList.size() != 0) {
-                ObjectAnimationUtil.ofFloat(mMusicRecyclerView, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
+                AnimationUtil.ofFloat(mMusicRecyclerView, FinalValue.AnimationProperty.ALPHA, 0f, 1f).start();
                 mMusicRecyclerView.setVisibility(View.VISIBLE);
             } else {
                 showInfoTextView(true);
