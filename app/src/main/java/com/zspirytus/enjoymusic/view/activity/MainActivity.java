@@ -11,6 +11,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -58,6 +59,9 @@ public class MainActivity extends BaseActivity
     @ViewInject(R.id.dragged_fab)
     private DraggableFloatingActionButton mFab;
 
+    // Toolbar button click listener
+    private ActionBarDrawerToggle toggle;
+
     // Fragments and Fragment Manager
     private FragmentManager mFragmentManager = getSupportFragmentManager();
     private MusicListFragment mMusicListFragment;
@@ -83,6 +87,25 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         System.out.println("execute onNewIntent!");
@@ -97,7 +120,6 @@ public class MainActivity extends BaseActivity
         if (isMusicPlayFragment) {
             // hide MusicPlayFragment and show MusicListFragment
             showMusicListFragment();
-            return;
         } else {
             // exit or not
             long now = System.currentTimeMillis();
@@ -118,19 +140,35 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        mDrawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    @Override
     public void onPlayingState(boolean isPlaying) {
         // set the play or pause button src
         int resId = isPlaying ? R.drawable.ic_pause_white_48dp : R.drawable.ic_play_arrow_white_48dp;
         mFab.setImageResource(resId);
+    }
+
+    @Subscriber(tag = FinalValue.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT)
+    public void showMusicPlayFragment(Music music) {
+        FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
+        mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_up, R.anim.anim_fragment_alpha_hide);
+        if (mMusicPlayFragment == null) {
+            mMusicPlayFragment = MusicPlayFragment.getInstance();
+            mFragmentTransaction.add(R.id.fragment_container, mMusicPlayFragment);
+        }
+        if (mMusicListFragment != null)
+            mFragmentTransaction.hide(mMusicListFragment);
+        mFragmentTransaction.show(mMusicPlayFragment);
+        mFragmentTransaction.commitAllowingStateLoss();
+        playWidgetVisibilityAnimation(View.GONE);
+        changeClickToolbarButtonResponse(false);
+        isMusicPlayFragment = true;
+    }
+
+    // if there is no music in device, it will not set DraggableFabListener.
+    @Subscriber(tag = FinalValue.EventBusTag.SET_DFAB_LISTENER)
+    public void setDraggableFabListener(boolean hasMusicInDevice) {
+        if (hasMusicInDevice) {
+            mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListenerImpl());
+        }
     }
 
     private void initView() {
@@ -145,16 +183,13 @@ public class MainActivity extends BaseActivity
 
         // init toolbar
         setSupportActionBar(mToolbar);
-        mToolbar.setNavigationIcon(R.drawable.ic_menu_white_48dp);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        toggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
                 mToolbar,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close
         );
-        mDrawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
         onPlayingState(MediaPlayController.getInstance().isPlaying());
 
         // set listener
@@ -186,44 +221,32 @@ public class MainActivity extends BaseActivity
         mFragmentTransaction.show(mMusicListFragment);
         mFragmentTransaction.commitAllowingStateLoss();
         playWidgetVisibilityAnimation(View.VISIBLE);
+        changeClickToolbarButtonResponse(true);
         isMusicPlayFragment = false;
     }
 
     private void playWidgetVisibilityAnimation(int visibility) {
         if (visibility == View.VISIBLE) {
-            ObjectAnimationUtil.ofFloat(mToolbar, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
-            mToolbar.setVisibility(View.VISIBLE);
             ObjectAnimationUtil.ofFloat(mFab, FinalValue.AnimationProperty.ALPHA, 0f, 1f);
             mFab.setVisibility(View.VISIBLE);
         } else {
-            ObjectAnimationUtil.ofFloat(mToolbar, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
-            mToolbar.setVisibility(View.GONE);
             ObjectAnimationUtil.ofFloat(mFab, FinalValue.AnimationProperty.ALPHA, 1f, 0f);
             mFab.setVisibility(View.GONE);
         }
     }
 
-    @Subscriber(tag = FinalValue.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT)
-    public void showMusicPlayFragment(Music music) {
-        FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_up, R.anim.anim_fragment_alpha_hide);
-        if (mMusicPlayFragment == null) {
-            mMusicPlayFragment = MusicPlayFragment.getInstance();
-            mFragmentTransaction.add(R.id.fragment_container, mMusicPlayFragment);
-        }
-        if (mMusicListFragment != null)
-            mFragmentTransaction.hide(mMusicListFragment);
-        mFragmentTransaction.show(mMusicPlayFragment);
-        mFragmentTransaction.commitAllowingStateLoss();
-        playWidgetVisibilityAnimation(View.GONE);
-        isMusicPlayFragment = true;
-    }
-
-    // if there is no music in device, it will not set DraggableFabListener.
-    @Subscriber(tag = FinalValue.EventBusTag.SET_DFAB_LISTENER)
-    public void setDraggableFabListener(boolean hasMusicInDevice) {
-        if (hasMusicInDevice) {
-            mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListenerImpl());
+    private void changeClickToolbarButtonResponse(boolean isShouldShowDrawer) {
+        if (isShouldShowDrawer) {
+            mToolbar.setNavigationIcon(R.drawable.ic_menu_white_48dp);
+            mDrawerLayout.addDrawerListener(toggle);
+            toggle.syncState();
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.LEFT);
+        } else {
+            toggle.setDrawerIndicatorEnabled(false);
+            mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+            mDrawerLayout.removeDrawerListener(toggle);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.LEFT);
         }
     }
 

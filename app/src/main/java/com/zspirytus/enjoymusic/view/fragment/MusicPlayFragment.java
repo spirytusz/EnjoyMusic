@@ -2,7 +2,6 @@ package com.zspirytus.enjoymusic.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,8 +45,6 @@ public class MusicPlayFragment extends BaseFragment
 
     @ViewInject(R.id.background)
     private ImageView mBackground;
-    @ViewInject(R.id.music_play_fragment_toolbar)
-    private Toolbar mToolbar;
 
     @ViewInject(R.id.cover)
     private ImageView mCover;
@@ -134,12 +131,11 @@ public class MusicPlayFragment extends BaseFragment
 
     @Subscriber(tag = FinalValue.EventBusTag.MUSIC_NAME_SET)
     public void setView(Music music) {
-        mToolbar.setTitle(music.getMusicName());
         String musicThumbAlbumCoverPath = music.getMusicThumbAlbumCoverPath();
         if (musicThumbAlbumCoverPath != null) {
             File coverFile = new File(musicThumbAlbumCoverPath);
             Glide.with(this).load(coverFile).into(mCover);
-            // loadBlurCover(coverFile);
+            loadBlurCover(coverFile);
         }
         mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
         setupSeekBar(music);
@@ -148,7 +144,6 @@ public class MusicPlayFragment extends BaseFragment
     private void initView() {
         if (mCurrentPlayingMusic != null) {
             String musicAlbumUri = mCurrentPlayingMusic.getMusicThumbAlbumCoverPath();
-            mToolbar.setTitle(mCurrentPlayingMusic.getMusicName());
             Glide.with(this).load(new File(musicAlbumUri != null ? musicAlbumUri : ""))
                     .into(mCover);
             mTotalTime.setText(TimeUtil.convertLongToMinsSec(mCurrentPlayingMusic.getMusicDuration()));
