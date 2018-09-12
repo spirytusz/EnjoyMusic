@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="64dp"
-    android:clickable="true"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:focusable="true"
     android:background="@drawable/click_ripple">
 
     <com.zspirytus.enjoymusic.view.widget.RoundCornerImageView
@@ -11,7 +12,6 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:scaleType="fitXY"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@color/grey" />
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/more_vert"
         android:layout_width="64dp"
         android:layout_height="64dp"
@@ -29,7 +29,7 @@
         android:paddingBottom="24sp"
         android:paddingLeft="24sp"
         android:paddingRight="24sp"
-        android:clickable="true"
+        android:focusable="true"
         android:background="@drawable/click_ripple"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,39 +39,35 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_more_vert_grey_400_24dp" />
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/music_name"
+        style="@style/TextViewStyle_14sp_black_marquee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
-        android:text="Music Name"
-        android:singleLine="true"
-        android:maxEms="9"
-        android:ellipsize="marquee"
-        android:textColor="@color/black"
-        android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/cover"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Music Name" />
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/music_artist"
+        style="@style/TextViewStyle_10sp_marquee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:layout_marginStart="12dp"
-        android:text="Music Artist"
-        android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cover" />
+        app:layout_constraintStart_toEndOf="@+id/cover"
+        tools:text="Music Artist" />
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/tag"
         android:layout_width="4dp"
         android:layout_height="56dp"
         android:background="@color/colorPrimary"
         android:layout_marginBottom="4dp"
-        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="4dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

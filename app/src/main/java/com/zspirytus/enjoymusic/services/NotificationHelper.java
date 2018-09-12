@@ -14,7 +14,7 @@ import android.widget.RemoteViews;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCoverCache;
 import com.zspirytus.enjoymusic.cache.MyApplication;
-import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
+import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.receivers.StatusBarEventReceiver;
 
@@ -115,23 +115,18 @@ public class NotificationHelper {
         if (musicArtist != null) {
             mNotificationContentView.setTextViewText(R.id.notification_music_artist, musicArtist);
         }
-        Intent intent;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            intent = new Intent(MyApplication.getGlobalContext(), StatusBarEventReceiver.class);
-        } else {
-            intent = new Intent(FinalValue.StatusBarEvent.ACTION_NAME);
-        }
-        intent.putExtra(FinalValue.StatusBarEvent.EXTRA, FinalValue.StatusBarEvent.PREVIOUS);
-        PendingIntent previousMusicPendingIntent = createPendingIntentByExtra(intent, 0, FinalValue.StatusBarEvent.EXTRA, FinalValue.StatusBarEvent.PREVIOUS);
+        Intent intent = new Intent(MyApplication.getGlobalContext(), StatusBarEventReceiver.class);
+        intent.putExtra(Constant.StatusBarEvent.EXTRA, Constant.StatusBarEvent.PREVIOUS);
+        PendingIntent previousMusicPendingIntent = createPendingIntentByExtra(intent, 0, Constant.StatusBarEvent.EXTRA, Constant.StatusBarEvent.PREVIOUS);
         mNotificationContentView.setOnClickPendingIntent(R.id.notification_music_previous, previousMusicPendingIntent);
 
-        PendingIntent playOrPauseMusicPendingIntent = createPendingIntentByExtra(intent, 1, FinalValue.StatusBarEvent.EXTRA, FinalValue.StatusBarEvent.PLAY_OR_PAUSE);
+        PendingIntent playOrPauseMusicPendingIntent = createPendingIntentByExtra(intent, 1, Constant.StatusBarEvent.EXTRA, Constant.StatusBarEvent.PLAY_OR_PAUSE);
         mNotificationContentView.setOnClickPendingIntent(R.id.notification_music_play_pause, playOrPauseMusicPendingIntent);
 
-        PendingIntent nextMusicPendingIntent = createPendingIntentByExtra(intent, 2, FinalValue.StatusBarEvent.EXTRA, FinalValue.StatusBarEvent.NEXT);
+        PendingIntent nextMusicPendingIntent = createPendingIntentByExtra(intent, 2, Constant.StatusBarEvent.EXTRA, Constant.StatusBarEvent.NEXT);
         mNotificationContentView.setOnClickPendingIntent(R.id.notification_music_next, nextMusicPendingIntent);
 
-        PendingIntent singleClickPendingIntent = createPendingIntentByExtra(intent, 4, FinalValue.StatusBarEvent.EXTRA, FinalValue.StatusBarEvent.SINGLE_CLICK);
+        PendingIntent singleClickPendingIntent = createPendingIntentByExtra(intent, 4, Constant.StatusBarEvent.EXTRA, Constant.StatusBarEvent.SINGLE_CLICK);
         mNotificationContentView.setOnClickPendingIntent(R.id.notification, singleClickPendingIntent);
     }
 

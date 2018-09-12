@@ -1,18 +1,14 @@
 package com.zspirytus.enjoymusic.cache;
 
 import android.content.ContentResolver;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
 
-import com.google.gson.Gson;
-import com.zspirytus.enjoymusic.engine.MusicPlayedHistoryProvider;
+import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,63 +17,53 @@ import java.util.List;
  * Created by ZSpirytus on 2018/8/12.
  */
 
-public class MusicCache {
+public class AllMusicCache {
 
-    private static MusicCache INSTANCE;
-    private static final String CURRENT_PLAYING_MUSIC = "currentPlayingMusic";
-    private static final String CURRENT_PLAYING_MUSIC_STRING_KEY = "currentPlayingMusicString";
+    private static AllMusicCache INSTANCE;
 
-    private Music currentPlayingMusic;
-    private List<Music> musicList;
+    private List<Music> mAllMusicList;
 
-    private MusicCache() {
-        musicList = new ArrayList<>();
+    private AllMusicCache() {
+        mAllMusicList = new ArrayList<>();
     }
 
-    public static MusicCache getInstance() {
+    public static AllMusicCache getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new MusicCache();
+            INSTANCE = new AllMusicCache();
         }
         return INSTANCE;
     }
 
-    public void setCurrentPlayingMusic(Music music) {
-        currentPlayingMusic = music;
-        MusicPlayedHistoryProvider.getInstance().put(music);
-    }
-
-    public Music getCurrentPlayingMusic() {
-        return currentPlayingMusic;
-    }
-
-    public List<Music> getMusicList() {
-        if (musicList == null || musicList.size() == 0) {
+    public List<Music> getAllMusicList() {
+        if (mAllMusicList == null || mAllMusicList.size() == 0) {
             scanMusic();
         }
-        return musicList;
+        return mAllMusicList;
     }
 
     private void scanMusic() {
         final String[] projection = {
                 // is Music
                 MediaStore.Audio.AudioColumns.IS_MUSIC,
-                // music name
+                // Music path
+                MediaStore.Audio.AudioColumns.DATA,
+                // Music name
                 MediaStore.Audio.AudioColumns.TITLE,
-                // music artist
+                // Music artist
                 MediaStore.Audio.AudioColumns.ARTIST,
-                // music album id, the album cover can be got by this
+                // Music album id, the album cover can be got by this
                 MediaStore.Audio.AudioColumns.ALBUM_ID,
-                // music album
+                // Music album
                 MediaStore.Audio.AudioColumns.ALBUM,
-                // music file size
+                // Music file size
                 MediaStore.Audio.AudioColumns.SIZE,
-                // music duration
+                // Music duration
                 MediaStore.Audio.AudioColumns.DURATION
         };
         ContentResolver resolver = MyApplication.getGlobalContext().getContentResolver();
         Cursor cursor = resolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                null,
+                projection,
                 null,
                 null,
                 null);
@@ -85,12 +71,10 @@ public class MusicCache {
             while (cursor.moveToNext()) {
                 int isMusic = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.IS_MUSIC));
                 if (isMusic == 0) {
-                    // if the file is not music, continues.
                     continue;
                 }
                 long musicDuration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                 if (musicDuration <= 60 * 1000) {
-                    // if music duration less than 1 min, continues
                     continue;
                 }
                 String musicFilePath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA));
@@ -101,11 +85,15 @@ public class MusicCache {
                 String musicThumbAlbumCoverPath = getThumbAlbum(albumId);
                 String musicArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST));
                 String musicFileSize = Formatter.formatFileSize(MyApplication.getGlobalContext(), cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE)));
-                musicList.add(new Music(musicFilePath, musicName, musicArtist, musicAlbumName, musicThumbAlbumCoverPath, musicDuration, musicFileSize));
+                Music itemMusic = new Music(musicFilePath, musicName, musicArtist, musicAlbumName, musicThumbAlbumCoverPath, musicDuration, musicFileSize);
+                if (!mAllMusicList.contains(itemMusic)) {
+                    mAllMusicList.add(itemMusic);
+                }
             }
             cursor.close();
         }
-        restoreCurrentPlayingMusic();
+        CurrentPlayingMusicCache.getInstance().restoreCurrentPlayingMusic();
+        MusicPlayOrderManager.getInstance().init();
     }
 
     private String getThumbAlbum(String album_id) {
@@ -119,33 +107,6 @@ public class MusicCache {
             str = cursor.getString(cursor.getColumnIndex(thumbnail));
         }
         return str;
-    }
-
-    private void restoreCurrentPlayingMusic() {
-        SharedPreferences pref = MyApplication.getGlobalContext().getSharedPreferences(CURRENT_PLAYING_MUSIC, Context.MODE_PRIVATE);
-        String json = pref.getString(CURRENT_PLAYING_MUSIC_STRING_KEY, null);
-        if (json != null) {
-            Gson gson = new Gson();
-            Music music = gson.fromJson(json, Music.class);
-            if (music != null) {
-                File file = new File(music.getMusicFilePath());
-                if (file.exists()) {
-                    currentPlayingMusic = music;
-                }
-            }
-        } else if (musicList != null && musicList.size() > 0) {
-            currentPlayingMusic = musicList.get(0);
-        }
-    }
-
-    public void saveCurrentPlayingMusic() {
-        if (currentPlayingMusic != null) {
-            SharedPreferences.Editor editor = MyApplication.getGlobalContext().getSharedPreferences(CURRENT_PLAYING_MUSIC, Context.MODE_PRIVATE).edit();
-            Gson gson = new Gson();
-            String json = gson.toJson(currentPlayingMusic, currentPlayingMusic.getClass());
-            editor.putString(CURRENT_PLAYING_MUSIC_STRING_KEY, json);
-            editor.apply();
-        }
     }
 
 }

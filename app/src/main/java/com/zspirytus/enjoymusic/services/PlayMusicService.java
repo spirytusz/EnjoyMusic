@@ -8,8 +8,8 @@ import android.os.Build;
 import android.os.IBinder;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.cache.MusicCache;
-import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
+import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
+import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
@@ -56,7 +56,7 @@ public class PlayMusicService extends Service
         super.onDestroy();
         unregisterEvent();
         NotificationHelper.getInstance().updateNotificationClearable(true);
-        MusicCache.getInstance().saveCurrentPlayingMusic();
+        CurrentPlayingMusicCache.getInstance().saveCurrentPlayingMusic();
     }
 
     @Override
@@ -70,27 +70,27 @@ public class PlayMusicService extends Service
         NotificationHelper.getInstance().showNotification(music);
     }
 
-    @Subscriber(tag = FinalValue.EventBusTag.PLAY)
+    @Subscriber(tag = Constant.EventBusTag.PLAY)
     public void play(Music music) {
         mMediaPlayController.play(music);
     }
 
-    @Subscriber(tag = FinalValue.EventBusTag.PAUSE)
+    @Subscriber(tag = Constant.EventBusTag.PAUSE)
     public void pause(Music music) {
         mMediaPlayController.pause();
     }
 
-    @Subscriber(tag = FinalValue.EventBusTag.STOP)
+    @Subscriber(tag = Constant.EventBusTag.STOP)
     public void stop(Music music) {
         mMediaPlayController.stop();
     }
 
-    @Subscriber(tag = FinalValue.EventBusTag.SEEK_TO)
+    @Subscriber(tag = Constant.EventBusTag.SEEK_TO)
     public void seekTo(int msec) {
         mMediaPlayController.seekTo(msec);
     }
 
-    @Subscriber(tag = FinalValue.EventBusTag.START_MAIN_ACTIVITY)
+    @Subscriber(tag = Constant.EventBusTag.START_MAIN_ACTIVITY)
     public void startMainActivity(Object object) {
         MainActivity.startActivity(this);
     }

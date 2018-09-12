@@ -15,6 +15,8 @@ public class PlayingTimer {
     private static TimerTask mTimerTask;
     private MediaPlayController mMediaPlayController;
 
+    private boolean hasStart = false;
+
     private PlayingTimer() {
     }
 
@@ -30,6 +32,7 @@ public class PlayingTimer {
     }
 
     public void start() {
+        hasStart = true;
         final int SECONDS = 1000;
         mTimer = new Timer();
         mTimerTask = new TimerTask() {
@@ -43,10 +46,13 @@ public class PlayingTimer {
     }
 
     public void pause() {
-        mTimer.cancel();
-        mTimer = null;
-        mTimerTask.cancel();
-        mTimerTask = null;
+        if (hasStart) {
+            mTimer.cancel();
+            mTimer = null;
+            mTimerTask.cancel();
+            mTimerTask = null;
+            hasStart = false;
+        }
     }
 
     public void stop() {

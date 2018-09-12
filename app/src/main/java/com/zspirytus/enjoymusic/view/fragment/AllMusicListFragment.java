@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
-import com.zspirytus.enjoymusic.cache.MusicCache;
-import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
+import com.zspirytus.enjoymusic.cache.AllMusicCache;
+import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
@@ -33,19 +33,19 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
- * Fragment: 显示本地音乐列表
+ * Fragment: 显示本地全部音乐列表
  * Created by ZSpirytus on 2018/8/2.
  */
 
-@LayoutIdInject(R.layout.fragment_music_list)
-public class MusicListFragment extends BaseFragment
+@LayoutIdInject(R.layout.fragment_all_music_list)
+public class AllMusicListFragment extends BaseFragment
         implements MusicListAdapter.OnItemClickListener {
 
-    @ViewInject(R.id.music_list)
+    @ViewInject(R.id.all_music_recycler_view)
     private RecyclerView mMusicRecyclerView;
-    @ViewInject(R.id.music_list_load_progress_bar)
+    @ViewInject(R.id.all_music_list_load_progress_bar)
     private ProgressBar mMusicListLoadProgressBar;
-    @ViewInject(R.id.music_list_fragment_info_tv)
+    @ViewInject(R.id.all_music_list_fragment_info_tv)
     private TextView mInfoTextView;
 
     private List<Music> mMusicList;
@@ -54,7 +54,6 @@ public class MusicListFragment extends BaseFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        initView();
         return view;
     }
 
@@ -67,11 +66,14 @@ public class MusicListFragment extends BaseFragment
     public void onItemClick(View view, int position) {
         Music music = mMusicList.get(position);
         ForegroundMusicController.getInstance().play(music);
-        EventBus.getDefault().post(music, FinalValue.EventBusTag.MUSIC_NAME_SET);
-        EventBus.getDefault().post(music, FinalValue.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT);
+        EventBus.getDefault().post(music, Constant.EventBusTag.MUSIC_NAME_SET);
+        EventBus.getDefault().post(music, Constant.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT);
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
+        mMusicRecyclerView.setVisibility(View.GONE);
+        mMusicListLoadProgressBar.setVisibility(View.VISIBLE);
         initRecyclerView();
     }
 
@@ -79,8 +81,7 @@ public class MusicListFragment extends BaseFragment
         Observable.create(new ObservableOnSubscribe<List<Music>>() {
             @Override
             public void subscribe(ObservableEmitter<List<Music>> emitter) throws Exception {
-                playAnimator(false);
-                List<Music> musicList = MusicCache.getInstance().getMusicList();
+                List<Music> musicList = AllMusicCache.getInstance().getAllMusicList();
                 emitter.onNext(musicList);
                 emitter.onComplete();
             }
@@ -104,9 +105,8 @@ public class MusicListFragment extends BaseFragment
                         mMusicRecyclerView.setLayoutManager(layoutManager);
                         mMusicRecyclerView.setHasFixedSize(true);
                         mMusicRecyclerView.setNestedScrollingEnabled(false);
-                        mMusicRecyclerViewAdapter.setOnItemClickListener(MusicListFragment.this);
+                        mMusicRecyclerViewAdapter.setOnItemClickListener(AllMusicListFragment.this);
                         mMusicRecyclerView.setAdapter(mMusicRecyclerViewAdapter);
-                        EventBus.getDefault().post(!s.isEmpty(), FinalValue.EventBusTag.SET_DFAB_LISTENER);
                     }
 
                     @Override
@@ -118,24 +118,19 @@ public class MusicListFragment extends BaseFragment
 
                     @Override
                     public void onComplete() {
-                        playAnimator(true);
+                        playAnimator();
                     }
                 });
     }
 
-    private void playAnimator(boolean isLoadFinish) {
-        if (isLoadFinish) {
-            AnimationUtil.ofFloat(mMusicListLoadProgressBar, FinalValue.AnimationProperty.ALPHA, 1f, 0f).start();
-            mMusicListLoadProgressBar.setVisibility(View.GONE);
-            if (mMusicList != null && mMusicList.size() != 0) {
-                AnimationUtil.ofFloat(mMusicRecyclerView, FinalValue.AnimationProperty.ALPHA, 0f, 1f).start();
-                mMusicRecyclerView.setVisibility(View.VISIBLE);
-            } else {
-                showInfoTextView(true);
-            }
+    private void playAnimator() {
+        AnimationUtil.ofFloat(mMusicListLoadProgressBar, Constant.AnimationProperty.ALPHA, 1f, 0f).start();
+        mMusicListLoadProgressBar.setVisibility(View.GONE);
+        if (mMusicList != null && mMusicList.size() != 0) {
+            AnimationUtil.ofFloat(mMusicRecyclerView, Constant.AnimationProperty.ALPHA, 0f, 1f).start();
+            mMusicRecyclerView.setVisibility(View.VISIBLE);
         } else {
-            mMusicRecyclerView.setVisibility(View.GONE);
-            mMusicListLoadProgressBar.setVisibility(View.VISIBLE);
+            showInfoTextView(true);
         }
     }
 
@@ -148,11 +143,11 @@ public class MusicListFragment extends BaseFragment
         }
     }
 
-    public static MusicListFragment getInstance() {
-        MusicListFragment musicListFragment = new MusicListFragment();
+    public static AllMusicListFragment getInstance() {
+        AllMusicListFragment allMusicListFragment = new AllMusicListFragment();
         Bundle bundle = new Bundle();
-        musicListFragment.setArguments(bundle);
-        return musicListFragment;
+        allMusicListFragment.setArguments(bundle);
+        return allMusicListFragment;
     }
 
 }

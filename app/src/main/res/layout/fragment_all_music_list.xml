@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <ProgressBar
-        android:id="@+id/music_list_load_progress_bar"
+        android:id="@+id/all_music_list_load_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/music_list_fragment_info_tv"
+        android:id="@+id/all_music_list_fragment_info_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -41,7 +41,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/music_list"
+            android:id="@+id/all_music_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

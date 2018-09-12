@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.KeyEvent;
 
-import com.zspirytus.enjoymusic.cache.MusicCache;
+import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
 /**
@@ -32,7 +32,7 @@ public class MyHeadSetButtonClickBelowLReceiver extends BroadcastReceiver {
                     if (MediaPlayController.getInstance().isPlaying()) {
                         MediaPlayController.getInstance().pause();
                     } else {
-                        MediaPlayController.getInstance().play(MusicCache.getInstance().getCurrentPlayingMusic());
+                        MediaPlayController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
                     }
                     break;
                 case KeyEvent.KEYCODE_MEDIA_NEXT:

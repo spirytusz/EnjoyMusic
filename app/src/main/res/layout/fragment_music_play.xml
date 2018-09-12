@@ -23,7 +23,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <ImageView
+    <com.zspirytus.enjoymusic.view.widget.MultiEventImageView
         android:id="@+id/cover"
         android:layout_width="300dp"
         android:layout_height="300dp"

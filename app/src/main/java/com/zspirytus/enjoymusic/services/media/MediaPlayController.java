@@ -6,11 +6,12 @@ import android.media.MediaPlayer;
 import android.os.PowerManager;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.zspirytus.enjoymusic.cache.MusicCache;
+import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.listeners.observable.MusicStateObservable;
+import com.zspirytus.enjoymusic.utils.LogUtil;
 
 import java.io.IOException;
 
@@ -21,7 +22,7 @@ import java.io.IOException;
 
 public class MediaPlayController extends MusicStateObservable
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
-        AudioManager.OnAudioFocusChangeListener {
+        MediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener {
 
     private static final int STATE_PLAYING = 1;
     private static final int STATE_PAUSE = 2;
@@ -33,6 +34,9 @@ public class MediaPlayController extends MusicStateObservable
 
     private int state;
     private boolean isPrepared = false;
+
+    private Music requestedToPlayMusic;
+    private Music currentPlayingMusic;
 
     private static final MediaPlayController INSTANCE = new MediaPlayController();
 
@@ -46,6 +50,7 @@ public class MediaPlayController extends MusicStateObservable
         // set listeners
         mediaPlayer.setOnPreparedListener(this);
         mediaPlayer.setOnCompletionListener(this);
+        mediaPlayer.setOnErrorListener(this);
 
         // init timer
         mPlayingTimer = PlayingTimer.getInstance();
@@ -58,15 +63,23 @@ public class MediaPlayController extends MusicStateObservable
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        isPrepared = true;
-        beginPlay(mp);
+        beginPlay();
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
-        play(nextMusic);
-        notifyAllPlayedMusicChanged(nextMusic);
+        if (isPrepared) {
+            System.out.println("onCompletion");
+            Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
+            play(nextMusic);
+            notifyAllPlayedMusicChanged(nextMusic);
+        }
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        LogUtil.e(this.getClass().getSimpleName(), "what = " + what + "\textra = " + extra);
+        return false;
     }
 
     @Override
@@ -88,36 +101,27 @@ public class MediaPlayController extends MusicStateObservable
         return state == STATE_PLAYING;
     }
 
-    public int getCurrentPosition() {
+    protected int getCurrentPosition() {
         return mediaPlayer.getCurrentPosition();
     }
 
     public void play(Music music) {
         try {
-            Music currentPlayingMusic = MusicCache.getInstance().getCurrentPlayingMusic();
-            if (currentPlayingMusic != null && currentPlayingMusic.equals(music)) {
+            requestedToPlayMusic = music;
+            if (currentPlayingMusic != null && currentPlayingMusic.equals(requestedToPlayMusic)) {
                 // selected music is currently playing or pausing or has not prepared
                 if (isPrepared) {
                     // if has prepared, play it
                     if (!isPlaying()) {
-                        beginPlay(mediaPlayer);
-                        MusicCache.getInstance().setCurrentPlayingMusic(music);
+                        beginPlay();
                     }
-                } else {
-                    // else, prepare it
-                    prepareMusic(music);
-                    notifyAllPlayedMusicChanged(music);
+                } else if (state != STATE_PREPARING) {
+                    // else if has not in preparing, prepare it
+                    prepareMusic(requestedToPlayMusic);
                 }
             } else {
                 // selected music is NOT currently playing or pausing
-                notifyAllPlayedMusicChanged(music);
-                prepareMusic(music);
-                MusicCache.getInstance().setCurrentPlayingMusic(music);
-                MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_BUFFERING);
-                MyMediaSession.getInstance().setMetaData(music);
-                MusicCache.getInstance().setCurrentPlayingMusic(music);
-                state = STATE_PREPARING;
-                isPrepared = false;
+                prepareMusic(requestedToPlayMusic);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -131,7 +135,6 @@ public class MediaPlayController extends MusicStateObservable
             notifyAllMusicPlayingObserverPlayingState(false);
             state = STATE_PAUSE;
             MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PAUSED);
-
         }
     }
 
@@ -150,18 +153,27 @@ public class MediaPlayController extends MusicStateObservable
     }
 
     private void prepareMusic(Music music) throws IOException {
+        isPrepared = false;
+        state = STATE_PREPARING;
+        mPlayingTimer.pause();
         mediaPlayer.reset();
         mediaPlayer.setDataSource(music.getMusicFilePath());
         mediaPlayer.prepareAsync();
+        MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_BUFFERING);
     }
 
-    private void beginPlay(MediaPlayer mp) {
+    private void beginPlay() {
+        isPrepared = true;
+        state = STATE_PLAYING;
+        currentPlayingMusic = requestedToPlayMusic;
+        CurrentPlayingMusicCache.getInstance().setCurrentPlayingMusic(currentPlayingMusic);
+        MyMediaSession.getInstance().setMetaData(currentPlayingMusic);
+        notifyAllPlayedMusicChanged(currentPlayingMusic);
         audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN);
         notifyAllMusicPlayingObserverPlayingState(true);
-        mp.start();
+        mediaPlayer.start();
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
-        state = STATE_PLAYING;
         mPlayingTimer.start();
     }
 

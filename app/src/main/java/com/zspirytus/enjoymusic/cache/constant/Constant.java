@@ -1,10 +1,10 @@
-package com.zspirytus.enjoymusic.cache.finalvalue;
+package com.zspirytus.enjoymusic.cache.constant;
 
 /**
  * Created by ZSpirytus on 2018/9/7.
  */
 
-public interface FinalValue {
+public interface Constant {
 
     interface EventBusTag {
         String PLAY = "play";
@@ -15,6 +15,8 @@ public interface FinalValue {
         String MUSIC_NAME_SET = "music name set";
         String SHOW_MUSIC_PLAY_FRAGMENT = "show music play fragment";
         String START_MAIN_ACTIVITY = "start MainActivity";
+        String SET_MAIN_ACTIVITY_TOOLBAR_TITLE = "set MainActivity toolbar title";
+        String SET_DFAB_VISIBLE = "set DFab Visible";
     }
 
     interface AnimationProperty {
@@ -34,5 +36,11 @@ public interface FinalValue {
         String NEXT = "next";
         String PREVIOUS = "previous";
         String SINGLE_CLICK = "singleClick";
+    }
+
+    interface HomePageTabTitle {
+        String ALL = "All";
+        String ALBUM = "Album";
+        String ARTIST = "Artist";
     }
 }

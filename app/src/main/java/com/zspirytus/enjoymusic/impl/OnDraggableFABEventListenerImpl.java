@@ -1,7 +1,8 @@
 package com.zspirytus.enjoymusic.impl;
 
-import com.zspirytus.enjoymusic.cache.MusicCache;
-import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
+import com.zspirytus.enjoymusic.cache.AllMusicCache;
+import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
+import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
@@ -17,25 +18,33 @@ public class OnDraggableFABEventListenerImpl implements OnDraggableFABEventListe
 
     @Override
     public void onClick() {
-        if (MediaPlayController.getInstance().isPlaying()) {
-            ForegroundMusicController.getInstance().pause(MusicCache.getInstance().getCurrentPlayingMusic());
-        } else {
-            ForegroundMusicController.getInstance().play(MusicCache.getInstance().getCurrentPlayingMusic());
+        if (!AllMusicCache.getInstance().getAllMusicList().isEmpty()) {
+            if (MediaPlayController.getInstance().isPlaying()) {
+                ForegroundMusicController.getInstance().pause(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+            } else {
+                ForegroundMusicController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+            }
         }
     }
 
     @Override
     public void onLongClick() {
-        EventBus.getDefault().post(MusicCache.getInstance().getCurrentPlayingMusic(), FinalValue.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT);
+        if (!AllMusicCache.getInstance().getAllMusicList().isEmpty()) {
+            EventBus.getDefault().post(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic(), Constant.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT);
+        }
     }
 
     @Override
     public void onDraggedLeft() {
-        ForegroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getPreviousMusic());
+        if (!AllMusicCache.getInstance().getAllMusicList().isEmpty()) {
+            ForegroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getPreviousMusic());
+        }
     }
 
     @Override
     public void onDraggedRight() {
-        ForegroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic());
+        if (!AllMusicCache.getInstance().getAllMusicList().isEmpty()) {
+            ForegroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic());
+        }
     }
 }

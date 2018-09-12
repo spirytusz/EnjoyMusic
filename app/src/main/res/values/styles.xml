@@ -17,4 +17,27 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="TextViewStyle_14sp_black_marquee">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxEms">9</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <style name="TextViewStyle_10sp_marquee">
+        <item name="android:textSize">10sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxEms">9</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <style name="CardViewStyle">
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:layout_marginBottom">3dp</item>
+        <item name="android:layout_marginStart">3dp</item>
+        <item name="android:layout_marginEnd">3dp</item>
+        <item name="android:focusable">true</item>
+    </style>
+
 </resources>

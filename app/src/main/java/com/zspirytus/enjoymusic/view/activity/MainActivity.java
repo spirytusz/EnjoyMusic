@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
+import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.impl.OnDraggableFABEventListenerImpl;
@@ -26,7 +26,7 @@ import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
-import com.zspirytus.enjoymusic.view.fragment.MusicListFragment;
+import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.mylibrary.DraggableFloatingActionButton;
 import com.zspirytus.zspermission.PermissionGroup;
@@ -36,7 +36,7 @@ import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 /**
- * Activity: 控制显示、隐藏MusicPlayingFragment、MusicListFragment
+ * Activity: 控制显示、隐藏MusicPlayingFragment、AllMusicListFragment
  * Created by ZSpirytus on 2018/8/2.
  */
 
@@ -64,8 +64,8 @@ public class MainActivity extends BaseActivity
 
     // Fragments and Fragment Manager
     private FragmentManager mFragmentManager = getSupportFragmentManager();
-    private MusicListFragment mMusicListFragment;
     private MusicPlayFragment mMusicPlayFragment;
+    private HomePageFragment mHomePageFragment;
 
     private boolean isMusicPlayFragment = false;
     private long pressedBackLastTime;
@@ -117,8 +117,8 @@ public class MainActivity extends BaseActivity
             return;
         }
         if (isMusicPlayFragment) {
-            // hide MusicPlayFragment and show MusicListFragment
-            showMusicListFragment();
+            // hide MusicPlayFragment and show AllMusicListFragment
+            showHomePageFragment();
         } else {
             // exit or not
             long now = System.currentTimeMillis();
@@ -134,7 +134,7 @@ public class MainActivity extends BaseActivity
     // permission granted state listener
     @Override
     public void onGranted() {
-        showMusicListFragment();
+        showHomePageFragment();
         startPlayMusicService();
     }
 
@@ -145,7 +145,7 @@ public class MainActivity extends BaseActivity
         mFab.setImageResource(resId);
     }
 
-    @Subscriber(tag = FinalValue.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT)
+    @Subscriber(tag = Constant.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT)
     public void showMusicPlayFragment(Music music) {
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_up, R.anim.anim_fragment_alpha_hide);
@@ -153,8 +153,8 @@ public class MainActivity extends BaseActivity
             mMusicPlayFragment = MusicPlayFragment.getInstance();
             mFragmentTransaction.add(R.id.fragment_container, mMusicPlayFragment);
         }
-        if (mMusicListFragment != null)
-            mFragmentTransaction.hide(mMusicListFragment);
+        if (mHomePageFragment != null)
+            mFragmentTransaction.hide(mHomePageFragment);
         mFragmentTransaction.show(mMusicPlayFragment);
         mFragmentTransaction.commitAllowingStateLoss();
         playWidgetVisibilityAnimation(View.GONE);
@@ -162,12 +162,37 @@ public class MainActivity extends BaseActivity
         isMusicPlayFragment = true;
     }
 
-    // if there is no music in device, it will not set DraggableFabListener.
-    @Subscriber(tag = FinalValue.EventBusTag.SET_DFAB_LISTENER)
-    public void setDraggableFabListener(boolean hasMusicInDevice) {
-        if (hasMusicInDevice) {
-            mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListenerImpl());
+    @Subscriber(tag = Constant.EventBusTag.SET_DFAB_VISIBLE)
+    public void setDFabVisible(boolean isDFabVisible) {
+        /*AnimatorSet set = new AnimatorSet();*/
+        if (isDFabVisible) {
+            /*Animator animatorToBiggerX = AnimationUtil.ofFloat(mFab, "scaleX", Constant.AnimationDuration.SHORT_SHORT_DURATION, 1f, 1.382f);
+            Animator animatorToBiggerY = AnimationUtil.ofFloat(mFab, "scaleY", Constant.AnimationDuration.SHORT_SHORT_DURATION, 1f, 1.382f);
+            AnimatorSet animatorToBigger = new AnimatorSet();
+            animatorToBigger.play(animatorToBiggerX).with(animatorToBiggerY);
+            Animator animatorDisappearX = AnimationUtil.ofFloat(mFab, "scaleX", 1.382f, 0f);
+            Animator animatorDisappearY = AnimationUtil.ofFloat(mFab, "scaleY", 1.382f, 0f);
+            AnimatorSet animatorDisappear = new AnimatorSet();
+            animatorDisappear.play(animatorDisappearX).with(animatorDisappearY);
+            set.play(animatorToBigger).before(animatorDisappear);*/
+            mFab.setVisibility(View.VISIBLE);
+        } else {
+            /*Animator animatorAppearX = AnimationUtil.ofFloat(mFab, "scaleX", 0f, 1.382f);
+            Animator animatorAppearY = AnimationUtil.ofFloat(mFab, "scaleY", 0f, 1.382f);
+            AnimatorSet animatorAppear = new AnimatorSet();
+            animatorAppear.play(animatorAppearX).with(animatorAppearY);
+            Animator animatorToSmallerX = AnimationUtil.ofFloat(mFab, "scaleX", Constant.AnimationDuration.SHORT_SHORT_DURATION, 1.382f, 1f);
+            Animator animatorToSmallerY = AnimationUtil.ofFloat(mFab, "scaleY", Constant.AnimationDuration.SHORT_SHORT_DURATION, 1.382f, 1f);
+            AnimatorSet animatorToSmaller = new AnimatorSet();
+            animatorAppear.play(animatorToSmallerX).with(animatorToSmallerY);
+            set.play(animatorAppear).before(animatorToSmaller);*/
+            mFab.setVisibility(View.GONE);
         }
+    }
+
+    @Subscriber(tag = Constant.EventBusTag.SET_MAIN_ACTIVITY_TOOLBAR_TITLE)
+    public void setToolbarTitle(String title) {
+        mToolbar.setTitle(title);
     }
 
     private void initView() {
@@ -195,6 +220,7 @@ public class MainActivity extends BaseActivity
     private void initData() {
         // set listener
         mNavigationView.setNavigationItemSelectedListener(this);
+        mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListenerImpl());
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,12 +234,12 @@ public class MainActivity extends BaseActivity
         startService(intent);
     }
 
-    private void showMusicListFragment() {
+    private void showHomePageFragment() {
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-        // set animation and show MusicListFragment
-        if (mMusicListFragment == null) {
-            mMusicListFragment = MusicListFragment.getInstance();
-            mFragmentTransaction.add(R.id.fragment_container, mMusicListFragment);
+        // set animation and show AllMusicListFragment
+        if (mHomePageFragment == null) {
+            mHomePageFragment = HomePageFragment.getInstance();
+            mFragmentTransaction.add(R.id.fragment_container, mHomePageFragment);
             mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_up, 0);
         } else {
             mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_down, R.anim.anim_fragment_alpha_hide);
@@ -221,19 +247,20 @@ public class MainActivity extends BaseActivity
         if (mMusicPlayFragment != null) {
             mFragmentTransaction.hide(mMusicPlayFragment);
         }
-        mFragmentTransaction.show(mMusicListFragment);
+        mFragmentTransaction.show(mHomePageFragment);
         mFragmentTransaction.commitAllowingStateLoss();
         playWidgetVisibilityAnimation(View.VISIBLE);
         changeClickToolbarButtonResponseAndToolbarStyle(true);
+        mToolbar.setTitle("Enjoy Music");
         isMusicPlayFragment = false;
     }
 
     private void playWidgetVisibilityAnimation(int visibility) {
         if (visibility == View.VISIBLE) {
-            AnimationUtil.ofFloat(mFab, FinalValue.AnimationProperty.ALPHA, 0f, 1f).start();
+            AnimationUtil.ofFloat(mFab, Constant.AnimationProperty.ALPHA, 0f, 1f).start();
             mFab.setVisibility(View.VISIBLE);
         } else {
-            AnimationUtil.ofFloat(mFab, FinalValue.AnimationProperty.ALPHA, 1f, 0f).start();
+            AnimationUtil.ofFloat(mFab, Constant.AnimationProperty.ALPHA, 1f, 0f).start();
             mFab.setVisibility(View.GONE);
         }
     }

@@ -2,7 +2,7 @@ package com.zspirytus.enjoymusic.utils;
 
 import android.animation.ObjectAnimator;
 
-import com.zspirytus.enjoymusic.cache.finalvalue.FinalValue;
+import com.zspirytus.enjoymusic.cache.constant.Constant;
 
 /**
  * Created by ZSpirytus on 2018/9/10.
@@ -17,7 +17,7 @@ public class AnimationUtil {
     }
 
     public static ObjectAnimator ofFloat(Object object, String property, float... values) {
-        return ofFloat(object, property, FinalValue.AnimationDuration.SHORT_DURATION, values);
+        return ofFloat(object, property, Constant.AnimationDuration.SHORT_DURATION, values);
     }
 
     public static ObjectAnimator ofInt(Object object, String property, int... values) {

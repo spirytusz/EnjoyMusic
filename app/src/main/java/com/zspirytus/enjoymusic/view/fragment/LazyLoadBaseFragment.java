@@ -17,13 +17,22 @@ import com.zspirytus.enjoymusic.view.activity.BaseActivity;
 import java.lang.reflect.Field;
 
 /**
- * Fragment 基类
- * Created by ZSpirytus on 2018/8/2.
+ * Created by ZSpirytus on 2018/9/12.
  */
 
-public abstract class BaseFragment extends Fragment {
+public class LazyLoadBaseFragment extends Fragment {
+
+    private boolean isViewCreated = false;
+    private boolean isVisibleToUser = false;
+    private boolean hasLoaded = false;
 
     private BaseActivity parentActivity;
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        this.isVisibleToUser = isVisibleToUser;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -36,15 +45,33 @@ public abstract class BaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = autoInjectLayoutId(inflater, container);
         autoInjectAllField(view);
-        initData();
-        initView();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        isViewCreated = true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        lazyLoad();
     }
 
     protected void initData() {
     }
 
     protected void initView() {
+    }
+
+    private void lazyLoad() {
+        if (isViewCreated && isVisibleToUser && !hasLoaded) {
+            initData();
+            initView();
+            hasLoaded = true;
+        }
     }
 
     private void autoInjectAllField(View view) {

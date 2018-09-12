@@ -1,12 +1,12 @@
 package com.zspirytus.enjoymusic.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zspirytus.enjoymusic.R;
@@ -32,7 +32,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (mContext == null) {
             mContext = parent.getContext();
         }
-        View view = LayoutInflater.from(mContext).inflate(R.layout.music_list_item, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_all_music_list, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -68,25 +68,25 @@ public class MusicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 DialogBuilder.showSelectDialog(mContext);
             }
         });
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (onItemClickListener != null) {
+        if (onItemClickListener != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     onItemClickListener.onItemClick(view, holder.getLayoutPosition());
                 }
-            }
-        });
+            });
+        }
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
 
         private View itemView;
 
-        private ImageView mTag;
+        private AppCompatImageView mTag;
         private RoundCornerImageView mCover;
-        private TextView mMusicName;
-        private TextView mMusicArtist;
-        private ImageView mMoreVert;
+        private AppCompatTextView mMusicName;
+        private AppCompatTextView mMusicArtist;
+        private AppCompatImageView mMoreVert;
 
         public MyViewHolder(View itemView) {
             super(itemView);
