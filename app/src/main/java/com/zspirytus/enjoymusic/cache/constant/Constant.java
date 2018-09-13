@@ -11,7 +11,6 @@ public interface Constant {
         String PAUSE = "pause";
         String STOP = "stop";
         String SEEK_TO = "seek to";
-        String SET_DFAB_LISTENER = "set dFab listener";
         String MUSIC_NAME_SET = "music name set";
         String SHOW_MUSIC_PLAY_FRAGMENT = "show music play fragment";
         String START_MAIN_ACTIVITY = "start MainActivity";
@@ -39,8 +38,13 @@ public interface Constant {
     }
 
     interface HomePageTabTitle {
-        String ALL = "All";
-        String ALBUM = "Album";
-        String ARTIST = "Artist";
+        String ALL = "曲目";
+        String ALBUM = "专辑";
+        String ARTIST = "艺术家";
+    }
+
+    interface RecyclerViewItemType {
+        int ALL_MUSIC_ITEM_TYPE = 1;
+        int ARTIST_MUSIC_ITEM_TYPE = 2;
     }
 }

@@ -10,7 +10,7 @@ import android.support.v7.app.AlertDialog;
 
 public class DialogBuilder {
 
-    public static void showSelectDialog(Context context) {
+    public static AlertDialog.Builder showSelectDialog(Context context) {
         final String[] items = new String[]{"音乐信息", "获取专辑封面", "获取歌词"};
         // 创建对话框构建器
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -20,6 +20,6 @@ public class DialogBuilder {
 
             }
         });
-        builder.create().show();
+        return builder;
     }
 }

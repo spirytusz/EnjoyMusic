@@ -92,7 +92,7 @@ public class PlayMusicService extends Service
 
     @Subscriber(tag = Constant.EventBusTag.START_MAIN_ACTIVITY)
     public void startMainActivity(Object object) {
-        MainActivity.startActivity(this);
+        MainActivity.startActivity(this, Constant.StatusBarEvent.EXTRA, Constant.StatusBarEvent.ACTION_NAME);
     }
 
     private void registerEvent() {

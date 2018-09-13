@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.zspirytus.enjoymusic.cache.constant.Constant;
+
 import java.util.List;
 
 /**
@@ -33,7 +35,15 @@ public class MyViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "Pager " + (position + 1);
+        switch (position) {
+            case 0:
+                return Constant.HomePageTabTitle.ALL;
+            case 1:
+                return Constant.HomePageTabTitle.ALBUM;
+            case 2:
+                return Constant.HomePageTabTitle.ARTIST;
+        }
+        return "";
     }
 
 

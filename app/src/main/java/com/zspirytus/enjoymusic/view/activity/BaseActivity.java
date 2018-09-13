@@ -26,11 +26,15 @@ public abstract class BaseActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         autoInjectLayoutId();
         autoInjectAllField();
+        registerEvent();
+        initView();
+        initData();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unregisterEvent();
     }
 
     @Override
@@ -82,6 +86,18 @@ public abstract class BaseActivity extends AppCompatActivity
                 setContentView(layoutId);
             }
         }
+    }
+
+    protected void initView() {
+    }
+
+    protected void initData() {
+    }
+
+    protected void registerEvent() {
+    }
+
+    protected void unregisterEvent() {
     }
 
     /**

@@ -5,6 +5,7 @@ import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
+import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.mylibrary.OnDraggableFABEventListener;
 
@@ -18,6 +19,9 @@ public class OnDraggableFABEventListenerImpl implements OnDraggableFABEventListe
 
     @Override
     public void onClick() {
+        for (Music music : AllMusicCache.getInstance().getAllMusicList()) {
+            System.out.println(music.getMusicThumbAlbumCoverPath());
+        }
         if (!AllMusicCache.getInstance().getAllMusicList().isEmpty()) {
             if (MediaPlayController.getInstance().isPlaying()) {
                 ForegroundMusicController.getInstance().pause(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());

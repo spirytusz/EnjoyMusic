@@ -1,17 +1,15 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
+import com.zspirytus.enjoymusic.adapter.LinearMusicListAdapter;
 import com.zspirytus.enjoymusic.cache.AllMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -39,7 +37,7 @@ import io.reactivex.schedulers.Schedulers;
 
 @LayoutIdInject(R.layout.fragment_all_music_list)
 public class AllMusicListFragment extends BaseFragment
-        implements MusicListAdapter.OnItemClickListener {
+        implements LinearMusicListAdapter.OnItemClickListener {
 
     @ViewInject(R.id.all_music_recycler_view)
     private RecyclerView mMusicRecyclerView;
@@ -49,12 +47,11 @@ public class AllMusicListFragment extends BaseFragment
     private TextView mInfoTextView;
 
     private List<Music> mMusicList;
-    private MusicListAdapter mMusicRecyclerViewAdapter;
+    private LinearMusicListAdapter mMusicRecyclerViewAdapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        return view;
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
     @Override
@@ -97,16 +94,6 @@ public class AllMusicListFragment extends BaseFragment
                     @Override
                     public void onNext(List<Music> s) {
                         mMusicList = s;
-                        mMusicRecyclerViewAdapter = new MusicListAdapter();
-                        final LinearLayoutManager layoutManager = new LinearLayoutManager(getParentActivity());
-                        layoutManager.setSmoothScrollbarEnabled(true);
-                        layoutManager.setAutoMeasureEnabled(true);
-                        mMusicRecyclerViewAdapter.setItemList(s);
-                        mMusicRecyclerView.setLayoutManager(layoutManager);
-                        mMusicRecyclerView.setHasFixedSize(true);
-                        mMusicRecyclerView.setNestedScrollingEnabled(false);
-                        mMusicRecyclerViewAdapter.setOnItemClickListener(AllMusicListFragment.this);
-                        mMusicRecyclerView.setAdapter(mMusicRecyclerViewAdapter);
                     }
 
                     @Override
@@ -118,6 +105,16 @@ public class AllMusicListFragment extends BaseFragment
 
                     @Override
                     public void onComplete() {
+                        mMusicRecyclerViewAdapter = new LinearMusicListAdapter(Constant.RecyclerViewItemType.ALL_MUSIC_ITEM_TYPE);
+                        final LinearLayoutManager layoutManager = new LinearLayoutManager(getParentActivity());
+                        layoutManager.setSmoothScrollbarEnabled(true);
+                        layoutManager.setAutoMeasureEnabled(true);
+                        mMusicRecyclerViewAdapter.setAllMusicItemList(mMusicList);
+                        mMusicRecyclerView.setLayoutManager(layoutManager);
+                        mMusicRecyclerView.setHasFixedSize(true);
+                        mMusicRecyclerView.setNestedScrollingEnabled(false);
+                        mMusicRecyclerViewAdapter.setOnItemClickListener(AllMusicListFragment.this);
+                        mMusicRecyclerView.setAdapter(mMusicRecyclerViewAdapter);
                         playAnimator();
                     }
                 });

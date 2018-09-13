@@ -19,13 +19,13 @@ import java.util.List;
  * Created by zhangkunwei on 2018/9/12.
  */
 
-public class AlbumMusicListAdapter extends RecyclerView.Adapter<AlbumMusicListAdapter.MyHolder> {
+public class GridMusicListAdapter extends RecyclerView.Adapter<GridMusicListAdapter.MyHolder> {
 
     private Context mContext;
     private List<Album> mAlbumList;
     private OnItemClickListener mOnItemClickListener;
 
-    public AlbumMusicListAdapter() {
+    public GridMusicListAdapter() {
         super();
     }
 

@@ -2,7 +2,7 @@ package com.zspirytus.enjoymusic.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -53,7 +54,7 @@ public class MainActivity extends BaseActivity
 
     // init view in include_main_container.xml
     @ViewInject(R.id.main_activity_toolbar)
-    private Toolbar mToolbar;
+    public Toolbar mToolbar;
 
     // init draggable fab
     @ViewInject(R.id.dragged_fab)
@@ -69,21 +70,6 @@ public class MainActivity extends BaseActivity
 
     private boolean isMusicPlayFragment = false;
     private long pressedBackLastTime;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        registerEvent();
-        initView();
-        initData();
-    }
-
-    @Override
-    public void onDestroy() {
-        unregisterEvent();
-        ForegroundMusicController.getInstance().release();
-        super.onDestroy();
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -107,7 +93,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        System.out.println("execute onNewIntent!");
+        showMusicPlayFragment(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
     }
 
     @Override
@@ -131,18 +117,68 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    // permission granted state listener
     @Override
     public void onGranted() {
-        showHomePageFragment();
+        String action = getIntent().getStringExtra(Constant.StatusBarEvent.EXTRA);
+        if (Constant.StatusBarEvent.ACTION_NAME.equals(action)) {
+            showMusicPlayFragment(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+        } else {
+            showHomePageFragment();
+        }
         startPlayMusicService();
     }
 
     @Override
     public void onPlayingStateChanged(boolean isPlaying) {
-        // set the play or pause button src
         int resId = isPlaying ? R.drawable.ic_pause_white_48dp : R.drawable.ic_play_arrow_white_48dp;
         mFab.setImageResource(resId);
+    }
+
+    @Override
+    protected void initView() {
+        // request permissions, if it is granted, it will call onGranted()
+        ZSPermission.getInstance()
+                .at(this)
+                .requestCode(123)
+                .permissions(PermissionGroup.STORAGE_GROUP)
+                .permissions(PermissionGroup.PHONE_GROUP)
+                .listenBy(this)
+                .request();
+
+        setSupportActionBar(mToolbar);
+        toggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                mToolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        );
+        onPlayingStateChanged(MediaPlayController.getInstance().isPlaying());
+    }
+
+    @Override
+    protected void initData() {
+        mNavigationView.setNavigationItemSelectedListener(this);
+        mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListenerImpl());
+        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
+    @Override
+    protected void registerEvent() {
+        EventBus.getDefault().register(this);
+        MediaPlayController.getInstance().registerMusicPlayStateObserver(this);
+    }
+
+    @Override
+    protected void unregisterEvent() {
+        EventBus.getDefault().unregister(this);
+        MediaPlayController.getInstance().unregisterMusicPlayStateObserver(this);
+        ForegroundMusicController.getInstance().release();
     }
 
     @Subscriber(tag = Constant.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT)
@@ -164,28 +200,9 @@ public class MainActivity extends BaseActivity
 
     @Subscriber(tag = Constant.EventBusTag.SET_DFAB_VISIBLE)
     public void setDFabVisible(boolean isDFabVisible) {
-        /*AnimatorSet set = new AnimatorSet();*/
         if (isDFabVisible) {
-            /*Animator animatorToBiggerX = AnimationUtil.ofFloat(mFab, "scaleX", Constant.AnimationDuration.SHORT_SHORT_DURATION, 1f, 1.382f);
-            Animator animatorToBiggerY = AnimationUtil.ofFloat(mFab, "scaleY", Constant.AnimationDuration.SHORT_SHORT_DURATION, 1f, 1.382f);
-            AnimatorSet animatorToBigger = new AnimatorSet();
-            animatorToBigger.play(animatorToBiggerX).with(animatorToBiggerY);
-            Animator animatorDisappearX = AnimationUtil.ofFloat(mFab, "scaleX", 1.382f, 0f);
-            Animator animatorDisappearY = AnimationUtil.ofFloat(mFab, "scaleY", 1.382f, 0f);
-            AnimatorSet animatorDisappear = new AnimatorSet();
-            animatorDisappear.play(animatorDisappearX).with(animatorDisappearY);
-            set.play(animatorToBigger).before(animatorDisappear);*/
             mFab.setVisibility(View.VISIBLE);
         } else {
-            /*Animator animatorAppearX = AnimationUtil.ofFloat(mFab, "scaleX", 0f, 1.382f);
-            Animator animatorAppearY = AnimationUtil.ofFloat(mFab, "scaleY", 0f, 1.382f);
-            AnimatorSet animatorAppear = new AnimatorSet();
-            animatorAppear.play(animatorAppearX).with(animatorAppearY);
-            Animator animatorToSmallerX = AnimationUtil.ofFloat(mFab, "scaleX", Constant.AnimationDuration.SHORT_SHORT_DURATION, 1.382f, 1f);
-            Animator animatorToSmallerY = AnimationUtil.ofFloat(mFab, "scaleY", Constant.AnimationDuration.SHORT_SHORT_DURATION, 1.382f, 1f);
-            AnimatorSet animatorToSmaller = new AnimatorSet();
-            animatorAppear.play(animatorToSmallerX).with(animatorToSmallerY);
-            set.play(animatorAppear).before(animatorToSmaller);*/
             mFab.setVisibility(View.GONE);
         }
     }
@@ -193,40 +210,6 @@ public class MainActivity extends BaseActivity
     @Subscriber(tag = Constant.EventBusTag.SET_MAIN_ACTIVITY_TOOLBAR_TITLE)
     public void setToolbarTitle(String title) {
         mToolbar.setTitle(title);
-    }
-
-    private void initView() {
-        // request permissions or show music list fragment
-        ZSPermission.getInstance()
-                .at(this)
-                .requestCode(123)
-                .permissions(PermissionGroup.STORAGE_GROUP)
-                .permissions(PermissionGroup.PHONE_GROUP)
-                .listenBy(this)
-                .request();
-
-        // init toolbar
-        setSupportActionBar(mToolbar);
-        toggle = new ActionBarDrawerToggle(
-                this,
-                mDrawerLayout,
-                mToolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close
-        );
-        onPlayingStateChanged(MediaPlayController.getInstance().isPlaying());
-    }
-
-    private void initData() {
-        // set listener
-        mNavigationView.setNavigationItemSelectedListener(this);
-        mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListenerImpl());
-        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
     }
 
     private void startPlayMusicService() {
@@ -251,8 +234,11 @@ public class MainActivity extends BaseActivity
         mFragmentTransaction.commitAllowingStateLoss();
         playWidgetVisibilityAnimation(View.VISIBLE);
         changeClickToolbarButtonResponseAndToolbarStyle(true);
-        mToolbar.setTitle("Enjoy Music");
+        mToolbar.setTitle("");
         isMusicPlayFragment = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mToolbar.setElevation(0);
+        }
     }
 
     private void playWidgetVisibilityAnimation(int visibility) {
@@ -283,18 +269,11 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    private void registerEvent() {
-        EventBus.getDefault().register(this);
-        MediaPlayController.getInstance().registerMusicPlayStateObserver(this);
-    }
-
-    private void unregisterEvent() {
-        EventBus.getDefault().unregister(this);
-        MediaPlayController.getInstance().unregisterMusicPlayStateObserver(this);
-    }
-
-    public static void startActivity(Context context) {
+    public static void startActivity(Context context, String extra, String action) {
         Intent intent = new Intent(context, MainActivity.class);
+        if (extra != null && action != null) {
+            intent.putExtra(extra, action);
+        }
         context.startActivity(intent);
     }
 

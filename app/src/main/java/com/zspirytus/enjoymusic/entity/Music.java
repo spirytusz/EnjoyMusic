@@ -58,7 +58,7 @@ public class Music implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        return this.toString().equals(obj.toString());
+        return obj instanceof Music && this.toString().equals(obj.toString());
     }
 
     @Override

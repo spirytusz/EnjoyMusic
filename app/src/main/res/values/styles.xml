@@ -15,7 +15,9 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:background">@color/white</item>
+    </style>
 
     <style name="TextViewStyle_14sp_black_marquee">
         <item name="android:textSize">14sp</item>
@@ -38,6 +40,24 @@
         <item name="android:layout_marginStart">3dp</item>
         <item name="android:layout_marginEnd">3dp</item>
         <item name="android:focusable">true</item>
+    </style>
+
+    <style name="TabLayoutStyle">
+        <!--<item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabIndicatorColor">@color/white</item>-->
+        <item name="tabBackground">@color/white</item>
+        <item name="tabGravity">center</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabMinWidth">135dp</item>
+    </style>
+
+    <style name="TabLayoutTransparentStyle">
+        <item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabIndicatorColor">@android:color/transparent</item>
+        <item name="tabBackground">@android:color/transparent</item>
+        <item name="tabGravity">center</item>
+        <item name="tabMode">fixed</item>
+        <!--<item name="tabMinWidth">135dp</item>-->
     </style>
 
 </resources>

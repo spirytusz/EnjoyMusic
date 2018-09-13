@@ -1,17 +1,13 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.AlbumMusicListAdapter;
+import com.zspirytus.enjoymusic.adapter.GridMusicListAdapter;
 import com.zspirytus.enjoymusic.cache.AllMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Album;
@@ -38,8 +34,8 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 @LayoutIdInject(R.layout.fragment_album_music_list)
-public class AlbumMusicListFragment extends BaseFragment
-        implements AlbumMusicListAdapter.OnItemClickListener {
+public class AlbumMusicListFragment extends LazyLoadBaseFragment
+        implements GridMusicListAdapter.OnItemClickListener {
 
     @ViewInject(R.id.album_music_recycler_view)
     private RecyclerView mAlbumMusicRecyclerView;
@@ -48,15 +44,8 @@ public class AlbumMusicListFragment extends BaseFragment
     @ViewInject(R.id.album_music_list_fragment_info_tv)
     private TextView mInfoTextView;
 
-    private AlbumMusicListAdapter mAdapter;
+    private GridMusicListAdapter mAdapter;
     private List<Album> mAlbumList;
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        return view;
-    }
 
     @Override
     public void onItemClick(View view, int position) {
@@ -113,7 +102,7 @@ public class AlbumMusicListFragment extends BaseFragment
                     public void onComplete() {
                         if (!mAlbumList.isEmpty()) {
                             playWidgetAnimation(true, false);
-                            mAdapter = new AlbumMusicListAdapter();
+                            mAdapter = new GridMusicListAdapter();
                             mAdapter.setAlbumList(mAlbumList);
                             mAdapter.setOnItemClickListener(AlbumMusicListFragment.this);
                             final GridLayoutManager layoutManager = new GridLayoutManager(getParentActivity(), 2);

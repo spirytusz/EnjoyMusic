@@ -8,6 +8,7 @@
         android:id="@+id/notification_music_cover"
         android:layout_width="@dimen/notification_cover_size"
         android:layout_height="@dimen/notification_cover_size"
+        android:scaleType="fitXY"
         android:background="@color/grey"/>
 
     <TextView

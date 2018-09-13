@@ -56,7 +56,7 @@ public class Album {
 
     @Override
     public boolean equals(Object obj) {
-        return this.hashCode() == obj.hashCode();
+        return obj instanceof Album && this.hashCode() == obj.hashCode();
     }
 
     @Override

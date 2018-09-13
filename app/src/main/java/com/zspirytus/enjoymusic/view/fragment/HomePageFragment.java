@@ -78,7 +78,7 @@ public class HomePageFragment extends BaseFragment {
 
             }
         });
-        mViewPager.setOffscreenPageLimit(0);
+        mViewPager.setOffscreenPageLimit(3);
     }
 
     public static HomePageFragment getInstance() {

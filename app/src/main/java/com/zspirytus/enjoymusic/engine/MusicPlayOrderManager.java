@@ -25,7 +25,6 @@ public class MusicPlayOrderManager {
     private static final String MODE_FILE_NAME = "play_mode";
     private static final String MODE_KEY = "mode_key";
 
-    private AllMusicCache mAllMusicCache = AllMusicCache.getInstance();
     private List<Music> currentMusicList;
 
     private int mMode;
@@ -40,7 +39,7 @@ public class MusicPlayOrderManager {
     }
 
     public void init() {
-        currentMusicList = mAllMusicCache.getAllMusicList();
+        currentMusicList = AllMusicCache.getInstance().getAllMusicList();
     }
 
     public void setMode(int mode) {
