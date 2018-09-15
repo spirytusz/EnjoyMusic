@@ -138,8 +138,9 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
         }
     }
 
-    public static AlbumMusicListFragment getInstance() {
-        return new AlbumMusicListFragment();
+    protected static AlbumMusicListFragment getInstance() {
+        AlbumMusicListFragment instance = new AlbumMusicListFragment();
+        return instance;
     }
 
 }

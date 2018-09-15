@@ -36,15 +36,32 @@ public abstract class BaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = autoInjectLayoutId(inflater, container);
         autoInjectAllField(view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initData();
         initView();
-        return view;
+        registerEvent();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unregisterEvent();
     }
 
     protected void initData() {
     }
 
     protected void initView() {
+    }
+
+    protected void registerEvent() {
+    }
+
+    protected void unregisterEvent() {
     }
 
     private void autoInjectAllField(View view) {

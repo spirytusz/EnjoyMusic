@@ -2,7 +2,6 @@ package com.zspirytus.enjoymusic.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -19,16 +18,24 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
+import com.zspirytus.enjoymusic.engine.FragmentStackManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.impl.OnDraggableFABEventListenerImpl;
 import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
-import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
+import com.zspirytus.enjoymusic.view.fragment.AboutFragment;
+import com.zspirytus.enjoymusic.view.fragment.AlbumMusicListFragment;
+import com.zspirytus.enjoymusic.view.fragment.AllMusicListFragment;
+import com.zspirytus.enjoymusic.view.fragment.ArtistMusicListFragment;
+import com.zspirytus.enjoymusic.view.fragment.BaseFragment;
+import com.zspirytus.enjoymusic.view.fragment.FragmentFactory;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
+import com.zspirytus.enjoymusic.view.fragment.MusicCategoryFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
+import com.zspirytus.enjoymusic.view.fragment.SettingsFragment;
 import com.zspirytus.mylibrary.DraggableFloatingActionButton;
 import com.zspirytus.zspermission.PermissionGroup;
 import com.zspirytus.zspermission.ZSPermission;
@@ -46,36 +53,47 @@ public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         MusicPlayStateObserver {
 
-    // init view in activity_main.xml
+    private final FragmentManager mFragmentManager = getSupportFragmentManager();
+
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
     @ViewInject(R.id.nav_view)
     private NavigationView mNavigationView;
-
-    // init view in include_main_container.xml
     @ViewInject(R.id.main_activity_toolbar)
     public Toolbar mToolbar;
-
-    // init draggable fab
     @ViewInject(R.id.dragged_fab)
     private DraggableFloatingActionButton mFab;
 
-    // Toolbar button click listener
     private ActionBarDrawerToggle toggle;
-
-    // Fragments and Fragment Manager
-    private FragmentManager mFragmentManager = getSupportFragmentManager();
-    private MusicPlayFragment mMusicPlayFragment;
-    private HomePageFragment mHomePageFragment;
-
-    private boolean isMusicPlayFragment = false;
     private long pressedBackLastTime;
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        switch (id) {
+            case R.id.nav_home_page:
+                showCastFragment(FragmentFactory.getInstance().create(HomePageFragment.class));
+                break;
+            case R.id.nav_music_all:
+                showCastFragment(FragmentFactory.getInstance().create(MusicCategoryFragment.class));
+                EventBus.getDefault().post(0, Constant.EventBusTag.SET_VIEW_PAGER_CURRENT_ITEM);
+                break;
+            case R.id.nav_music_album:
+                showCastFragment(FragmentFactory.getInstance().create(MusicCategoryFragment.class));
+                EventBus.getDefault().post(1, Constant.EventBusTag.SET_VIEW_PAGER_CURRENT_ITEM);
+                break;
+            case R.id.nav_music_artist:
+                showCastFragment(FragmentFactory.getInstance().create(MusicCategoryFragment.class));
+                EventBus.getDefault().post(2, Constant.EventBusTag.SET_VIEW_PAGER_CURRENT_ITEM);
+                break;
+            case R.id.nav_settings:
+                showCastFragment(FragmentFactory.getInstance().create(SettingsFragment.class));
+                break;
+            case R.id.nav_about:
+                showCastFragment(FragmentFactory.getInstance().create(AboutFragment.class));
+                break;
+        }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -100,13 +118,12 @@ public class MainActivity extends BaseActivity
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-            return;
-        }
-        if (isMusicPlayFragment) {
-            // hide MusicPlayFragment and show AllMusicListFragment
-            showHomePageFragment();
+        } else if (FragmentStackManager.getInstance().peek() instanceof MusicPlayFragment) {
+            changeClickToolbarButtonResponseAndToolbarStyle(true);
+            FragmentStackManager.getInstance().pop();
+            BaseFragment musicCategoryFragmentOrHomePageFragment = FragmentStackManager.getInstance().peek();
+            mFragmentManager.beginTransaction().show(musicCategoryFragmentOrHomePageFragment).commitAllowingStateLoss();
         } else {
-            // exit or not
             long now = System.currentTimeMillis();
             if (now - pressedBackLastTime < 2 * 1000) {
                 finish();
@@ -115,17 +132,6 @@ public class MainActivity extends BaseActivity
                 pressedBackLastTime = now;
             }
         }
-    }
-
-    @Override
-    public void onGranted() {
-        String action = getIntent().getStringExtra(Constant.StatusBarEvent.EXTRA);
-        if (Constant.StatusBarEvent.ACTION_NAME.equals(action)) {
-            showMusicPlayFragment(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
-        } else {
-            showHomePageFragment();
-        }
-        startPlayMusicService();
     }
 
     @Override
@@ -153,6 +159,7 @@ public class MainActivity extends BaseActivity
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close
         );
+        changeClickToolbarButtonResponseAndToolbarStyle(true);
         onPlayingStateChanged(MediaPlayController.getInstance().isPlaying());
     }
 
@@ -181,21 +188,19 @@ public class MainActivity extends BaseActivity
         ForegroundMusicController.getInstance().release();
     }
 
+    @Override
+    public void onGranted() {
+        String action = getIntent().getStringExtra(Constant.StatusBarEvent.EXTRA);
+        if (Constant.StatusBarEvent.ACTION_NAME.equals(action)) {
+            showMusicPlayFragment(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+        } else {
+            showCastFragment(FragmentFactory.getInstance().create(HomePageFragment.class));
+        }
+    }
+
     @Subscriber(tag = Constant.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT)
     public void showMusicPlayFragment(Music music) {
-        FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_up, R.anim.anim_fragment_alpha_hide);
-        if (mMusicPlayFragment == null) {
-            mMusicPlayFragment = MusicPlayFragment.getInstance();
-            mFragmentTransaction.add(R.id.fragment_container, mMusicPlayFragment);
-        }
-        if (mHomePageFragment != null)
-            mFragmentTransaction.hide(mHomePageFragment);
-        mFragmentTransaction.show(mMusicPlayFragment);
-        mFragmentTransaction.commitAllowingStateLoss();
-        playWidgetVisibilityAnimation(View.GONE);
-        changeClickToolbarButtonResponseAndToolbarStyle(false);
-        isMusicPlayFragment = true;
+        showCastFragment(FragmentFactory.getInstance().create(MusicPlayFragment.class));
     }
 
     @Subscriber(tag = Constant.EventBusTag.SET_DFAB_VISIBLE)
@@ -212,32 +217,30 @@ public class MainActivity extends BaseActivity
         mToolbar.setTitle(title);
     }
 
-    private void startPlayMusicService() {
-        Intent intent = new Intent(MainActivity.this, PlayMusicService.class);
-        startService(intent);
-    }
-
-    private void showHomePageFragment() {
-        FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-        // set animation and show AllMusicListFragment
-        if (mHomePageFragment == null) {
-            mHomePageFragment = HomePageFragment.getInstance();
-            mFragmentTransaction.add(R.id.fragment_container, mHomePageFragment);
-            mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_up, 0);
+    private <T extends BaseFragment> void showCastFragment(T baseFragment) {
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        if (!baseFragment.isAdded()) {
+            transaction.add(R.id.fragment_container, baseFragment);
+        }
+        FragmentStackManager.getInstance().hideAll(transaction);
+        transaction.show(baseFragment).commitAllowingStateLoss();
+        if (baseFragment instanceof MusicCategoryFragment) {
+            playWidgetVisibilityAnimation(View.VISIBLE);
         } else {
-            mFragmentTransaction.setCustomAnimations(R.anim.anim_fragment_translate_show_down, R.anim.anim_fragment_alpha_hide);
+            playWidgetVisibilityAnimation(View.GONE);
         }
-        if (mMusicPlayFragment != null) {
-            mFragmentTransaction.hide(mMusicPlayFragment);
+        if (baseFragment instanceof MusicPlayFragment) {
+            changeClickToolbarButtonResponseAndToolbarStyle(false);
+        } else {
+            changeClickToolbarButtonResponseAndToolbarStyle(true);
         }
-        mFragmentTransaction.show(mHomePageFragment);
-        mFragmentTransaction.commitAllowingStateLoss();
-        playWidgetVisibilityAnimation(View.VISIBLE);
-        changeClickToolbarButtonResponseAndToolbarStyle(true);
-        mToolbar.setTitle("");
-        isMusicPlayFragment = false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mToolbar.setElevation(0);
+        if (FragmentStackManager.getInstance().peek() instanceof MusicPlayFragment) {
+            FragmentStackManager.getInstance().pop();
+        }
+        if (!(baseFragment instanceof AllMusicListFragment
+                || baseFragment instanceof AlbumMusicListFragment
+                || baseFragment instanceof ArtistMusicListFragment)) {
+            FragmentStackManager.getInstance().push(baseFragment);
         }
     }
 
@@ -276,5 +279,4 @@ public class MainActivity extends BaseActivity
         }
         context.startActivity(intent);
     }
-
 }

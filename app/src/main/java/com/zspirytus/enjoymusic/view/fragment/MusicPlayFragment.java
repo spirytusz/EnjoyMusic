@@ -1,10 +1,6 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -67,26 +63,6 @@ public class MusicPlayFragment extends BaseFragment
 
     private Music mCurrentPlayingMusic;
 
-    public static MusicPlayFragment getInstance() {
-        MusicPlayFragment musicPlayFragment = new MusicPlayFragment();
-        return musicPlayFragment;
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        registerEvent();
-        setListener();
-        return view;
-    }
-
-    @Override
-    public void onDestroyView() {
-        unregisterEvent();
-        super.onDestroyView();
-    }
-
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -140,18 +116,6 @@ public class MusicPlayFragment extends BaseFragment
         setupSeekBar(music);
     }
 
-
-    @Override
-    protected void initView() {
-        if (mCurrentPlayingMusic != null) {
-            String musicAlbumUri = mCurrentPlayingMusic.getMusicThumbAlbumCoverPath();
-            Glide.with(this).load(new File(musicAlbumUri != null ? musicAlbumUri : ""))
-                    .into(mCover);
-            mTotalTime.setText(TimeUtil.convertLongToMinsSec(mCurrentPlayingMusic.getMusicDuration()));
-        }
-        setButtonSrc(MediaPlayController.getInstance().isPlaying());
-    }
-
     @Override
     protected void initData() {
         mCurrentPlayingMusic = CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic();
@@ -176,6 +140,37 @@ public class MusicPlayFragment extends BaseFragment
         });
     }
 
+    @Override
+    protected void initView() {
+        if (mCurrentPlayingMusic != null) {
+            String musicAlbumUri = mCurrentPlayingMusic.getMusicThumbAlbumCoverPath();
+            Glide.with(this).load(new File(musicAlbumUri != null ? musicAlbumUri : ""))
+                    .into(mCover);
+            mTotalTime.setText(TimeUtil.convertLongToMinsSec(mCurrentPlayingMusic.getMusicDuration()));
+        }
+        setButtonSrc(MediaPlayController.getInstance().isPlaying());
+        mCover.setOnClickListener(this);
+        mPreviousButton.setOnClickListener(this);
+        mPlayOrPauseButton.setOnClickListener(this);
+        mNextButton.setOnClickListener(this);
+    }
+
+    @Override
+    protected void registerEvent() {
+        EventBus.getDefault().register(this);
+        MediaPlayController.getInstance().registerMusicPlayStateObserver(this);
+        MediaPlayController.getInstance().registerProgressChange(this);
+        MediaPlayController.getInstance().registerPlayedMusicChangeObserver(this);
+    }
+
+    @Override
+    protected void unregisterEvent() {
+        EventBus.getDefault().unregister(this);
+        MediaPlayController.getInstance().unregisterMusicPlayStateObserver(this);
+        MediaPlayController.getInstance().unregisterProgressChange(this);
+        MediaPlayController.getInstance().unregisterPlayedMusicChangeObserver(this);
+    }
+
     private void setButtonSrc(boolean isPlaying) {
         if (isPlaying) {
             AnimationUtil.ofFloat(mPlayOrPauseButton, Constant.AnimationProperty.ALPHA, 1f, 0f).start();
@@ -186,27 +181,6 @@ public class MusicPlayFragment extends BaseFragment
             Glide.with(this).load(R.drawable.ic_play_arrow_black_48dp).into(mPlayOrPauseButton);
             AnimationUtil.ofFloat(mPlayOrPauseButton, Constant.AnimationProperty.ALPHA, 0f, 1f).start();
         }
-    }
-
-    private void setListener() {
-        mCover.setOnClickListener(this);
-        mPreviousButton.setOnClickListener(this);
-        mPlayOrPauseButton.setOnClickListener(this);
-        mNextButton.setOnClickListener(this);
-    }
-
-    private void registerEvent() {
-        EventBus.getDefault().register(this);
-        MediaPlayController.getInstance().registerMusicPlayStateObserver(this);
-        MediaPlayController.getInstance().registerProgressChange(this);
-        MediaPlayController.getInstance().registerPlayedMusicChangeObserver(this);
-    }
-
-    private void unregisterEvent() {
-        EventBus.getDefault().unregister(this);
-        MediaPlayController.getInstance().unregisterMusicPlayStateObserver(this);
-        MediaPlayController.getInstance().unregisterProgressChange(this);
-        MediaPlayController.getInstance().unregisterPlayedMusicChangeObserver(this);
     }
 
     private void loadBlurCover(File coverFile) {
@@ -241,6 +215,11 @@ public class MusicPlayFragment extends BaseFragment
 
             }
         });
+    }
+
+    protected static MusicPlayFragment getInstance() {
+        MusicPlayFragment instance = new MusicPlayFragment();
+        return instance;
     }
 
 }

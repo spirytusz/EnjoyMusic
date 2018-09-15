@@ -1,7 +1,5 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -48,16 +46,6 @@ public class AllMusicListFragment extends BaseFragment
 
     private List<Music> mMusicList;
     private LinearMusicListAdapter mMusicRecyclerViewAdapter;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
 
     @Override
     public void onItemClick(View view, int position) {
@@ -142,8 +130,6 @@ public class AllMusicListFragment extends BaseFragment
 
     public static AllMusicListFragment getInstance() {
         AllMusicListFragment allMusicListFragment = new AllMusicListFragment();
-        Bundle bundle = new Bundle();
-        allMusicListFragment.setArguments(bundle);
         return allMusicListFragment;
     }
 

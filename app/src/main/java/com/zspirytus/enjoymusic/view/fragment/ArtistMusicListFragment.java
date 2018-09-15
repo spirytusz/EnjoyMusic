@@ -140,6 +140,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
     }
 
     public static ArtistMusicListFragment getInstance() {
-        return new ArtistMusicListFragment();
+        ArtistMusicListFragment instance = new ArtistMusicListFragment();
+        return instance;
     }
 }

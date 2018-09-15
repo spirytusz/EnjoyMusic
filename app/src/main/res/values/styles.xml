@@ -43,9 +43,10 @@
     </style>
 
     <style name="TabLayoutStyle">
-        <!--<item name="tabSelectedTextColor">@color/white</item>
-        <item name="tabIndicatorColor">@color/white</item>-->
-        <item name="tabBackground">@color/white</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabTextColor">@color/grey</item>
+        <item name="tabIndicatorColor">@color/white</item>
+        <item name="tabBackground">@color/colorPrimary</item>
         <item name="tabGravity">center</item>
         <item name="tabMode">fixed</item>
         <item name="tabMinWidth">135dp</item>
@@ -53,11 +54,12 @@
 
     <style name="TabLayoutTransparentStyle">
         <item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabTextColor">@color/grey</item>
         <item name="tabIndicatorColor">@android:color/transparent</item>
         <item name="tabBackground">@android:color/transparent</item>
         <item name="tabGravity">center</item>
         <item name="tabMode">fixed</item>
-        <!--<item name="tabMinWidth">135dp</item>-->
+        <item name="tabMinWidth">135dp</item>
     </style>
 
 </resources>
