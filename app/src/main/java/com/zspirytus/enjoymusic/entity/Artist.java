@@ -7,7 +7,7 @@ package com.zspirytus.enjoymusic.entity;
 public class Artist {
 
     private String artistName;
-    private int musicCount;
+    private int musicCount = 1;
 
     public Artist(String artistName) {
         this.artistName = artistName;

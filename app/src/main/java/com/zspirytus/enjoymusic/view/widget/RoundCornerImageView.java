@@ -3,11 +3,9 @@ package com.zspirytus.enjoymusic.view.widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Path;
-import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.view.View;
 
 /**
  * Created by ZSpirytus on 2018/8/3.
@@ -24,9 +22,6 @@ public class RoundCornerImageView extends AppCompatImageView {
 
     public RoundCornerImageView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        if (Build.VERSION.SDK_INT < 18) {
-            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
     }
 
     @Override

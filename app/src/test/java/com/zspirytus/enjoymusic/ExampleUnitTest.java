@@ -1,8 +1,14 @@
 package com.zspirytus.enjoymusic;
 
+import com.zspirytus.enjoymusic.entity.Album;
+
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Example local unit include_main_activity, which will execute on the development machine (host).
@@ -12,6 +18,31 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+        Observable.create(new ObservableOnSubscribe<Album>() {
+            @Override
+            public void subscribe(ObservableEmitter<Album> emitter) throws Exception {
+
+            }
+        }).subscribe(new Observer<Album>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Album album) {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 }

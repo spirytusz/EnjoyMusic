@@ -1,17 +1,17 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MyViewPagerAdapter;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.factory.FragmentFactory;
+import com.zspirytus.enjoymusic.impl.ViewPagerOnPageChangeListenerImpl;
 import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
 
 import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,23 +24,23 @@ import java.util.List;
 @LayoutIdInject(R.layout.fragment_music_category_home_page)
 public class MusicCategoryFragment extends BaseFragment {
 
-    private static final String HOME_PAGE_POSITION_KEY = "homePagePosition";
     private static final int VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT = 3;
 
-    @ViewInject(R.id.home_page_tab_layout)
+    @ViewInject(R.id.music_category_tab_layout)
     private TabLayout mTabLayout;
-    @ViewInject(R.id.home_page_view_pager)
+    @ViewInject(R.id.music_category_view_pager)
     private ViewPager mViewPager;
 
     private MyViewPagerAdapter mAdapter;
     private int mCurrentPosition;
 
+
     @Override
     protected void initData() {
-        List<Fragment> fragments = new LinkedList<>();
-        fragments.add(FragmentFactory.getInstance().create(AllMusicListFragment.class));
-        fragments.add(FragmentFactory.getInstance().create(AlbumMusicListFragment.class));
-        fragments.add(FragmentFactory.getInstance().create(ArtistMusicListFragment.class));
+        List<LazyLoadBaseFragment> fragments = new LinkedList<>();
+        fragments.add(FragmentFactory.getInstance().get(AllMusicListFragment.class));
+        fragments.add(FragmentFactory.getInstance().get(AlbumMusicListFragment.class));
+        fragments.add(FragmentFactory.getInstance().get(ArtistMusicListFragment.class));
         mAdapter = new MyViewPagerAdapter(getChildFragmentManager(), fragments);
     }
 
@@ -52,7 +52,7 @@ public class MusicCategoryFragment extends BaseFragment {
         mTabLayout.setupWithViewPager(mViewPager);
         mViewPager.setAdapter(mAdapter);
         mViewPager.setCurrentItem(mCurrentPosition);
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPagerOnPageChangeListenerImpl() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -60,11 +60,7 @@ public class MusicCategoryFragment extends BaseFragment {
 
             @Override
             public void onPageSelected(int position) {
-                if (position != 0) {
-                    EventBus.getDefault().post(false, Constant.EventBusTag.SET_DFAB_VISIBLE);
-                } else {
-                    EventBus.getDefault().post(true, Constant.EventBusTag.SET_DFAB_VISIBLE);
-                }
+                mCurrentPosition = position;
             }
 
             @Override
@@ -86,7 +82,6 @@ public class MusicCategoryFragment extends BaseFragment {
         EventBus.getDefault().unregister(this);
     }
 
-    @Subscriber(tag = Constant.EventBusTag.SET_VIEW_PAGER_CURRENT_ITEM)
     public void setCurrentPosition(int currentPosition) {
         mCurrentPosition = currentPosition;
         if (mViewPager != null) {
@@ -94,7 +89,11 @@ public class MusicCategoryFragment extends BaseFragment {
         }
     }
 
-    protected static MusicCategoryFragment getInstance() {
+    public int getCurrentPosition() {
+        return mCurrentPosition;
+    }
+
+    public static MusicCategoryFragment getInstance() {
         MusicCategoryFragment instance = new MusicCategoryFragment();
         return instance;
     }

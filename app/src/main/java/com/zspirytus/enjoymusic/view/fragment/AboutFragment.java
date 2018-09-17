@@ -10,7 +10,7 @@ import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 @LayoutIdInject(R.layout.fragment_about)
 public class AboutFragment extends BaseFragment {
 
-    protected static AboutFragment getInstance() {
+    public static AboutFragment getInstance() {
         AboutFragment instance = new AboutFragment();
         return instance;
     }

@@ -26,9 +26,9 @@ import android.view.View;
 
 public class LazyLoadBaseFragment extends BaseFragment {
 
-    private boolean isViewCreated = false;
-    private boolean isVisibleToUser = false;
-    private boolean hasLoaded = false;
+    protected boolean isViewCreated = false;
+    protected boolean isVisibleToUser = false;
+    protected boolean hasLoaded = false;
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -43,7 +43,7 @@ public class LazyLoadBaseFragment extends BaseFragment {
         lazyLoad();
     }
 
-    private void lazyLoad() {
+    protected void lazyLoad() {
         if (isViewCreated && isVisibleToUser && !hasLoaded) {
             initData();
             initView();

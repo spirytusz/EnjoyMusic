@@ -1,6 +1,5 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -8,21 +7,20 @@ import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.LinearMusicListAdapter;
-import com.zspirytus.enjoymusic.cache.AllMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
+import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
 import org.simple.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -34,7 +32,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 @LayoutIdInject(R.layout.fragment_all_music_list)
-public class AllMusicListFragment extends BaseFragment
+public class AllMusicListFragment extends LazyLoadBaseFragment
         implements LinearMusicListAdapter.OnItemClickListener {
 
     @ViewInject(R.id.all_music_recycler_view)
@@ -63,16 +61,10 @@ public class AllMusicListFragment extends BaseFragment
     }
 
     private void initRecyclerView() {
-        Observable.create(new ObservableOnSubscribe<List<Music>>() {
-            @Override
-            public void subscribe(ObservableEmitter<List<Music>> emitter) throws Exception {
-                List<Music> musicList = AllMusicCache.getInstance().getAllMusicList();
-                emitter.onNext(musicList);
-                emitter.onComplete();
-            }
-        }).subscribeOn(Schedulers.io())
+        mMusicList = new ArrayList<>();
+        ObservableFactory.getMusicObservable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Music>>() {
+                .subscribe(new Observer<Music>() {
 
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -80,8 +72,8 @@ public class AllMusicListFragment extends BaseFragment
                     }
 
                     @Override
-                    public void onNext(List<Music> s) {
-                        mMusicList = s;
+                    public void onNext(Music music) {
+                        mMusicList.add(music);
                     }
 
                     @Override
@@ -94,11 +86,8 @@ public class AllMusicListFragment extends BaseFragment
                     @Override
                     public void onComplete() {
                         mMusicRecyclerViewAdapter = new LinearMusicListAdapter(Constant.RecyclerViewItemType.ALL_MUSIC_ITEM_TYPE);
-                        final LinearLayoutManager layoutManager = new LinearLayoutManager(getParentActivity());
-                        layoutManager.setSmoothScrollbarEnabled(true);
-                        layoutManager.setAutoMeasureEnabled(true);
                         mMusicRecyclerViewAdapter.setAllMusicItemList(mMusicList);
-                        mMusicRecyclerView.setLayoutManager(layoutManager);
+                        mMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
                         mMusicRecyclerView.setHasFixedSize(true);
                         mMusicRecyclerView.setNestedScrollingEnabled(false);
                         mMusicRecyclerViewAdapter.setOnItemClickListener(AllMusicListFragment.this);

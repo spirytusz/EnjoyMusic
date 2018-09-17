@@ -1,4 +1,15 @@
-package com.zspirytus.enjoymusic.view.fragment;
+package com.zspirytus.enjoymusic.factory;
+
+import com.zspirytus.enjoymusic.view.fragment.AboutFragment;
+import com.zspirytus.enjoymusic.view.fragment.AlbumMusicListFragment;
+import com.zspirytus.enjoymusic.view.fragment.AllMusicListFragment;
+import com.zspirytus.enjoymusic.view.fragment.ArtistMusicListFragment;
+import com.zspirytus.enjoymusic.view.fragment.BaseFragment;
+import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
+import com.zspirytus.enjoymusic.view.fragment.MusicCategoryFragment;
+import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
+import com.zspirytus.enjoymusic.view.fragment.PlayListFragment;
+import com.zspirytus.enjoymusic.view.fragment.SettingsFragment;
 
 /**
  * Created by ZSpirytus on 2018/9/14.
@@ -16,6 +27,7 @@ public class FragmentFactory {
     private AllMusicListFragment mAllMusicListFragment;
     private AlbumMusicListFragment mAlbumMusicListFragment;
     private ArtistMusicListFragment mArtistMusicListFragment;
+    private PlayListFragment mPlayListFragment;
 
     private FragmentFactory() {
 
@@ -25,7 +37,7 @@ public class FragmentFactory {
         return INSTANCE;
     }
 
-    public <T extends BaseFragment> T create(Class<T> tClass) {
+    public <T extends BaseFragment> T get(Class<T> tClass) {
         if (tClass == HomePageFragment.class) {
             if (mHomePageFragment == null) {
                 mHomePageFragment = HomePageFragment.getInstance();
@@ -66,6 +78,11 @@ public class FragmentFactory {
                 mArtistMusicListFragment = ArtistMusicListFragment.getInstance();
             }
             return (T) mArtistMusicListFragment;
+        } else if (tClass == PlayListFragment.class) {
+            if (mPlayListFragment == null) {
+                mPlayListFragment = PlayListFragment.getInstance();
+            }
+            return (T) mPlayListFragment;
         }
         return null;
     }

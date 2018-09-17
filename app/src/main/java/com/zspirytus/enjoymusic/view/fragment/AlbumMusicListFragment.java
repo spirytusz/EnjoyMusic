@@ -1,6 +1,5 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -8,10 +7,10 @@ import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.GridMusicListAdapter;
-import com.zspirytus.enjoymusic.cache.AllMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Album;
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
+import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
@@ -19,20 +18,16 @@ import com.zspirytus.enjoymusic.utils.AnimationUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**
  * Fragment 显示以专辑名筛选的音乐列表
  * Created by ZSpirytus on 2018/9/12.
  */
-
+// TODO: 2018/9/17 click recyclerview item to navigate to corresponding music list
 @LayoutIdInject(R.layout.fragment_album_music_list)
 public class AlbumMusicListFragment extends LazyLoadBaseFragment
         implements GridMusicListAdapter.OnItemClickListener {
@@ -62,21 +57,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
         mAlbumMusicRecyclerView.setVisibility(View.GONE);
         mLoadProgressBar.setVisibility(View.VISIBLE);
         mInfoTextView.setVisibility(View.GONE);
-        Observable.create(new ObservableOnSubscribe<Music>() {
-            @Override
-            public void subscribe(ObservableEmitter<Music> emitter) throws Exception {
-                List<Music> musicList = AllMusicCache.getInstance().getAllMusicList();
-                for (Music music : musicList) {
-                    emitter.onNext(music);
-                }
-                emitter.onComplete();
-            }
-        }).map(new Function<Music, Album>() {
-            @Override
-            public Album apply(Music music) throws Exception {
-                return new Album(music.getMusicAlbumName(), music.getMusicThumbAlbumCoverPath(), music.getMusicArtist());
-            }
-        })
+        ObservableFactory.getAlbumObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Album>() {
@@ -94,8 +75,8 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
 
                     @Override
                     public void onError(Throwable e) {
-                        playWidgetAnimation(false, true);
                         e.printStackTrace();
+                        playWidgetAnimation(false, true);
                     }
 
                     @Override
@@ -105,10 +86,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
                             mAdapter = new GridMusicListAdapter();
                             mAdapter.setAlbumList(mAlbumList);
                             mAdapter.setOnItemClickListener(AlbumMusicListFragment.this);
-                            final GridLayoutManager layoutManager = new GridLayoutManager(getParentActivity(), 2);
-                            layoutManager.setSmoothScrollbarEnabled(true);
-                            layoutManager.setAutoMeasureEnabled(true);
-                            mAlbumMusicRecyclerView.setLayoutManager(layoutManager);
+                            mAlbumMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManager(getParentActivity(), 2));
                             mAlbumMusicRecyclerView.setAdapter(mAdapter);
                             mAlbumMusicRecyclerView.setHasFixedSize(true);
                             mAlbumMusicRecyclerView.setNestedScrollingEnabled(false);
@@ -138,7 +116,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
         }
     }
 
-    protected static AlbumMusicListFragment getInstance() {
+    public static AlbumMusicListFragment getInstance() {
         AlbumMusicListFragment instance = new AlbumMusicListFragment();
         return instance;
     }

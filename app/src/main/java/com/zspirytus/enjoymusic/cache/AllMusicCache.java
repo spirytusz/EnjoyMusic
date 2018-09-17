@@ -5,8 +5,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
+import android.util.SparseArray;
 
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
+import com.zspirytus.enjoymusic.entity.Album;
+import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.Music;
 
 import java.util.ArrayList;
@@ -22,9 +25,16 @@ public class AllMusicCache {
     private static AllMusicCache INSTANCE;
 
     private List<Music> mAllMusicList;
+    private List<Album> mAlbumList;
+    private List<Artist> mArtistList;
+
+    private SparseArray<Integer> mArtistToIndexMapper;
 
     private AllMusicCache() {
         mAllMusicList = new ArrayList<>();
+        mAlbumList = new ArrayList<>();
+        mArtistList = new ArrayList<>();
+        mArtistToIndexMapper = new SparseArray();
     }
 
     public static AllMusicCache getInstance() {
@@ -43,6 +53,36 @@ public class AllMusicCache {
             scanMusic();
         }
         return mAllMusicList;
+    }
+
+    public List<Music> getAllMusicListWithoutScanning() {
+        return mAllMusicList;
+    }
+
+    public List<Album> getAlbumList() {
+        getAllMusicList();
+        for (Music music : mAllMusicList) {
+            Album album = new Album(music.getMusicAlbumName(), music.getMusicThumbAlbumCoverPath(), music.getMusicArtist());
+            if (!mAlbumList.contains(album)) {
+                mAlbumList.add(new Album(music.getMusicAlbumName(), music.getMusicThumbAlbumCoverPath(), music.getMusicArtist()));
+            }
+        }
+        return mAlbumList;
+    }
+
+    public List<Artist> getArtistList() {
+        getAllMusicList();
+        for (Music music : mAllMusicList) {
+            Artist artist = new Artist(music.getMusicArtist());
+            if (mArtistList.contains(artist)) {
+                int index = mArtistToIndexMapper.get(artist.hashCode());
+                mArtistList.get(index).increaseMusicCount();
+            } else {
+                mArtistList.add(artist);
+                mArtistToIndexMapper.put(artist.hashCode(), mArtistList.size() - 1);
+            }
+        }
+        return mArtistList;
     }
 
     private void scanMusic() {

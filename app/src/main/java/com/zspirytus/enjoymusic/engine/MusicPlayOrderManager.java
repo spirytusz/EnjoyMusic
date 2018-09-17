@@ -39,7 +39,7 @@ public class MusicPlayOrderManager {
     }
 
     public void init() {
-        currentMusicList = AllMusicCache.getInstance().getAllMusicList();
+        currentMusicList = AllMusicCache.getInstance().getAllMusicListWithoutScanning();
     }
 
     public void setMode(int mode) {
@@ -63,7 +63,6 @@ public class MusicPlayOrderManager {
                 int currentPosition = currentMusicList.indexOf(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
                 int nextPosition = (currentPosition + 1) % currentMusicList.size();
                 nextMusic = currentMusicList.get(nextPosition);
-                System.out.println("nextPosition = " + nextPosition);
                 break;
         }
         return nextMusic != null ? nextMusic : currentMusicList.get(0);
@@ -82,7 +81,6 @@ public class MusicPlayOrderManager {
                 int currentPosition = currentMusicList.indexOf(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
                 int previousPosition = currentPosition - 1 >= 0 ? currentPosition - 1 : currentPosition - 1 + currentMusicList.size();
                 previousMusic = currentMusicList.get(previousPosition);
-                System.out.println("previousPosition = " + previousPosition);
                 break;
         }
         return previousMusic != null ? previousMusic : currentMusicList.get(0);

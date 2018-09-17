@@ -8,7 +8,6 @@ import com.zspirytus.enjoymusic.engine.MusicPlayedHistoryProvider;
 import com.zspirytus.enjoymusic.entity.Music;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * Created by zhangkunwei on 2018/9/12.
@@ -50,9 +49,9 @@ public class CurrentPlayingMusicCache {
                 }
             }
         } else {
-            List<Music> allMusicList = AllMusicCache.getInstance().getAllMusicList();
+            /*List<Music> allMusicList = AllMusicCache.getInstance().getAllMusicList();
             if (allMusicList != null && allMusicList.size() > 0)
-                currentPlayingMusic = allMusicList.get(0);
+                currentPlayingMusic = allMusicList.get(0);*/
         }
     }
 

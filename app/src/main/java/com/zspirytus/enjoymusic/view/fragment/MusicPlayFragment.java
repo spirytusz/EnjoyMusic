@@ -217,7 +217,7 @@ public class MusicPlayFragment extends BaseFragment
         });
     }
 
-    protected static MusicPlayFragment getInstance() {
+    public static MusicPlayFragment getInstance() {
         MusicPlayFragment instance = new MusicPlayFragment();
         return instance;
     }
