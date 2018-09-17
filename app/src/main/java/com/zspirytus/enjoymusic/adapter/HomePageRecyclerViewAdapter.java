@@ -22,6 +22,8 @@ public class HomePageRecyclerViewAdapter extends RecyclerView.Adapter<HomePageRe
 
     private Context mContext;
     private List<HomePageRecyclerViewItem> mItemList;
+    private HomePageChildRecyclerViewAdapter mChildAdapter;
+    private OnParentRVItemClickListener mOnParentRVItemClickListener;
 
     public HomePageRecyclerViewAdapter(List<HomePageRecyclerViewItem> itemList) {
         mItemList = itemList;
@@ -47,12 +49,25 @@ public class HomePageRecyclerViewAdapter extends RecyclerView.Adapter<HomePageRe
             default:
                 holder.mMyHomePageRecyclerViewHolderRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL));
         }
-        holder.mMyHomePageRecyclerViewHolderRecyclerView.setAdapter(new HomePageChildRecyclerViewAdapter(item.getHomePageChildRecyclerViewItems()));
+        mChildAdapter = new HomePageChildRecyclerViewAdapter(item.getHomePageChildRecyclerViewItems(), position);
+        if (mOnParentRVItemClickListener != null) {
+            mChildAdapter.setOnChildRVItemClickListener(new HomePageChildRecyclerViewAdapter.OnChildRVItemClickListener() {
+                @Override
+                public void onChildRVItemClick(String cardTitle, int position, int type) {
+                    mOnParentRVItemClickListener.onParentRVItemClick(cardTitle, position, type);
+                }
+            });
+        }
+        holder.mMyHomePageRecyclerViewHolderRecyclerView.setAdapter(mChildAdapter);
     }
 
     @Override
     public int getItemCount() {
         return mItemList.size();
+    }
+
+    public void setOnParentRVItemClickListener(OnParentRVItemClickListener onParentRVItemClickListener) {
+        mOnParentRVItemClickListener = onParentRVItemClickListener;
     }
 
     static class MyHomePageRecyclerViewHolder extends RecyclerView.ViewHolder {
@@ -65,5 +80,9 @@ public class HomePageRecyclerViewAdapter extends RecyclerView.Adapter<HomePageRe
             mMyHomePageRecyclerViewHolderTitle = itemView.findViewById(R.id.item_home_page_tv);
             mMyHomePageRecyclerViewHolderRecyclerView = itemView.findViewById(R.id.item_home_page_rv);
         }
+    }
+
+    public interface OnParentRVItemClickListener {
+        void onParentRVItemClick(String cardTitle, int position, int type);
     }
 }

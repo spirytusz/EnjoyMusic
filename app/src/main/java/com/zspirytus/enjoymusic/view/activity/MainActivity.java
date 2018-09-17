@@ -15,11 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
-import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
 import com.zspirytus.enjoymusic.impl.OnDraggableFABEventListenerImpl;
@@ -34,6 +32,7 @@ import com.zspirytus.enjoymusic.view.fragment.BaseFragment;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicCategoryFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
+import com.zspirytus.enjoymusic.view.fragment.PlayListFragment;
 import com.zspirytus.enjoymusic.view.fragment.SettingsFragment;
 import com.zspirytus.mylibrary.DraggableFloatingActionButton;
 import com.zspirytus.zspermission.PermissionGroup;
@@ -90,7 +89,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        showMusicPlayFragment(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+        showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
     }
 
     @Override
@@ -161,6 +160,9 @@ public class MainActivity extends BaseActivity
                             FragmentFactory.getInstance().get(MusicCategoryFragment.class).setCurrentPosition(2);
                             showCastFragment(FragmentFactory.getInstance().get(MusicCategoryFragment.class));
                             break;
+                        case R.id.nav_play_list:
+                            showCastFragment(FragmentFactory.getInstance().get(PlayListFragment.class));
+                            break;
                         case R.id.nav_settings:
                             showCastFragment(FragmentFactory.getInstance().get(SettingsFragment.class));
                             break;
@@ -208,15 +210,10 @@ public class MainActivity extends BaseActivity
     public void onGranted() {
         String action = getIntent().getStringExtra(Constant.StatusBarEvent.EXTRA);
         if (Constant.StatusBarEvent.ACTION_NAME.equals(action)) {
-            showMusicPlayFragment(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+            showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
         } else {
             showCastFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
         }
-    }
-
-    @Subscriber(tag = Constant.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT)
-    public void showMusicPlayFragment(Music music) {
-        showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
     }
 
     @Subscriber(tag = Constant.EventBusTag.SET_DFAB_VISIBLE)
@@ -233,7 +230,8 @@ public class MainActivity extends BaseActivity
         mToolbar.setTitle(title);
     }
 
-    private <T extends BaseFragment> void showCastFragment(T shouldShowFragment) {
+    @Subscriber(tag = Constant.EventBusTag.SHOW_CAST_FRAGMENT)
+    public <T extends BaseFragment> void showCastFragment(T shouldShowFragment) {
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         if (!shouldShowFragment.isAdded()) {
             transaction.add(R.id.fragment_container, shouldShowFragment);

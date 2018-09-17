@@ -10,6 +10,7 @@ import com.zspirytus.enjoymusic.adapter.LinearMusicListAdapter;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
@@ -50,7 +51,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
         Music music = mMusicList.get(position);
         ForegroundMusicController.getInstance().play(music);
         EventBus.getDefault().post(music, Constant.EventBusTag.MUSIC_NAME_SET);
-        EventBus.getDefault().post(music, Constant.EventBusTag.SHOW_MUSIC_PLAY_FRAGMENT);
+        EventBus.getDefault().post(FragmentFactory.getInstance().get(MusicPlayFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
     }
 
     @Override

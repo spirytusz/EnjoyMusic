@@ -12,7 +12,7 @@ public interface Constant {
         String STOP = "stop";
         String SEEK_TO = "seek to";
         String MUSIC_NAME_SET = "music name set";
-        String SHOW_MUSIC_PLAY_FRAGMENT = "show music play fragment";
+        String SHOW_CAST_FRAGMENT = "show cast fragment";
         String START_MAIN_ACTIVITY = "start MainActivity";
         String SET_MAIN_ACTIVITY_TOOLBAR_TITLE = "set MainActivity toolbar title";
         String SET_DFAB_VISIBLE = "set DFab Visible";

@@ -1,7 +1,6 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -10,6 +9,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.HomePageRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.HomePageRecyclerViewItem;
+import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
@@ -27,7 +27,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 @LayoutIdInject(R.layout.fragment_home_page)
-public class HomePageFragment extends BaseFragment {
+public class HomePageFragment extends BaseFragment implements HomePageRecyclerViewAdapter.OnParentRVItemClickListener {
 
     @ViewInject(R.id.home_page_recycler_view)
     private RecyclerView mHomePageRecyclerView;
@@ -64,12 +64,10 @@ public class HomePageFragment extends BaseFragment {
                     @Override
                     public void onComplete() {
                         if (!mItemList.isEmpty()) {
-                            final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getParentActivity());
-                            linearLayoutManager.setSmoothScrollbarEnabled(true);
-                            linearLayoutManager.setAutoMeasureEnabled(true);
-                            mHomePageRecyclerView.setLayoutManager(linearLayoutManager);
+                            mHomePageRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
                             mHomePageRecyclerView.setNestedScrollingEnabled(false);
                             mAdapter = new HomePageRecyclerViewAdapter(mItemList);
+                            mAdapter.setOnParentRVItemClickListener(HomePageFragment.this);
                             mHomePageRecyclerView.setAdapter(mAdapter);
                             playAnimation(true, false);
                         } else {
@@ -77,6 +75,24 @@ public class HomePageFragment extends BaseFragment {
                         }
                     }
                 });
+    }
+
+    @Override
+    public void onParentRVItemClick(String cardTitle, int position, int type) {
+        switch (type) {
+            case 0:
+                System.out.println("type = " + Constant.HomePageTabTitle.ALL);
+                System.out.println("cardTitle = " + cardTitle);
+                break;
+            case 1:
+                System.out.println("type = " + Constant.HomePageTabTitle.ALBUM);
+                System.out.println("cardTitle = " + cardTitle);
+                break;
+            case 2:
+                System.out.println("type = " + Constant.HomePageTabTitle.ARTIST);
+                System.out.println("cardTitle = " + cardTitle);
+                break;
+        }
     }
 
     private void playAnimation(boolean isSuccess, boolean isEmpty) {

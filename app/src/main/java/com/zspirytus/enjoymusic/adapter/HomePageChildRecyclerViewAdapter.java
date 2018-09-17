@@ -23,10 +23,12 @@ public class HomePageChildRecyclerViewAdapter extends RecyclerView.Adapter<HomeP
 
     private Context mContext;
     private List<HomePageChildRecyclerViewItem> mItemList;
-    private OnItemClickListener mOnItemClickListener;
+    private OnChildRVItemClickListener mOnChildRVItemClickListener;
+    private int mType;
 
-    HomePageChildRecyclerViewAdapter(List<HomePageChildRecyclerViewItem> mItemList) {
-        this.mItemList = mItemList;
+    HomePageChildRecyclerViewAdapter(List<HomePageChildRecyclerViewItem> itemList, int type) {
+        mItemList = itemList;
+        mType = type;
     }
 
     @Override
@@ -42,18 +44,18 @@ public class HomePageChildRecyclerViewAdapter extends RecyclerView.Adapter<HomeP
     public void onBindViewHolder(final HomePageChildRecyclerViewHolder holder, int position) {
         HomePageChildRecyclerViewItem item = mItemList.get(position);
         String imgPath = item.getImgPath();
-        String title = item.getTitle();
+        final String title = item.getTitle();
         String subTitle = item.getSubTitle();
         if (imgPath != null) {
             Glide.with(mContext).load(new File(imgPath)).into(holder.mCover);
         }
         holder.mTitle.setText(title);
         holder.mSubTitle.setText(subTitle);
-        if (mOnItemClickListener != null) {
+        if (mOnChildRVItemClickListener != null) {
             holder.mHomePageChildRecyclerViewHolderItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnItemClickListener.onItemClick(holder.mHomePageChildRecyclerViewHolderItemView, holder.getAdapterPosition());
+                    mOnChildRVItemClickListener.onChildRVItemClick(title, holder.getAdapterPosition(), mType);
                 }
             });
         }
@@ -64,8 +66,8 @@ public class HomePageChildRecyclerViewAdapter extends RecyclerView.Adapter<HomeP
         return mItemList.size();
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
+    public void setOnChildRVItemClickListener(OnChildRVItemClickListener onChildRVItemClickListener) {
+        mOnChildRVItemClickListener = onChildRVItemClickListener;
     }
 
     static class HomePageChildRecyclerViewHolder extends RecyclerView.ViewHolder {
@@ -84,7 +86,7 @@ public class HomePageChildRecyclerViewAdapter extends RecyclerView.Adapter<HomeP
         }
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
+    public interface OnChildRVItemClickListener {
+        void onChildRVItemClick(String cardTitle, int position, int type);
     }
 }

@@ -68,7 +68,7 @@ public class MyMediaSession {
                 .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeFile(music.getMusicThumbAlbumCoverPath()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            metaData.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, AllMusicCache.getInstance().getAllMusicList().size());
+            metaData.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, AllMusicCache.getInstance().getAllMusicListWithoutScanning().size());
         }
         mediaSession.setMetadata(metaData.build());
     }

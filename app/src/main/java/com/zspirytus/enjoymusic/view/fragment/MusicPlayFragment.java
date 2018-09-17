@@ -109,7 +109,7 @@ public class MusicPlayFragment extends BaseFragment
         if (musicThumbAlbumCoverPath != null) {
             File coverFile = new File(musicThumbAlbumCoverPath);
             Glide.with(this).load(coverFile).into(mCover);
-            loadBlurCover(coverFile);
+            //loadBlurCover(coverFile);
         }
         EventBus.getDefault().post(music.getMusicName(), Constant.EventBusTag.SET_MAIN_ACTIVITY_TOOLBAR_TITLE);
         mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
@@ -119,7 +119,6 @@ public class MusicPlayFragment extends BaseFragment
     @Override
     protected void initData() {
         mCurrentPlayingMusic = CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic();
-        setView(mCurrentPlayingMusic);
         mCover.setOnMultiEventImageViewListener(new OnMultiEventImageViewListener() {
             @Override
             public void onClick() {
@@ -218,8 +217,7 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     public static MusicPlayFragment getInstance() {
-        MusicPlayFragment instance = new MusicPlayFragment();
-        return instance;
+        return new MusicPlayFragment();
     }
 
 }
