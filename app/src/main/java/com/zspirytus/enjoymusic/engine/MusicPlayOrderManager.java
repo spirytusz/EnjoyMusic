@@ -3,7 +3,6 @@ package com.zspirytus.enjoymusic.engine;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.zspirytus.enjoymusic.cache.AllMusicCache;
 import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -25,7 +24,7 @@ public class MusicPlayOrderManager {
     private static final String MODE_FILE_NAME = "play_mode";
     private static final String MODE_KEY = "mode_key";
 
-    private List<Music> currentMusicList;
+    private List<Music> mPlayList;
 
     private int mMode;
 
@@ -38,8 +37,8 @@ public class MusicPlayOrderManager {
         return INSTANCE;
     }
 
-    public void init() {
-        currentMusicList = AllMusicCache.getInstance().getAllMusicListWithoutScanning();
+    public void setPlayList(List<Music> playList) {
+        mPlayList = playList;
     }
 
     public void setMode(int mode) {
@@ -54,36 +53,36 @@ public class MusicPlayOrderManager {
         Music nextMusic;
         switch (mMode) {
             case MODE_RANDOM:
-                nextMusic = currentMusicList.get(RandomUtil.rand(currentMusicList.size()));
+                nextMusic = mPlayList.get(RandomUtil.rand(mPlayList.size()));
                 break;
             case MODE_LOOP:
                 nextMusic = CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic();
                 break;
             default:
-                int currentPosition = currentMusicList.indexOf(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
-                int nextPosition = (currentPosition + 1) % currentMusicList.size();
-                nextMusic = currentMusicList.get(nextPosition);
+                int currentPosition = mPlayList.indexOf(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+                int nextPosition = (currentPosition + 1) % mPlayList.size();
+                nextMusic = mPlayList.get(nextPosition);
                 break;
         }
-        return nextMusic != null ? nextMusic : currentMusicList.get(0);
+        return nextMusic != null ? nextMusic : mPlayList.get(0);
     }
 
     public Music getPreviousMusic() {
         Music previousMusic;
         switch (mMode) {
             case MODE_RANDOM:
-                previousMusic = currentMusicList.get(RandomUtil.rand(currentMusicList.size()));
+                previousMusic = mPlayList.get(RandomUtil.rand(mPlayList.size()));
                 break;
             case MODE_LOOP:
                 previousMusic = CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic();
                 break;
             default:
-                int currentPosition = currentMusicList.indexOf(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
-                int previousPosition = currentPosition - 1 >= 0 ? currentPosition - 1 : currentPosition - 1 + currentMusicList.size();
-                previousMusic = currentMusicList.get(previousPosition);
+                int currentPosition = mPlayList.indexOf(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+                int previousPosition = currentPosition - 1 >= 0 ? currentPosition - 1 : currentPosition - 1 + mPlayList.size();
+                previousMusic = mPlayList.get(previousPosition);
                 break;
         }
-        return previousMusic != null ? previousMusic : currentMusicList.get(0);
+        return previousMusic != null ? previousMusic : mPlayList.get(0);
     }
 
     private void saveMode() {

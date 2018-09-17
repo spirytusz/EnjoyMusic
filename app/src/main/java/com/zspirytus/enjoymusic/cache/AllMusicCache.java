@@ -139,7 +139,7 @@ public class AllMusicCache {
             }
         }
         CurrentPlayingMusicCache.getInstance().restoreCurrentPlayingMusic();
-        MusicPlayOrderManager.getInstance().init();
+        MusicPlayOrderManager.getInstance().setPlayList(mAllMusicList);
     }
 
     private String getThumbAlbum(String album_id) {

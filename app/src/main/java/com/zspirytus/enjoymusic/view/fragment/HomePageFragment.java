@@ -8,13 +8,19 @@ import android.widget.ProgressBar;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.HomePageRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.HomePageRecyclerViewItem;
+import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
+import org.simple.eventbus.EventBus;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -78,21 +84,35 @@ public class HomePageFragment extends BaseFragment implements HomePageRecyclerVi
     }
 
     @Override
-    public void onParentRVItemClick(String cardTitle, int position, int type) {
-        switch (type) {
-            case 0:
-                System.out.println("type = " + Constant.HomePageTabTitle.ALL);
-                System.out.println("cardTitle = " + cardTitle);
-                break;
-            case 1:
-                System.out.println("type = " + Constant.HomePageTabTitle.ALBUM);
-                System.out.println("cardTitle = " + cardTitle);
-                break;
-            case 2:
-                System.out.println("type = " + Constant.HomePageTabTitle.ARTIST);
-                System.out.println("cardTitle = " + cardTitle);
-                break;
-        }
+    public void onParentRVItemClick(String cardTitle, final int position, int type) {
+        ObservableFactory.getMusicObservableConverterByTypeAndKey(cardTitle, type)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Music>() {
+                    List<Music> playList = new ArrayList<>();
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Music music) {
+                        playList.add(music);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        MusicPlayOrderManager.getInstance().setPlayList(playList);
+                        EventBus.getDefault().post(playList, Constant.EventBusTag.SET_PLAY_LIST);
+                        EventBus.getDefault().post(FragmentFactory.getInstance().get(PlayListFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+                    }
+                });
     }
 
     private void playAnimation(boolean isSuccess, boolean isEmpty) {

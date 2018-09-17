@@ -191,6 +191,8 @@ public class MainActivity extends BaseActivity
                 onBackPressed();
             }
         });
+        // TODO: 2018/9/18 testment 
+        mFragmentManager.beginTransaction().add(R.id.fragment_container, FragmentFactory.getInstance().get(PlayListFragment.class)).commitAllowingStateLoss();
     }
 
     @Override
@@ -237,7 +239,9 @@ public class MainActivity extends BaseActivity
             transaction.add(R.id.fragment_container, shouldShowFragment);
         }
         FragmentVisibilityManager.getInstance().show(transaction, shouldShowFragment);
-        if (shouldShowFragment instanceof MusicCategoryFragment && ((MusicCategoryFragment) shouldShowFragment).getCurrentPosition() == 0) {
+        if (shouldShowFragment instanceof MusicCategoryFragment
+                && ((MusicCategoryFragment) shouldShowFragment).getCurrentPosition() == 0
+                || shouldShowFragment instanceof PlayListFragment) {
             playWidgetVisibilityAnimation(View.VISIBLE);
         } else {
             playWidgetVisibilityAnimation(View.GONE);

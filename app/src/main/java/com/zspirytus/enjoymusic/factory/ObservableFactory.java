@@ -15,6 +15,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 /**
  * Created by ZSpirytus on 2018/9/17.
@@ -80,5 +81,35 @@ public class ObservableFactory {
                 emitter.onComplete();
             }
         });
+    }
+
+    public static Observable<Music> getMusicObservableConverterByTypeAndKey(final String key, int type) {
+        switch (type) {
+            case 0:
+                return ObservableFactory.getMusicObservable()
+                        .filter(new Predicate<Music>() {
+                            @Override
+                            public boolean test(Music music) throws Exception {
+                                return music.getMusicName().equals(key);
+                            }
+                        });
+            case 1:
+                return ObservableFactory.getMusicObservable()
+                        .filter(new Predicate<Music>() {
+                            @Override
+                            public boolean test(Music music) throws Exception {
+                                return music.getMusicAlbumName().equals(key);
+                            }
+                        });
+            case 2:
+                return ObservableFactory.getMusicObservable()
+                        .filter(new Predicate<Music>() {
+                            @Override
+                            public boolean test(Music music) throws Exception {
+                                return music.getMusicArtist().equals(key);
+                            }
+                        });
+        }
+        return null;
     }
 }

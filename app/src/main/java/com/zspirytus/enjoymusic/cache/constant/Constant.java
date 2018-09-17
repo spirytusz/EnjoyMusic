@@ -16,6 +16,7 @@ public interface Constant {
         String START_MAIN_ACTIVITY = "start MainActivity";
         String SET_MAIN_ACTIVITY_TOOLBAR_TITLE = "set MainActivity toolbar title";
         String SET_DFAB_VISIBLE = "set DFab Visible";
+        String SET_PLAY_LIST = "set play list";
     }
 
     interface AnimationProperty {

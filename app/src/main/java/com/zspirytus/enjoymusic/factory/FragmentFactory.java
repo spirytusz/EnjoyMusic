@@ -27,7 +27,7 @@ public class FragmentFactory {
     private AllMusicListFragment mAllMusicListFragment;
     private AlbumMusicListFragment mAlbumMusicListFragment;
     private ArtistMusicListFragment mArtistMusicListFragment;
-    private PlayListFragment mPlayListFragment;
+    private PlayListFragment mPlayListFragment = PlayListFragment.getInstance();
 
     private FragmentFactory() {
 
@@ -79,9 +79,6 @@ public class FragmentFactory {
             }
             return (T) mArtistMusicListFragment;
         } else if (tClass == PlayListFragment.class) {
-            if (mPlayListFragment == null) {
-                mPlayListFragment = PlayListFragment.getInstance();
-            }
             return (T) mPlayListFragment;
         }
         return null;

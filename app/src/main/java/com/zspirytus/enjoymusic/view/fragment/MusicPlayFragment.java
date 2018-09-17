@@ -143,7 +143,7 @@ public class MusicPlayFragment extends BaseFragment
     protected void initView() {
         if (mCurrentPlayingMusic != null) {
             String musicAlbumUri = mCurrentPlayingMusic.getMusicThumbAlbumCoverPath();
-            Glide.with(this).load(new File(musicAlbumUri != null ? musicAlbumUri : ""))
+            Glide.with(this).load(musicAlbumUri != null ? new File(musicAlbumUri) : R.color.grey)
                     .into(mCover);
             mTotalTime.setText(TimeUtil.convertLongToMinsSec(mCurrentPlayingMusic.getMusicDuration()));
         }
