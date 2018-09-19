@@ -1,13 +1,14 @@
 package com.zspirytus.enjoymusic.entity;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Music实体类
  * Created by ZSpirytus on 2018/8/4.
  */
 
-public class Music implements Serializable {
+public class Music implements Parcelable {
 
     private String musicFilePath;
     private String musicName;
@@ -104,4 +105,32 @@ public class Music implements Serializable {
         }
         return "{" + stringBuilder.toString() + "}";
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(musicFilePath);
+        dest.writeString(musicName);
+        dest.writeString(musicArtist);
+        dest.writeString(musicAlbumName);
+        dest.writeString(musicThumbAlbumCoverPath);
+        dest.writeLong(musicDuration);
+        dest.writeString(musicFileSize);
+    }
+
+    public static final Parcelable.Creator<Music> CREATOR = new Creator<Music>() {
+        @Override
+        public Music createFromParcel(Parcel source) {
+            return new Music(source.readString(), source.readString(), source.readString(), source.readString(), source.readString(), source.readLong(), source.readString());
+        }
+
+        @Override
+        public Music[] newArray(int size) {
+            return new Music[0];
+        }
+    };
 }
