@@ -89,7 +89,8 @@ public class LinearMusicListAdapter extends RecyclerView.Adapter<LinearMusicList
         holder.mMoreVert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = DialogBuilder.showSelectDialog(mContext);
+                final String[] items = new String[]{"音乐信息", "获取专辑封面", "获取歌词"};
+                AlertDialog.Builder builder = DialogBuilder.showSelectDialog(mContext, items);
                 String title = music.getMusicName();
                 builder.setTitle(title).create().show();
             }
@@ -103,7 +104,8 @@ public class LinearMusicListAdapter extends RecyclerView.Adapter<LinearMusicList
         holder.mMoreVert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = DialogBuilder.showSelectDialog(mContext);
+                final String[] items = new String[]{"艺术家信息", "获取专辑封面", "获取歌词"};
+                AlertDialog.Builder builder = DialogBuilder.showSelectDialog(mContext, items);
                 String title = artist.getArtistName();
                 builder.setTitle(title).create().show();
             }

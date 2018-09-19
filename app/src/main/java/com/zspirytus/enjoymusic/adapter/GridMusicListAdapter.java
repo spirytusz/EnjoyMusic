@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.entity.Album;
+import com.zspirytus.enjoymusic.view.widget.DialogBuilder;
 
 import java.io.File;
 import java.util.List;
@@ -55,6 +56,13 @@ public class GridMusicListAdapter extends RecyclerView.Adapter<GridMusicListAdap
         }
         holder.mHolderAlbumName.setText(album.getAlbumName());
         holder.mHolderAlbumArtist.setText(album.getArtist());
+        holder.mHolderAlbumVert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String[] items = new String[]{"专辑信息", "获取专辑封面", "获取歌词"};
+                DialogBuilder.showSelectDialog(mContext, items).create().show();
+            }
+        });
         if (mOnItemClickListener != null) {
             holder.mItemView.setOnClickListener(new View.OnClickListener() {
                 @Override

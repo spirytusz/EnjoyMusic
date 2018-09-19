@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.entity.HomePageChildRecyclerViewItem;
+import com.zspirytus.enjoymusic.view.widget.DialogBuilder;
 
 import java.io.File;
 import java.util.List;
@@ -51,6 +52,25 @@ public class HomePageChildRecyclerViewAdapter extends RecyclerView.Adapter<HomeP
         }
         holder.mTitle.setText(title);
         holder.mSubTitle.setText(subTitle);
+        holder.mVert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (mType) {
+                    case 0:
+                        final String[] musicItems = new String[]{"音乐信息", "获取专辑封面", "获取歌词"};
+                        DialogBuilder.showSelectDialog(mContext, musicItems).setTitle(title).create().show();
+                        break;
+                    case 1:
+                        final String[] AlbumItems = new String[]{"专辑信息", "获取专辑封面", "获取歌词"};
+                        DialogBuilder.showSelectDialog(mContext, AlbumItems).setTitle(title).create().show();
+                        break;
+                    case 2:
+                        final String[] artistItems = new String[]{"艺术家信息", "获取专辑封面", "获取歌词"};
+                        DialogBuilder.showSelectDialog(mContext, artistItems).setTitle(title).create().show();
+                        break;
+                }
+            }
+        });
         if (mOnChildRVItemClickListener != null) {
             holder.mHomePageChildRecyclerViewHolderItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -76,6 +96,7 @@ public class HomePageChildRecyclerViewAdapter extends RecyclerView.Adapter<HomeP
         private AppCompatTextView mTitle;
         private AppCompatTextView mSubTitle;
         private AppCompatImageView mCover;
+        private AppCompatImageView mVert;
 
         HomePageChildRecyclerViewHolder(View itemView) {
             super(itemView);
@@ -83,6 +104,7 @@ public class HomePageChildRecyclerViewAdapter extends RecyclerView.Adapter<HomeP
             mTitle = itemView.findViewById(R.id.home_page_child_rv_title);
             mSubTitle = itemView.findViewById(R.id.home_page_child_rv_sub_title);
             mCover = itemView.findViewById(R.id.home_page_child_rv_img);
+            mVert = itemView.findViewById(R.id.home_page_child_rv_vert);
         }
     }
 

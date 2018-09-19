@@ -96,6 +96,7 @@ public class MainActivity extends BaseActivity
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
+            return;
         }
         if (FragmentVisibilityManager.getInstance().peek() instanceof MusicPlayFragment) {
             changeClickToolbarButtonResponseAndToolbarStyle(true);
@@ -193,6 +194,7 @@ public class MainActivity extends BaseActivity
         });
         // TODO: 2018/9/18 testment 
         mFragmentManager.beginTransaction().add(R.id.fragment_container, FragmentFactory.getInstance().get(PlayListFragment.class)).commitAllowingStateLoss();
+        FragmentVisibilityManager.getInstance().push(FragmentFactory.getInstance().get(PlayListFragment.class));
     }
 
     @Override
