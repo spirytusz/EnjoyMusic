@@ -9,7 +9,9 @@ import java.util.TimerTask;
 
 public class PlayingTimer {
 
-    private static PlayingTimer INSTANCE;
+    private static class SingletonHolder {
+        private static PlayingTimer INSTANCE = new PlayingTimer();
+    }
 
     private static Timer mTimer;
     private static TimerTask mTimerTask;
@@ -21,10 +23,7 @@ public class PlayingTimer {
     }
 
     public static PlayingTimer getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new PlayingTimer();
-        }
-        return INSTANCE;
+        return SingletonHolder.INSTANCE;
     }
 
     public void init(MediaPlayController mediaPlayController) {

@@ -86,13 +86,7 @@ public class ObservableFactory {
     public static Observable<Music> getMusicObservableConverterByTypeAndKey(final String key, int type) {
         switch (type) {
             case 0:
-                return ObservableFactory.getMusicObservable()
-                        .filter(new Predicate<Music>() {
-                            @Override
-                            public boolean test(Music music) throws Exception {
-                                return music.getMusicName().equals(key);
-                            }
-                        });
+                return ObservableFactory.getMusicObservable();
             case 1:
                 return ObservableFactory.getMusicObservable()
                         .filter(new Predicate<Music>() {

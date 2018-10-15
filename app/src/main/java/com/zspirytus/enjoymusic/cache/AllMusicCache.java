@@ -22,7 +22,9 @@ import java.util.List;
 
 public class AllMusicCache {
 
-    private static AllMusicCache INSTANCE;
+    private static class SingletonHolder {
+        private static AllMusicCache INSTANCE = new AllMusicCache();
+    }
 
     private List<Music> mAllMusicList;
     private List<Album> mAlbumList;
@@ -38,14 +40,7 @@ public class AllMusicCache {
     }
 
     public static AllMusicCache getInstance() {
-        if (INSTANCE == null) {
-            synchronized (AllMusicCache.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new AllMusicCache();
-                }
-            }
-        }
-        return INSTANCE;
+        return SingletonHolder.INSTANCE;
     }
 
     public List<Music> getAllMusicList() {

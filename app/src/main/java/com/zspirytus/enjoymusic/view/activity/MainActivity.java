@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -34,6 +33,7 @@ import com.zspirytus.enjoymusic.view.fragment.MusicCategoryFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.enjoymusic.view.fragment.PlayListFragment;
 import com.zspirytus.enjoymusic.view.fragment.SettingsFragment;
+import com.zspirytus.enjoymusic.view.widget.CustomNavigationView;
 import com.zspirytus.mylibrary.DraggableFloatingActionButton;
 import com.zspirytus.zspermission.PermissionGroup;
 import com.zspirytus.zspermission.ZSPermission;
@@ -56,7 +56,7 @@ public class MainActivity extends BaseActivity
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
     @ViewInject(R.id.nav_view)
-    private NavigationView mNavigationView;
+    private CustomNavigationView mCustomNavigationView;
     @ViewInject(R.id.main_activity_toolbar)
     public Toolbar mToolbar;
     @ViewInject(R.id.dragged_fab)
@@ -184,7 +184,7 @@ public class MainActivity extends BaseActivity
         Intent intent = new Intent(this, PlayMusicService.class);
         startService(intent);
 
-        mNavigationView.setNavigationItemSelectedListener(this);
+        mCustomNavigationView.setNavigationItemSelectedListener(this);
         mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListenerImpl());
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
@@ -208,10 +208,12 @@ public class MainActivity extends BaseActivity
         EventBus.getDefault().unregister(this);
         MediaPlayController.getInstance().unregisterMusicPlayStateObserver(this);
         ForegroundMusicController.getInstance().release();
+        mCustomNavigationView.unregisterFragmentChangeListener();
     }
 
     @Override
     public void onGranted() {
+        FragmentVisibilityManager.getInstance().init(mFragmentManager);
         String action = getIntent().getStringExtra(Constant.StatusBarEvent.EXTRA);
         if (Constant.StatusBarEvent.ACTION_NAME.equals(action)) {
             showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
@@ -236,11 +238,6 @@ public class MainActivity extends BaseActivity
 
     @Subscriber(tag = Constant.EventBusTag.SHOW_CAST_FRAGMENT)
     public <T extends BaseFragment> void showCastFragment(T shouldShowFragment) {
-        FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        if (!shouldShowFragment.isAdded()) {
-            transaction.add(R.id.fragment_container, shouldShowFragment);
-        }
-        FragmentVisibilityManager.getInstance().show(transaction, shouldShowFragment);
         if (shouldShowFragment instanceof MusicCategoryFragment
                 && ((MusicCategoryFragment) shouldShowFragment).getCurrentPosition() == 0
                 || shouldShowFragment instanceof PlayListFragment) {
@@ -251,8 +248,7 @@ public class MainActivity extends BaseActivity
         if (shouldShowFragment instanceof MusicPlayFragment) {
             changeClickToolbarButtonResponseAndToolbarStyle(false);
         }
-        FragmentVisibilityManager.getInstance().push(shouldShowFragment);
-        transaction.commitAllowingStateLoss();
+        FragmentVisibilityManager.getInstance().show(shouldShowFragment);
     }
 
     private void playWidgetVisibilityAnimation(int visibility) {

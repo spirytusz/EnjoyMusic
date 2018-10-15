@@ -11,15 +11,15 @@ import org.simple.eventbus.EventBus;
 
 public class BackgroundMusicController {
 
-    private static BackgroundMusicController INSTANCE;
+    private static class SingletonHolder {
+        private static BackgroundMusicController INSTANCE = new BackgroundMusicController();
+    }
 
     private BackgroundMusicController() {
     }
 
     public static BackgroundMusicController getInstance() {
-        if (INSTANCE == null)
-            INSTANCE = new BackgroundMusicController();
-        return INSTANCE;
+        return SingletonHolder.INSTANCE;
     }
 
     public void play(Music music) {
@@ -32,9 +32,5 @@ public class BackgroundMusicController {
 
     public void stop(Music music) {
         EventBus.getDefault().post(music, Constant.EventBusTag.STOP);
-    }
-
-    public void release() {
-        INSTANCE = null;
     }
 }

@@ -42,12 +42,10 @@ public class HomePageRecyclerViewAdapter extends RecyclerView.Adapter<HomePageRe
     public void onBindViewHolder(final MyHomePageRecyclerViewHolder holder, final int position) {
         HomePageRecyclerViewItem item = mItemList.get(position);
         holder.mMyHomePageRecyclerViewHolderTitle.setText(item.getTitle());
-        switch (position) {
-            case 1:
-                holder.mMyHomePageRecyclerViewHolderRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManager(mContext, 2));
-                break;
-            default:
-                holder.mMyHomePageRecyclerViewHolderRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL));
+        if (position == 1) {
+            holder.mMyHomePageRecyclerViewHolderRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManager(mContext, 2));
+        } else {
+            holder.mMyHomePageRecyclerViewHolderRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL));
         }
         mChildAdapter = new HomePageChildRecyclerViewAdapter(item.getHomePageChildRecyclerViewItems(), position);
         if (mOnParentRVItemClickListener != null) {

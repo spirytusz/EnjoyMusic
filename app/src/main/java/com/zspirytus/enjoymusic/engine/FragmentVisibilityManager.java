@@ -1,7 +1,10 @@
 package com.zspirytus.enjoymusic.engine;
 
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.listeners.observable.FragmentChangeObservable;
 import com.zspirytus.enjoymusic.view.fragment.BaseFragment;
 
 import java.util.LinkedList;
@@ -10,11 +13,12 @@ import java.util.LinkedList;
  * Created by ZSpirytus on 2018/9/14.
  */
 
-public class FragmentVisibilityManager {
+public class FragmentVisibilityManager extends FragmentChangeObservable {
 
     private static final FragmentVisibilityManager ourInstance = new FragmentVisibilityManager();
 
     private LinkedList<BaseFragment> fragments;
+    private FragmentManager mFragmentManager;
     private int size;
 
     public static FragmentVisibilityManager getInstance() {
@@ -23,6 +27,10 @@ public class FragmentVisibilityManager {
 
     private FragmentVisibilityManager() {
         fragments = new LinkedList<>();
+    }
+
+    public void init(FragmentManager fragmentManager) {
+        mFragmentManager = fragmentManager;
     }
 
     public void push(BaseFragment fragment) {
@@ -53,13 +61,21 @@ public class FragmentVisibilityManager {
         }
     }
 
-    public void show(FragmentTransaction transaction, BaseFragment shouldShowFragment) {
+    public void show(BaseFragment shouldShowFragment) {
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        if (!shouldShowFragment.isAdded()) {
+            transaction.add(R.id.fragment_container, shouldShowFragment);
+        }
         for (BaseFragment baseFragment : fragments) {
             if (!baseFragment.equals(shouldShowFragment)) {
                 transaction.hide(baseFragment);
+            } else {
+                transaction.show(shouldShowFragment);
             }
         }
-        transaction.show(shouldShowFragment);
+        FragmentVisibilityManager.getInstance().push(shouldShowFragment);
+        transaction.commitAllowingStateLoss();
+        notifyAllFragmentChangeObserver(shouldShowFragment);
     }
 
 }

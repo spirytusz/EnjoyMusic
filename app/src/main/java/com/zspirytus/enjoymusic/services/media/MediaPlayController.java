@@ -11,7 +11,6 @@ import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.listeners.observable.MusicStateObservable;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 
 import java.io.IOException;
 
@@ -22,7 +21,7 @@ import java.io.IOException;
 
 public class MediaPlayController extends MusicStateObservable
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
-        MediaPlayer.OnErrorListener, AudioManager.OnAudioFocusChangeListener {
+        AudioManager.OnAudioFocusChangeListener {
 
     private static final int STATE_PLAYING = 1;
     private static final int STATE_PAUSE = 2;
@@ -50,7 +49,6 @@ public class MediaPlayController extends MusicStateObservable
         // set listeners
         mediaPlayer.setOnPreparedListener(this);
         mediaPlayer.setOnCompletionListener(this);
-        mediaPlayer.setOnErrorListener(this);
 
         // init timer
         mPlayingTimer = PlayingTimer.getInstance();
@@ -69,17 +67,10 @@ public class MediaPlayController extends MusicStateObservable
     @Override
     public void onCompletion(MediaPlayer mp) {
         if (isPrepared) {
-            System.out.println("onCompletion");
             Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
             play(nextMusic);
             notifyAllPlayedMusicChanged(nextMusic);
         }
-    }
-
-    @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {
-        LogUtil.e(this.getClass().getSimpleName(), "what = " + what + "\textra = " + extra);
-        return false;
     }
 
     @Override

@@ -48,4 +48,16 @@ public interface Constant {
         int ALL_MUSIC_ITEM_TYPE = 1;
         int ARTIST_MUSIC_ITEM_TYPE = 2;
     }
+
+    interface FragmentName {
+        String aboutFragmentName = "AboutFragment";
+        String albumMusicListFragmentName = "AlbumMusicListFragment";
+        String allMusicListFragmentName = "AllMusicListFragment";
+        String artistMusicListFragmentName = "ArtistMusicListFragment";
+        String homePageFragmentName = "HomePageFragment";
+        String musicCategoryFragmentName = "MusicCategoryFragment";
+        String musicPlayFragmentName = "MusicPlayFragment";
+        String playListFragmentName = "PlayListFragment";
+        String settingFragmentName = "SettingsFragment";
+    }
 }

@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.HomePageRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.HomePageRecyclerViewItem;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -84,12 +85,14 @@ public class HomePageFragment extends BaseFragment implements HomePageRecyclerVi
     }
 
     @Override
-    public void onParentRVItemClick(String cardTitle, final int position, int type) {
+    public void onParentRVItemClick(final String cardTitle, final int position, final int type) {
         ObservableFactory.getMusicObservableConverterByTypeAndKey(cardTitle, type)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Music>() {
+
                     List<Music> playList = new ArrayList<>();
+                    boolean isFoundSuitableMusicToPlay = false;
 
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -98,6 +101,13 @@ public class HomePageFragment extends BaseFragment implements HomePageRecyclerVi
 
                     @Override
                     public void onNext(Music music) {
+                        if (!isFoundSuitableMusicToPlay && type == 0 && cardTitle.equals(music.getMusicName())) {
+                            ForegroundMusicController.getInstance().play(music);
+                            isFoundSuitableMusicToPlay = true;
+                        } else if (!isFoundSuitableMusicToPlay && type != 0) {
+                            ForegroundMusicController.getInstance().play(music);
+                            isFoundSuitableMusicToPlay = true;
+                        }
                         playList.add(music);
                     }
 
@@ -110,7 +120,9 @@ public class HomePageFragment extends BaseFragment implements HomePageRecyclerVi
                     public void onComplete() {
                         MusicPlayOrderManager.getInstance().setPlayList(playList);
                         EventBus.getDefault().post(playList, Constant.EventBusTag.SET_PLAY_LIST);
-                        EventBus.getDefault().post(FragmentFactory.getInstance().get(PlayListFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+                        if (type != 0) {
+                            EventBus.getDefault().post(FragmentFactory.getInstance().get(PlayListFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+                        }
                     }
                 });
     }
