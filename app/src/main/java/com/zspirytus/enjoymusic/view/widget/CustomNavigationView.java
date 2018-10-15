@@ -8,7 +8,6 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.receivers.observer.FragmentChangeObserver;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 
 /**
  * Created by ZSpirytus on 2018/10/16.
@@ -25,8 +24,12 @@ public class CustomNavigationView extends NavigationView implements FragmentChan
 
     public CustomNavigationView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setCheckedItem(R.id.nav_home_page);
+        init();
+    }
+
+    private void init() {
         registerFragmentChangeListener();
+        setCheckedItem(R.id.nav_home_page);
     }
 
     private void registerFragmentChangeListener() {
@@ -39,13 +42,18 @@ public class CustomNavigationView extends NavigationView implements FragmentChan
 
     @Override
     public void onFragmentChange(String newFragmentName) {
-        LogUtil.e(this.getClass().getSimpleName(), newFragmentName);
         switch (newFragmentName) {
             case Constant.FragmentName.homePageFragmentName:
                 setCheckedItem(R.id.nav_home_page);
                 break;
             case Constant.FragmentName.allMusicListFragmentName:
                 setCheckedItem(R.id.nav_music_all);
+                break;
+            case Constant.FragmentName.albumMusicListFragmentName:
+                setCheckedItem(R.id.nav_music_album);
+                break;
+            case Constant.FragmentName.artistMusicListFragmentName:
+                setCheckedItem(R.id.nav_music_artist);
                 break;
             case Constant.FragmentName.playListFragmentName:
                 setCheckedItem(R.id.nav_play_list);

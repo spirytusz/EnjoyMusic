@@ -22,7 +22,6 @@ import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
 import com.zspirytus.enjoymusic.impl.OnDraggableFABEventListenerImpl;
 import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
-import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
@@ -33,8 +32,8 @@ import com.zspirytus.enjoymusic.view.fragment.MusicCategoryFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.enjoymusic.view.fragment.PlayListFragment;
 import com.zspirytus.enjoymusic.view.fragment.SettingsFragment;
+import com.zspirytus.enjoymusic.view.widget.CustomDFab;
 import com.zspirytus.enjoymusic.view.widget.CustomNavigationView;
-import com.zspirytus.mylibrary.DraggableFloatingActionButton;
 import com.zspirytus.zspermission.PermissionGroup;
 import com.zspirytus.zspermission.ZSPermission;
 
@@ -47,9 +46,7 @@ import org.simple.eventbus.Subscriber;
  */
 
 @LayoutIdInject(R.layout.activity_main)
-public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-        MusicPlayStateObserver {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private final FragmentManager mFragmentManager = getSupportFragmentManager();
 
@@ -60,7 +57,7 @@ public class MainActivity extends BaseActivity
     @ViewInject(R.id.main_activity_toolbar)
     public Toolbar mToolbar;
     @ViewInject(R.id.dragged_fab)
-    private DraggableFloatingActionButton mFab;
+    private CustomDFab mFab;
 
     private ActionBarDrawerToggle toggle;
     private int selectedNavigationMenuItemId;
@@ -110,12 +107,6 @@ public class MainActivity extends BaseActivity
                 pressedBackLastTime = now;
             }
         }
-    }
-
-    @Override
-    public void onPlayingStateChanged(boolean isPlaying) {
-        int resId = isPlaying ? R.drawable.ic_pause_white_48dp : R.drawable.ic_play_arrow_white_48dp;
-        mFab.setImageResource(resId);
     }
 
     @Override
@@ -176,7 +167,7 @@ public class MainActivity extends BaseActivity
             }
         });
         changeClickToolbarButtonResponseAndToolbarStyle(true);
-        onPlayingStateChanged(MediaPlayController.getInstance().isPlaying());
+        mFab.onPlayingStateChanged(MediaPlayController.getInstance().isPlaying());
     }
 
     @Override
@@ -200,14 +191,13 @@ public class MainActivity extends BaseActivity
     @Override
     protected void registerEvent() {
         EventBus.getDefault().register(this);
-        MediaPlayController.getInstance().registerMusicPlayStateObserver(this);
     }
 
     @Override
     protected void unregisterEvent() {
         EventBus.getDefault().unregister(this);
-        MediaPlayController.getInstance().unregisterMusicPlayStateObserver(this);
         ForegroundMusicController.getInstance().release();
+        mFab.unregisterMusicPlayStateObserver();
         mCustomNavigationView.unregisterFragmentChangeListener();
     }
 
