@@ -55,7 +55,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @ViewInject(R.id.nav_view)
     private CustomNavigationView mCustomNavigationView;
     @ViewInject(R.id.main_activity_toolbar)
-    public Toolbar mToolbar;
+    private Toolbar mToolbar;
     @ViewInject(R.id.dragged_fab)
     private CustomDFab mFab;
 
