@@ -72,7 +72,7 @@ public class MusicPlayFragment extends BaseFragment
                 ForegroundMusicController.getInstance().play(previousMusic);
                 break;
             case R.id.play_pause:
-                boolean isPlaying = MediaPlayController.getInstance().isPlaying();
+                boolean isPlaying = ForegroundMusicController.getInstance().isPlaying();
                 Music currentPlayingMusic = CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic();
                 if (isPlaying) {
                     ForegroundMusicController.getInstance().pause(currentPlayingMusic);
@@ -147,7 +147,7 @@ public class MusicPlayFragment extends BaseFragment
                     .into(mCover);
             mTotalTime.setText(TimeUtil.convertLongToMinsSec(mCurrentPlayingMusic.getMusicDuration()));
         }
-        setButtonSrc(MediaPlayController.getInstance().isPlaying());
+        setButtonSrc(ForegroundMusicController.getInstance().isPlaying());
         mCover.setOnClickListener(this);
         mPreviousButton.setOnClickListener(this);
         mPlayOrPauseButton.setOnClickListener(this);

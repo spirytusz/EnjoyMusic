@@ -32,9 +32,10 @@ public class FragmentChangeObservable {
     }
 
     protected void notifyAllFragmentChangeObserver(BaseFragment baseFragment) {
+        String baseFragmentString = baseFragment.getClass().getSimpleName();
         Iterator<FragmentChangeObserver> observerIterator = mFragmentChangeObservers.iterator();
         while (observerIterator.hasNext()) {
-            if (baseFragment.getClass().getSimpleName().equals(Constant.FragmentName.musicCategoryFragmentName)) {
+            if (baseFragmentString.equals(Constant.FragmentName.musicCategoryFragmentName)) {
                 int category = ((MusicCategoryFragment) baseFragment).getCurrentPosition();
                 if (category == 0) {
                     observerIterator.next().onFragmentChange(Constant.FragmentName.allMusicListFragmentName);
@@ -44,7 +45,7 @@ public class FragmentChangeObservable {
                     observerIterator.next().onFragmentChange(Constant.FragmentName.artistMusicListFragmentName);
                 }
             } else {
-                observerIterator.next().onFragmentChange(baseFragment.getClass().getSimpleName());
+                observerIterator.next().onFragmentChange(baseFragmentString);
             }
         }
     }

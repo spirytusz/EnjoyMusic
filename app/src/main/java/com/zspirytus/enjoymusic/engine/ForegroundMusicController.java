@@ -2,6 +2,7 @@ package com.zspirytus.enjoymusic.engine;
 
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
 import org.simple.eventbus.EventBus;
 
@@ -30,11 +31,19 @@ public class ForegroundMusicController {
         EventBus.getDefault().post(music, Constant.EventBusTag.PAUSE);
     }
 
+    public void stop(Music music) {
+        EventBus.getDefault().post(music, Constant.EventBusTag.STOP);
+    }
+
     public void seekTo(int msec) {
         EventBus.getDefault().post(msec, Constant.EventBusTag.SEEK_TO);
     }
 
     public void release() {
         SingletonHolder.INSTANCE = null;
+    }
+
+    public boolean isPlaying() {
+        return MediaPlayController.getInstance().isPlaying();
     }
 }

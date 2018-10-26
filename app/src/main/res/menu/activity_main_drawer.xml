@@ -25,10 +25,12 @@
         <menu>
             <item
                 android:id="@+id/nav_settings"
-                android:title="Settings" />
+                android:title="Settings"
+                android:checkable="true" />
             <item
                 android:id="@+id/nav_about"
-                android:title="About" />
+                android:title="About"
+                android:checkable="true" />
         </menu>
     </item>
 

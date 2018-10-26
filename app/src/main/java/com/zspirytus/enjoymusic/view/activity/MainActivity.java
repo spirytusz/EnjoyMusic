@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -23,7 +24,6 @@ import com.zspirytus.enjoymusic.impl.OnDraggableFABEventListenerImpl;
 import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.ViewInject;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
-import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 import com.zspirytus.enjoymusic.view.fragment.AboutFragment;
 import com.zspirytus.enjoymusic.view.fragment.BaseFragment;
@@ -56,6 +56,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private CustomNavigationView mCustomNavigationView;
     @ViewInject(R.id.main_activity_toolbar)
     private Toolbar mToolbar;
+    @ViewInject(R.id.toolbar_text_view)
+    private AppCompatTextView mToolbarTextView;
     @ViewInject(R.id.dragged_fab)
     private CustomDFab mFab;
 
@@ -167,7 +169,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             }
         });
         changeClickToolbarButtonResponseAndToolbarStyle(true);
-        mFab.onPlayingStateChanged(MediaPlayController.getInstance().isPlaying());
+        mFab.onPlayingStateChanged(ForegroundMusicController.getInstance().isPlaying());
+
+
     }
 
     @Override
