@@ -44,7 +44,7 @@ public class AllMusicCache {
     }
 
     public List<Music> getAllMusicList() {
-        if (mAllMusicList == null || mAllMusicList.size() == 0) {
+        if (mAllMusicList == null || mAllMusicList.isEmpty()) {
             scanMusic();
         }
         return mAllMusicList;
@@ -55,7 +55,9 @@ public class AllMusicCache {
     }
 
     public List<Album> getAlbumList() {
-        getAllMusicList();
+        if (mAllMusicList.isEmpty()) {
+            getAllMusicList();
+        }
         for (Music music : mAllMusicList) {
             Album album = new Album(music.getMusicAlbumName(), music.getMusicThumbAlbumCoverPath(), music.getMusicArtist());
             if (!mAlbumList.contains(album)) {
@@ -66,7 +68,9 @@ public class AllMusicCache {
     }
 
     public List<Artist> getArtistList() {
-        getAllMusicList();
+        if (mAllMusicList.isEmpty()) {
+            getAllMusicList();
+        }
         for (Music music : mAllMusicList) {
             Artist artist = new Artist(music.getMusicArtist());
             if (mArtistList.contains(artist)) {

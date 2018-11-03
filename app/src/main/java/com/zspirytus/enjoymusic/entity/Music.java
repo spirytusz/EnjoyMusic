@@ -28,6 +28,16 @@ public class Music implements Parcelable {
         this.musicFileSize = musicFileSize;
     }
 
+    private Music(Parcel source) {
+        this.musicFilePath = source.readString();
+        this.musicName = source.readString();
+        this.musicAlbumName = source.readString();
+        this.musicThumbAlbumCoverPath = source.readString();
+        this.musicArtist = source.readString();
+        this.musicDuration = source.readLong();
+        this.musicFileSize = source.readString();
+    }
+
     public String getMusicFilePath() {
         return musicFilePath;
     }
@@ -125,7 +135,7 @@ public class Music implements Parcelable {
     public static final Parcelable.Creator<Music> CREATOR = new Creator<Music>() {
         @Override
         public Music createFromParcel(Parcel source) {
-            return new Music(source.readString(), source.readString(), source.readString(), source.readString(), source.readString(), source.readLong(), source.readString());
+            return new Music(source);
         }
 
         @Override

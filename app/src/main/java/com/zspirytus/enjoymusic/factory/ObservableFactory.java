@@ -1,7 +1,7 @@
 package com.zspirytus.enjoymusic.factory;
 
-import com.zspirytus.enjoymusic.cache.AllMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.HomePageChildRecyclerViewItem;
@@ -27,7 +27,7 @@ public class ObservableFactory {
         return Observable.create(new ObservableOnSubscribe<Music>() {
             @Override
             public void subscribe(ObservableEmitter<Music> emitter) throws Exception {
-                List<Music> musicList = AllMusicCache.getInstance().getAllMusicList();
+                List<Music> musicList = ForegroundMusicController.getInstance().getAllMusicList();
                 for (Music music : musicList) {
                     emitter.onNext(music);
                 }
@@ -58,9 +58,9 @@ public class ObservableFactory {
         return Observable.create(new ObservableOnSubscribe<List<HomePageRecyclerViewItem>>() {
             @Override
             public void subscribe(ObservableEmitter<List<HomePageRecyclerViewItem>> emitter) throws Exception {
-                List<Music> musicList = AllMusicCache.getInstance().getAllMusicList();
-                List<Album> albumList = AllMusicCache.getInstance().getAlbumList();
-                List<Artist> artistList = AllMusicCache.getInstance().getArtistList();
+                List<Music> musicList = ForegroundMusicController.getInstance().getAllMusicList();
+                List<Album> albumList = ForegroundMusicController.getInstance().getAlbumList();
+                List<Artist> artistList = ForegroundMusicController.getInstance().getArtistList();
                 List<HomePageChildRecyclerViewItem> childOfMusic = new ArrayList<>();
                 List<HomePageChildRecyclerViewItem> childOfAlbum = new ArrayList<>();
                 List<HomePageChildRecyclerViewItem> childOfArtist = new ArrayList<>();
