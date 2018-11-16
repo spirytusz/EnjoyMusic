@@ -21,7 +21,7 @@ public class OnDraggableFABEventListenerImpl implements OnDraggableFABEventListe
     public void onClick() {
         if (!AllMusicCache.getInstance().getAllMusicListWithoutScanning().isEmpty()) {
             if (ForegroundMusicController.getInstance().isPlaying()) {
-                ForegroundMusicController.getInstance().pause(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+                ForegroundMusicController.getInstance().pause();
             } else {
                 ForegroundMusicController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
             }

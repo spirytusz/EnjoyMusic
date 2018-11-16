@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.IBinder;
 
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.adapter.binder.BinderPoolImpl;
 import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -30,14 +31,11 @@ import org.simple.eventbus.Subscriber;
 public class PlayMusicService extends Service
         implements MusicPlayStateObserver, PlayedMusicChangeObserver {
 
+    private BinderPoolImpl mBinderPool;
     private MediaPlayController mMediaPlayController = MediaPlayController.getInstance();
 
     private MyHeadSetPlugOutReceiver myHeadSetPlugOutReceiver;
     private MyHeadSetButtonClickBelowLReceiver myHeadSetButtonClickBelowLReceiver;
-
-    public PlayMusicService() {
-
-    }
 
     @Override
     public void onCreate() {
@@ -48,7 +46,9 @@ public class PlayMusicService extends Service
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        if (mBinderPool == null)
+            mBinderPool = new BinderPoolImpl();
+        return mBinderPool;
     }
 
     @Override
@@ -68,26 +68,6 @@ public class PlayMusicService extends Service
     @Override
     public void onPlayedMusicChanged(Music music) {
         NotificationHelper.getInstance().showNotification(music);
-    }
-
-    @Subscriber(tag = Constant.EventBusTag.PLAY)
-    public void play(Music music) {
-        mMediaPlayController.play(music);
-    }
-
-    @Subscriber(tag = Constant.EventBusTag.PAUSE)
-    public void pause(Music music) {
-        mMediaPlayController.pause();
-    }
-
-    @Subscriber(tag = Constant.EventBusTag.STOP)
-    public void stop(Music music) {
-        mMediaPlayController.stop();
-    }
-
-    @Subscriber(tag = Constant.EventBusTag.SEEK_TO)
-    public void seekTo(int msec) {
-        mMediaPlayController.seekTo(msec);
     }
 
     @Subscriber(tag = Constant.EventBusTag.START_MAIN_ACTIVITY)

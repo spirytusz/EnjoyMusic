@@ -75,7 +75,7 @@ public class MusicPlayFragment extends BaseFragment
                 boolean isPlaying = ForegroundMusicController.getInstance().isPlaying();
                 Music currentPlayingMusic = CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic();
                 if (isPlaying) {
-                    ForegroundMusicController.getInstance().pause(currentPlayingMusic);
+                    ForegroundMusicController.getInstance().pause();
                 } else {
                     ForegroundMusicController.getInstance().play(currentPlayingMusic);
                 }

@@ -6,11 +6,12 @@ package com.zspirytus.enjoymusic.cache.constant;
 
 public interface Constant {
 
+    interface BinderPoolCode {
+        int BINDER_POOL_MUSIC_CONTROL = 1;
+        int BINDER_POOL_MUSIC_PROGRESS_CONTROL = 2;
+    }
+
     interface EventBusTag {
-        String PLAY = "play";
-        String PAUSE = "pause";
-        String STOP = "stop";
-        String SEEK_TO = "seek to";
         String MUSIC_NAME_SET = "music name set";
         String SHOW_CAST_FRAGMENT = "show cast fragment";
         String START_MAIN_ACTIVITY = "start MainActivity";

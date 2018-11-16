@@ -1,7 +1,10 @@
 package com.zspirytus.enjoymusic.view.activity;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +17,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.zspirytus.enjoymusic.BinderPool;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -49,6 +53,7 @@ import org.simple.eventbus.Subscriber;
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private final FragmentManager mFragmentManager = getSupportFragmentManager();
+    private ServiceConnection conn;
 
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
@@ -176,9 +181,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     protected void initData() {
-        Intent intent = new Intent(this, PlayMusicService.class);
-        startService(intent);
-
         mCustomNavigationView.setNavigationItemSelectedListener(this);
         mFab.setOnDraggableFABEventListener(new OnDraggableFABEventListenerImpl());
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
@@ -190,6 +192,20 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         // TODO: 2018/9/18 testment 
         mFragmentManager.beginTransaction().add(R.id.fragment_container, FragmentFactory.getInstance().get(PlayListFragment.class)).commitAllowingStateLoss();
         FragmentVisibilityManager.getInstance().push(FragmentFactory.getInstance().get(PlayListFragment.class));
+
+        Intent startPlayMusicServiceIntent = new Intent(this, PlayMusicService.class);
+        conn = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                ForegroundMusicController.getInstance().init(BinderPool.Stub.asInterface(service));
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+        bindService(startPlayMusicServiceIntent, conn, BIND_AUTO_CREATE);
     }
 
     @Override

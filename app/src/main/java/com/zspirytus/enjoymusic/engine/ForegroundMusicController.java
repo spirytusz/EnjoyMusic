@@ -1,21 +1,29 @@
 package com.zspirytus.enjoymusic.engine;
 
+import android.os.RemoteException;
+
+import com.zspirytus.enjoymusic.BinderPool;
+import com.zspirytus.enjoymusic.IMusicControl;
+import com.zspirytus.enjoymusic.IMusicProgressControl;
 import com.zspirytus.enjoymusic.cache.AllMusicCache;
-import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
-import org.simple.eventbus.EventBus;
-
 import java.util.List;
 
-/** 前台音乐播放控制器
+/**
+ * 前台音乐播放控制器
  * Created by ZSpirytus on 2018/9/8.
  */
 
 public class ForegroundMusicController {
+
+    private static final int BINDER_POOL_CODE_MUSIC_CONTROL = 1;
+    private static final int BINDER_POOL_CODE_MUSIC_PROGRESS_CONTROL = 2;
+
+    private BinderPool mBinderPool;
 
     private static class SingletonHolder {
         private static ForegroundMusicController INSTANCE = new ForegroundMusicController();
@@ -28,20 +36,32 @@ public class ForegroundMusicController {
         return SingletonHolder.INSTANCE;
     }
 
+    public void init(BinderPool binderPool) {
+        mBinderPool = binderPool;
+    }
+
     public void play(Music music) {
-        EventBus.getDefault().post(music, Constant.EventBusTag.PLAY);
+        try {
+            ((IMusicControl) mBinderPool.queryBinder(BINDER_POOL_CODE_MUSIC_CONTROL)).play(music);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void pause(Music music) {
-        EventBus.getDefault().post(music, Constant.EventBusTag.PAUSE);
-    }
-
-    public void stop(Music music) {
-        EventBus.getDefault().post(music, Constant.EventBusTag.STOP);
+    public void pause() {
+        try {
+            ((IMusicControl) mBinderPool.queryBinder(BINDER_POOL_CODE_MUSIC_CONTROL)).pause();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public void seekTo(int msec) {
-        EventBus.getDefault().post(msec, Constant.EventBusTag.SEEK_TO);
+        try {
+            ((IMusicProgressControl) mBinderPool.queryBinder(BINDER_POOL_CODE_MUSIC_PROGRESS_CONTROL)).seekTo(msec);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public void release() {
