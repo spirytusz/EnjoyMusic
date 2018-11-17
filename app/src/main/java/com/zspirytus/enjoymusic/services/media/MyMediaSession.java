@@ -7,8 +7,6 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.zspirytus.enjoymusic.cache.AllMusicCache;
-import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
-import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 
@@ -68,7 +66,7 @@ public class MyMediaSession {
                 .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeFile(music.getMusicThumbAlbumCoverPath()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            metaData.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, AllMusicCache.getInstance().getAllMusicListWithoutScanning().size());
+            metaData.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, AllMusicCache.getInstance().getAllMusicList().size());
         }
         mediaSession.setMetadata(metaData.build());
     }
@@ -77,7 +75,7 @@ public class MyMediaSession {
         @Override
         public void onPlay() {
             super.onPlay();
-            MediaPlayController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+            //MediaPlayController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
             System.out.println("MediaSession#onPlay");
         }
 
@@ -91,16 +89,16 @@ public class MyMediaSession {
         @Override
         public void onSkipToNext() {
             super.onSkipToNext();
-            Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
-            MediaPlayController.getInstance().play(nextMusic);
+            /*Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
+            MediaPlayController.getInstance().play(nextMusic);*/
             System.out.println("MediaSession#onSkipToNext");
         }
 
         @Override
         public void onSkipToPrevious() {
             super.onSkipToPrevious();
-            Music previousMusic = MusicPlayOrderManager.getInstance().getPreviousMusic();
-            MediaPlayController.getInstance().play(previousMusic);
+            /*Music previousMusic = MusicPlayOrderManager.getInstance().getPreviousMusic();
+            MediaPlayController.getInstance().play(previousMusic);*/
             System.out.println("MediaSession#onSkipToPrevious");
         }
 

@@ -22,6 +22,7 @@ import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
+import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 import com.zspirytus.enjoymusic.view.widget.MultiEventImageView;
 
@@ -68,6 +69,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
             case R.id.previous:
                 Music previousMusic = MusicPlayOrderManager.getInstance().getPreviousMusic();
                 ForegroundMusicController.getInstance().play(previousMusic);
+                LogUtil.e(this.getClass().getSimpleName(), "previousMusic = " + previousMusic.getMusicName());
                 break;
             case R.id.play_pause:
                 boolean isPlaying = ForegroundMusicController.getInstance().isPlaying();
@@ -81,6 +83,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
             case R.id.next:
                 Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
                 ForegroundMusicController.getInstance().play(nextMusic);
+                LogUtil.e(this.getClass().getSimpleName(), "nextMusic = " + nextMusic.getMusicName());
                 break;
         }
     }

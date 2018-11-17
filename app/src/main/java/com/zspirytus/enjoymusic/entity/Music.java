@@ -125,9 +125,9 @@ public class Music implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(musicFilePath);
         dest.writeString(musicName);
-        dest.writeString(musicArtist);
         dest.writeString(musicAlbumName);
         dest.writeString(musicThumbAlbumCoverPath);
+        dest.writeString(musicArtist);
         dest.writeLong(musicDuration);
         dest.writeString(musicFileSize);
     }

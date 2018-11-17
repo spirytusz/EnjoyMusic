@@ -9,7 +9,6 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.HomePageRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
-import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.HomePageRecyclerViewItem;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
@@ -118,7 +117,7 @@ public class HomePageFragment extends BaseFragment implements HomePageRecyclerVi
 
                     @Override
                     public void onComplete() {
-                        MusicPlayOrderManager.getInstance().setPlayList(playList);
+                        //MusicPlayOrderManager.getInstance().setPlayList(playList);
                         EventBus.getDefault().post(playList, Constant.EventBusTag.SET_PLAY_LIST);
                         if (type != 0) {
                             EventBus.getDefault().post(FragmentFactory.getInstance().get(PlayListFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);

@@ -6,11 +6,12 @@ import com.zspirytus.enjoymusic.IMusicControl;
 import com.zspirytus.enjoymusic.IMusicProgressControl;
 import com.zspirytus.enjoymusic.adapter.binder.IMusicControlImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IMusicProgressControlImpl;
+import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.cache.AllMusicCache;
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.services.media.MediaPlayController;
+import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
  * Created by ZSpirytus on 2018/9/8.
  */
 
-public class ForegroundMusicController {
+public class ForegroundMusicController implements MusicPlayStateObserver {
 
     private static final int BINDER_POOL_CODE_MUSIC_CONTROL = 1;
     private static final int BINDER_POOL_CODE_MUSIC_PROGRESS_CONTROL = 2;
@@ -27,11 +28,14 @@ public class ForegroundMusicController {
     private IMusicControl mIMusicControl;
     private IMusicProgressControl mIMusicProgressControl;
 
+    private static boolean isPlaying = false;
+
     private static class SingletonHolder {
         private static ForegroundMusicController INSTANCE = new ForegroundMusicController();
     }
 
     private ForegroundMusicController() {
+        IPlayStateChangeObserverImpl.getInstance().register(this);
     }
 
     public static ForegroundMusicController getInstance() {
@@ -76,7 +80,12 @@ public class ForegroundMusicController {
     }
 
     public boolean isPlaying() {
-        return MediaPlayController.getInstance().isPlaying();
+        return isPlaying;
+    }
+
+    @Override
+    public void onPlayingStateChanged(boolean isPlaying) {
+        this.isPlaying = isPlaying;
     }
 
     public List<Music> getAllMusicList() {

@@ -4,16 +4,18 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.engine.MusicPlayedHistoryProvider;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 
 import java.io.File;
 
 /**
- * Created by zhangkunwei on 2018/9/12.
+ * Created by ZSpirytus on 2018/9/12.
  */
 
-public class CurrentPlayingMusicCache {
+public class CurrentPlayingMusicCache implements PlayedMusicChangeObserver {
     private static final String CURRENT_PLAYING_MUSIC = "currentPlayingMusic";
     private static final String CURRENT_PLAYING_MUSIC_STRING_KEY = "currentPlayingMusicString";
     private static final CurrentPlayingMusicCache ourInstance = new CurrentPlayingMusicCache();
@@ -25,6 +27,7 @@ public class CurrentPlayingMusicCache {
     }
 
     private CurrentPlayingMusicCache() {
+        IPlayMusicChangeObserverImpl.getInstance().register(this);
     }
 
     public void setCurrentPlayingMusic(Music music) {
@@ -65,5 +68,8 @@ public class CurrentPlayingMusicCache {
         }
     }
 
-
+    @Override
+    public void onPlayedMusicChanged(Music music) {
+        currentPlayingMusic = music;
+    }
 }

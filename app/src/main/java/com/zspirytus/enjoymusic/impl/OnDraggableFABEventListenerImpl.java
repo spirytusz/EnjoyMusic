@@ -19,7 +19,7 @@ public class OnDraggableFABEventListenerImpl implements OnDraggableFABEventListe
 
     @Override
     public void onClick() {
-        if (!AllMusicCache.getInstance().getAllMusicListWithoutScanning().isEmpty()) {
+        if (!AllMusicCache.getInstance().getAllMusicList().isEmpty()) {
             if (ForegroundMusicController.getInstance().isPlaying()) {
                 ForegroundMusicController.getInstance().pause();
             } else {
@@ -30,21 +30,21 @@ public class OnDraggableFABEventListenerImpl implements OnDraggableFABEventListe
 
     @Override
     public void onLongClick() {
-        if (!AllMusicCache.getInstance().getAllMusicListWithoutScanning().isEmpty()) {
+        if (!AllMusicCache.getInstance().getAllMusicList().isEmpty()) {
             EventBus.getDefault().post(FragmentFactory.getInstance().get(MusicPlayFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
         }
     }
 
     @Override
     public void onDraggedLeft() {
-        if (!AllMusicCache.getInstance().getAllMusicListWithoutScanning().isEmpty()) {
+        if (!AllMusicCache.getInstance().getAllMusicList().isEmpty()) {
             ForegroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getPreviousMusic());
         }
     }
 
     @Override
     public void onDraggedRight() {
-        if (!AllMusicCache.getInstance().getAllMusicListWithoutScanning().isEmpty()) {
+        if (!AllMusicCache.getInstance().getAllMusicList().isEmpty()) {
             ForegroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic());
         }
     }

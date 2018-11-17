@@ -6,7 +6,6 @@ import android.media.MediaPlayer;
 import android.os.PowerManager;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -179,7 +178,6 @@ public class MediaPlayController implements MediaPlayer.OnPreparedListener, Medi
         isPrepared = true;
         state = STATE_PLAYING;
         currentPlayingMusic = requestedToPlayMusic;
-        CurrentPlayingMusicCache.getInstance().setCurrentPlayingMusic(currentPlayingMusic);
         MyMediaSession.getInstance().setMetaData(currentPlayingMusic);
         if (mRemotePlayMusicChangeCallback != null) {
             mRemotePlayMusicChangeCallback.onMusicChange(currentPlayingMusic);

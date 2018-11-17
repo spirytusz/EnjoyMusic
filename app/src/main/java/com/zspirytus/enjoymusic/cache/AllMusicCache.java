@@ -50,10 +50,6 @@ public class AllMusicCache {
         return mAllMusicList;
     }
 
-    public List<Music> getAllMusicListWithoutScanning() {
-        return mAllMusicList;
-    }
-
     public List<Album> getAlbumList() {
         if (mAllMusicList.isEmpty()) {
             getAllMusicList();
