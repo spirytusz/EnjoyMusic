@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.ViewInject;
+import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
+import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.activity.BaseActivity;

@@ -8,9 +8,6 @@ import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
 public class IMusicControlImpl extends IMusicControl.Stub {
 
-    protected IMusicControlImpl() {
-    }
-
     @Override
     public void play(Music music) throws RemoteException {
         MediaPlayController.getInstance().play(music);

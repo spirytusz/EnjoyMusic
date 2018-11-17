@@ -8,8 +8,8 @@ import com.zspirytus.enjoymusic.adapter.MyViewPagerAdapter;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.impl.ViewPagerOnPageChangeListenerImpl;
-import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.ViewInject;
+import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
+import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
 import org.simple.eventbus.EventBus;
 

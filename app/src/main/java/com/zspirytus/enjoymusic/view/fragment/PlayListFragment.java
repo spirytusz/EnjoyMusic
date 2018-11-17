@@ -11,8 +11,8 @@ import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.ViewInject;
+import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
+import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;

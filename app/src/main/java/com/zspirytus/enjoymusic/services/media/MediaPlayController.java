@@ -10,17 +10,20 @@ import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.listeners.observable.MusicStateObservable;
+import com.zspirytus.enjoymusic.interfaces.RemotePlayMusicChangeCallback;
+import com.zspirytus.enjoymusic.interfaces.RemotePlayProgressCallback;
+import com.zspirytus.enjoymusic.interfaces.RemotePlayStateChangeCallback;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * 音乐播放暂停控制类
  * Created by ZSpirytus on 2018/8/10.
  */
 
-public class MediaPlayController extends MusicStateObservable
-        implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
+public class MediaPlayController implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
         AudioManager.OnAudioFocusChangeListener {
 
     private static final int STATE_PLAYING = 1;
@@ -29,7 +32,11 @@ public class MediaPlayController extends MusicStateObservable
 
     private static MediaPlayer mediaPlayer;
     private static AudioManager audioManager;
-    private static PlayingTimer mPlayingTimer;
+    private static PlayTimer mPlayingTimer;
+
+    private RemotePlayMusicChangeCallback mRemotePlayMusicChangeCallback;
+    private RemotePlayProgressCallback mRemotePlayProgressCallback;
+    private RemotePlayStateChangeCallback mRemotePlayStateChangeCallback;
 
     private int state;
     private boolean isPrepared = false;
@@ -51,8 +58,7 @@ public class MediaPlayController extends MusicStateObservable
         mediaPlayer.setOnCompletionListener(this);
 
         // init timer
-        mPlayingTimer = PlayingTimer.getInstance();
-        mPlayingTimer.init(this);
+        mPlayingTimer = new PlayTimer();
     }
 
     public static MediaPlayController getInstance() {
@@ -69,7 +75,9 @@ public class MediaPlayController extends MusicStateObservable
         if (isPrepared) {
             Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
             play(nextMusic);
-            notifyAllPlayedMusicChanged(nextMusic);
+            if (mRemotePlayMusicChangeCallback != null) {
+                mRemotePlayMusicChangeCallback.onMusicChange(nextMusic);
+            }
         }
     }
 
@@ -86,6 +94,18 @@ public class MediaPlayController extends MusicStateObservable
                 //stop
                 break;
         }
+    }
+
+    public void setPlayMusicChangeCallback(RemotePlayMusicChangeCallback remotePlayMusicChangeCallback) {
+        mRemotePlayMusicChangeCallback = remotePlayMusicChangeCallback;
+    }
+
+    public void setPlayProgressCallback(RemotePlayProgressCallback remotePlayProgressCallback) {
+        mRemotePlayProgressCallback = remotePlayProgressCallback;
+    }
+
+    public void setPlayStateChangeCallback(RemotePlayStateChangeCallback remotePlayStateChangeCallback) {
+        mRemotePlayStateChangeCallback = remotePlayStateChangeCallback;
     }
 
     public boolean isPlaying() {
@@ -123,7 +143,9 @@ public class MediaPlayController extends MusicStateObservable
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
             mPlayingTimer.pause();
-            notifyAllMusicPlayingObserverPlayingState(false);
+            if (mRemotePlayStateChangeCallback != null) {
+                mRemotePlayStateChangeCallback.onPlayStateChange(false);
+            }
             state = STATE_PAUSE;
             MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PAUSED);
         }
@@ -159,13 +181,54 @@ public class MediaPlayController extends MusicStateObservable
         currentPlayingMusic = requestedToPlayMusic;
         CurrentPlayingMusicCache.getInstance().setCurrentPlayingMusic(currentPlayingMusic);
         MyMediaSession.getInstance().setMetaData(currentPlayingMusic);
-        notifyAllPlayedMusicChanged(currentPlayingMusic);
+        if (mRemotePlayMusicChangeCallback != null) {
+            mRemotePlayMusicChangeCallback.onMusicChange(currentPlayingMusic);
+        }
         audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN);
-        notifyAllMusicPlayingObserverPlayingState(true);
+        if (mRemotePlayStateChangeCallback != null) {
+            mRemotePlayStateChangeCallback.onPlayStateChange(true);
+        }
         mediaPlayer.start();
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
         mPlayingTimer.start();
+    }
+
+    /**
+     * Timer
+     */
+    private static class PlayTimer {
+
+        private static Timer mTimer;
+        private static TimerTask mTimerTask;
+
+        private boolean hasStart = false;
+
+        public void start() {
+            hasStart = true;
+            final int SECONDS = 1000;
+            mTimer = new Timer();
+            mTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    int currentPlayingSeconds = INSTANCE.getCurrentPosition() / 1000;
+                    if (INSTANCE.mRemotePlayProgressCallback != null) {
+                        INSTANCE.mRemotePlayProgressCallback.onProgressChange(currentPlayingSeconds);
+                    }
+                }
+            };
+            mTimer.schedule(mTimerTask, 0, SECONDS);
+        }
+
+        public void pause() {
+            if (hasStart) {
+                mTimer.cancel();
+                mTimer = null;
+                mTimerTask.cancel();
+                mTimerTask = null;
+                hasStart = false;
+            }
+        }
     }
 
 }

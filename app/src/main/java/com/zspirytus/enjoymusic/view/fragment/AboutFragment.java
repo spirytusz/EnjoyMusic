@@ -1,7 +1,7 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
+import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 
 /**
  * Created by ZSpirytus on 2018/9/14.

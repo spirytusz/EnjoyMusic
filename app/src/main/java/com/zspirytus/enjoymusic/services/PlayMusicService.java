@@ -1,21 +1,26 @@
 package com.zspirytus.enjoymusic.services;
 
-import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.RemoteException;
 
-import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.binder.BinderPoolImpl;
+import com.zspirytus.enjoymusic.BinderPool;
+import com.zspirytus.enjoymusic.IPlayMusicChangeObserver;
+import com.zspirytus.enjoymusic.IPlayProgressChangeObserver;
+import com.zspirytus.enjoymusic.IPlayStateChangeObserver;
+import com.zspirytus.enjoymusic.adapter.binder.IMusicControlImpl;
+import com.zspirytus.enjoymusic.adapter.binder.IMusicProgressControlImpl;
 import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.interfaces.RemotePlayMusicChangeCallback;
+import com.zspirytus.enjoymusic.interfaces.RemotePlayProgressCallback;
+import com.zspirytus.enjoymusic.interfaces.RemotePlayStateChangeCallback;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
-import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
-import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
 import com.zspirytus.enjoymusic.view.activity.MainActivity;
@@ -28,11 +33,10 @@ import org.simple.eventbus.Subscriber;
  * Created by ZSpirytus on 2018/8/2.
  */
 
-public class PlayMusicService extends Service
-        implements MusicPlayStateObserver, PlayedMusicChangeObserver {
+public class PlayMusicService extends BaseService implements RemotePlayMusicChangeCallback,
+        RemotePlayProgressCallback, RemotePlayStateChangeCallback {
 
     private BinderPoolImpl mBinderPool;
-    private MediaPlayController mMediaPlayController = MediaPlayController.getInstance();
 
     private MyHeadSetPlugOutReceiver myHeadSetPlugOutReceiver;
     private MyHeadSetButtonClickBelowLReceiver myHeadSetButtonClickBelowLReceiver;
@@ -60,14 +64,18 @@ public class PlayMusicService extends Service
     }
 
     @Override
-    public void onPlayingStateChanged(boolean isPlaying) {
-        NotificationHelper.getInstance().updateNotificationClearable(!isPlaying);
-        NotificationHelper.getInstance().setPlayOrPauseBtnRes(isPlaying ? R.drawable.ic_pause_black_48dp : R.drawable.ic_play_arrow_black_48dp);
+    public void onMusicChange(Music music) {
+        notifyAllObserverPlayingMusicChanged(music);
     }
 
     @Override
-    public void onPlayedMusicChanged(Music music) {
-        NotificationHelper.getInstance().showNotification(music);
+    public void onPlayStateChange(boolean isPlaying) {
+        notifyAllObserverPlayStateChange(isPlaying);
+    }
+
+    @Override
+    public void onProgressChange(int progress) {
+        notifyAllObserverMusicPlayProgressChange(progress);
     }
 
     @Subscriber(tag = Constant.EventBusTag.START_MAIN_ACTIVITY)
@@ -77,8 +85,9 @@ public class PlayMusicService extends Service
 
     private void registerEvent() {
         EventBus.getDefault().register(this);
-        MediaPlayController.getInstance().registerMusicPlayStateObserver(this);
-        MediaPlayController.getInstance().registerPlayedMusicChangeObserver(this);
+        MediaPlayController.getInstance().setPlayMusicChangeCallback(this);
+        MediaPlayController.getInstance().setPlayProgressCallback(this);
+        MediaPlayController.getInstance().setPlayStateChangeCallback(this);
 
         myHeadSetPlugOutReceiver = new MyHeadSetPlugOutReceiver();
         IntentFilter headsetPlugOutFilter = new IntentFilter();
@@ -95,13 +104,65 @@ public class PlayMusicService extends Service
 
     private void unregisterEvent() {
         EventBus.getDefault().unregister(this);
-        MediaPlayController.getInstance().registerMusicPlayStateObserver(this);
-        MediaPlayController.getInstance().unregisterPlayedMusicChangeObserver(this);
 
         unregisterReceiver(myHeadSetPlugOutReceiver);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             unregisterReceiver(myHeadSetButtonClickBelowLReceiver);
+        }
+    }
+
+    private class BinderPoolImpl extends BinderPool.Stub {
+
+        private IMusicControlImpl mIMusicControlImpl;
+        private IMusicProgressControlImpl mIMusicProgressControlImpl;
+
+        @Override
+        public IBinder queryBinder(int binderCode) throws RemoteException {
+            switch (binderCode) {
+                case Constant.BinderPoolCode.BINDER_POOL_MUSIC_CONTROL:
+                    if (mIMusicControlImpl == null) {
+                        mIMusicControlImpl = new IMusicControlImpl();
+                    }
+                    return mIMusicControlImpl;
+                case Constant.BinderPoolCode.BINDER_POOL_MUSIC_PROGRESS_CONTROL:
+                    if (mIMusicProgressControlImpl == null) {
+                        mIMusicProgressControlImpl = new IMusicProgressControlImpl();
+                    }
+                    return mIMusicProgressControlImpl;
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public void registerObserver(IBinder observer, int binderCode) throws RemoteException {
+            switch (binderCode) {
+                case Constant.BinderPoolCode.BINDER_POOL_MUSIC_PLAY_STATE_CHANGE_OBSERVER:
+                    registerPlayStateObserver(IPlayStateChangeObserver.Stub.asInterface(observer));
+                    break;
+                case Constant.BinderPoolCode.BINDER_POOL_MUSIC_CHANGE_OBSERVER:
+                    registerPlayMusicChangeObserver(IPlayMusicChangeObserver.Stub.asInterface(observer));
+                    break;
+                case Constant.BinderPoolCode.BINDER_POOL_MUSIC_PROGRESS_OBSERVER:
+                    registerProgressChangeObserver(IPlayProgressChangeObserver.Stub.asInterface(observer));
+                    break;
+            }
+        }
+
+        @Override
+        public void unregisterObserver(IBinder observer, int binderCode) throws RemoteException {
+            switch (binderCode) {
+                case Constant.BinderPoolCode.BINDER_POOL_MUSIC_PLAY_STATE_CHANGE_OBSERVER:
+                    unregisterPlayStateObserver(IPlayStateChangeObserver.Stub.asInterface(observer));
+                    break;
+                case Constant.BinderPoolCode.BINDER_POOL_MUSIC_CHANGE_OBSERVER:
+                    unregisterPlayMusicChangeObserver(IPlayMusicChangeObserver.Stub.asInterface(observer));
+                    break;
+                case Constant.BinderPoolCode.BINDER_POOL_MUSIC_PROGRESS_OBSERVER:
+                    unregisterProgressChangeObserver(IPlayProgressChangeObserver.Stub.asInterface(observer));
+                    break;
+            }
         }
     }
 }

@@ -1,0 +1,38 @@
+package com.zspirytus.enjoymusic.adapter.binder;
+
+import android.os.RemoteException;
+
+import com.zspirytus.enjoymusic.IPlayStateChangeObserver;
+import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class IPlayStateChangeObserverImpl extends IPlayStateChangeObserver.Stub {
+
+    private static class SingletonHolder {
+        static IPlayStateChangeObserverImpl INSTANCE = new IPlayStateChangeObserverImpl();
+    }
+
+    private List<MusicPlayStateObserver> observers = new ArrayList<>();
+
+    @Override
+    public void onPlayStateChange(boolean isPlaying) throws RemoteException {
+        for (MusicPlayStateObserver observer : observers) {
+            observer.onPlayingStateChanged(isPlaying);
+        }
+    }
+
+    public void register(MusicPlayStateObserver observer) {
+        if (!observers.contains(observer))
+            observers.add(observer);
+    }
+
+    public void unregister(MusicPlayStateObserver observer) {
+        observers.remove(observer);
+    }
+
+    public static IPlayStateChangeObserverImpl getInstance() {
+        return SingletonHolder.INSTANCE;
+    }
+}

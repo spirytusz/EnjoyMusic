@@ -20,13 +20,14 @@ import android.view.View;
 import com.zspirytus.enjoymusic.BinderPool;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
 import com.zspirytus.enjoymusic.impl.OnDraggableFABEventListenerImpl;
-import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.ViewInject;
+import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
+import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 import com.zspirytus.enjoymusic.view.fragment.AboutFragment;
@@ -53,7 +54,6 @@ import org.simple.eventbus.Subscriber;
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private final FragmentManager mFragmentManager = getSupportFragmentManager();
-    private ServiceConnection conn;
 
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
@@ -194,15 +194,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         FragmentVisibilityManager.getInstance().push(FragmentFactory.getInstance().get(PlayListFragment.class));
 
         Intent startPlayMusicServiceIntent = new Intent(this, PlayMusicService.class);
-        conn = new ServiceConnection() {
+        ServiceConnection conn = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-                ForegroundMusicController.getInstance().init(BinderPool.Stub.asInterface(service));
+                ForegroundBinderManager.getInstance().init(BinderPool.Stub.asInterface(service));
             }
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
-
+                ForegroundBinderManager.getInstance().release();
             }
         };
         bindService(startPlayMusicServiceIntent, conn, BIND_AUTO_CREATE);

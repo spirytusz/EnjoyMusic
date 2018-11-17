@@ -12,8 +12,8 @@ import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
-import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.ViewInject;
+import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
+import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
 import java.util.ArrayList;

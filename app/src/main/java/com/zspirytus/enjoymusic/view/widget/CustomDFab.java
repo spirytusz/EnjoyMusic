@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
-import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.mylibrary.DraggableFloatingActionButton;
 
 /**
@@ -31,11 +31,11 @@ public class CustomDFab extends DraggableFloatingActionButton implements MusicPl
     }
 
     private void registerMusicPlayStateObserver() {
-        MediaPlayController.getInstance().registerMusicPlayStateObserver(this);
+        IPlayStateChangeObserverImpl.getInstance().register(this);
     }
 
     public void unregisterMusicPlayStateObserver() {
-        MediaPlayController.getInstance().unregisterMusicPlayStateObserver(this);
+        IPlayStateChangeObserverImpl.getInstance().unregister(this);
     }
 
     @Override

@@ -9,6 +9,9 @@ public interface Constant {
     interface BinderPoolCode {
         int BINDER_POOL_MUSIC_CONTROL = 1;
         int BINDER_POOL_MUSIC_PROGRESS_CONTROL = 2;
+        int BINDER_POOL_MUSIC_CHANGE_OBSERVER = 3;
+        int BINDER_POOL_MUSIC_PROGRESS_OBSERVER = 4;
+        int BINDER_POOL_MUSIC_PLAY_STATE_CHANGE_OBSERVER = 5;
     }
 
     interface EventBusTag {

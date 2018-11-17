@@ -6,20 +6,21 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
+import com.zspirytus.enjoymusic.adapter.binder.IPlayProgressChangeObserverImpl;
+import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.interfaces.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.ViewInject;
+import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
+import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.listeners.OnMultiEventImageViewListener;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
-import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 import com.zspirytus.enjoymusic.view.widget.MultiEventImageView;
@@ -29,16 +30,13 @@ import org.simple.eventbus.Subscriber;
 
 import java.io.File;
 
-import jp.wasabeef.glide.transformations.BlurTransformation;
-
 /**
  * Fragment: 显示音乐播放界面
  * Created by ZSpirytus on 2018/8/2.
  */
 
 @LayoutIdInject(R.layout.fragment_music_play)
-public class MusicPlayFragment extends BaseFragment
-        implements View.OnClickListener, MusicPlayStateObserver,
+public class MusicPlayFragment extends BaseFragment implements View.OnClickListener, MusicPlayStateObserver,
         MusicPlayProgressObserver, PlayedMusicChangeObserver {
 
     @ViewInject(R.id.background)
@@ -88,19 +86,34 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     @Override
-    public void onPlayingStateChanged(boolean isPlaying) {
-        setButtonSrc(isPlaying);
+    public void onProgressChanged(final int progress) {
+        getParentActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSeekBar.setProgress(progress);
+            }
+        });
     }
 
     @Override
-    public void onProgressChanged(int currentPlayingMills) {
-        mSeekBar.setProgress(currentPlayingMills);
+    public void onPlayingStateChanged(final boolean isPlaying) {
+        getParentActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setButtonSrc(isPlaying);
+            }
+        });
     }
 
     @Override
-    public void onPlayedMusicChanged(Music music) {
-        setView(music);
-        setupSeekBar(music);
+    public void onPlayedMusicChanged(final Music music) {
+        getParentActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setView(music);
+                setupSeekBar(music);
+            }
+        });
     }
 
     @Subscriber(tag = Constant.EventBusTag.MUSIC_NAME_SET)
@@ -109,7 +122,6 @@ public class MusicPlayFragment extends BaseFragment
         if (musicThumbAlbumCoverPath != null) {
             File coverFile = new File(musicThumbAlbumCoverPath);
             Glide.with(this).load(coverFile).into(mCover);
-            //loadBlurCover(coverFile);
         }
         EventBus.getDefault().post(music.getMusicName(), Constant.EventBusTag.SET_MAIN_ACTIVITY_TOOLBAR_TITLE);
         mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
@@ -157,17 +169,17 @@ public class MusicPlayFragment extends BaseFragment
     @Override
     protected void registerEvent() {
         EventBus.getDefault().register(this);
-        MediaPlayController.getInstance().registerMusicPlayStateObserver(this);
-        MediaPlayController.getInstance().registerProgressChange(this);
-        MediaPlayController.getInstance().registerPlayedMusicChangeObserver(this);
+        IPlayStateChangeObserverImpl.getInstance().register(this);
+        IPlayMusicChangeObserverImpl.getInstance().register(this);
+        IPlayProgressChangeObserverImpl.getInstance().register(this);
     }
 
     @Override
     protected void unregisterEvent() {
         EventBus.getDefault().unregister(this);
-        MediaPlayController.getInstance().unregisterMusicPlayStateObserver(this);
-        MediaPlayController.getInstance().unregisterProgressChange(this);
-        MediaPlayController.getInstance().unregisterPlayedMusicChangeObserver(this);
+        IPlayStateChangeObserverImpl.getInstance().unregister(this);
+        IPlayMusicChangeObserverImpl.getInstance().unregister(this);
+        IPlayProgressChangeObserverImpl.getInstance().unregister(this);
     }
 
     private void setButtonSrc(boolean isPlaying) {
@@ -180,15 +192,6 @@ public class MusicPlayFragment extends BaseFragment
             Glide.with(this).load(R.drawable.ic_play_arrow_black_48dp).into(mPlayOrPauseButton);
             AnimationUtil.ofFloat(mPlayOrPauseButton, Constant.AnimationProperty.ALPHA, 0f, 1f).start();
         }
-    }
-
-    private void loadBlurCover(File coverFile) {
-        RequestOptions options = new RequestOptions()
-                .dontAnimate()
-                .transform(new BlurTransformation(getParentActivity(), 14, 3));
-        Glide.with(this).load(coverFile)
-                .apply(options)
-                .into(mBackground);
     }
 
     private void setupSeekBar(Music music) {
