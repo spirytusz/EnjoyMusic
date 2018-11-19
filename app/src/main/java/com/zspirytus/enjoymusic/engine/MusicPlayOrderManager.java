@@ -3,9 +3,11 @@ package com.zspirytus.enjoymusic.engine;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.zspirytus.enjoymusic.adapter.binder.IMusicPlayCompleteObserverImpl;
 import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.receivers.observer.MusicPlayCompleteObserver;
 import com.zspirytus.enjoymusic.utils.RandomUtil;
 
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.List;
  * Created by ZSpirytus on 2018/9/5.
  */
 
-public class MusicPlayOrderManager {
+public class MusicPlayOrderManager implements MusicPlayCompleteObserver {
 
     public static final int MODE_ORDER = 1;
     public static final int MODE_RANDOM = 2;
@@ -29,12 +31,18 @@ public class MusicPlayOrderManager {
     private int mMode;
 
     private MusicPlayOrderManager() {
+        IMusicPlayCompleteObserverImpl.getInstance().register(this);
         restoreMode();
         setMode(MODE_ORDER);
     }
 
     public static MusicPlayOrderManager getInstance() {
         return INSTANCE;
+    }
+
+    @Override
+    public void onMusicPlayComplete() {
+
     }
 
     public void setPlayList(List<Music> playList) {

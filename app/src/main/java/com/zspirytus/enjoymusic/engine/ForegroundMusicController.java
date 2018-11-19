@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.engine;
 
+import android.os.IBinder;
 import android.os.RemoteException;
 
 import com.zspirytus.enjoymusic.IMusicControl;
@@ -44,7 +45,8 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
 
     public void play(Music music) {
         if (mIMusicControl == null) {
-            mIMusicControl = IMusicControlImpl.asInterface(ForegroundBinderManager.getInstance().getBinderByBinderCode(BINDER_POOL_CODE_MUSIC_CONTROL));
+            IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(BINDER_POOL_CODE_MUSIC_CONTROL);
+            mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
         }
         try {
             mIMusicControl.play(music);
@@ -55,7 +57,8 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
 
     public void pause() {
         if (mIMusicControl == null) {
-            mIMusicControl = IMusicControlImpl.asInterface(ForegroundBinderManager.getInstance().getBinderByBinderCode(BINDER_POOL_CODE_MUSIC_CONTROL));
+            IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(BINDER_POOL_CODE_MUSIC_CONTROL);
+            mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
         }
         try {
             mIMusicControl.pause();
@@ -64,18 +67,21 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
         }
     }
 
-    public void seekTo(int msec) {
+    public void seekTo(int milliseconds) {
         if (mIMusicProgressControl == null) {
-            mIMusicProgressControl = IMusicProgressControlImpl.asInterface(ForegroundBinderManager.getInstance().getBinderByBinderCode(BINDER_POOL_CODE_MUSIC_PROGRESS_CONTROL));
+            IBinder musicProgressControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(BINDER_POOL_CODE_MUSIC_PROGRESS_CONTROL);
+            mIMusicProgressControl = IMusicProgressControlImpl.asInterface(musicProgressControlBinder);
         }
         try {
-            mIMusicProgressControl.seekTo(msec);
+            mIMusicProgressControl.seekTo(milliseconds);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
     public void release() {
+        mIMusicControl = null;
+        mIMusicProgressControl = null;
         SingletonHolder.INSTANCE = null;
     }
 

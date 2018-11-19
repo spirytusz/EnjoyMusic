@@ -17,7 +17,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Created by zhangkunwei on 2018/9/12.
+ * Created by ZSpirytus on 2018/9/12.
  */
 
 public class GridMusicListAdapter extends RecyclerView.Adapter<GridMusicListAdapter.MyHolder> {

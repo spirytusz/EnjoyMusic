@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
-import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.engine.MusicPlayedHistoryProvider;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by ZSpirytus on 2018/9/12.
@@ -27,7 +27,6 @@ public class CurrentPlayingMusicCache implements PlayedMusicChangeObserver {
     }
 
     private CurrentPlayingMusicCache() {
-        IPlayMusicChangeObserverImpl.getInstance().register(this);
     }
 
     public void setCurrentPlayingMusic(Music music) {
@@ -39,7 +38,7 @@ public class CurrentPlayingMusicCache implements PlayedMusicChangeObserver {
         return currentPlayingMusic;
     }
 
-    protected void restoreCurrentPlayingMusic() {
+    public void restoreCurrentPlayingMusic() {
         SharedPreferences pref = MyApplication.getGlobalContext().getSharedPreferences(CURRENT_PLAYING_MUSIC, Context.MODE_PRIVATE);
         String json = pref.getString(CURRENT_PLAYING_MUSIC_STRING_KEY, null);
         if (json != null) {
@@ -52,9 +51,9 @@ public class CurrentPlayingMusicCache implements PlayedMusicChangeObserver {
                 }
             }
         } else {
-            /*List<Music> allMusicList = AllMusicCache.getInstance().getAllMusicList();
+            List<Music> allMusicList = AllMusicCache.getInstance().getAllMusicList();
             if (allMusicList != null && allMusicList.size() > 0)
-                currentPlayingMusic = allMusicList.get(0);*/
+                currentPlayingMusic = allMusicList.get(0);
         }
     }
 
@@ -70,6 +69,6 @@ public class CurrentPlayingMusicCache implements PlayedMusicChangeObserver {
 
     @Override
     public void onPlayedMusicChanged(Music music) {
-        currentPlayingMusic = music;
+        setCurrentPlayingMusic(music);
     }
 }

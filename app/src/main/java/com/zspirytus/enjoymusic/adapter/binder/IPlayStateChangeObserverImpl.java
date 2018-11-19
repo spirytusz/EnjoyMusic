@@ -1,7 +1,5 @@
 package com.zspirytus.enjoymusic.adapter.binder;
 
-import android.os.RemoteException;
-
 import com.zspirytus.enjoymusic.IPlayStateChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 
@@ -16,8 +14,11 @@ public class IPlayStateChangeObserverImpl extends IPlayStateChangeObserver.Stub 
 
     private List<MusicPlayStateObserver> observers = new ArrayList<>();
 
+    private IPlayStateChangeObserverImpl() {
+    }
+
     @Override
-    public void onPlayStateChange(boolean isPlaying) throws RemoteException {
+    public void onPlayStateChange(boolean isPlaying) {
         for (MusicPlayStateObserver observer : observers) {
             observer.onPlayingStateChanged(isPlaying);
         }

@@ -4,75 +4,85 @@ import android.app.Service;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 
-import com.zspirytus.enjoymusic.IPlayMusicChangeObserver;
+import com.zspirytus.enjoymusic.IMusicPlayCompleteObserver;
 import com.zspirytus.enjoymusic.IPlayProgressChangeObserver;
 import com.zspirytus.enjoymusic.IPlayStateChangeObserver;
-import com.zspirytus.enjoymusic.entity.Music;
 
 public abstract class BaseService extends Service {
 
-    private RemoteCallbackList<IPlayStateChangeObserver> musicPlayStateObservers = new RemoteCallbackList<>();
-    private RemoteCallbackList<IPlayProgressChangeObserver> musicPlayProgressObservers = new RemoteCallbackList<>();
-    private RemoteCallbackList<IPlayMusicChangeObserver> playedMusicChangeObservers = new RemoteCallbackList<>();
-
-    private IPlayStateChangeObserver mIPlayStateChangeObserver;
-    private IPlayProgressChangeObserver mIPlayProgressChangeObserver;
-    private IPlayMusicChangeObserver mIPlayMusicChangeObserver;
+    private RemoteCallbackList<IPlayStateChangeObserver> mMusicPlayStateObservers = new RemoteCallbackList<>();
+    private RemoteCallbackList<IPlayProgressChangeObserver> mMusicPlayProgressObservers = new RemoteCallbackList<>();
+    private RemoteCallbackList<IMusicPlayCompleteObserver> mMusicPlayCompleteObservers = new RemoteCallbackList<>();
 
     /**
      * register
      */
     public void registerPlayStateObserver(IPlayStateChangeObserver observer) {
-        mIPlayStateChangeObserver = observer;
+        mMusicPlayStateObservers.register(observer);
     }
 
     public void registerProgressChangeObserver(IPlayProgressChangeObserver observer) {
-        mIPlayProgressChangeObserver = observer;
+        mMusicPlayProgressObservers.register(observer);
     }
 
-    public void registerPlayMusicChangeObserver(IPlayMusicChangeObserver observer) {
-        mIPlayMusicChangeObserver = observer;
+    public void registerMusicPlayCompleteObserver(IMusicPlayCompleteObserver observer) {
+        mMusicPlayCompleteObservers.register(observer);
     }
 
     /**
      * unregister
      */
     public void unregisterPlayStateObserver(IPlayStateChangeObserver observer) {
-        mIPlayStateChangeObserver = null;
+        mMusicPlayStateObservers.unregister(observer);
     }
 
     public void unregisterProgressChangeObserver(IPlayProgressChangeObserver observer) {
-        mIPlayProgressChangeObserver = null;
+        mMusicPlayProgressObservers.unregister(observer);
     }
 
-    public void unregisterPlayMusicChangeObserver(IPlayMusicChangeObserver observer) {
-        mIPlayMusicChangeObserver = null;
+    public void unregisterMusicPlayCompleteObserver(IMusicPlayCompleteObserver observer) {
+        mMusicPlayCompleteObservers.unregister(observer);
     }
 
     /**
      * notify
      */
     protected void notifyAllObserverPlayStateChange(boolean isPlaying) {
-        try {
-            mIPlayStateChangeObserver.onPlayStateChange(isPlaying);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        int size = mMusicPlayStateObservers.beginBroadcast();
+        for (int i = 0; i < size; i++) {
+            try {
+                mMusicPlayStateObservers.getBroadcastItem(i).onPlayStateChange(isPlaying);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
+        mMusicPlayStateObservers.finishBroadcast();
     }
 
-    public void notifyAllObserverMusicPlayProgressChange(int currentPlayingMillis) {
-        try {
-            mIPlayProgressChangeObserver.onProgressChange(currentPlayingMillis);
-        } catch (RemoteException e) {
-
+    protected void notifyAllObserverMusicPlayProgressChange(int currentPlayingMillis) {
+        int size = mMusicPlayProgressObservers.beginBroadcast();
+        for (int i = 0; i < size; i++) {
+            try {
+                mMusicPlayProgressObservers.getBroadcastItem(i).onProgressChange(currentPlayingMillis);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
+        mMusicPlayProgressObservers.finishBroadcast();
     }
 
-    protected void notifyAllObserverPlayingMusicChanged(Music music) {
-        try {
-            mIPlayMusicChangeObserver.onMusicChange(music);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+    protected int notifyAllObserversMusicPlayComplete() {
+        int size = mMusicPlayCompleteObservers.beginBroadcast();
+        for (int i = 0; i < size; i++) {
+            try {
+                mMusicPlayCompleteObservers.getBroadcastItem(i).onMusicPlayComplete();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
+        mMusicPlayCompleteObservers.finishBroadcast();
+        return size;
     }
+
+
 }

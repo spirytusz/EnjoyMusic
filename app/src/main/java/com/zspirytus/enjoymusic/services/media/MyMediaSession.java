@@ -9,6 +9,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import com.zspirytus.enjoymusic.cache.AllMusicCache;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
+import com.zspirytus.enjoymusic.utils.LogUtil;
 
 /**
  * MediaSession
@@ -26,7 +27,6 @@ public class MyMediaSession {
             | PlaybackStateCompat.ACTION_STOP
             | PlaybackStateCompat.ACTION_SEEK_TO;
 
-    private PlayMusicService playMusicService;
     private MediaSessionCompat mediaSession;
     private PlaybackStateCompat playbackStateCompat;
 
@@ -39,9 +39,10 @@ public class MyMediaSession {
     }
 
     public void init(PlayMusicService service) {
-        playMusicService = service;
         playbackStateCompat = new PlaybackStateCompat.Builder()
                 .setState(PlaybackStateCompat.STATE_NONE, 0, 1.0f)
+                .setActions(PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PLAY_PAUSE
+                        | PlaybackStateCompat.ACTION_SKIP_TO_NEXT | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
                 .build();
         mediaSession = new MediaSessionCompat(service, this.getClass().getSimpleName());
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS | MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS);
@@ -76,14 +77,14 @@ public class MyMediaSession {
         public void onPlay() {
             super.onPlay();
             //MediaPlayController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
-            System.out.println("MediaSession#onPlay");
+            LogUtil.e(this.getClass().getSimpleName(), "MediaSession#onPlay");
         }
 
         @Override
         public void onPause() {
             super.onPause();
-            MediaPlayController.getInstance().pause();
-            System.out.println("MediaSession#onPause");
+            //MediaPlayController.getInstance().pause();
+            LogUtil.e(this.getClass().getSimpleName(), "MediaSession#onPause");
         }
 
         @Override
@@ -91,7 +92,7 @@ public class MyMediaSession {
             super.onSkipToNext();
             /*Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
             MediaPlayController.getInstance().play(nextMusic);*/
-            System.out.println("MediaSession#onSkipToNext");
+            LogUtil.e(this.getClass().getSimpleName(), "MediaSession#onSkipToNext");
         }
 
         @Override
@@ -99,7 +100,7 @@ public class MyMediaSession {
             super.onSkipToPrevious();
             /*Music previousMusic = MusicPlayOrderManager.getInstance().getPreviousMusic();
             MediaPlayController.getInstance().play(previousMusic);*/
-            System.out.println("MediaSession#onSkipToPrevious");
+            LogUtil.e(this.getClass().getSimpleName(), "MediaSession#onSkipToPrevious");
         }
 
         @Override

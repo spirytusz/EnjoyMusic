@@ -175,8 +175,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         });
         changeClickToolbarButtonResponseAndToolbarStyle(true);
         mFab.onPlayingStateChanged(ForegroundMusicController.getInstance().isPlaying());
-
-
     }
 
     @Override

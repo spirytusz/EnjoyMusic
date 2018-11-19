@@ -1,7 +1,5 @@
 package com.zspirytus.enjoymusic.adapter.binder;
 
-import android.os.RemoteException;
-
 import com.zspirytus.enjoymusic.IPlayProgressChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
 
@@ -14,10 +12,13 @@ public class IPlayProgressChangeObserverImpl extends IPlayProgressChangeObserver
         static IPlayProgressChangeObserverImpl INSTANCE = new IPlayProgressChangeObserverImpl();
     }
 
+    private IPlayProgressChangeObserverImpl() {
+    }
+
     private List<MusicPlayProgressObserver> observers = new ArrayList<>();
 
     @Override
-    public void onProgressChange(int progress) throws RemoteException {
+    public void onProgressChange(int progress) {
         for (MusicPlayProgressObserver observer : observers) {
             observer.onProgressChanged(progress);
         }

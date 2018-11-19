@@ -7,7 +7,6 @@ import android.provider.MediaStore;
 import android.text.format.Formatter;
 import android.util.SparseArray;
 
-import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -30,13 +29,10 @@ public class AllMusicCache {
     private List<Album> mAlbumList;
     private List<Artist> mArtistList;
 
-    private SparseArray<Integer> mArtistToIndexMapper;
-
     private AllMusicCache() {
         mAllMusicList = new ArrayList<>();
         mAlbumList = new ArrayList<>();
         mArtistList = new ArrayList<>();
-        mArtistToIndexMapper = new SparseArray();
     }
 
     public static AllMusicCache getInstance() {
@@ -44,7 +40,7 @@ public class AllMusicCache {
     }
 
     public List<Music> getAllMusicList() {
-        if (mAllMusicList == null || mAllMusicList.isEmpty()) {
+        if (mAllMusicList.isEmpty()) {
             scanMusic();
         }
         return mAllMusicList;
@@ -52,7 +48,7 @@ public class AllMusicCache {
 
     public List<Album> getAlbumList() {
         if (mAllMusicList.isEmpty()) {
-            getAllMusicList();
+            scanMusic();
         }
         for (Music music : mAllMusicList) {
             Album album = new Album(music.getMusicAlbumName(), music.getMusicThumbAlbumCoverPath(), music.getMusicArtist());
@@ -65,8 +61,9 @@ public class AllMusicCache {
 
     public List<Artist> getArtistList() {
         if (mAllMusicList.isEmpty()) {
-            getAllMusicList();
+            scanMusic();
         }
+        SparseArray<Integer> mArtistToIndexMapper = new SparseArray<>();
         for (Music music : mAllMusicList) {
             Artist artist = new Artist(music.getMusicArtist());
             if (mArtistList.contains(artist)) {
@@ -133,17 +130,15 @@ public class AllMusicCache {
                 cursor.close();
             }
         }
-        CurrentPlayingMusicCache.getInstance().restoreCurrentPlayingMusic();
-        MusicPlayOrderManager.getInstance().setPlayList(mAllMusicList);
     }
 
-    private String getThumbAlbum(String album_id) {
+    private String getThumbAlbum(String albumId) {
         ContentResolver resolver = MyApplication.getGlobalContext().getContentResolver();
         Uri albumUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
         String thumbnail = MediaStore.Audio.Albums.ALBUM_ART;
         String id = MediaStore.Audio.Albums._ID;
         String str = null;
-        Cursor cursor = resolver.query(albumUri, new String[]{thumbnail}, id + "=?", new String[]{album_id}, null);
+        Cursor cursor = resolver.query(albumUri, new String[]{thumbnail}, id + "=?", new String[]{albumId}, null);
         while (cursor.moveToNext()) {
             str = cursor.getString(cursor.getColumnIndex(thumbnail));
         }
