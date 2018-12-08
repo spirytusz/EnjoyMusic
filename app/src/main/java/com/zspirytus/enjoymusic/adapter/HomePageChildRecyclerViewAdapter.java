@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.HomePageChildRecyclerViewItem;
 import com.zspirytus.enjoymusic.view.widget.DialogBuilder;
 
@@ -48,7 +48,7 @@ public class HomePageChildRecyclerViewAdapter extends RecyclerView.Adapter<HomeP
         final String title = item.getTitle();
         String subTitle = item.getSubTitle();
         if (imgPath != null) {
-            Glide.with(mContext).load(new File(imgPath)).into(holder.mCover);
+            GlideApp.with(mContext).load(new File(imgPath)).into(holder.mCover);
         }
         holder.mTitle.setText(title);
         holder.mSubTitle.setText(subTitle);

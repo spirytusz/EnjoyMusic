@@ -9,9 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.view.widget.DialogBuilder;
@@ -79,7 +79,7 @@ public class LinearMusicListAdapter extends RecyclerView.Adapter<LinearMusicList
     private void bindAllMusicListItem(final MyViewHolder holder, final int position) {
         final Music music = mAllMusicItemList.get(position);
         if (music.getMusicThumbAlbumCoverPath() != null) {
-            Glide.with(mContext).load(new File(music.getMusicThumbAlbumCoverPath()))
+            GlideApp.with(mContext).load(new File(music.getMusicThumbAlbumCoverPath()))
                     .into(holder.mCover);
         } else {
             holder.mCover.setImageResource(R.color.grey);

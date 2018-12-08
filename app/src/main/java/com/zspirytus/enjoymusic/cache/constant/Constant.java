@@ -19,12 +19,12 @@ public interface Constant {
     interface EventBusTag {
         String SHOW_CAST_FRAGMENT = "show cast fragment";
         String START_MAIN_ACTIVITY = "start MainActivity";
-        String SET_DFAB_VISIBLE = "set DFab Visible";
         String SET_PLAY_LIST = "set play list";
     }
 
     interface AnimationProperty {
         String ALPHA = "alpha";
+        String TRANSLATE_Y = "translateY";
     }
 
     interface AnimationDuration {

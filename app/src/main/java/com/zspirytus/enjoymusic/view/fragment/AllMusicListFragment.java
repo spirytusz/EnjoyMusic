@@ -44,7 +44,6 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     public void onItemClick(View view, int position) {
         Music music = mMusicList.get(position);
         ForegroundMusicController.getInstance().play(music);
-        //EventBus.getDefault().post(music, Constant.EventBusTag.MUSIC_NAME_SET);
         EventBus.getDefault().post(FragmentFactory.getInstance().get(MusicPlayFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
     }
 
@@ -66,41 +65,6 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
         mMusicRecyclerViewAdapter.setOnItemClickListener(AllMusicListFragment.this);
         mMusicRecyclerView.setAdapter(mMusicRecyclerViewAdapter);
         playAnimator();
-        /*mMusicList = new ArrayList<>();
-        ObservableFactory.getMusicObservable().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Music>() {
-
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Music music) {
-                        mMusicList.add(music);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        showInfoTextView(false);
-                        mMusicListLoadProgressBar.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        mMusicRecyclerViewAdapter = new LinearMusicListAdapter(Constant.RecyclerViewItemType.ALL_MUSIC_ITEM_TYPE);
-                        mMusicRecyclerViewAdapter.setAllMusicItemList(mMusicList);
-                        e(mMusicList.toString());
-                        mMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
-                        mMusicRecyclerView.setHasFixedSize(true);
-                        mMusicRecyclerView.setNestedScrollingEnabled(false);
-                        mMusicRecyclerViewAdapter.setOnItemClickListener(AllMusicListFragment.this);
-                        mMusicRecyclerView.setAdapter(mMusicRecyclerViewAdapter);
-                        playAnimator();
-                    }
-                });*/
     }
 
     private void playAnimator() {

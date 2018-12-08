@@ -5,7 +5,6 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayProgressChangeObserverImpl;
@@ -13,6 +12,7 @@ import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
+import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -135,7 +135,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     protected void initView() {
         if (mCurrentPlayingMusic != null) {
             String musicAlbumUri = mCurrentPlayingMusic.getMusicThumbAlbumCoverPath();
-            Glide.with(this).load(musicAlbumUri != null ? new File(musicAlbumUri) : R.color.grey)
+            GlideApp.with(this).load(musicAlbumUri != null ? new File(musicAlbumUri) : R.color.grey)
                     .into(mCover);
             mTotalTime.setText(TimeUtil.convertLongToMinsSec(mCurrentPlayingMusic.getMusicDuration()));
         }
@@ -163,11 +163,11 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     private void setButtonSrc(boolean isPlaying) {
         if (isPlaying) {
             AnimationUtil.ofFloat(mPlayOrPauseButton, Constant.AnimationProperty.ALPHA, 1f, 0f).start();
-            Glide.with(this).load(R.drawable.ic_pause_black_48dp).into(mPlayOrPauseButton);
+            GlideApp.with(this).load(R.drawable.ic_pause_black_48dp).into(mPlayOrPauseButton);
             AnimationUtil.ofFloat(mPlayOrPauseButton, Constant.AnimationProperty.ALPHA, 0f, 1f).start();
         } else {
             AnimationUtil.ofFloat(mPlayOrPauseButton, Constant.AnimationProperty.ALPHA, 1f, 0f).start();
-            Glide.with(this).load(R.drawable.ic_play_arrow_black_48dp).into(mPlayOrPauseButton);
+            GlideApp.with(this).load(R.drawable.ic_play_arrow_black_48dp).into(mPlayOrPauseButton);
             AnimationUtil.ofFloat(mPlayOrPauseButton, Constant.AnimationProperty.ALPHA, 0f, 1f).start();
         }
     }
@@ -201,7 +201,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
         String musicThumbAlbumCoverPath = music.getMusicThumbAlbumCoverPath();
         if (musicThumbAlbumCoverPath != null) {
             File coverFile = new File(musicThumbAlbumCoverPath);
-            Glide.with(this).load(coverFile).into(mCover);
+            GlideApp.with(this).load(coverFile).into(mCover);
         }
         mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
         setupSeekBar(music);

@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.view.widget.DialogBuilder;
 
@@ -52,7 +52,7 @@ public class GridMusicListAdapter extends RecyclerView.Adapter<GridMusicListAdap
         Album album = mAlbumList.get(position);
         String albumCoverPath = album.getAlbumCoverPath();
         if (albumCoverPath != null && albumCoverPath.length() > 0) {
-            Glide.with(mContext).load(new File(albumCoverPath)).into(holder.mHolderAlbumCover);
+            GlideApp.with(mContext).load(new File(albumCoverPath)).into(holder.mHolderAlbumCover);
         }
         holder.mHolderAlbumName.setText(album.getAlbumName());
         holder.mHolderAlbumArtist.setText(album.getArtist());
