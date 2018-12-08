@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
-import com.zspirytus.enjoymusic.engine.MusicPlayedHistoryProvider;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 
 import java.io.File;
 import java.util.List;
@@ -15,7 +13,7 @@ import java.util.List;
  * Created by ZSpirytus on 2018/9/12.
  */
 
-public class CurrentPlayingMusicCache implements PlayedMusicChangeObserver {
+public class CurrentPlayingMusicCache {
     private static final String CURRENT_PLAYING_MUSIC = "currentPlayingMusic";
     private static final String CURRENT_PLAYING_MUSIC_STRING_KEY = "currentPlayingMusicString";
     private static final CurrentPlayingMusicCache ourInstance = new CurrentPlayingMusicCache();
@@ -31,7 +29,6 @@ public class CurrentPlayingMusicCache implements PlayedMusicChangeObserver {
 
     public void setCurrentPlayingMusic(Music music) {
         currentPlayingMusic = music;
-        MusicPlayedHistoryProvider.getInstance().put(music);
     }
 
     public Music getCurrentPlayingMusic() {
@@ -39,7 +36,7 @@ public class CurrentPlayingMusicCache implements PlayedMusicChangeObserver {
     }
 
     public void restoreCurrentPlayingMusic() {
-        SharedPreferences pref = MyApplication.getGlobalContext().getSharedPreferences(CURRENT_PLAYING_MUSIC, Context.MODE_PRIVATE);
+        SharedPreferences pref = MyApplication.getForegroundContext().getSharedPreferences(CURRENT_PLAYING_MUSIC, Context.MODE_PRIVATE);
         String json = pref.getString(CURRENT_PLAYING_MUSIC_STRING_KEY, null);
         if (json != null) {
             Gson gson = new Gson();
@@ -51,7 +48,7 @@ public class CurrentPlayingMusicCache implements PlayedMusicChangeObserver {
                 }
             }
         } else {
-            List<Music> allMusicList = AllMusicCache.getInstance().getAllMusicList();
+            List<Music> allMusicList = MusicScanner.getInstance().getAllMusicList();
             if (allMusicList != null && allMusicList.size() > 0)
                 currentPlayingMusic = allMusicList.get(0);
         }
@@ -59,7 +56,7 @@ public class CurrentPlayingMusicCache implements PlayedMusicChangeObserver {
 
     public void saveCurrentPlayingMusic() {
         if (currentPlayingMusic != null) {
-            SharedPreferences.Editor editor = MyApplication.getGlobalContext().getSharedPreferences(CURRENT_PLAYING_MUSIC, Context.MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = MyApplication.getForegroundContext().getSharedPreferences(CURRENT_PLAYING_MUSIC, Context.MODE_PRIVATE).edit();
             Gson gson = new Gson();
             String json = gson.toJson(currentPlayingMusic, currentPlayingMusic.getClass());
             editor.putString(CURRENT_PLAYING_MUSIC_STRING_KEY, json);
@@ -67,8 +64,4 @@ public class CurrentPlayingMusicCache implements PlayedMusicChangeObserver {
         }
     }
 
-    @Override
-    public void onPlayedMusicChanged(Music music) {
-        setCurrentPlayingMusic(music);
-    }
 }

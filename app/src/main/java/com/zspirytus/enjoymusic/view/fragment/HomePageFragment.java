@@ -24,9 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by ZSpirytus on 2018/9/14.
@@ -48,8 +46,6 @@ public class HomePageFragment extends BaseFragment implements HomePageRecyclerVi
     @Override
     protected void initView() {
         ObservableFactory.getHomePageRecyclerViewItemsObservable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<HomePageRecyclerViewItem>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -86,8 +82,6 @@ public class HomePageFragment extends BaseFragment implements HomePageRecyclerVi
     @Override
     public void onParentRVItemClick(final String cardTitle, final int position, final int type) {
         ObservableFactory.getMusicObservableConverterByTypeAndKey(cardTitle, type)
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Music>() {
 
                     List<Music> playList = new ArrayList<>();
@@ -117,7 +111,6 @@ public class HomePageFragment extends BaseFragment implements HomePageRecyclerVi
 
                     @Override
                     public void onComplete() {
-                        //MusicPlayOrderManager.getInstance().setPlayList(playList);
                         EventBus.getDefault().post(playList, Constant.EventBusTag.SET_PLAY_LIST);
                         if (type != 0) {
                             EventBus.getDefault().post(FragmentFactory.getInstance().get(PlayListFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);

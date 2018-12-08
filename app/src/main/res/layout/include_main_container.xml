@@ -34,6 +34,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <View
+        android:id="@+id/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@drawable/toolbar_shadow"
+        android:translationZ="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fragment_container" />
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/fragment_container"
         android:layout_width="0dp"

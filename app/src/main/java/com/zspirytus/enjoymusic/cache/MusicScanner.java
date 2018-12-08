@@ -15,27 +15,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 音乐缓存类，缓存当前播放音乐；获取本机所有音乐.
+ * 音乐扫描类，获取本机所有音乐。
  * Created by ZSpirytus on 2018/8/12.
  */
 
-public class AllMusicCache {
+public class MusicScanner {
 
     private static class SingletonHolder {
-        private static AllMusicCache INSTANCE = new AllMusicCache();
+        private static MusicScanner INSTANCE = new MusicScanner();
     }
 
     private List<Music> mAllMusicList;
     private List<Album> mAlbumList;
     private List<Artist> mArtistList;
 
-    private AllMusicCache() {
+    private MusicScanner() {
         mAllMusicList = new ArrayList<>();
         mAlbumList = new ArrayList<>();
         mArtistList = new ArrayList<>();
     }
 
-    public static AllMusicCache getInstance() {
+    public static MusicScanner getInstance() {
         return SingletonHolder.INSTANCE;
     }
 
@@ -49,11 +49,12 @@ public class AllMusicCache {
     public List<Album> getAlbumList() {
         if (mAllMusicList.isEmpty()) {
             scanMusic();
-        }
-        for (Music music : mAllMusicList) {
-            Album album = new Album(music.getMusicAlbumName(), music.getMusicThumbAlbumCoverPath(), music.getMusicArtist());
-            if (!mAlbumList.contains(album)) {
-                mAlbumList.add(new Album(music.getMusicAlbumName(), music.getMusicThumbAlbumCoverPath(), music.getMusicArtist()));
+        } else if (mAlbumList.isEmpty()) {
+            for (Music music : mAllMusicList) {
+                Album album = new Album(music.getMusicAlbumName(), music.getMusicThumbAlbumCoverPath(), music.getMusicArtist());
+                if (!mAlbumList.contains(album)) {
+                    mAlbumList.add(album);
+                }
             }
         }
         return mAlbumList;
@@ -62,16 +63,17 @@ public class AllMusicCache {
     public List<Artist> getArtistList() {
         if (mAllMusicList.isEmpty()) {
             scanMusic();
-        }
-        SparseArray<Integer> mArtistToIndexMapper = new SparseArray<>();
-        for (Music music : mAllMusicList) {
-            Artist artist = new Artist(music.getMusicArtist());
-            if (mArtistList.contains(artist)) {
-                int index = mArtistToIndexMapper.get(artist.hashCode());
-                mArtistList.get(index).increaseMusicCount();
-            } else {
-                mArtistList.add(artist);
-                mArtistToIndexMapper.put(artist.hashCode(), mArtistList.size() - 1);
+        } else if (mArtistList.isEmpty()) {
+            SparseArray<Integer> artistToIndexMapper = new SparseArray<>();
+            for (Music music : mAllMusicList) {
+                Artist artist = new Artist(music.getMusicArtist());
+                if (artistToIndexMapper.indexOfKey(artist.hashCode()) >= 0) {
+                    int index = artistToIndexMapper.get(artist.hashCode());
+                    mArtistList.get(index).increaseMusicCount();
+                } else {
+                    mArtistList.add(artist);
+                    artistToIndexMapper.put(artist.hashCode(), mArtistList.size() - 1);
+                }
             }
         }
         return mArtistList;
@@ -96,7 +98,7 @@ public class AllMusicCache {
                 // Music duration
                 MediaStore.Audio.AudioColumns.DURATION
         };
-        ContentResolver resolver = MyApplication.getGlobalContext().getContentResolver();
+        ContentResolver resolver = MyApplication.getBackgroundContext().getContentResolver();
         Cursor cursor = resolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
@@ -121,7 +123,7 @@ public class AllMusicCache {
                     String musicAlbumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM));
                     String musicThumbAlbumCoverPath = getThumbAlbum(albumId);
                     String musicArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST));
-                    String musicFileSize = Formatter.formatFileSize(MyApplication.getGlobalContext(), cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE)));
+                    String musicFileSize = Formatter.formatFileSize(MyApplication.getBackgroundContext(), cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE)));
                     Music itemMusic = new Music(musicFilePath, musicName, musicArtist, musicAlbumName, musicThumbAlbumCoverPath, musicDuration, musicFileSize);
                     if (!mAllMusicList.contains(itemMusic)) {
                         mAllMusicList.add(itemMusic);
@@ -133,7 +135,7 @@ public class AllMusicCache {
     }
 
     private String getThumbAlbum(String albumId) {
-        ContentResolver resolver = MyApplication.getGlobalContext().getContentResolver();
+        ContentResolver resolver = MyApplication.getBackgroundContext().getContentResolver();
         Uri albumUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
         String thumbnail = MediaStore.Audio.Albums.ALBUM_ART;
         String id = MediaStore.Audio.Albums._ID;

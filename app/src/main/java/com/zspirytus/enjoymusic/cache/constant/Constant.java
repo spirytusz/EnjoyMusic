@@ -6,19 +6,19 @@ package com.zspirytus.enjoymusic.cache.constant;
 
 public interface Constant {
 
-    interface BinderPoolCode {
-        int BINDER_POOL_MUSIC_CONTROL = 1;
-        int BINDER_POOL_MUSIC_PROGRESS_CONTROL = 2;
-        int BINDER_POOL_MUSIC_PROGRESS_OBSERVER = 4;
-        int BINDER_POOL_MUSIC_PLAY_STATE_CHANGE_OBSERVER = 5;
-        int BINDER_POOL_MUSIC_PLAY_COMPLETE_OBSERVER = 6;
+    interface BinderCode {
+        int MUSIC_CONTROL = 0x00;
+        int MUSIC_PROGRESS_CONTROL = 0x01;
+        int PLAY_PROGRESS_CHANGE_OBSERVER = 0x02;
+        int PLAY_STATE_CHANGE_OBSERVER = 0x04;
+        int PLAY_MUSIC_CHANGE_OBSERVER = 0x08;
+        int GET_MUSIC_LIST = 0x10;
+        int SET_PLAY_LIST = 0x20;
     }
 
     interface EventBusTag {
-        String MUSIC_NAME_SET = "music name set";
         String SHOW_CAST_FRAGMENT = "show cast fragment";
         String START_MAIN_ACTIVITY = "start MainActivity";
-        String SET_MAIN_ACTIVITY_TOOLBAR_TITLE = "set MainActivity toolbar title";
         String SET_DFAB_VISIBLE = "set DFab Visible";
         String SET_PLAY_LIST = "set play list";
     }

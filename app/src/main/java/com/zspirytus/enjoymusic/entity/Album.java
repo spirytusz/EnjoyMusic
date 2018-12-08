@@ -1,55 +1,76 @@
 package com.zspirytus.enjoymusic.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by ZSpirytus on 2018/9/12.
  */
 
-public class Album {
+public class Album implements Parcelable {
 
-    private String albumName;
-    private String artist;
-    private String albumCoverPath;
+    private String mAlbumName;
+    private String mArtist;
+    private String mAlbumCoverPath;
 
     public Album(String albumName, String albumCoverPath, String artist) {
-        this.albumName = albumName;
-        this.albumCoverPath = albumCoverPath;
-        this.artist = artist;
+        mAlbumName = albumName;
+        mAlbumCoverPath = albumCoverPath;
+        mArtist = artist;
+    }
+
+    private Album(Parcel source) {
+        mAlbumName = source.readString();
+        mArtist = source.readString();
+        mAlbumCoverPath = source.readString();
     }
 
     public String getAlbumCoverPath() {
-        return albumCoverPath;
+        return mAlbumCoverPath;
     }
 
     public void setAlbumCoverPath(String albumCoverPath) {
-        this.albumCoverPath = albumCoverPath;
+        this.mAlbumCoverPath = albumCoverPath;
     }
 
     public String getAlbumName() {
-        return albumName;
+        return mAlbumName;
     }
 
     public void setAlbumName(String albumName) {
-        this.albumName = albumName;
+        this.mAlbumName = albumName;
     }
 
     public String getArtist() {
-        return artist;
+        return mArtist;
     }
 
     public void setArtist(String artist) {
-        this.artist = artist;
+        this.mArtist = artist;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mAlbumName);
+        dest.writeString(mArtist);
+        dest.writeString(mAlbumCoverPath);
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{");
-        stringBuilder.append("albumName = ");
-        stringBuilder.append(albumName != null ? albumName + ", " : "null, ");
-        stringBuilder.append("albumCoverPath = ");
-        stringBuilder.append(albumCoverPath != null ? albumCoverPath + ", " : "null, ");
-        stringBuilder.append("artist = ");
-        stringBuilder.append(artist != null ? artist : "null");
+        stringBuilder.append("mAlbumName = ");
+        stringBuilder.append(mAlbumName != null ? mAlbumName + ", " : "null, ");
+        stringBuilder.append("mAlbumCoverPath = ");
+        stringBuilder.append(mAlbumCoverPath != null ? mAlbumCoverPath + ", " : "null, ");
+        stringBuilder.append("mArtist = ");
+        stringBuilder.append(mArtist != null ? mArtist : "null");
         stringBuilder.append("}");
         return stringBuilder.toString();
     }
@@ -63,4 +84,16 @@ public class Album {
     public int hashCode() {
         return toString().hashCode();
     }
+
+    public static final Parcelable.Creator<Album> CREATOR = new Creator<Album>() {
+        @Override
+        public Album createFromParcel(Parcel source) {
+            return new Album(source);
+        }
+
+        @Override
+        public Album[] newArray(int size) {
+            return new Album[0];
+        }
+    };
 }

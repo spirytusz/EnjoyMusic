@@ -7,21 +7,16 @@ import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.GridMusicListAdapter;
+import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Fragment 显示以专辑名筛选的音乐列表
@@ -57,7 +52,20 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
         mAlbumMusicRecyclerView.setVisibility(View.GONE);
         mLoadProgressBar.setVisibility(View.VISIBLE);
         mInfoTextView.setVisibility(View.GONE);
-        ObservableFactory.getAlbumObservable()
+        mAlbumList = ForegroundMusicCache.getInstance().getAlbumList();
+        if (!mAlbumList.isEmpty()) {
+            playWidgetAnimation(true, false);
+            mAdapter = new GridMusicListAdapter();
+            mAdapter.setAlbumList(mAlbumList);
+            mAdapter.setOnItemClickListener(AlbumMusicListFragment.this);
+            mAlbumMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManager(getParentActivity(), 2));
+            mAlbumMusicRecyclerView.setAdapter(mAdapter);
+            mAlbumMusicRecyclerView.setHasFixedSize(true);
+            mAlbumMusicRecyclerView.setNestedScrollingEnabled(false);
+        } else {
+            playWidgetAnimation(true, true);
+        }
+        /*ObservableFactory.getAlbumObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Album>() {
@@ -94,7 +102,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
                             playWidgetAnimation(true, true);
                         }
                     }
-                });
+                });*/
     }
 
     private void playWidgetAnimation(boolean isSuccess, boolean isEmpty) {

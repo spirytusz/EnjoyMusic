@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.cache;
 
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 
@@ -9,15 +10,36 @@ import android.content.Context;
 
 public class MyApplication extends Application {
 
-    private static Context mApplicationContext;
+    private static final String MAIN_PROCESS_NAME = "com.zspirytus.enjoymusic";
+
+    private static Context mForegroundContext;
+    private static Context mBackgroundContext;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mApplicationContext = super.getApplicationContext();
+        if (MAIN_PROCESS_NAME.equals(getProcessNameByPid(this, android.os.Process.myPid()))) {
+            mForegroundContext = getApplicationContext();
+        } else {
+            mBackgroundContext = getApplicationContext();
+        }
     }
 
-    public static Context getGlobalContext() {
-        return mApplicationContext;
+    private String getProcessNameByPid(Context context, int pid) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (android.app.ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
+            if (processInfo.pid == pid) {
+                return processInfo.processName;
+            }
+        }
+        return "";
+    }
+
+    public static Context getForegroundContext() {
+        return mForegroundContext;
+    }
+
+    public static Context getBackgroundContext() {
+        return mBackgroundContext;
     }
 }

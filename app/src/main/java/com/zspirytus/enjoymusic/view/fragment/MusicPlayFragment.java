@@ -7,12 +7,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayProgressChangeObserverImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
-import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
+import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
-import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -23,9 +23,6 @@ import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 import com.zspirytus.enjoymusic.view.widget.MultiEventImageView;
-
-import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
 
 import java.io.File;
 
@@ -58,7 +55,6 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     @ViewInject(R.id.next)
     private ImageView mNextButton;
 
-    private MusicPlayOrderManager mMusicPlayOrderManager = MusicPlayOrderManager.getInstance();
     private Music mCurrentPlayingMusic;
 
     @Override
@@ -66,12 +62,11 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
         int id = view.getId();
         switch (id) {
             case R.id.previous:
-                Music previousMusic = mMusicPlayOrderManager.getPreviousMusic();
-                ForegroundMusicController.getInstance().play(previousMusic);
+                ForegroundMusicController.getInstance().playPrevious();
                 break;
             case R.id.play_pause:
                 boolean isPlaying = ForegroundMusicController.getInstance().isPlaying();
-                Music currentPlayingMusic = CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic();
+                Music currentPlayingMusic = ForegroundMusicCache.getInstance().getCurrentPlayingMusic();
                 if (isPlaying) {
                     ForegroundMusicController.getInstance().pause();
                 } else {
@@ -79,8 +74,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
                 }
                 break;
             case R.id.next:
-                Music nextMusic = mMusicPlayOrderManager.getNextMusic();
-                ForegroundMusicController.getInstance().play(nextMusic);
+                ForegroundMusicController.getInstance().playNext();
                 break;
         }
     }
@@ -116,21 +110,9 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
         });
     }
 
-    @Subscriber(tag = Constant.EventBusTag.MUSIC_NAME_SET)
-    public void setView(Music music) {
-        String musicThumbAlbumCoverPath = music.getMusicThumbAlbumCoverPath();
-        if (musicThumbAlbumCoverPath != null) {
-            File coverFile = new File(musicThumbAlbumCoverPath);
-            Glide.with(this).load(coverFile).into(mCover);
-        }
-        EventBus.getDefault().post(music.getMusicName(), Constant.EventBusTag.SET_MAIN_ACTIVITY_TOOLBAR_TITLE);
-        mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
-        setupSeekBar(music);
-    }
-
     @Override
     protected void initData() {
-        mCurrentPlayingMusic = CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic();
+        mCurrentPlayingMusic = ForegroundMusicCache.getInstance().getCurrentPlayingMusic();
         mCover.setOnMultiEventImageViewListener(new OnMultiEventImageViewListener() {
             @Override
             public void onClick() {
@@ -139,14 +121,12 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
 
             @Override
             public void onMoveToLeft() {
-                Music previousMusic = MusicPlayOrderManager.getInstance().getPreviousMusic();
-                ForegroundMusicController.getInstance().play(previousMusic);
+                ForegroundMusicController.getInstance().playPrevious();
             }
 
             @Override
             public void onMoveToRight() {
-                Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
-                ForegroundMusicController.getInstance().play(nextMusic);
+                ForegroundMusicController.getInstance().playNext();
             }
         });
     }
@@ -168,14 +148,14 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     protected void registerEvent() {
-        EventBus.getDefault().register(this);
+        IPlayMusicChangeObserverImpl.getInstance().register(this);
         IPlayStateChangeObserverImpl.getInstance().register(this);
         IPlayProgressChangeObserverImpl.getInstance().register(this);
     }
 
     @Override
     protected void unregisterEvent() {
-        EventBus.getDefault().unregister(this);
+        IPlayMusicChangeObserverImpl.getInstance().unregister(this);
         IPlayStateChangeObserverImpl.getInstance().unregister(this);
         IPlayProgressChangeObserverImpl.getInstance().unregister(this);
     }
@@ -215,6 +195,16 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
 
             }
         });
+    }
+
+    private void setView(Music music) {
+        String musicThumbAlbumCoverPath = music.getMusicThumbAlbumCoverPath();
+        if (musicThumbAlbumCoverPath != null) {
+            File coverFile = new File(musicThumbAlbumCoverPath);
+            Glide.with(this).load(coverFile).into(mCover);
+        }
+        mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
+        setupSeekBar(music);
     }
 
     public static MusicPlayFragment getInstance() {

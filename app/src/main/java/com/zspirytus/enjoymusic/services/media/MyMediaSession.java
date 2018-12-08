@@ -6,7 +6,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.zspirytus.enjoymusic.cache.AllMusicCache;
+import com.zspirytus.enjoymusic.cache.MusicScanner;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.utils.LogUtil;
@@ -67,7 +67,7 @@ public class MyMediaSession {
                 .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeFile(music.getMusicThumbAlbumCoverPath()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            metaData.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, AllMusicCache.getInstance().getAllMusicList().size());
+            metaData.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, MusicScanner.getInstance().getAllMusicList().size());
         }
         mediaSession.setMetadata(metaData.build());
     }

@@ -32,7 +32,7 @@ public class NotificationHelper {
     private static final int NOTIFICATION_MANAGER_NOTIFY_ID = 1;
 
     private static final NotificationManager mNotificationManager
-            = (NotificationManager) MyApplication.getGlobalContext().getSystemService(NOTIFICATION_SERVICE);
+            = (NotificationManager) MyApplication.getBackgroundContext().getSystemService(NOTIFICATION_SERVICE);
 
     private static Notification mCurrentNotification;
     private static String mChannelId;
@@ -86,14 +86,14 @@ public class NotificationHelper {
 
     private void createNotification(Music music) {
         createNotificationView(music);
-        mCurrentNotification = new NotificationCompat.Builder(MyApplication.getGlobalContext(), mChannelId)
+        mCurrentNotification = new NotificationCompat.Builder(MyApplication.getBackgroundContext(), mChannelId)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setCustomContentView(mNotificationContentView)
                 .build();
     }
 
     private void createNotificationView(Music music) {
-        mNotificationContentView = new RemoteViews(MyApplication.getGlobalContext().getPackageName(), R.layout.notification_music_large);
+        mNotificationContentView = new RemoteViews(MyApplication.getBackgroundContext().getPackageName(), R.layout.notification_music_large);
         Bitmap cover = MusicCoverCache.getInstance().get(music.hashCode());
         if (cover != null) {
             mNotificationContentView.setImageViewBitmap(R.id.notification_music_cover, cover);
@@ -115,7 +115,7 @@ public class NotificationHelper {
         if (musicArtist != null) {
             mNotificationContentView.setTextViewText(R.id.notification_music_artist, musicArtist);
         }
-        Intent intent = new Intent(MyApplication.getGlobalContext(), StatusBarEventReceiver.class);
+        Intent intent = new Intent(MyApplication.getBackgroundContext(), StatusBarEventReceiver.class);
         intent.putExtra(Constant.StatusBarEvent.EXTRA, Constant.StatusBarEvent.PREVIOUS);
         PendingIntent previousMusicPendingIntent = createPendingIntentByExtra(intent, 0, Constant.StatusBarEvent.EXTRA, Constant.StatusBarEvent.PREVIOUS);
         mNotificationContentView.setOnClickPendingIntent(R.id.notification_music_previous, previousMusicPendingIntent);
@@ -132,7 +132,7 @@ public class NotificationHelper {
 
     private PendingIntent createPendingIntentByExtra(Intent intent, int requestCode, String extra, String value) {
         intent.putExtra(extra, value);
-        return PendingIntent.getBroadcast(MyApplication.getGlobalContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(MyApplication.getBackgroundContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
 }

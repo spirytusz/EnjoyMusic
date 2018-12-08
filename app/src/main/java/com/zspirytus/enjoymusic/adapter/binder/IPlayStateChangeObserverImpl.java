@@ -1,6 +1,6 @@
 package com.zspirytus.enjoymusic.adapter.binder;
 
-import com.zspirytus.enjoymusic.IPlayStateChangeObserver;
+import com.zspirytus.enjoymusic.foregroundobserver.IPlayStateChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 
 import java.util.ArrayList;

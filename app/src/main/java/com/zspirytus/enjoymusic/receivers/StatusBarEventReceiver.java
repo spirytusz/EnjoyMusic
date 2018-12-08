@@ -30,7 +30,7 @@ public class StatusBarEventReceiver extends BroadcastReceiver {
             switch (event) {
                 case Constant.StatusBarEvent.SINGLE_CLICK:
                     EventBus.getDefault().post(Constant.StatusBarEvent.SINGLE_CLICK, Constant.EventBusTag.START_MAIN_ACTIVITY);
-                    collapseStatusBar(MyApplication.getGlobalContext());
+                    collapseStatusBar(MyApplication.getBackgroundContext());
                     break;
                 case Constant.StatusBarEvent.PREVIOUS:
                     BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getPreviousMusic());

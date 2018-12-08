@@ -73,7 +73,7 @@ public class PlayListFragment extends BaseFragment implements LinearMusicListAda
     public void onItemClick(View view, int position) {
         Music music = mPlayList.get(position);
         ForegroundMusicController.getInstance().play(music);
-        EventBus.getDefault().post(music, Constant.EventBusTag.MUSIC_NAME_SET);
+        //EventBus.getDefault().post(music, Constant.EventBusTag.MUSIC_NAME_SET);
         EventBus.getDefault().post(FragmentFactory.getInstance().get(MusicPlayFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
     }
 

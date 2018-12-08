@@ -1,42 +1,73 @@
 package com.zspirytus.enjoymusic.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by ZSpirytus on 2018/9/13.
  */
 
-public class Artist {
+public class Artist implements Parcelable {
 
-    private String artistName;
-    private int musicCount = 1;
+    private String mArtistName;
+    private int mMusicCount = 1;
 
     public Artist(String artistName) {
-        this.artistName = artistName;
+        this.mArtistName = artistName;
+    }
+
+    private Artist(Parcel source) {
+        mArtistName = source.readString();
+        mMusicCount = source.readInt();
     }
 
     public String getArtistName() {
-        return artistName;
+        return mArtistName;
     }
 
     public int getMusicCount() {
-        return musicCount;
+        return mMusicCount;
     }
 
     public void increaseMusicCount() {
-        musicCount++;
+        mMusicCount++;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mArtistName);
+        dest.writeInt(mMusicCount);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj != null && obj instanceof Artist && artistName.equals(obj.toString());
+        return obj != null && obj instanceof Artist && mArtistName.equals(obj.toString());
     }
 
     @Override
     public int hashCode() {
-        return artistName.hashCode();
+        return mArtistName.hashCode();
     }
 
     @Override
     public String toString() {
-        return artistName;
+        return mArtistName;
     }
+
+    public static final Parcelable.Creator<Artist> CREATOR = new Creator<Artist>() {
+        @Override
+        public Artist createFromParcel(Parcel source) {
+            return new Artist(source);
+        }
+
+        @Override
+        public Artist[] newArray(int size) {
+            return new Artist[0];
+        }
+    };
 }

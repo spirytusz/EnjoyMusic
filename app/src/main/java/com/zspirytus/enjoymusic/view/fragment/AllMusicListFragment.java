@@ -7,25 +7,19 @@ import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.LinearMusicListAdapter;
+import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
 import org.simple.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Fragment: 显示本地全部音乐列表
@@ -50,7 +44,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     public void onItemClick(View view, int position) {
         Music music = mMusicList.get(position);
         ForegroundMusicController.getInstance().play(music);
-        EventBus.getDefault().post(music, Constant.EventBusTag.MUSIC_NAME_SET);
+        //EventBus.getDefault().post(music, Constant.EventBusTag.MUSIC_NAME_SET);
         EventBus.getDefault().post(FragmentFactory.getInstance().get(MusicPlayFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
     }
 
@@ -62,7 +56,17 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     }
 
     private void initRecyclerView() {
-        mMusicList = new ArrayList<>();
+        mMusicList = ForegroundMusicCache.getInstance().getAllMusicList();
+        mMusicRecyclerViewAdapter = new LinearMusicListAdapter(Constant.RecyclerViewItemType.ALL_MUSIC_ITEM_TYPE);
+        mMusicRecyclerViewAdapter.setAllMusicItemList(mMusicList);
+        e(mMusicList.toString());
+        mMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
+        mMusicRecyclerView.setHasFixedSize(true);
+        mMusicRecyclerView.setNestedScrollingEnabled(false);
+        mMusicRecyclerViewAdapter.setOnItemClickListener(AllMusicListFragment.this);
+        mMusicRecyclerView.setAdapter(mMusicRecyclerViewAdapter);
+        playAnimator();
+        /*mMusicList = new ArrayList<>();
         ObservableFactory.getMusicObservable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Music>() {
@@ -88,6 +92,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
                     public void onComplete() {
                         mMusicRecyclerViewAdapter = new LinearMusicListAdapter(Constant.RecyclerViewItemType.ALL_MUSIC_ITEM_TYPE);
                         mMusicRecyclerViewAdapter.setAllMusicItemList(mMusicList);
+                        e(mMusicList.toString());
                         mMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
                         mMusicRecyclerView.setHasFixedSize(true);
                         mMusicRecyclerView.setNestedScrollingEnabled(false);
@@ -95,7 +100,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
                         mMusicRecyclerView.setAdapter(mMusicRecyclerViewAdapter);
                         playAnimator();
                     }
-                });
+                });*/
     }
 
     private void playAnimator() {

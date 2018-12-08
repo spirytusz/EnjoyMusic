@@ -8,21 +8,16 @@ import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.LinearMusicListAdapter;
+import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Fragment 以艺术家名筛选的音乐列表
@@ -52,7 +47,20 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     protected void initView() {
-        ObservableFactory.getArtistObservable()
+        mArtistList = ForegroundMusicCache.getInstance().getArtistList();
+        mAdapter = new LinearMusicListAdapter(Constant.RecyclerViewItemType.ARTIST_MUSIC_ITEM_TYPE);
+        mAdapter.setArtistMusicItemList(mArtistList);
+        mArtistMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
+        mArtistMusicRecyclerView.setHasFixedSize(true);
+        mArtistMusicRecyclerView.setNestedScrollingEnabled(false);
+        mAdapter.setOnItemClickListener(ArtistMusicListFragment.this);
+        mArtistMusicRecyclerView.setAdapter(mAdapter);
+        if (!mArtistList.isEmpty()) {
+            playWidgetAnimation(true, false);
+        } else {
+            playWidgetAnimation(true, true);
+        }
+        /*ObservableFactory.getArtistObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Artist>() {
@@ -94,7 +102,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
                             playWidgetAnimation(true, true);
                         }
                     }
-                });
+                });*/
     }
 
     @Override

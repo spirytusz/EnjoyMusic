@@ -6,11 +6,13 @@ import android.media.MediaPlayer;
 import android.os.PowerManager;
 import android.support.v4.media.session.PlaybackStateCompat;
 
+import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
+import com.zspirytus.enjoymusic.cache.MyApplication;
+import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.interfaces.RemoteMusicPlayCompleteCallback;
+import com.zspirytus.enjoymusic.interfaces.RemotePlayMusicChangeCallback;
 import com.zspirytus.enjoymusic.interfaces.RemotePlayProgressCallback;
 import com.zspirytus.enjoymusic.interfaces.RemotePlayStateChangeCallback;
-import com.zspirytus.enjoymusic.services.PlayMusicService;
 
 import java.io.IOException;
 import java.util.Timer;
@@ -34,7 +36,7 @@ public class MediaPlayController implements MediaPlayer.OnPreparedListener, Medi
 
     private RemotePlayProgressCallback mRemotePlayProgressCallback;
     private RemotePlayStateChangeCallback mRemotePlayStateChangeCallback;
-    private RemoteMusicPlayCompleteCallback mRemoteMusicPlayCompleteCallback;
+    private RemotePlayMusicChangeCallback mRemotePlayMusicChangeCallback;
 
     private int state;
     private boolean isPrepared = false;
@@ -47,8 +49,8 @@ public class MediaPlayController implements MediaPlayer.OnPreparedListener, Medi
     private MediaPlayController() {
         // init media obj
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setWakeMode(PlayMusicService.getServiceContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        audioManager = (AudioManager) PlayMusicService.getServiceContext().getSystemService(Service.AUDIO_SERVICE);
+        mediaPlayer.setWakeMode(MyApplication.getBackgroundContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        audioManager = (AudioManager) MyApplication.getBackgroundContext().getSystemService(Service.AUDIO_SERVICE);
 
         // set listeners
         mediaPlayer.setOnPreparedListener(this);
@@ -70,8 +72,8 @@ public class MediaPlayController implements MediaPlayer.OnPreparedListener, Medi
         mRemotePlayStateChangeCallback = remotePlayStateChangeCallback;
     }
 
-    public void setMusicPlayCompleteCallback(RemoteMusicPlayCompleteCallback remoteMusicPlayCompleteCallback) {
-        mRemoteMusicPlayCompleteCallback = remoteMusicPlayCompleteCallback;
+    public void setMusicPlayCompleteCallback(RemotePlayMusicChangeCallback remotePlayMusicChangeCallback) {
+        mRemotePlayMusicChangeCallback = remotePlayMusicChangeCallback;
     }
 
     @Override
@@ -81,8 +83,7 @@ public class MediaPlayController implements MediaPlayer.OnPreparedListener, Medi
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        if (mRemoteMusicPlayCompleteCallback != null)
-            mRemoteMusicPlayCompleteCallback.onMusicPlayComplete();
+        play(MusicPlayOrderManager.getInstance().getNextMusic());
     }
 
     @Override
@@ -178,8 +179,11 @@ public class MediaPlayController implements MediaPlayer.OnPreparedListener, Medi
             mRemotePlayStateChangeCallback.onPlayStateChange(true);
         }
         mediaPlayer.start();
+        if (mRemotePlayMusicChangeCallback != null)
+            mRemotePlayMusicChangeCallback.onPlayMusicChange(currentPlayingMusic);
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
         mPlayingTimer.start();
+        CurrentPlayingMusicCache.getInstance().setCurrentPlayingMusic(currentPlayingMusic);
     }
 
     /**

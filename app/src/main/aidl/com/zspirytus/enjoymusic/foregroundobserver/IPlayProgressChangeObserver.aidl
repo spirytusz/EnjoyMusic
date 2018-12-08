@@ -1,5 +1,5 @@
 // IPlayProgressChangeObserver.aidl
-package com.zspirytus.enjoymusic;
+package com.zspirytus.enjoymusic.foregroundobserver;
 
 // Declare any non-default types here with import statements
 

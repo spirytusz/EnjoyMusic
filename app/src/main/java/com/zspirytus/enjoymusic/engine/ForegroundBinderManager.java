@@ -4,7 +4,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 import com.zspirytus.enjoymusic.BinderPool;
-import com.zspirytus.enjoymusic.adapter.binder.IMusicPlayCompleteObserverImpl;
+import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayProgressChangeObserverImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
@@ -24,9 +24,9 @@ public class ForegroundBinderManager {
     public void init(BinderPool binderPool) {
         mBinderPool = binderPool;
         try {
-            mBinderPool.registerObserver(IPlayStateChangeObserverImpl.getInstance(), Constant.BinderPoolCode.BINDER_POOL_MUSIC_PLAY_STATE_CHANGE_OBSERVER);
-            mBinderPool.registerObserver(IPlayProgressChangeObserverImpl.getInstance(), Constant.BinderPoolCode.BINDER_POOL_MUSIC_PROGRESS_OBSERVER);
-            mBinderPool.registerObserver(IMusicPlayCompleteObserverImpl.getInstance(), Constant.BinderPoolCode.BINDER_POOL_MUSIC_PLAY_COMPLETE_OBSERVER);
+            mBinderPool.registerObserver(IPlayStateChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_STATE_CHANGE_OBSERVER);
+            mBinderPool.registerObserver(IPlayProgressChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_PROGRESS_CHANGE_OBSERVER);
+            mBinderPool.registerObserver(IPlayMusicChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -43,9 +43,9 @@ public class ForegroundBinderManager {
 
     public void release() {
         try {
-            mBinderPool.unregisterObserver(IPlayStateChangeObserverImpl.getInstance(), Constant.BinderPoolCode.BINDER_POOL_MUSIC_PLAY_STATE_CHANGE_OBSERVER);
-            mBinderPool.unregisterObserver(IPlayProgressChangeObserverImpl.getInstance(), Constant.BinderPoolCode.BINDER_POOL_MUSIC_PROGRESS_OBSERVER);
-            mBinderPool.unregisterObserver(IMusicPlayCompleteObserverImpl.getInstance(), Constant.BinderPoolCode.BINDER_POOL_MUSIC_PLAY_COMPLETE_OBSERVER);
+            mBinderPool.unregisterObserver(IPlayStateChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_STATE_CHANGE_OBSERVER);
+            mBinderPool.unregisterObserver(IPlayProgressChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_PROGRESS_CHANGE_OBSERVER);
+            mBinderPool.unregisterObserver(IPlayMusicChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

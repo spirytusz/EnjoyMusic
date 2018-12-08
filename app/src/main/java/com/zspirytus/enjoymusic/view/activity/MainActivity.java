@@ -4,30 +4,42 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.zspirytus.enjoymusic.BinderPool;
+import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
+import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
+import com.zspirytus.enjoymusic.entity.Album;
+import com.zspirytus.enjoymusic.entity.Artist;
+import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
+import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
 import com.zspirytus.enjoymusic.impl.OnDraggableFABEventListenerImpl;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 import com.zspirytus.enjoymusic.view.fragment.AboutFragment;
@@ -45,13 +57,18 @@ import com.zspirytus.zspermission.ZSPermission;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
+import java.util.List;
+
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+
 /**
  * Activity: 控制显示、隐藏MusicPlayingFragment、AllMusicListFragment
  * Created by ZSpirytus on 2018/8/2.
  */
 
 @LayoutIdInject(R.layout.activity_main)
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, PlayedMusicChangeObserver {
 
     private final FragmentManager mFragmentManager = getSupportFragmentManager();
 
@@ -61,15 +78,34 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private CustomNavigationView mCustomNavigationView;
     @ViewInject(R.id.main_activity_toolbar)
     private Toolbar mToolbar;
-    @ViewInject(R.id.toolbar_text_view)
-    private AppCompatTextView mToolbarTextView;
+    @ViewInject(R.id.toolbar_shadow)
+    private View mToolbarShadow;
     @ViewInject(R.id.dragged_fab)
     private CustomDFab mFab;
 
+    private ServiceConnection conn;
     private ActionBarDrawerToggle toggle;
     private int selectedNavigationMenuItemId;
     private long pressedBackLastTime;
 
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Intent startPlayMusicServiceIntent = new Intent(this, PlayMusicService.class);
+        conn = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                ForegroundBinderManager.getInstance().init(BinderPool.Stub.asInterface(service));
+                requestPermission();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                ForegroundBinderManager.getInstance().release();
+            }
+        };
+        bindService(startPlayMusicServiceIntent, conn, BIND_AUTO_CREATE);
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -118,14 +154,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     protected void initView() {
-        // request permissions, if it is granted, it will call onGranted()
-        ZSPermission.getInstance()
-                .at(this)
-                .requestCode(123)
-                .permissions(PermissionGroup.STORAGE_GROUP)
-                .permissions(PermissionGroup.PHONE_GROUP)
-                .listenBy(this)
-                .request();
 
         setSupportActionBar(mToolbar);
         toggle = new ActionBarDrawerToggle(
@@ -190,25 +218,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         // TODO: 2018/9/18 testment 
         mFragmentManager.beginTransaction().add(R.id.fragment_container, FragmentFactory.getInstance().get(PlayListFragment.class)).commitAllowingStateLoss();
         FragmentVisibilityManager.getInstance().push(FragmentFactory.getInstance().get(PlayListFragment.class));
-
-        Intent startPlayMusicServiceIntent = new Intent(this, PlayMusicService.class);
-        ServiceConnection conn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                ForegroundBinderManager.getInstance().init(BinderPool.Stub.asInterface(service));
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                ForegroundBinderManager.getInstance().release();
-            }
-        };
-        bindService(startPlayMusicServiceIntent, conn, BIND_AUTO_CREATE);
     }
 
     @Override
     protected void registerEvent() {
         EventBus.getDefault().register(this);
+        IPlayMusicChangeObserverImpl.getInstance().register(this);
     }
 
     @Override
@@ -217,17 +232,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         ForegroundMusicController.getInstance().release();
         mFab.unregisterMusicPlayStateObserver();
         mCustomNavigationView.unregisterFragmentChangeListener();
+        IPlayMusicChangeObserverImpl.getInstance().unregister(this);
     }
 
     @Override
     public void onGranted() {
-        FragmentVisibilityManager.getInstance().init(mFragmentManager);
-        String action = getIntent().getStringExtra(Constant.StatusBarEvent.EXTRA);
-        if (Constant.StatusBarEvent.ACTION_NAME.equals(action)) {
-            showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
-        } else {
-            showCastFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
-        }
+        loadMusicList();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbindService(conn);
     }
 
     @Subscriber(tag = Constant.EventBusTag.SET_DFAB_VISIBLE)
@@ -239,24 +255,88 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
     }
 
-    @Subscriber(tag = Constant.EventBusTag.SET_MAIN_ACTIVITY_TOOLBAR_TITLE)
-    public void setToolbarTitle(String title) {
-        mToolbar.setTitle(title);
+    @Override
+    public void onPlayedMusicChanged(final Music music) {
+        mToolbar.post(new Runnable() {
+            @Override
+            public void run() {
+                mToolbar.setTitle(music.getMusicName());
+            }
+        });
     }
 
     @Subscriber(tag = Constant.EventBusTag.SHOW_CAST_FRAGMENT)
     public <T extends BaseFragment> void showCastFragment(T shouldShowFragment) {
-        if (shouldShowFragment instanceof MusicCategoryFragment
-                && ((MusicCategoryFragment) shouldShowFragment).getCurrentPosition() == 0
-                || shouldShowFragment instanceof PlayListFragment) {
+        if (shouldShowFragment instanceof MusicCategoryFragment) {
+            setToolbarShadowTranslateZ(0.0f);
+            if (((MusicCategoryFragment) shouldShowFragment).getCurrentPosition() == 0) {
+                playWidgetVisibilityAnimation(View.VISIBLE);
+            }
+        } else if (shouldShowFragment instanceof PlayListFragment) {
+            setToolbarShadowTranslateZ(1.0f);
             playWidgetVisibilityAnimation(View.VISIBLE);
         } else {
+            setToolbarShadowTranslateZ(1.0f);
             playWidgetVisibilityAnimation(View.GONE);
         }
         if (shouldShowFragment instanceof MusicPlayFragment) {
             changeClickToolbarButtonResponseAndToolbarStyle(false);
         }
         FragmentVisibilityManager.getInstance().show(shouldShowFragment);
+    }
+
+    private void loadMusicList() {
+        ObservableFactory.getMusicListInForegroundObservable()
+                .subscribe(new Observer<Object>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                        if (ForegroundMusicCache.getInstance().getAllMusicList() == null)
+                            ForegroundMusicCache.getInstance().setAllMusicList((List<Music>) o);
+                        else if (ForegroundMusicCache.getInstance().getAlbumList() == null)
+                            ForegroundMusicCache.getInstance().setAlbumList((List<Album>) o);
+                        else
+                            ForegroundMusicCache.getInstance().setArtistList((List<Artist>) o);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        FragmentVisibilityManager.getInstance().init(mFragmentManager);
+                        String action = getIntent().getStringExtra(Constant.StatusBarEvent.EXTRA);
+                        if (Constant.StatusBarEvent.ACTION_NAME.equals(action)) {
+                            showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
+                        } else {
+                            showCastFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
+                        }
+                        IBinder iBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
+                        ISetPlayList setPlayList = ISetPlayList.Stub.asInterface(iBinder);
+                        try {
+                            setPlayList.setPlayList(new MusicFilter("*", "*"));
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
+    private void requestPermission() {
+        // request permissions, if it is granted, it will call onGranted()
+        ZSPermission.getInstance()
+                .at(this)
+                .requestCode(123)
+                .permissions(PermissionGroup.STORAGE_GROUP)
+                .permissions(PermissionGroup.PHONE_GROUP)
+                .listenBy(this)
+                .request();
     }
 
     private void playWidgetVisibilityAnimation(int visibility) {
@@ -266,6 +346,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         } else {
             AnimationUtil.ofFloat(mFab, Constant.AnimationProperty.ALPHA, 1f, 0f).start();
             mFab.setVisibility(View.GONE);
+        }
+    }
+
+    private void setToolbarShadowTranslateZ(float translateZ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mToolbarShadow.setTranslationZ(translateZ);
         }
     }
 
