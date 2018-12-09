@@ -3,7 +3,12 @@ package com.zspirytus.enjoymusic.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MusicFilter implements Parcelable {
+
+    public static MusicFilter NO_FILTER = new MusicFilter("*", "*");
 
     private String mMusicAlbum;
     private String mMusicArtist;
@@ -24,6 +29,22 @@ public class MusicFilter implements Parcelable {
 
     public String getMusicArtist() {
         return mMusicArtist;
+    }
+
+    public List<Music> filter(List<Music> musicList) {
+        if (mMusicAlbum != "*" && mMusicArtist != "*") {
+            List<Music> filterMusicList = new ArrayList<>(musicList);
+            for (int i = filterMusicList.size() - 1; i >= 0; i--) {
+                Music music = filterMusicList.get(i);
+                if ((mMusicAlbum != null && !music.getMusicAlbumName().equals(mMusicAlbum))
+                        || (mMusicArtist != null && !music.getMusicArtist().equals(mMusicArtist))) {
+                    filterMusicList.remove(music);
+                }
+            }
+            return filterMusicList;
+        } else {
+            return musicList;
+        }
     }
 
     @Override
@@ -48,4 +69,5 @@ public class MusicFilter implements Parcelable {
             return new MusicFilter[0];
         }
     };
+
 }

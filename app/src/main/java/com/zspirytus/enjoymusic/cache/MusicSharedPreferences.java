@@ -30,7 +30,7 @@ public class MusicSharedPreferences {
         SharedPreferences pref = MyApplication.getBackgroundContext().getSharedPreferences(TAG, Context.MODE_PRIVATE);
         String json = pref.getString(key, DEFAULT_RESULT);
         if (DEFAULT_RESULT.equals(json)) {
-            return new Music("", "", "", "", "", 0, "");
+            return new Music("", "", "", "", "", 0, "", 0);
         } else {
             Music music = gson.fromJson(json, Music.class);
             return music;

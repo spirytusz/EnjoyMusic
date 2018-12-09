@@ -3,15 +3,16 @@ package com.zspirytus.enjoymusic.engine;
 import android.os.IBinder;
 import android.os.RemoteException;
 
-import com.zspirytus.enjoymusic.IGetMusicList;
 import com.zspirytus.enjoymusic.IMusicControl;
 import com.zspirytus.enjoymusic.IMusicProgressControl;
+import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.adapter.binder.IMusicControlImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IMusicProgressControlImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 
 /**
@@ -23,7 +24,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
 
     private IMusicControl mIMusicControl;
     private IMusicProgressControl mIMusicProgressControl;
-    private IGetMusicList mIGetMusicList;
+    private ISetPlayList mISetPlayList;
 
     private static boolean isPlaying = false;
 
@@ -130,6 +131,26 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
                 }
             }
         }).start();
+    }
+
+    public void setPlayList(final MusicFilter musicFilter) {
+        if (musicFilter != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mISetPlayList == null) {
+                        IBinder setPlayListBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
+                        mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
+                    }
+                    try {
+                        mISetPlayList.setPlayList(musicFilter);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+            ForegroundMusicCache.getInstance().setPlayList(musicFilter.filter(ForegroundMusicCache.getInstance().getAllMusicList()));
+        }
     }
 
     public void release() {

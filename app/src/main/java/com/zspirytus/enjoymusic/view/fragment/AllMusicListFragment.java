@@ -6,15 +6,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.LinearMusicListAdapter;
+import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewItemRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
 import org.simple.eventbus.EventBus;
@@ -28,7 +30,7 @@ import java.util.List;
 
 @LayoutIdInject(R.layout.fragment_all_music_list)
 public class AllMusicListFragment extends LazyLoadBaseFragment
-        implements LinearMusicListAdapter.OnItemClickListener {
+        implements OnRecyclerViewItemClickListener {
 
     @ViewInject(R.id.all_music_recycler_view)
     private RecyclerView mMusicRecyclerView;
@@ -38,12 +40,13 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     private TextView mInfoTextView;
 
     private List<Music> mMusicList;
-    private LinearMusicListAdapter mMusicRecyclerViewAdapter;
+    private CommonRecyclerViewItemRecyclerViewAdapter mMusicRecyclerViewAdapter;
 
     @Override
     public void onItemClick(View view, int position) {
         Music music = mMusicList.get(position);
         ForegroundMusicController.getInstance().play(music);
+        ForegroundMusicController.getInstance().setPlayList(MusicFilter.NO_FILTER);
         EventBus.getDefault().post(FragmentFactory.getInstance().get(MusicPlayFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
     }
 
@@ -56,9 +59,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
 
     private void initRecyclerView() {
         mMusicList = ForegroundMusicCache.getInstance().getAllMusicList();
-        mMusicRecyclerViewAdapter = new LinearMusicListAdapter(Constant.RecyclerViewItemType.ALL_MUSIC_ITEM_TYPE);
-        mMusicRecyclerViewAdapter.setAllMusicItemList(mMusicList);
-        e(mMusicList.toString());
+        mMusicRecyclerViewAdapter = new CommonRecyclerViewItemRecyclerViewAdapter(mMusicList);
         mMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mMusicRecyclerView.setHasFixedSize(true);
         mMusicRecyclerView.setNestedScrollingEnabled(false);

@@ -70,6 +70,10 @@ public class Music implements Parcelable {
         return musicDuration;
     }
 
+    public long getMusicAddDate() {
+        return musicAddDate;
+    }
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Music && this.toString().equals(obj.toString());

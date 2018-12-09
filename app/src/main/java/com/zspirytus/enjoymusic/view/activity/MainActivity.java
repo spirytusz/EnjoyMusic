@@ -11,7 +11,6 @@ import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -77,8 +76,6 @@ import io.reactivex.disposables.Disposable;
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, PlayedMusicChangeObserver,
         MusicPlayStateObserver, HomePageRecyclerViewLoadObserver, View.OnClickListener {
-
-    private final FragmentManager mFragmentManager = getSupportFragmentManager();
 
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
@@ -232,9 +229,6 @@ public class MainActivity extends BaseActivity
                 onBackPressed();
             }
         });
-        // TODO: 2018/9/18 testment 
-        mFragmentManager.beginTransaction().add(R.id.fragment_container, FragmentFactory.getInstance().get(PlayListFragment.class)).commitAllowingStateLoss();
-        FragmentVisibilityManager.getInstance().push(FragmentFactory.getInstance().get(PlayListFragment.class));
     }
 
     @Override
@@ -290,12 +284,7 @@ public class MainActivity extends BaseActivity
     public void onLoadFinish() {
         isHomePageRvLoadFinish = true;
         FragmentFactory.getInstance().get(HomePageFragment.class).setRecyclerViewLoadStateObserver(null);
-        mBottomMusicControl.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setBottomMusicControlVisibility(View.VISIBLE);
-            }
-        }, Constant.AnimationDuration.LONG_DURATION);
+        setBottomMusicControlVisibility(View.VISIBLE);
     }
 
     @Override
@@ -362,7 +351,7 @@ public class MainActivity extends BaseActivity
 
                     @Override
                     public void onComplete() {
-                        FragmentVisibilityManager.getInstance().init(mFragmentManager);
+                        FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
                         String action = getIntent().getStringExtra(Constant.StatusBarEvent.EXTRA);
                         if (Constant.StatusBarEvent.ACTION_NAME.equals(action)) {
                             showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));

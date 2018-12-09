@@ -8,7 +8,7 @@
     android:background="@drawable/click_ripple">
 
     <com.zspirytus.enjoymusic.view.widget.RoundCornerImageView
-        android:id="@+id/cover"
+        android:id="@+id/item_cover"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginBottom="4dp"
@@ -22,7 +22,7 @@
         app:srcCompat="@color/grey" />
 
     <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/more_vert"
+        android:id="@+id/item_more_info_button"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:paddingTop="24sp"
@@ -34,35 +34,35 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/cover"
+        app:layout_constraintStart_toStartOf="@+id/item_cover"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_more_vert_grey_400_24dp" />
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/music_name"
+        android:id="@+id/item_title"
         style="@style/TextViewStyle_14sp_black_marquee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintStart_toEndOf="@+id/cover"
+        app:layout_constraintStart_toEndOf="@+id/item_cover"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Music Name" />
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/music_artist"
+        android:id="@+id/item_sub_title"
         style="@style/TextViewStyle_10sp_marquee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:layout_marginStart="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cover"
+        app:layout_constraintStart_toEndOf="@+id/item_cover"
         tools:text="Music Artist" />
 
     <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/tag"
+        android:id="@+id/item_tag"
         android:layout_width="4dp"
         android:layout_height="56dp"
         android:background="@color/colorPrimary"

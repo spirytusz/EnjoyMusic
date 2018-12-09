@@ -6,16 +6,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.GridMusicListAdapter;
+import com.zspirytus.enjoymusic.adapter.CardViewRecyclerViewItemRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Album;
+import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +28,7 @@ import java.util.List;
 // TODO: 2018/9/17 click recyclerview item to navigate to corresponding music list
 @LayoutIdInject(R.layout.fragment_album_music_list)
 public class AlbumMusicListFragment extends LazyLoadBaseFragment
-        implements GridMusicListAdapter.OnItemClickListener {
+        implements OnRecyclerViewItemClickListener {
 
     @ViewInject(R.id.album_music_recycler_view)
     private RecyclerView mAlbumMusicRecyclerView;
@@ -34,17 +37,21 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     @ViewInject(R.id.album_music_list_fragment_info_tv)
     private TextView mInfoTextView;
 
-    private GridMusicListAdapter mAdapter;
+    private CardViewRecyclerViewItemRecyclerViewAdapter<Album> mAdapter;
     private List<Album> mAlbumList;
 
     @Override
     public void onItemClick(View view, int position) {
-
-    }
-
-    @Override
-    protected void initData() {
-        mAlbumList = new ArrayList<>();
+        String albumName = mAlbumList.get(position).getAlbumName();
+        Music targetAlbumFirstMusic = null;
+        for (Music music : ForegroundMusicCache.getInstance().getAllMusicList()) {
+            if (albumName.equals(music.getMusicAlbumName())) {
+                targetAlbumFirstMusic = music;
+                break;
+            }
+        }
+        ForegroundMusicController.getInstance().play(targetAlbumFirstMusic);
+        ForegroundMusicController.getInstance().setPlayList(new MusicFilter(albumName, null));
     }
 
     @Override
@@ -55,8 +62,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
         mAlbumList = ForegroundMusicCache.getInstance().getAlbumList();
         if (!mAlbumList.isEmpty()) {
             playWidgetAnimation(true, false);
-            mAdapter = new GridMusicListAdapter();
-            mAdapter.setAlbumList(mAlbumList);
+            mAdapter = new CardViewRecyclerViewItemRecyclerViewAdapter<>(mAlbumList);
             mAdapter.setOnItemClickListener(AlbumMusicListFragment.this);
             mAlbumMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManager(getParentActivity(), 2));
             mAlbumMusicRecyclerView.setAdapter(mAdapter);
@@ -65,44 +71,6 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
         } else {
             playWidgetAnimation(true, true);
         }
-        /*ObservableFactory.getAlbumObservable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Album>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Album album) {
-                        if (!mAlbumList.contains(album)) {
-                            mAlbumList.add(album);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        playWidgetAnimation(false, true);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        if (!mAlbumList.isEmpty()) {
-                            playWidgetAnimation(true, false);
-                            mAdapter = new GridMusicListAdapter();
-                            mAdapter.setAlbumList(mAlbumList);
-                            mAdapter.setOnItemClickListener(AlbumMusicListFragment.this);
-                            mAlbumMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManager(getParentActivity(), 2));
-                            mAlbumMusicRecyclerView.setAdapter(mAdapter);
-                            mAlbumMusicRecyclerView.setHasFixedSize(true);
-                            mAlbumMusicRecyclerView.setNestedScrollingEnabled(false);
-                        } else {
-                            playWidgetAnimation(true, true);
-                        }
-                    }
-                });*/
     }
 
     private void playWidgetAnimation(boolean isSuccess, boolean isEmpty) {

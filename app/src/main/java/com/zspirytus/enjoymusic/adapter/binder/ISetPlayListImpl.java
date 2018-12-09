@@ -22,17 +22,7 @@ public class ISetPlayListImpl extends ISetPlayList.Stub {
 
     @Override
     public void setPlayList(MusicFilter musicFilter) {
-        List<Music> filterMusicList = IGetMusicListImpl.getInstance().getMusicList();
-        String filterByAlbum = musicFilter.getMusicAlbum();
-        String filterByArtist = musicFilter.getMusicArtist();
-        if (filterByAlbum != "*" && filterByAlbum != "*") {
-            for (int i = filterMusicList.size() - 1; i >= 0; i--) {
-                Music music = filterMusicList.get(i);
-                if (!music.getMusicAlbumName().equals(filterByAlbum) || !music.getMusicArtist().equals(filterByArtist)) {
-                    filterMusicList.remove(music);
-                }
-            }
-        }
+        List<Music> filterMusicList = musicFilter.filter(IGetMusicListImpl.getInstance().getMusicList());
         MusicPlayOrderManager.getInstance().setPlayList(filterMusicList);
     }
 }
