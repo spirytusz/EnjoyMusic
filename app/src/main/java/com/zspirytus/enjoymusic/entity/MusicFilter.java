@@ -23,16 +23,8 @@ public class MusicFilter implements Parcelable {
         mMusicArtist = source.readString();
     }
 
-    public String getMusicAlbum() {
-        return mMusicAlbum;
-    }
-
-    public String getMusicArtist() {
-        return mMusicArtist;
-    }
-
     public List<Music> filter(List<Music> musicList) {
-        if (mMusicAlbum != "*" && mMusicArtist != "*") {
+        if (!mMusicAlbum.equals("*") && !mMusicArtist.equals("*")) {
             List<Music> filterMusicList = new ArrayList<>(musicList);
             for (int i = filterMusicList.size() - 1; i >= 0; i--) {
                 Music music = filterMusicList.get(i);
@@ -45,6 +37,22 @@ public class MusicFilter implements Parcelable {
         } else {
             return musicList;
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (mMusicAlbum != null) {
+            stringBuilder.append("mMusicAlbum = " + mMusicAlbum + ", ");
+        } else {
+            stringBuilder.append("mMusicAlbum = null, ");
+        }
+        if (mMusicArtist != null) {
+            stringBuilder.append("mMusicArtist = " + mMusicArtist);
+        } else {
+            stringBuilder.append("mMusicArtist = null");
+        }
+        return "[" + stringBuilder.toString() + "]";
     }
 
     @Override

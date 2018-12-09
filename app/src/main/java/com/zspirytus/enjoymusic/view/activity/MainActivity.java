@@ -361,7 +361,7 @@ public class MainActivity extends BaseActivity
                         IBinder iBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
                         ISetPlayList setPlayList = ISetPlayList.Stub.asInterface(iBinder);
                         try {
-                            setPlayList.setPlayList(new MusicFilter("*", "*"));
+                            setPlayList.setPlayList(MusicFilter.NO_FILTER);
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }

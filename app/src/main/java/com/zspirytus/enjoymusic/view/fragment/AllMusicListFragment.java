@@ -40,7 +40,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     private TextView mInfoTextView;
 
     private List<Music> mMusicList;
-    private CommonRecyclerViewItemRecyclerViewAdapter mMusicRecyclerViewAdapter;
+    private CommonRecyclerViewItemRecyclerViewAdapter<Music> mMusicRecyclerViewAdapter;
 
     @Override
     public void onItemClick(View view, int position) {
@@ -59,7 +59,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
 
     private void initRecyclerView() {
         mMusicList = ForegroundMusicCache.getInstance().getAllMusicList();
-        mMusicRecyclerViewAdapter = new CommonRecyclerViewItemRecyclerViewAdapter(mMusicList);
+        mMusicRecyclerViewAdapter = new CommonRecyclerViewItemRecyclerViewAdapter<>(mMusicList);
         mMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mMusicRecyclerView.setHasFixedSize(true);
         mMusicRecyclerView.setNestedScrollingEnabled(false);
