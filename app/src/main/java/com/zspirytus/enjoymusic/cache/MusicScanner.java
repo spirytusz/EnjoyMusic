@@ -96,7 +96,9 @@ public class MusicScanner {
                 // Music file size
                 MediaStore.Audio.AudioColumns.SIZE,
                 // Music duration
-                MediaStore.Audio.AudioColumns.DURATION
+                MediaStore.Audio.AudioColumns.DURATION,
+                MediaStore.Audio.AudioColumns.DATE_ADDED,
+                MediaStore.Audio.AudioColumns.TRACK
         };
         ContentResolver resolver = MyApplication.getBackgroundContext().getContentResolver();
         Cursor cursor = resolver.query(
@@ -124,7 +126,8 @@ public class MusicScanner {
                     String musicThumbAlbumCoverPath = getThumbAlbum(albumId);
                     String musicArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST));
                     String musicFileSize = Formatter.formatFileSize(MyApplication.getBackgroundContext(), cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE)));
-                    Music itemMusic = new Music(musicFilePath, musicName, musicArtist, musicAlbumName, musicThumbAlbumCoverPath, musicDuration, musicFileSize);
+                    long musicAddDate = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATE_ADDED));
+                    Music itemMusic = new Music(musicFilePath, musicName, musicArtist, musicAlbumName, musicThumbAlbumCoverPath, musicDuration, musicFileSize, musicAddDate);
                     if (!mAllMusicList.contains(itemMusic)) {
                         mAllMusicList.add(itemMusic);
                     }

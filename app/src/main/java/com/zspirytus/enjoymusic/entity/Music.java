@@ -17,8 +17,9 @@ public class Music implements Parcelable {
     private String musicArtist;
     private long musicDuration;
     private String musicFileSize;
+    private long musicAddDate;
 
-    public Music(String musicFilePath, String musicName, String musicArtist, String musicAlbumName, String musicThumbAlbumCoverPath, long musicDuration, String musicFileSize) {
+    public Music(String musicFilePath, String musicName, String musicArtist, String musicAlbumName, String musicThumbAlbumCoverPath, long musicDuration, String musicFileSize, long musicAddDate) {
         this.musicFilePath = musicFilePath;
         this.musicName = musicName;
         this.musicAlbumName = musicAlbumName;
@@ -26,6 +27,7 @@ public class Music implements Parcelable {
         this.musicArtist = musicArtist;
         this.musicDuration = musicDuration;
         this.musicFileSize = musicFileSize;
+        this.musicAddDate = musicAddDate;
     }
 
     private Music(Parcel source) {
@@ -36,6 +38,7 @@ public class Music implements Parcelable {
         this.musicArtist = source.readString();
         this.musicDuration = source.readLong();
         this.musicFileSize = source.readString();
+        this.musicAddDate = source.readLong();
     }
 
     public String getMusicFilePath() {
@@ -113,6 +116,11 @@ public class Music implements Parcelable {
         } else {
             stringBuilder.append("musicFileSize:null");
         }
+        if (musicAddDate != 0) {
+            stringBuilder.append("musicAddDate:" + musicAddDate + ", ");
+        } else {
+            stringBuilder.append("musicAddDate:0, ");
+        }
         return "{" + stringBuilder.toString() + "}";
     }
 
@@ -130,6 +138,7 @@ public class Music implements Parcelable {
         dest.writeString(musicArtist);
         dest.writeLong(musicDuration);
         dest.writeString(musicFileSize);
+        dest.writeLong(musicAddDate);
     }
 
     public static final Parcelable.Creator<Music> CREATOR = new Creator<Music>() {

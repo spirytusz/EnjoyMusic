@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.adapter.binder;
 
+import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
@@ -27,6 +28,7 @@ public class IPlayMusicChangeObserverImpl extends IPlayedMusicChangeObserver.Stu
     @Override
     public void onPlayMusicChange(Music currentPlayingMusic) {
         mEvent = currentPlayingMusic;
+        ForegroundMusicCache.getInstance().setCurrentPlayingMusic(currentPlayingMusic);
         for (PlayedMusicChangeObserver observer : observers) {
             observer.onPlayedMusicChanged(currentPlayingMusic);
         }

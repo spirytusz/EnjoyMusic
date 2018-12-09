@@ -24,7 +24,7 @@ public interface Constant {
 
     interface AnimationProperty {
         String ALPHA = "alpha";
-        String TRANSLATE_Y = "translateY";
+        String TRANSLATE_Y = "translationY";
     }
 
     interface AnimationDuration {

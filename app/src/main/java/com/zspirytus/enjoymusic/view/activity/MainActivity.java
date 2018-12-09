@@ -16,10 +16,13 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.zspirytus.enjoymusic.BinderPool;
 import com.zspirytus.enjoymusic.ISetPlayList;
@@ -41,10 +44,10 @@ import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.receivers.observer.HomePageRecyclerViewLoadObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
-import com.zspirytus.enjoymusic.utils.AnimationUtil;
 import com.zspirytus.enjoymusic.view.fragment.AboutFragment;
 import com.zspirytus.enjoymusic.view.fragment.BaseFragment;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
@@ -73,7 +76,7 @@ import io.reactivex.disposables.Disposable;
 @LayoutIdInject(R.layout.activity_main)
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, PlayedMusicChangeObserver,
-        MusicPlayStateObserver {
+        MusicPlayStateObserver, HomePageRecyclerViewLoadObserver, View.OnClickListener {
 
     private final FragmentManager mFragmentManager = getSupportFragmentManager();
 
@@ -90,6 +93,10 @@ public class MainActivity extends BaseActivity
     private View mBottomMusicControl;
     @ViewInject(R.id.bottom_music_cover)
     private AppCompatImageView mBottomMusicCover;
+    @ViewInject(R.id.bottom_music_name)
+    private AppCompatTextView mBottomMusicName;
+    @ViewInject(R.id.bottom_music_album)
+    private AppCompatTextView mBottomMusicAlbum;
     @ViewInject(R.id.bottom_music_play_pause)
     private AppCompatImageView mBottomMusicPlayOrPause;
     @ViewInject(R.id.bottom_music_next)
@@ -101,24 +108,14 @@ public class MainActivity extends BaseActivity
     private ActionBarDrawerToggle toggle;
     private int selectedNavigationMenuItemId;
     private long pressedBackLastTime;
+    private boolean isPlaying = false;
+    private boolean isHomePageRvLoadFinish = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent startPlayMusicServiceIntent = new Intent(this, PlayMusicService.class);
-        conn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                ForegroundBinderManager.getInstance().init(BinderPool.Stub.asInterface(service));
-                requestPermission();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                ForegroundBinderManager.getInstance().release();
-            }
-        };
-        bindService(startPlayMusicServiceIntent, conn, BIND_AUTO_CREATE);
+        FragmentFactory.getInstance().get(HomePageFragment.class).setRecyclerViewLoadStateObserver(this);
+        bindPlayMusicService();
     }
 
     @Override
@@ -220,12 +217,9 @@ public class MainActivity extends BaseActivity
                 }
             }
         });
-        mBottomMusicControl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
-            }
-        });
+        mBottomMusicControl.setOnClickListener(this);
+        mBottomMusicPlayOrPause.setOnClickListener(this);
+        mBottomMusicNext.setOnClickListener(this);
         changeClickToolbarButtonResponseAndToolbarStyle(true);
     }
 
@@ -275,18 +269,55 @@ public class MainActivity extends BaseActivity
                     File coverFile = new File(coverFilePath);
                     GlideApp.with(MainActivity.this).load(coverFile).into(mBottomMusicCover);
                 }
+                mBottomMusicName.setText(music.getMusicName());
+                mBottomMusicAlbum.setText(music.getMusicAlbumName());
             }
         });
     }
 
     @Override
     public void onPlayingStateChanged(final boolean isPlaying) {
+        this.isPlaying = isPlaying;
         mBottomMusicPlayOrPause.post(new Runnable() {
             @Override
             public void run() {
                 mBottomMusicPlayOrPause.setImageResource(isPlaying ? R.drawable.ic_pause_black_48dp : R.drawable.ic_play_arrow_black_48dp);
             }
         });
+    }
+
+    @Override
+    public void onLoadFinish() {
+        isHomePageRvLoadFinish = true;
+        FragmentFactory.getInstance().get(HomePageFragment.class).setRecyclerViewLoadStateObserver(null);
+        mBottomMusicControl.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setBottomMusicControlVisibility(View.VISIBLE);
+            }
+        }, Constant.AnimationDuration.LONG_DURATION);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bottom_music_control:
+                if (ForegroundMusicCache.getInstance().getCurrentPlayingMusic() != null) {
+                    showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
+                }
+                break;
+            case R.id.bottom_music_play_pause:
+                if (isPlaying) {
+                    GlideApp.with(MainActivity.this).load(R.drawable.ic_play_arrow_black_48dp).into(mBottomMusicPlayOrPause);
+                    ForegroundMusicController.getInstance().pause();
+                } else {
+                    GlideApp.with(MainActivity.this).load(R.drawable.ic_pause_black_48dp).into(mBottomMusicPlayOrPause);
+                    ForegroundMusicController.getInstance().play(ForegroundMusicCache.getInstance().getCurrentPlayingMusic());
+                }
+                break;
+            case R.id.bottom_music_next:
+                break;
+        }
     }
 
     @Subscriber(tag = Constant.EventBusTag.SHOW_CAST_FRAGMENT)
@@ -299,7 +330,8 @@ public class MainActivity extends BaseActivity
         if (shouldShowFragment instanceof MusicPlayFragment) {
             changeClickToolbarButtonResponseAndToolbarStyle(false);
             setBottomMusicControlVisibility(View.GONE);
-        } else {
+            return;
+        } else if (isHomePageRvLoadFinish) {
             setBottomMusicControlVisibility(View.VISIBLE);
         }
         FragmentVisibilityManager.getInstance().show(shouldShowFragment);
@@ -365,16 +397,45 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    private void setBottomMusicControlVisibility(int visibility) {
+    private void setBottomMusicControlVisibility(final int visibility) {
+        if (mBottomMusicControl.getVisibility() == visibility)
+            return;
+        Animation animation;
         if (visibility == View.VISIBLE) {
-            AnimationUtil.ofFloat(mBottomMusicControl, Constant.AnimationProperty.ALPHA, 0f, 1f);
-            mBottomMusicControl.setVisibility(View.VISIBLE);
-            mBottomMusicControlShadow.setVisibility(View.VISIBLE);
+            animation = AnimationUtils.loadAnimation(this, R.anim.bottom_music_control_show);
         } else {
-            AnimationUtil.ofFloat(mBottomMusicControl, Constant.AnimationProperty.ALPHA, 1f, 0f);
-            mBottomMusicControl.setVisibility(View.GONE);
-            mBottomMusicControlShadow.setVisibility(View.GONE);
+            animation = AnimationUtils.loadAnimation(this, R.anim.bottom_music_control_hide);
         }
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                if (visibility == View.VISIBLE) {
+                    mBottomMusicControl.setVisibility(View.GONE);
+                    mBottomMusicControlShadow.setVisibility(View.GONE);
+                } else {
+                    mBottomMusicControl.setVisibility(View.VISIBLE);
+                    mBottomMusicControlShadow.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (visibility == View.VISIBLE) {
+                    mBottomMusicControl.setVisibility(View.VISIBLE);
+                    mBottomMusicControlShadow.setVisibility(View.VISIBLE);
+                } else {
+                    mBottomMusicControl.setVisibility(View.GONE);
+                    mBottomMusicControlShadow.setVisibility(View.GONE);
+                    FragmentVisibilityManager.getInstance().show(FragmentFactory.getInstance().get(MusicPlayFragment.class));
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mBottomMusicControl.startAnimation(animation);
     }
 
     private void changeClickToolbarButtonResponseAndToolbarStyle(boolean isShouldShowDrawer) {
@@ -393,6 +454,23 @@ public class MainActivity extends BaseActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.LEFT);
         }
+    }
+
+    private void bindPlayMusicService() {
+        Intent startPlayMusicServiceIntent = new Intent(this, PlayMusicService.class);
+        conn = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                ForegroundBinderManager.getInstance().init(BinderPool.Stub.asInterface(service));
+                requestPermission();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                ForegroundBinderManager.getInstance().release();
+            }
+        };
+        bindService(startPlayMusicServiceIntent, conn, BIND_AUTO_CREATE);
     }
 
     public static void startActivity(Context context, String extra, String action) {

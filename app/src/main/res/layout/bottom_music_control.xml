@@ -2,17 +2,39 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="72dp">
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/bottom_music_cover"
         android:layout_width="72dp"
-        android:layout_height="match_parent"
+        android:layout_height="72dp"
+        android:src="@drawable/ic_music_note_black_48dp"
+        android:background="@color/grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/bottom_music_name"
+        style="@style/TextViewStyle_14sp_black_marquee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/bottom_music_cover"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/grey" />
+        android:text="Music Name" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/bottom_music_album"
+        style="@style/TextViewStyle_10sp_marquee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bottom_music_cover"
+        android:text="Music Album" />
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/bottom_music_play_pause"

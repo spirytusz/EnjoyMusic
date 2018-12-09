@@ -62,6 +62,10 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
     }
 
     public void show(BaseFragment shouldShowFragment) {
+        show(shouldShowFragment, 0, 0);
+    }
+
+    public void show(BaseFragment shouldShowFragment, int enter, int exit) {
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         if (!shouldShowFragment.isAdded()) {
             transaction.add(R.id.fragment_container, shouldShowFragment);
@@ -74,6 +78,9 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
             }
         }
         FragmentVisibilityManager.getInstance().push(shouldShowFragment);
+        if (enter != 0 && exit != 0) {
+            transaction.setCustomAnimations(enter, exit);
+        }
         transaction.commitAllowingStateLoss();
         notifyAllFragmentChangeObserver(shouldShowFragment);
     }

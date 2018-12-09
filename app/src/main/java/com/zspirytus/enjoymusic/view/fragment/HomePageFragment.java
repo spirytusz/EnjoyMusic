@@ -16,6 +16,7 @@ import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.receivers.observer.HomePageRecyclerViewLoadObserver;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
 import org.simple.eventbus.EventBus;
@@ -40,6 +41,7 @@ public class HomePageFragment extends BaseFragment implements HomePageRecyclerVi
     @ViewInject(R.id.home_page_text_view)
     private AppCompatTextView mInfoTextView;
 
+    private HomePageRecyclerViewLoadObserver mObserver;
     private List<HomePageRecyclerViewItem> mItemList;
     private HomePageRecyclerViewAdapter mAdapter;
 
@@ -74,6 +76,9 @@ public class HomePageFragment extends BaseFragment implements HomePageRecyclerVi
                             playAnimation(true, false);
                         } else {
                             playAnimation(true, true);
+                        }
+                        if (mObserver != null) {
+                            mObserver.onLoadFinish();
                         }
                     }
                 });
@@ -117,6 +122,10 @@ public class HomePageFragment extends BaseFragment implements HomePageRecyclerVi
                         }
                     }
                 });
+    }
+
+    public void setRecyclerViewLoadStateObserver(HomePageRecyclerViewLoadObserver observer) {
+        mObserver = observer;
     }
 
     private void playAnimation(boolean isSuccess, boolean isEmpty) {
