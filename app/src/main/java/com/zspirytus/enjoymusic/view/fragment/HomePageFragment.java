@@ -1,6 +1,5 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -9,7 +8,7 @@ import android.widget.ProgressBar;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.CardViewRecyclerViewItemRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.entity.HomePageRecyclerViewItem;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
@@ -18,6 +17,7 @@ import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 import com.zspirytus.enjoymusic.receivers.observer.HomePageRecyclerViewLoadObserver;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -29,8 +29,7 @@ import io.reactivex.disposables.Disposable;
 
 @LayoutIdInject(R.layout.fragment_home_page)
 public class HomePageFragment extends BaseFragment
-        implements OnRecyclerViewItemClickListener,
-        View.OnClickListener {
+        implements OnRecyclerViewItemClickListener {
 
     @ViewInject(R.id.home_page_recycler_view)
     private RecyclerView mHomePageRecyclerView;
@@ -38,26 +37,28 @@ public class HomePageFragment extends BaseFragment
     private ProgressBar mListLoadProgressBar;
     @ViewInject(R.id.home_page_text_view)
     private AppCompatTextView mInfoTextView;
-    @ViewInject(R.id.home_page_rv_header)
-    private ConstraintLayout mRecyclerViewHeader;
 
     private HomePageRecyclerViewLoadObserver mRecyclerViewLoadStateObserver;
-    private List<Music> mItemList;
-    private CardViewRecyclerViewItemRecyclerViewAdapter<Music> mAdapter;
+    private List<HomePageRecyclerViewItem> mItemList;
+    private CardViewRecyclerViewItemRecyclerViewAdapter<HomePageRecyclerViewItem> mAdapter;
+
+    @Override
+    protected void initData() {
+        mItemList = new ArrayList<>();
+    }
 
     @Override
     protected void initView() {
         ObservableFactory.getHomePageRecyclerViewItemsObservable()
-                .subscribe(new Observer<List<Music>>() {
+                .subscribe(new Observer<HomePageRecyclerViewItem>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(List<Music> musicList) {
-                        mItemList = musicList;
-                        setupMusicRecyclerView(musicList);
+                    public void onNext(HomePageRecyclerViewItem homePageRecyclerViewItem) {
+                        mItemList.add(homePageRecyclerViewItem);
                     }
 
                     @Override
@@ -67,8 +68,8 @@ public class HomePageFragment extends BaseFragment
 
                     @Override
                     public void onComplete() {
+                        setupMusicRecyclerView(mItemList);
                         playAnimation(true);
-                        mRecyclerViewHeader.setOnClickListener(HomePageFragment.this);
                         notifyObserverRecyclerViewLoadFinish();
                     }
                 });
@@ -76,22 +77,16 @@ public class HomePageFragment extends BaseFragment
 
     @Override
     public void onItemClick(View view, int position) {
-        ForegroundMusicController.getInstance().play(mItemList.get(position));
-        ForegroundMusicController.getInstance().setPlayList(MusicFilter.NO_FILTER);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.home_page_rv_header:
-                break;
+        if (position != 0) {
+            ForegroundMusicController.getInstance().play(mItemList.get(position).getmMusic());
+            ForegroundMusicController.getInstance().setPlayList(MusicFilter.NO_FILTER);
         }
     }
 
-    private void setupMusicRecyclerView(List<Music> musicList) {
+    private void setupMusicRecyclerView(List<HomePageRecyclerViewItem> musicList) {
         mAdapter = new CardViewRecyclerViewItemRecyclerViewAdapter<>(musicList);
         mAdapter.setOnItemClickListener(this);
-        mHomePageRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManager(getParentActivity(), 2));
+        mHomePageRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManagerWithHeader(getParentActivity(), 2, 2));
         mHomePageRecyclerView.setAdapter(mAdapter);
         mHomePageRecyclerView.setHasFixedSize(true);
         mHomePageRecyclerView.setNestedScrollingEnabled(false);
@@ -101,7 +96,6 @@ public class HomePageFragment extends BaseFragment
         if (isLoadSuccess) {
             mListLoadProgressBar.setVisibility(View.GONE);
             mHomePageRecyclerView.setVisibility(View.VISIBLE);
-            mRecyclerViewHeader.setVisibility(View.VISIBLE);
         } else {
             mInfoTextView.setText("Load HomePage Error!");
             mInfoTextView.setVisibility(View.VISIBLE);

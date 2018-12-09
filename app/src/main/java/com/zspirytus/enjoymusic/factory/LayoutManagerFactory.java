@@ -25,11 +25,22 @@ public class LayoutManagerFactory {
     }
 
     public static GridLayoutManager createGridLayoutManager(Context context, int spanCount) {
-        return createGridLayoutManager(context, spanCount, null);
+        return createGridLayoutManager(context, spanCount, null, null);
     }
 
-    public static GridLayoutManager createGridLayoutManager(Context context, int spanCount, Integer orientation) {
+    public static GridLayoutManager createGridLayoutManager(Context context, final int spanCount, Integer orientation, Integer headerSpanCount) {
         final GridLayoutManager gridLayoutManager = new GridLayoutManager(context, spanCount);
+        if (headerSpanCount != null) {
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    if (position == 0)
+                        return spanCount;
+                    else
+                        return 1;
+                }
+            });
+        }
         if (orientation != null) {
             gridLayoutManager.setOrientation(orientation);
         }
@@ -38,5 +49,8 @@ public class LayoutManagerFactory {
         return gridLayoutManager;
     }
 
+    public static GridLayoutManager createGridLayoutManagerWithHeader(Context context, int spanCount, Integer headerSpanCount) {
+        return createGridLayoutManager(context, spanCount, null, headerSpanCount);
+    }
 
 }

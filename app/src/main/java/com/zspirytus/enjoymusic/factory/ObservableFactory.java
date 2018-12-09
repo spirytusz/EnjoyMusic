@@ -6,6 +6,7 @@ import com.zspirytus.enjoymusic.IGetMusicList;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
+import com.zspirytus.enjoymusic.entity.HomePageRecyclerViewItem;
 import com.zspirytus.enjoymusic.entity.Music;
 
 import java.util.Collections;
@@ -24,10 +25,10 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ObservableFactory {
 
-    public static Observable<List<Music>> getHomePageRecyclerViewItemsObservable() {
-        return Observable.create(new ObservableOnSubscribe<List<Music>>() {
+    public static Observable<HomePageRecyclerViewItem> getHomePageRecyclerViewItemsObservable() {
+        return Observable.create(new ObservableOnSubscribe<HomePageRecyclerViewItem>() {
             @Override
-            public void subscribe(ObservableEmitter<List<Music>> emitter) throws Exception {
+            public void subscribe(ObservableEmitter<HomePageRecyclerViewItem> emitter) throws Exception {
                 List<Music> musicList = ForegroundMusicCache.getInstance().getAllMusicList();
                 Collections.sort(musicList, new Comparator<Music>() {
                     @Override
@@ -35,45 +36,14 @@ public class ObservableFactory {
                         return (int) (o1.getMusicAddDate() / 1000 - o2.getMusicAddDate() / 1000);
                     }
                 });
-                emitter.onNext(musicList);
+                emitter.onNext(new HomePageRecyclerViewItem());
+                for (Music music : musicList)
+                    emitter.onNext(new HomePageRecyclerViewItem(music));
                 emitter.onComplete();
             }
         }).subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread());
     }
-
-    /*public static Observable<Music> getMusicObservableConverterByTypeAndKey(final String key, int type) {
-        Observable<Music> observable = Observable.create(new ObservableOnSubscribe<Music>() {
-            @Override
-            public void subscribe(ObservableEmitter<Music> emitter) throws Exception {
-                List<Music> musicList = ForegroundMusicCache.getInstance().getAllMusicList();
-                for (Music music : musicList) {
-                    emitter.onNext(music);
-                }
-                emitter.onComplete();
-            }
-        }).subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread());
-        switch (type) {
-            case 0:
-                return observable;
-            case 1:
-                return observable.filter(new Predicate<Music>() {
-                    @Override
-                    public boolean test(Music music) throws Exception {
-                        return music.getMusicAlbumName().equals(key);
-                    }
-                });
-            case 2:
-                return observable.filter(new Predicate<Music>() {
-                    @Override
-                    public boolean test(Music music) throws Exception {
-                        return music.getMusicArtist().equals(key);
-                    }
-                });
-        }
-        return null;
-    }*/
 
     public static Observable<Object> getMusicListInForegroundObservable() {
         return Observable.create(new ObservableOnSubscribe<Object>() {
