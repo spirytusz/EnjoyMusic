@@ -30,11 +30,24 @@ public class IMusicControlImpl extends IMusicControl.Stub {
 
     @Override
     public void playNext() {
-        play(MusicPlayOrderManager.getInstance().getNextMusic());
+        Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
+        if (nextMusic != null) {
+            play(nextMusic);
+        }
     }
 
     @Override
     public void playPrevious() {
-        play(MusicPlayOrderManager.getInstance().getPreviousMusic());
+        Music previousMusic = MusicPlayOrderManager.getInstance().getPreviousMusic();
+        if (previousMusic != null) {
+            play(previousMusic);
+        }
+    }
+
+    @Override
+    public void setPlayMode(int playMode) {
+        if (playMode < 4 && playMode >= 0) {
+            MusicPlayOrderManager.getInstance().setPlayMode(playMode);
+        }
     }
 }

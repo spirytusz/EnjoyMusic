@@ -6,12 +6,12 @@ import android.view.View;
 
 import com.zspirytus.enjoymusic.R;
 
-public class WithHeaderCardViewHolder extends RecyclerView.ViewHolder {
+public class HeaderViewHolder extends RecyclerView.ViewHolder {
 
     private View mItemView;
     private ConstraintLayout mRandomPlayButton;
 
-    public WithHeaderCardViewHolder(View itemView) {
+    public HeaderViewHolder(View itemView) {
         super(itemView);
         mItemView = itemView;
         mRandomPlayButton = mItemView.findViewById(R.id.random_play_text);

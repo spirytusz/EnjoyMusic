@@ -6,16 +6,21 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.CardViewRecyclerViewItemRecyclerViewAdapter;
+import com.zspirytus.enjoymusic.adapter.WithHeaderCardViewItemRecyclerViewAdapter;
+import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
+import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.HomePageRecyclerViewItem;
+import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.listeners.OnRecyclerViewHeaderClickListener;
 import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 import com.zspirytus.enjoymusic.receivers.observer.HomePageRecyclerViewLoadObserver;
+import com.zspirytus.enjoymusic.utils.RandomUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +34,7 @@ import io.reactivex.disposables.Disposable;
 
 @LayoutIdInject(R.layout.fragment_home_page)
 public class HomePageFragment extends BaseFragment
-        implements OnRecyclerViewItemClickListener {
+        implements OnRecyclerViewItemClickListener, OnRecyclerViewHeaderClickListener {
 
     @ViewInject(R.id.home_page_recycler_view)
     private RecyclerView mHomePageRecyclerView;
@@ -40,7 +45,7 @@ public class HomePageFragment extends BaseFragment
 
     private HomePageRecyclerViewLoadObserver mRecyclerViewLoadStateObserver;
     private List<HomePageRecyclerViewItem> mItemList;
-    private CardViewRecyclerViewItemRecyclerViewAdapter<HomePageRecyclerViewItem> mAdapter;
+    private WithHeaderCardViewItemRecyclerViewAdapter<HomePageRecyclerViewItem> mAdapter;
 
     @Override
     protected void initData() {
@@ -83,9 +88,21 @@ public class HomePageFragment extends BaseFragment
         }
     }
 
+    @Override
+    public void onHeaderClick(View view) {
+        List<Music> allMusicList = ForegroundMusicCache.getInstance().getAllMusicList();
+        if (!allMusicList.isEmpty()) {
+            int musicListSize = allMusicList.size();
+            Music randomMusic = allMusicList.get(RandomUtil.rand(musicListSize));
+            ForegroundMusicController.getInstance().setPlayMode(Constant.PlayMode.RANDOM);
+            ForegroundMusicController.getInstance().play(randomMusic);
+        }
+    }
+
     private void setupMusicRecyclerView(List<HomePageRecyclerViewItem> musicList) {
-        mAdapter = new CardViewRecyclerViewItemRecyclerViewAdapter<>(musicList);
+        mAdapter = new WithHeaderCardViewItemRecyclerViewAdapter<>(musicList, 1);
         mAdapter.setOnItemClickListener(this);
+        mAdapter.setOnHeaderClickListener(this);
         mHomePageRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManagerWithHeader(getParentActivity(), 2, 2));
         mHomePageRecyclerView.setAdapter(mAdapter);
         mHomePageRecyclerView.setHasFixedSize(true);
@@ -104,7 +121,7 @@ public class HomePageFragment extends BaseFragment
 
     private void notifyObserverRecyclerViewLoadFinish() {
         if (mRecyclerViewLoadStateObserver != null)
-            mRecyclerViewLoadStateObserver.onLoadFinish();
+            mRecyclerViewLoadStateObserver.onHomePageLoadFinish();
     }
 
     public void setRecyclerViewLoadStateObserver(HomePageRecyclerViewLoadObserver observer) {

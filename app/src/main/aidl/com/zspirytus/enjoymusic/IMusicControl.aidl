@@ -8,4 +8,5 @@ interface IMusicControl {
     void pause();
     void playNext();
     void playPrevious();
+    void setPlayMode(int playMode);
 }

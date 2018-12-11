@@ -6,7 +6,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.CardViewRecyclerViewItemRecyclerViewAdapter;
+import com.zspirytus.enjoymusic.adapter.CardViewItemRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -37,7 +37,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     @ViewInject(R.id.album_music_list_fragment_info_tv)
     private TextView mInfoTextView;
 
-    private CardViewRecyclerViewItemRecyclerViewAdapter<Album> mAdapter;
+    private CardViewItemRecyclerViewAdapter<Album> mAdapter;
     private List<Album> mAlbumList;
 
     @Override
@@ -62,7 +62,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
         mAlbumList = ForegroundMusicCache.getInstance().getAlbumList();
         if (!mAlbumList.isEmpty()) {
             playWidgetAnimation(true, false);
-            mAdapter = new CardViewRecyclerViewItemRecyclerViewAdapter<>(mAlbumList);
+            mAdapter = new CardViewItemRecyclerViewAdapter<>(mAlbumList);
             mAdapter.setOnItemClickListener(AlbumMusicListFragment.this);
             mAlbumMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManager(getParentActivity(), 2));
             mAlbumMusicRecyclerView.setAdapter(mAdapter);

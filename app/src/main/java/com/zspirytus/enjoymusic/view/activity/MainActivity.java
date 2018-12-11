@@ -265,6 +265,11 @@ public class MainActivity extends BaseActivity
                 }
                 mBottomMusicName.setText(music.getMusicName());
                 mBottomMusicAlbum.setText(music.getMusicAlbumName());
+                if (!(FragmentVisibilityManager.getInstance().peek() instanceof MusicPlayFragment)
+                        && mBottomMusicControl.getVisibility() == View.GONE) {
+                    mBottomMusicControl.setVisibility(View.VISIBLE);
+                    mBottomMusicControlShadow.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -281,10 +286,9 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onLoadFinish() {
+    public void onHomePageLoadFinish() {
         isHomePageRvLoadFinish = true;
         FragmentFactory.getInstance().get(HomePageFragment.class).setRecyclerViewLoadStateObserver(null);
-        setBottomMusicControlVisibility(View.VISIBLE);
     }
 
     @Override
@@ -305,6 +309,7 @@ public class MainActivity extends BaseActivity
                 }
                 break;
             case R.id.bottom_music_next:
+                ForegroundMusicController.getInstance().playNext();
                 break;
         }
     }

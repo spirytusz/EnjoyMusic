@@ -35,7 +35,6 @@ dependencies {
 
     // my dependencies
     implementation 'com.github.zkw012300:ZSPermission:v1.3'
-    implementation 'com.github.zkw012300:DraggableFloatingActionButton:v1.1'
 
 
     implementation('com.github.bumptech.glide:glide:4.7.1') {

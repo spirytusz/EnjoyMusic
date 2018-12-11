@@ -19,7 +19,6 @@ public interface Constant {
     interface EventBusTag {
         String SHOW_CAST_FRAGMENT = "show cast fragment";
         String START_MAIN_ACTIVITY = "start MainActivity";
-        String SET_PLAY_LIST = "set play list";
     }
 
     interface AnimationProperty {
@@ -48,11 +47,6 @@ public interface Constant {
         String ARTIST = "艺术家";
     }
 
-    interface RecyclerViewItemType {
-        int ALL_MUSIC_ITEM_TYPE = 1;
-        int ARTIST_MUSIC_ITEM_TYPE = 2;
-    }
-
     interface FragmentName {
         String aboutFragmentName = "AboutFragment";
         String albumMusicListFragmentName = "AlbumMusicListFragment";
@@ -63,5 +57,12 @@ public interface Constant {
         String musicPlayFragmentName = "MusicPlayFragment";
         String playListFragmentName = "PlayListFragment";
         String settingFragmentName = "SettingsFragment";
+    }
+
+    interface PlayMode {
+        int RANDOM = 0;
+        int SINGLE_LOOP = 1;
+        int LIST_LOOP = 2;
+        int PLAY_LIST = 3;
     }
 }

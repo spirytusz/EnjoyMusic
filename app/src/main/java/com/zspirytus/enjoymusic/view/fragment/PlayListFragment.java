@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewItemRecyclerViewAdapter;
+import com.zspirytus.enjoymusic.adapter.CommonItemRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -34,13 +34,13 @@ public class PlayListFragment extends BaseFragment
     @ViewInject(R.id.play_list_info_tv)
     private AppCompatTextView mInfoTextView;
 
-    private CommonRecyclerViewItemRecyclerViewAdapter<Music> mAdapter;
+    private CommonItemRecyclerViewAdapter<Music> mAdapter;
     private List<Music> mPlayList;
 
     @Override
     protected void initData() {
         mPlayList = new ArrayList<>();
-        mAdapter = new CommonRecyclerViewItemRecyclerViewAdapter<>(mPlayList);
+        mAdapter = new CommonItemRecyclerViewAdapter<>(mPlayList);
     }
 
     @Override

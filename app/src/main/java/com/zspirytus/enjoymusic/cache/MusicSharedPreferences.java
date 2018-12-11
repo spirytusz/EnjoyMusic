@@ -8,32 +8,44 @@ import com.zspirytus.enjoymusic.entity.Music;
 
 public class MusicSharedPreferences {
 
-    public static final String CURRENT_PLAYING_MUSIC_KEY = "currentPlayingMusic Key";
-
     private static final String TAG = "MusicSharedPreferences";
 
-    private static final String DEFAULT_RESULT = "default result";
+    private static final String CURRENT_PLAYING_MUSIC_KEY = "currentPlayingMusic Key";
+    private static final String PLAY_MODE_KEY = "playModeKey";
+
+    private static final String DEFAULT_MUSIC = "default result";
+    private static final int DEFAULT_PLAY_MODE = -1;
 
     private MusicSharedPreferences() {
     }
 
-    public static void save(Music music, String key) {
-        Gson gson = new Gson();
-        SharedPreferences.Editor editor = MyApplication.getBackgroundContext().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
-        String json = gson.toJson(music);
-        editor.putString(key, json);
-        editor.commit();
+    // save Music to storage will always in background when background be destroy
+    public static void saveMusic(Music music) {
+        if (music != null) {
+            Gson gson = new Gson();
+            SharedPreferences.Editor editor = MyApplication.getBackgroundContext().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
+            String json = gson.toJson(music);
+            editor.putString(CURRENT_PLAYING_MUSIC_KEY, json);
+            editor.apply();
+        }
     }
 
-    public static Music restore(String key) {
+    // restore music will in both foreground and background when init
+    public static Music restoreMusic(Context context) {
         Gson gson = new Gson();
-        SharedPreferences pref = MyApplication.getBackgroundContext().getSharedPreferences(TAG, Context.MODE_PRIVATE);
-        String json = pref.getString(key, DEFAULT_RESULT);
-        if (DEFAULT_RESULT.equals(json)) {
-            return new Music("", "", "", "", "", 0, "", 0);
+        SharedPreferences pref = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);
+        String json = pref.getString(CURRENT_PLAYING_MUSIC_KEY, DEFAULT_MUSIC);
+        if (DEFAULT_MUSIC.equals(json)) {
+            return null;
         } else {
             Music music = gson.fromJson(json, Music.class);
             return music;
         }
+    }
+
+    // restore music playMode will in both foreground and background when init
+    public static int restorePlayMode(Context context) {
+        SharedPreferences pref = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);
+        return pref.getInt(PLAY_MODE_KEY, DEFAULT_PLAY_MODE);
     }
 }

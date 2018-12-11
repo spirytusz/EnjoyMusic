@@ -11,6 +11,8 @@ import com.zspirytus.enjoymusic.adapter.binder.IGetMusicListImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IMusicControlImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IMusicProgressControlImpl;
 import com.zspirytus.enjoymusic.adapter.binder.ISetPlayListImpl;
+import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
+import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayProgressChangeObserver;
@@ -57,8 +59,8 @@ public class PlayMusicService extends BaseService implements RemotePlayProgressC
     @Override
     public void onDestroy() {
         super.onDestroy();
+        MusicSharedPreferences.saveMusic(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
         //NotificationHelper.getInstance().updateNotificationClearable(true);
-        //CurrentPlayingMusicCache.getInstance().saveCurrentPlayingMusic();
     }
 
     @Override
@@ -73,7 +75,7 @@ public class PlayMusicService extends BaseService implements RemotePlayProgressC
 
     @Override
     public void onPlayMusicChange(Music currentPlayingMusic) {
-        if (notifyAllObserversMusicPlayComplete(currentPlayingMusic) == 0) {
+        if (notifyAllObserverPlayMusicChange(currentPlayingMusic) == 0) {
             // handle play music logic by service
         }
     }

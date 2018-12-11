@@ -90,7 +90,7 @@ public abstract class BaseService extends Service {
         mPlayProgressObservers.finishBroadcast();
     }
 
-    protected int notifyAllObserversMusicPlayComplete(Music currentPlayingMusic) {
+    protected int notifyAllObserverPlayMusicChange(Music currentPlayingMusic) {
         int size = mPlayMusicChangeObservers.beginBroadcast();
         for (int i = 0; i < size; i++) {
             try {

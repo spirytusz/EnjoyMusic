@@ -153,6 +153,25 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
         }
     }
 
+    public void setPlayMode(final int playMode) {
+        if (playMode >= 0 && playMode < 4) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mIMusicControl == null) {
+                        IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
+                        mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
+                    }
+                    try {
+                        mIMusicControl.setPlayMode(playMode);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+    }
+
     public void release() {
         mIMusicControl = null;
         mIMusicProgressControl = null;

@@ -7,12 +7,15 @@ import android.os.PowerManager;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
+import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.MyApplication;
+import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.RemotePlayMusicChangeCallback;
 import com.zspirytus.enjoymusic.interfaces.RemotePlayProgressCallback;
 import com.zspirytus.enjoymusic.interfaces.RemotePlayStateChangeCallback;
+import com.zspirytus.enjoymusic.utils.LogUtil;
 
 import java.io.IOException;
 import java.util.Timer;
@@ -83,7 +86,10 @@ public class MediaPlayController implements MediaPlayer.OnPreparedListener, Medi
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        play(MusicPlayOrderManager.getInstance().getNextMusic());
+        Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
+        if (nextMusic != null) {
+            play(nextMusic);
+        }
     }
 
     @Override
@@ -184,6 +190,7 @@ public class MediaPlayController implements MediaPlayer.OnPreparedListener, Medi
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
         mPlayingTimer.start();
         CurrentPlayingMusicCache.getInstance().setCurrentPlayingMusic(currentPlayingMusic);
+        PlayHistoryCache.getInstance().add(currentPlayingMusic);
     }
 
     /**
@@ -223,4 +230,10 @@ public class MediaPlayController implements MediaPlayer.OnPreparedListener, Medi
         }
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        MusicSharedPreferences.saveMusic(currentPlayingMusic);
+        LogUtil.e(this.getClass().getSimpleName(), "MediaPlayController will be destroy!");
+    }
 }

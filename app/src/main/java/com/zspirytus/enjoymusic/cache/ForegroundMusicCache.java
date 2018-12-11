@@ -20,6 +20,7 @@ public class ForegroundMusicCache extends PlayListChangeObservable {
     private List<Music> mPlayList;
 
     private ForegroundMusicCache() {
+        mCurrentPlayingMusic = MusicSharedPreferences.restoreMusic(MyApplication.getForegroundContext());
     }
 
     public static ForegroundMusicCache getInstance() {

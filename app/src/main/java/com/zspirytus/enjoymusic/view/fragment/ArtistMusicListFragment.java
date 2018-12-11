@@ -6,7 +6,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewItemRecyclerViewAdapter;
+import com.zspirytus.enjoymusic.adapter.CommonItemRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -39,7 +39,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
 
     private List<Artist> mArtistList;
 
-    private CommonRecyclerViewItemRecyclerViewAdapter<Artist> mAdapter;
+    private CommonItemRecyclerViewAdapter<Artist> mAdapter;
 
     @Override
     public void onItemClick(View view, int position) {
@@ -58,7 +58,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
     @Override
     protected void initView() {
         mArtistList = ForegroundMusicCache.getInstance().getArtistList();
-        mAdapter = new CommonRecyclerViewItemRecyclerViewAdapter<>(mArtistList);
+        mAdapter = new CommonItemRecyclerViewAdapter<>(mArtistList);
         mArtistMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mArtistMusicRecyclerView.setHasFixedSize(true);
         mArtistMusicRecyclerView.setNestedScrollingEnabled(false);

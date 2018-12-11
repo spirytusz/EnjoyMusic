@@ -10,6 +10,7 @@ import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
+import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.services.NotificationHelper;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
@@ -33,7 +34,10 @@ public class StatusBarEventReceiver extends BroadcastReceiver {
                     collapseStatusBar(MyApplication.getBackgroundContext());
                     break;
                 case Constant.StatusBarEvent.PREVIOUS:
-                    BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getPreviousMusic());
+                    Music previousMusic = MusicPlayOrderManager.getInstance().getPreviousMusic();
+                    if (previousMusic != null) {
+                        BackgroundMusicController.getInstance().play(previousMusic);
+                    }
                     break;
                 case Constant.StatusBarEvent.PLAY_OR_PAUSE:
                     if (MediaPlayController.getInstance().isPlaying()) {
@@ -45,7 +49,10 @@ public class StatusBarEventReceiver extends BroadcastReceiver {
                     }
                     break;
                 case Constant.StatusBarEvent.NEXT:
-                    BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic());
+                    Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
+                    if (nextMusic != null) {
+                        BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic());
+                    }
                     break;
             }
         }
