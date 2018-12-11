@@ -29,4 +29,10 @@ public class LogUtil {
         }
     }
 
+    public static void err(Object message) {
+        if (LEVEL == DEBUG) {
+            System.err.println(message);
+        }
+    }
+
 }

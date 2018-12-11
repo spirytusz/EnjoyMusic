@@ -10,6 +10,7 @@ import com.zspirytus.enjoymusic.cache.viewholder.MusicCommonViewHolder;
 import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.entity.Artist;
+import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.annotations.BindAdapterItemLayoutId;
 import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
@@ -46,9 +47,9 @@ public class CommonItemRecyclerViewAdapter<T> extends BaseRecyclerViewAdapter<Mu
     @Override
     public void onBindViewHolder(MusicCommonViewHolder holder, int position) {
         T t = mList.get(position);
-        String coverFilePath = "";
-        String title = "";
-        String subTitle = "";
+        String coverFilePath;
+        String title;
+        String subTitle;
         final String[] moreInfoItem;
         if (t instanceof Music) {
             Music music = (Music) t;
@@ -62,13 +63,21 @@ public class CommonItemRecyclerViewAdapter<T> extends BaseRecyclerViewAdapter<Mu
             title = album.getAlbumName();
             subTitle = album.getArtist();
             moreInfoItem = new String[]{"专辑信息", "获取专辑封面", "获取歌词"};
-        } else {
+        } else if (t instanceof Artist) {
             Artist artist = (Artist) t;
+            coverFilePath = "";
             title = artist.getArtistName();
             subTitle = artist.getNumberOfTracks() + " 首歌曲";
             moreInfoItem = new String[]{"艺术家信息", "获取艺术家封面", "获取歌词"};
+        } else {
+            FolderSortedMusic folderSortedMusic = (FolderSortedMusic) t;
+            Music firstMusicInFolder = folderSortedMusic.getFolderMusicList().get(0);
+            coverFilePath = firstMusicInFolder.getMusicThumbAlbumCoverPath();
+            title = folderSortedMusic.getFolderName();
+            subTitle = folderSortedMusic.getParentFolderDir();
+            moreInfoItem = new String[]{};
         }
-        if (coverFilePath.length() > 0) {
+        if (coverFilePath != null && coverFilePath.length() > 0) {
             GlideApp.with(mContext).load(new File(coverFilePath)).into(holder.getCoverImageView());
         }
         holder.getTitleTextView().setText(title);

@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <ProgressBar
-        android:id="@+id/album_music_list_load_progress_bar"
+        android:id="@+id/file_sorted_music_fragment_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -18,8 +18,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/album_music_list_fragment_info_tv"
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/file_sorted_music_fragment_info_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -31,7 +31,6 @@
         tools:visibility="visible" />
 
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -41,7 +40,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/album_music_recycler_view"
+            android:id="@+id/file_sorted_music_fragment_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"

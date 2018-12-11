@@ -56,15 +56,19 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
     }
 
     @Override
-    protected void initView() {
+    protected void initData() {
         mArtistList = ForegroundMusicCache.getInstance().getArtistList();
-        mAdapter = new CommonItemRecyclerViewAdapter<>(mArtistList);
-        mArtistMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
-        mArtistMusicRecyclerView.setHasFixedSize(true);
-        mArtistMusicRecyclerView.setNestedScrollingEnabled(false);
-        mAdapter.setOnItemClickListener(ArtistMusicListFragment.this);
-        mArtistMusicRecyclerView.setAdapter(mAdapter);
-        if (!mArtistList.isEmpty()) {
+    }
+
+    @Override
+    protected void initView() {
+        if (mArtistList != null && !mArtistList.isEmpty()) {
+            mAdapter = new CommonItemRecyclerViewAdapter<>(mArtistList);
+            mArtistMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
+            mArtistMusicRecyclerView.setHasFixedSize(true);
+            mArtistMusicRecyclerView.setNestedScrollingEnabled(false);
+            mAdapter.setOnItemClickListener(ArtistMusicListFragment.this);
+            mArtistMusicRecyclerView.setAdapter(mAdapter);
             playWidgetAnimation(true, false);
         } else {
             playWidgetAnimation(true, true);

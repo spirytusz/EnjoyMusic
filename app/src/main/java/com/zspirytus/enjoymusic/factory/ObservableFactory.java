@@ -51,9 +51,11 @@ public class ObservableFactory {
             public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
                 IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.GET_MUSIC_LIST);
                 IGetMusicList getMusicListBinder = IGetMusicList.Stub.asInterface(binder);
-                emitter.onNext(getMusicListBinder.getMusicList());
-                emitter.onNext(getMusicListBinder.getMusicAlbumList());
-                emitter.onNext(getMusicListBinder.getMusicArtistList());
+                ForegroundMusicCache.getInstance().setAllMusicList(getMusicListBinder.getMusicList());
+                ForegroundMusicCache.getInstance().setAlbumList(getMusicListBinder.getMusicAlbumList());
+                ForegroundMusicCache.getInstance().setArtistList(getMusicListBinder.getMusicArtistList());
+                ForegroundMusicCache.getInstance().setFolderSortedMusicList(getMusicListBinder.getFolderSortedMusicList());
+                emitter.onNext(1);
                 emitter.onComplete();
             }
         }).observeOn(AndroidSchedulers.mainThread())

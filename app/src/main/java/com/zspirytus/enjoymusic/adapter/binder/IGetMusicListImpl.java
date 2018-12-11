@@ -4,6 +4,7 @@ import com.zspirytus.enjoymusic.IGetMusicList;
 import com.zspirytus.enjoymusic.cache.MusicScanner;
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.entity.Artist;
+import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
 
 import java.util.List;
@@ -34,5 +35,10 @@ public class IGetMusicListImpl extends IGetMusicList.Stub {
     @Override
     public List<Artist> getMusicArtistList() {
         return MusicScanner.getInstance().getArtistList();
+    }
+
+    @Override
+    public List<FolderSortedMusic> getFolderSortedMusicList() {
+        return MusicScanner.getInstance().getFolderSortedMusicList();
     }
 }

@@ -2,6 +2,7 @@ package com.zspirytus.enjoymusic.cache;
 
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.entity.Artist;
+import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.listeners.observable.PlayListChangeObservable;
 
@@ -16,6 +17,7 @@ public class ForegroundMusicCache extends PlayListChangeObservable {
     private List<Music> mAllMusicList;
     private List<Album> mAlbumList;
     private List<Artist> mArtistList;
+    private List<FolderSortedMusic> mFolderSortedMusicList;
 
     private List<Music> mPlayList;
 
@@ -66,5 +68,13 @@ public class ForegroundMusicCache extends PlayListChangeObservable {
     public void setPlayList(List<Music> playList) {
         mPlayList = playList;
         notifyAllObserverPlayListChange(playList);
+    }
+
+    public List<FolderSortedMusic> getFolderSortedMusicList() {
+        return mFolderSortedMusicList;
+    }
+
+    public void setFolderSortedMusicList(List<FolderSortedMusic> folderSortedMusicList) {
+        mFolderSortedMusicList = folderSortedMusicList;
     }
 }

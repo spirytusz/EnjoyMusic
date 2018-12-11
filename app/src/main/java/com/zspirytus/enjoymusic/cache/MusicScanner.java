@@ -5,11 +5,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
+import android.util.SparseIntArray;
 
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.entity.Artist;
+import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +32,13 @@ public class MusicScanner {
     private List<Music> mAllMusicList;
     private List<Album> mAlbumList;
     private List<Artist> mArtistList;
+    private List<FolderSortedMusic> mFolderSortedMusicList;
 
     private MusicScanner() {
         mAllMusicList = new ArrayList<>();
         mAlbumList = new ArrayList<>();
         mArtistList = new ArrayList<>();
+        mFolderSortedMusicList = new ArrayList<>();
     }
 
     public static MusicScanner getInstance() {
@@ -62,6 +67,13 @@ public class MusicScanner {
         return mArtistList;
     }
 
+    public List<FolderSortedMusic> getFolderSortedMusicList() {
+        if (mFolderSortedMusicList.isEmpty()) {
+            sortedMusicByFolder();
+        }
+        return mFolderSortedMusicList;
+    }
+
     private void scanMusic() {
         final String[] projection = {
                 // is Music
@@ -81,7 +93,6 @@ public class MusicScanner {
                 // Music duration
                 MediaStore.Audio.AudioColumns.DURATION,
                 MediaStore.Audio.AudioColumns.DATE_ADDED,
-                MediaStore.Audio.AudioColumns.TRACK
         };
         ContentResolver resolver = MyApplication.getBackgroundContext().getContentResolver();
         Cursor cursor = resolver.query(
@@ -182,6 +193,24 @@ public class MusicScanner {
             }
         }
         cursor.close();
+    }
+
+    private void sortedMusicByFolder() {
+        SparseIntArray indexMemory = new SparseIntArray();
+        for (Music music : getAllMusicList()) {
+            File file = new File(music.getMusicFilePath());
+            String parentDir = file.getParentFile().getParentFile().getPath();
+            int findIndex = indexMemory.get(parentDir.hashCode());
+            if (findIndex <= 0) {
+                List<Music> musicList = new ArrayList<>();
+                musicList.add(music);
+                FolderSortedMusic folderSortedMusic = new FolderSortedMusic(file.getParentFile().getName(), file.getParentFile().getParentFile().getPath(), musicList);
+                mFolderSortedMusicList.add(folderSortedMusic);
+                indexMemory.put(parentDir.hashCode(), mFolderSortedMusicList.size());
+            } else {
+                mFolderSortedMusicList.get(findIndex - 1).getFolderMusicList().add(music);
+            }
+        }
     }
 
     private String getThumbAlbum(String albumId) {

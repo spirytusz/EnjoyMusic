@@ -42,6 +42,8 @@ public class MyViewPagerAdapter extends FragmentPagerAdapter {
                 return Constant.HomePageTabTitle.ALBUM;
             case 2:
                 return Constant.HomePageTabTitle.ARTIST;
+            case 3:
+                return Constant.HomePageTabTitle.FOLDER;
         }
         return "";
     }

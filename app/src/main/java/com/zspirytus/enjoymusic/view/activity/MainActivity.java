@@ -34,8 +34,6 @@ import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.GlideApp;
-import com.zspirytus.enjoymusic.entity.Album;
-import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
@@ -47,13 +45,10 @@ import com.zspirytus.enjoymusic.receivers.observer.HomePageRecyclerViewLoadObser
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
-import com.zspirytus.enjoymusic.view.fragment.AboutFragment;
 import com.zspirytus.enjoymusic.view.fragment.BaseFragment;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicCategoryFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
-import com.zspirytus.enjoymusic.view.fragment.PlayListFragment;
-import com.zspirytus.enjoymusic.view.fragment.SettingsFragment;
 import com.zspirytus.enjoymusic.view.widget.CustomNavigationView;
 import com.zspirytus.zspermission.PermissionGroup;
 import com.zspirytus.zspermission.ZSPermission;
@@ -62,7 +57,6 @@ import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.io.File;
-import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -101,9 +95,10 @@ public class MainActivity extends BaseActivity
     @ViewInject(R.id.bottom_music_control_shadow)
     private View mBottomMusicControlShadow;
 
+    private DrawerListenerImpl mDrawerListener;
+
     private ServiceConnection conn;
     private ActionBarDrawerToggle toggle;
-    private int selectedNavigationMenuItemId;
     private long pressedBackLastTime;
     private boolean isPlaying = false;
     private boolean isHomePageRvLoadFinish = false;
@@ -125,7 +120,7 @@ public class MainActivity extends BaseActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // navigate to selected fragment when mDrawerLayout close completed
         // closing state: begin closing, closing finish closing will listen by DrawerListenerImpl
-        selectedNavigationMenuItemId = item.getItemId();
+        mDrawerListener.setSelectedNavId(item.getItemId());
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -179,41 +174,8 @@ public class MainActivity extends BaseActivity
         // TODO: 2018/9/15 has not fixed the bugs:
         // TODO: 2018/9/15 1. When switch MusicCategoryFragment#AlbumMusicListFragment to HomePageFragment, the MusicCategoryFragment has not be hidden.
         // TODO: 2018/9/15 2. viewPager current fragment changed caused by navigation menu selected should be smoothly but not.
-        mDrawerLayout.addDrawerListener(new DrawerListenerImpl() {
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                super.onDrawerSlide(drawerView, slideOffset);
-                if (selectedNavigationMenuItemId != 0 && slideOffset == 0) {
-                    switch (selectedNavigationMenuItemId) {
-                        case R.id.nav_home_page:
-                            showCastFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
-                            break;
-                        case R.id.nav_music_all:
-                            FragmentFactory.getInstance().get(MusicCategoryFragment.class).setCurrentPosition(0);
-                            showCastFragment(FragmentFactory.getInstance().get(MusicCategoryFragment.class));
-                            break;
-                        case R.id.nav_music_album:
-                            FragmentFactory.getInstance().get(MusicCategoryFragment.class).setCurrentPosition(1);
-                            showCastFragment(FragmentFactory.getInstance().get(MusicCategoryFragment.class));
-                            break;
-                        case R.id.nav_music_artist:
-                            FragmentFactory.getInstance().get(MusicCategoryFragment.class).setCurrentPosition(2);
-                            showCastFragment(FragmentFactory.getInstance().get(MusicCategoryFragment.class));
-                            break;
-                        case R.id.nav_play_list:
-                            showCastFragment(FragmentFactory.getInstance().get(PlayListFragment.class));
-                            break;
-                        case R.id.nav_settings:
-                            showCastFragment(FragmentFactory.getInstance().get(SettingsFragment.class));
-                            break;
-                        case R.id.nav_about:
-                            showCastFragment(FragmentFactory.getInstance().get(AboutFragment.class));
-                            break;
-                    }
-                    selectedNavigationMenuItemId = 0;
-                }
-            }
-        });
+        mDrawerListener = new DrawerListenerImpl();
+        mDrawerLayout.addDrawerListener(mDrawerListener);
         mBottomMusicControl.setOnClickListener(this);
         mBottomMusicPlayOrPause.setOnClickListener(this);
         mBottomMusicNext.setOnClickListener(this);
@@ -341,17 +303,12 @@ public class MainActivity extends BaseActivity
 
                     @Override
                     public void onNext(Object o) {
-                        if (ForegroundMusicCache.getInstance().getAllMusicList() == null)
-                            ForegroundMusicCache.getInstance().setAllMusicList((List<Music>) o);
-                        else if (ForegroundMusicCache.getInstance().getAlbumList() == null)
-                            ForegroundMusicCache.getInstance().setAlbumList((List<Album>) o);
-                        else
-                            ForegroundMusicCache.getInstance().setArtistList((List<Artist>) o);
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
                     }
 
                     @Override

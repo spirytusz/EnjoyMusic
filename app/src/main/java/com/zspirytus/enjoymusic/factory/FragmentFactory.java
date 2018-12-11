@@ -5,6 +5,7 @@ import com.zspirytus.enjoymusic.view.fragment.AlbumMusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.AllMusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.ArtistMusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.BaseFragment;
+import com.zspirytus.enjoymusic.view.fragment.FolderSortedMusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicCategoryFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
@@ -27,7 +28,8 @@ public class FragmentFactory {
     private AllMusicListFragment mAllMusicListFragment;
     private AlbumMusicListFragment mAlbumMusicListFragment;
     private ArtistMusicListFragment mArtistMusicListFragment;
-    private PlayListFragment mPlayListFragment = PlayListFragment.getInstance();
+    private PlayListFragment mPlayListFragment;
+    private FolderSortedMusicListFragment mFolderSortedMusicListFragment;
 
     private FragmentFactory() {
 
@@ -79,7 +81,13 @@ public class FragmentFactory {
             }
             return (T) mArtistMusicListFragment;
         } else if (tClass == PlayListFragment.class) {
+            if (mPlayListFragment == null)
+                mPlayListFragment = PlayListFragment.getInstance();
             return (T) mPlayListFragment;
+        } else if (tClass == FolderSortedMusicListFragment.class) {
+            if (mFolderSortedMusicListFragment == null)
+                mFolderSortedMusicListFragment = FolderSortedMusicListFragment.getInstance();
+            return (T) mFolderSortedMusicListFragment;
         }
         return null;
     }

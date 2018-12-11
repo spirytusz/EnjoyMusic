@@ -60,7 +60,7 @@ public class CardViewItemRecyclerViewAdapter<T>
             title = album.getAlbumName();
             subTitle = album.getArtist();
         }
-        if (coverFilePath.length() > 0) {
+        if (coverFilePath != null && coverFilePath.length() > 0) {
             GlideApp.with(mContext).load(new File(coverFilePath)).into(holder.getCoverImageView());
         }
         holder.getTitleTextView().setText(title);

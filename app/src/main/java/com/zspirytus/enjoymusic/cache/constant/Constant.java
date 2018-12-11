@@ -45,6 +45,7 @@ public interface Constant {
         String ALL = "曲目";
         String ALBUM = "专辑";
         String ARTIST = "艺术家";
+        String FOLDER = "文件夹";
     }
 
     interface FragmentName {

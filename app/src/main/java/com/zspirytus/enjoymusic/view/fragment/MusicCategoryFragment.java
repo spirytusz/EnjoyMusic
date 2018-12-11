@@ -11,8 +11,6 @@ import com.zspirytus.enjoymusic.impl.ViewPagerOnPageChangeListenerImpl;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
-import org.simple.eventbus.EventBus;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,7 +22,7 @@ import java.util.List;
 @LayoutIdInject(R.layout.fragment_music_category_home_page)
 public class MusicCategoryFragment extends BaseFragment {
 
-    private static final int VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT = 3;
+    private static final int VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT = 5;
 
     @ViewInject(R.id.music_category_tab_layout)
     private TabLayout mTabLayout;
@@ -41,6 +39,7 @@ public class MusicCategoryFragment extends BaseFragment {
         fragments.add(FragmentFactory.getInstance().get(AllMusicListFragment.class));
         fragments.add(FragmentFactory.getInstance().get(AlbumMusicListFragment.class));
         fragments.add(FragmentFactory.getInstance().get(ArtistMusicListFragment.class));
+        fragments.add(FragmentFactory.getInstance().get(FolderSortedMusicListFragment.class));
         mAdapter = new MyViewPagerAdapter(getChildFragmentManager(), fragments);
     }
 
@@ -49,6 +48,7 @@ public class MusicCategoryFragment extends BaseFragment {
         mTabLayout.addTab(mTabLayout.newTab().setText(Constant.HomePageTabTitle.ALL));
         mTabLayout.addTab(mTabLayout.newTab().setText(Constant.HomePageTabTitle.ALBUM));
         mTabLayout.addTab(mTabLayout.newTab().setText(Constant.HomePageTabTitle.ARTIST));
+        mTabLayout.addTab(mTabLayout.newTab().setText(Constant.HomePageTabTitle.FOLDER));
         mTabLayout.setupWithViewPager(mViewPager);
         mViewPager.setAdapter(mAdapter);
         mViewPager.setCurrentItem(mCurrentPosition);
@@ -61,6 +61,7 @@ public class MusicCategoryFragment extends BaseFragment {
             @Override
             public void onPageSelected(int position) {
                 mCurrentPosition = position;
+                e(mCurrentPosition + "");
             }
 
             @Override
@@ -70,16 +71,6 @@ public class MusicCategoryFragment extends BaseFragment {
         });
         mViewPager.setOffscreenPageLimit(VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT);
         mViewPager.setCurrentItem(mCurrentPosition, true);
-    }
-
-    @Override
-    protected void registerEvent() {
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void unregisterEvent() {
-        EventBus.getDefault().unregister(this);
     }
 
     public void setCurrentPosition(int currentPosition) {

@@ -55,12 +55,13 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     }
 
     @Override
-    protected void initView() {
-        mAlbumMusicRecyclerView.setVisibility(View.GONE);
-        mLoadProgressBar.setVisibility(View.VISIBLE);
-        mInfoTextView.setVisibility(View.GONE);
+    protected void initData() {
         mAlbumList = ForegroundMusicCache.getInstance().getAlbumList();
-        if (!mAlbumList.isEmpty()) {
+    }
+
+    @Override
+    protected void initView() {
+        if (mAlbumList != null && !mAlbumList.isEmpty()) {
             playWidgetAnimation(true, false);
             mAdapter = new CardViewItemRecyclerViewAdapter<>(mAlbumList);
             mAdapter.setOnItemClickListener(AlbumMusicListFragment.this);
