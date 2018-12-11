@@ -5,7 +5,6 @@ import com.zspirytus.enjoymusic.cache.MusicScanner;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 
 import java.util.List;
 
@@ -26,6 +25,5 @@ public class ISetPlayListImpl extends ISetPlayList.Stub {
     public void setPlayList(MusicFilter musicFilter) {
         List<Music> filterMusicList = musicFilter.filter(MusicScanner.getInstance().getAllMusicList());
         MusicPlayOrderManager.getInstance().setPlayList(filterMusicList);
-        LogUtil.e(this.getClass().getSimpleName(), "TAG:musicFilter = " + musicFilter);
     }
 }

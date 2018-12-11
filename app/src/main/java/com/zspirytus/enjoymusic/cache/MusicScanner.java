@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
-import android.util.SparseArray;
 
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.entity.Artist;
@@ -20,6 +19,8 @@ import java.util.List;
  */
 
 public class MusicScanner {
+
+    private static final String TAG = "MusicScanner";
 
     private static class SingletonHolder {
         private static MusicScanner INSTANCE = new MusicScanner();
@@ -42,39 +43,21 @@ public class MusicScanner {
     public List<Music> getAllMusicList() {
         if (mAllMusicList.isEmpty()) {
             scanMusic();
+            scanArtist();
         }
         return mAllMusicList;
     }
 
     public List<Album> getAlbumList() {
-        if (mAllMusicList.isEmpty()) {
-            scanMusic();
-        } else if (mAlbumList.isEmpty()) {
-            for (Music music : mAllMusicList) {
-                Album album = new Album(music.getMusicAlbumName(), music.getMusicThumbAlbumCoverPath(), music.getMusicArtist());
-                if (!mAlbumList.contains(album)) {
-                    mAlbumList.add(album);
-                }
-            }
+        if (mAlbumList.isEmpty()) {
+            scanAlbum();
         }
         return mAlbumList;
     }
 
     public List<Artist> getArtistList() {
-        if (mAllMusicList.isEmpty()) {
-            scanMusic();
-        } else if (mArtistList.isEmpty()) {
-            SparseArray<Integer> artistToIndexMapper = new SparseArray<>();
-            for (Music music : mAllMusicList) {
-                Artist artist = new Artist(music.getMusicArtist());
-                if (artistToIndexMapper.indexOfKey(artist.hashCode()) >= 0) {
-                    int index = artistToIndexMapper.get(artist.hashCode());
-                    mArtistList.get(index).increaseMusicCount();
-                } else {
-                    mArtistList.add(artist);
-                    artistToIndexMapper.put(artist.hashCode(), mArtistList.size() - 1);
-                }
-            }
+        if (mArtistList.isEmpty()) {
+            scanArtist();
         }
         return mArtistList;
     }
@@ -135,6 +118,70 @@ public class MusicScanner {
                 cursor.close();
             }
         }
+    }
+
+    private void scanAlbum() {
+        final String[] projection = {
+                MediaStore.Audio.AlbumColumns.ALBUM,
+                MediaStore.Audio.AlbumColumns.ALBUM_ART,
+                MediaStore.Audio.AlbumColumns.ARTIST,
+                MediaStore.Audio.AlbumColumns.FIRST_YEAR,
+                MediaStore.Audio.AlbumColumns.LAST_YEAR,
+                MediaStore.Audio.AlbumColumns.NUMBER_OF_SONGS,
+        };
+        ContentResolver resolver = MyApplication.getBackgroundContext().getContentResolver();
+        Cursor cursor = resolver.query(
+                MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                projection,
+                null,
+                null,
+                null);
+        if (cursor != null) {
+            synchronized (this) {
+                while (cursor.moveToNext()) {
+                    String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM));
+                    String albumCoverFilePath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_ART));
+                    String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ARTIST));
+                    String firstYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.FIRST_YEAR));
+                    String lastYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.LAST_YEAR));
+                    int numberOfSong = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.NUMBER_OF_SONGS));
+                    Album album = new Album(albumName, albumCoverFilePath, artist, firstYear, lastYear, numberOfSong);
+                    if (!mAlbumList.contains(album)) {
+                        mAlbumList.add(album);
+                    }
+                }
+            }
+        }
+        cursor.close();
+    }
+
+    private void scanArtist() {
+        final String[] projection = {
+                MediaStore.Audio.ArtistColumns.ARTIST,
+                MediaStore.Audio.ArtistColumns.NUMBER_OF_ALBUMS,
+                MediaStore.Audio.ArtistColumns.NUMBER_OF_TRACKS,
+        };
+        ContentResolver resolver = MyApplication.getBackgroundContext().getContentResolver();
+        Cursor cursor = resolver.query(
+                MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
+                projection,
+                null,
+                null,
+                null);
+        if (cursor != null) {
+            synchronized (this) {
+                while (cursor.moveToNext()) {
+                    String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.ARTIST));
+                    int numberOfAlbums = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.NUMBER_OF_ALBUMS));
+                    int numberOfTracks = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.NUMBER_OF_TRACKS));
+                    Artist artist = new Artist(artistName, numberOfAlbums, numberOfTracks);
+                    if (!mArtistList.contains(artist)) {
+                        mArtistList.add(artist);
+                    }
+                }
+            }
+        }
+        cursor.close();
     }
 
     private String getThumbAlbum(String albumId) {

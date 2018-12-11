@@ -10,27 +10,32 @@ import android.os.Parcelable;
 public class Artist implements Parcelable {
 
     private String mArtistName;
-    private int mMusicCount = 1;
+    private int mNumberOfAlbums;
+    private int mNumberOfTracks;
 
-    public Artist(String artistName) {
-        this.mArtistName = artistName;
+    public Artist(String artistName, int numberOfAlbums, int numberOfTracks) {
+        mArtistName = artistName;
+        mNumberOfAlbums = numberOfAlbums;
+        mNumberOfTracks = numberOfTracks;
     }
 
     private Artist(Parcel source) {
         mArtistName = source.readString();
-        mMusicCount = source.readInt();
+        mNumberOfAlbums = source.readInt();
+        mNumberOfTracks = source.readInt();
     }
+
 
     public String getArtistName() {
         return mArtistName;
     }
 
-    public int getMusicCount() {
-        return mMusicCount;
+    public int getNumberOfAlbums() {
+        return mNumberOfAlbums;
     }
 
-    public void increaseMusicCount() {
-        mMusicCount++;
+    public int getNumberOfTracks() {
+        return mNumberOfTracks;
     }
 
     @Override
@@ -41,7 +46,8 @@ public class Artist implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mArtistName);
-        dest.writeInt(mMusicCount);
+        dest.writeInt(mNumberOfAlbums);
+        dest.writeInt(mNumberOfTracks);
     }
 
     @Override

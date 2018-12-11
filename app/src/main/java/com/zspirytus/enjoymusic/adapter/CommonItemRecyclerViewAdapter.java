@@ -65,7 +65,7 @@ public class CommonItemRecyclerViewAdapter<T> extends BaseRecyclerViewAdapter<Mu
         } else {
             Artist artist = (Artist) t;
             title = artist.getArtistName();
-            subTitle = artist.getMusicCount() + " 首歌曲";
+            subTitle = artist.getNumberOfTracks() + " 首歌曲";
             moreInfoItem = new String[]{"艺术家信息", "获取艺术家封面", "获取歌词"};
         }
         if (coverFilePath.length() > 0) {

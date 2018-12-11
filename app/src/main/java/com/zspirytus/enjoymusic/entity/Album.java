@@ -10,43 +10,52 @@ import android.os.Parcelable;
 public class Album implements Parcelable {
 
     private String mAlbumName;
-    private String mArtist;
     private String mAlbumCoverPath;
+    private String mArtist;
+    private String mFirstYear;
+    private String mLastYear;
+    private int mAlbumSongCount;
 
-    public Album(String albumName, String albumCoverPath, String artist) {
+    public Album(String albumName, String albumCoverPath, String artist, String firstYear, String lastYear, int albumSongCount) {
         mAlbumName = albumName;
         mAlbumCoverPath = albumCoverPath;
         mArtist = artist;
+        mFirstYear = firstYear;
+        mLastYear = lastYear;
+        mAlbumSongCount = albumSongCount;
     }
 
     private Album(Parcel source) {
         mAlbumName = source.readString();
-        mArtist = source.readString();
         mAlbumCoverPath = source.readString();
+        mArtist = source.readString();
+        mFirstYear = source.readString();
+        mLastYear = source.readString();
+        mAlbumSongCount = source.readInt();
     }
 
     public String getAlbumCoverPath() {
         return mAlbumCoverPath;
     }
 
-    public void setAlbumCoverPath(String albumCoverPath) {
-        this.mAlbumCoverPath = albumCoverPath;
-    }
-
     public String getAlbumName() {
         return mAlbumName;
-    }
-
-    public void setAlbumName(String albumName) {
-        this.mAlbumName = albumName;
     }
 
     public String getArtist() {
         return mArtist;
     }
 
-    public void setArtist(String artist) {
-        this.mArtist = artist;
+    public int getAlbumSongCount() {
+        return mAlbumSongCount;
+    }
+
+    public String getFirstYear() {
+        return mFirstYear;
+    }
+
+    public String getLastYear() {
+        return mLastYear;
     }
 
     @Override
@@ -57,20 +66,28 @@ public class Album implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mAlbumName);
-        dest.writeString(mArtist);
         dest.writeString(mAlbumCoverPath);
+        dest.writeString(mArtist);
+        dest.writeString(mFirstYear);
+        dest.writeString(mLastYear);
+        dest.writeInt(mAlbumSongCount);
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{");
-        stringBuilder.append("mAlbumName = ");
+        stringBuilder.append("albumName = ");
         stringBuilder.append(mAlbumName != null ? mAlbumName + ", " : "null, ");
-        stringBuilder.append("mAlbumCoverPath = ");
+        stringBuilder.append("albumCoverPath = ");
         stringBuilder.append(mAlbumCoverPath != null ? mAlbumCoverPath + ", " : "null, ");
-        stringBuilder.append("mArtist = ");
-        stringBuilder.append(mArtist != null ? mArtist : "null");
+        stringBuilder.append("artist = ");
+        stringBuilder.append(mArtist != null ? mArtist + ", " : "null, ");
+        stringBuilder.append("firstYear = ");
+        stringBuilder.append(mFirstYear != null ? mFirstYear + ", " : "null, ");
+        stringBuilder.append("lastYear = ");
+        stringBuilder.append(mLastYear != null ? mLastYear + ", " : "null, ");
+        stringBuilder.append("albumSongCount = " + mAlbumSongCount);
         stringBuilder.append("}");
         return stringBuilder.toString();
     }
