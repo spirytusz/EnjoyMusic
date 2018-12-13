@@ -62,7 +62,7 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
     }
 
     public void show(BaseFragment shouldShowFragment) {
-        show(shouldShowFragment, 0, 0);
+        show(shouldShowFragment, R.anim.anim_fragment_translate_show_up, R.anim.anim_fragment_translate_show_down);
     }
 
     public void show(BaseFragment shouldShowFragment, int enter, int exit) {

@@ -47,6 +47,7 @@ import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.view.fragment.BaseFragment;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
+import com.zspirytus.enjoymusic.view.fragment.LaunchAnimationFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicCategoryFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.enjoymusic.view.widget.CustomNavigationView;
@@ -57,8 +58,11 @@ import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -106,6 +110,11 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTransparentStatusBar();
+
+        setFullScreenOrNot(true);
+        showLaunchAnimation();
+
         FragmentFactory.getInstance().get(HomePageFragment.class).setRecyclerViewLoadStateObserver(this);
         bindPlayMusicService();
     }
@@ -422,6 +431,40 @@ public class MainActivity extends BaseActivity
             }
         };
         bindService(startPlayMusicServiceIntent, conn, BIND_AUTO_CREATE);
+    }
+
+    private void showLaunchAnimation() {
+        final LaunchAnimationFragment fragment = new LaunchAnimationFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.launch_animation_container, fragment)
+                .show(fragment)
+                .commitAllowingStateLoss();
+        Observable.timer(3, TimeUnit.SECONDS).subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Long>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        getSupportFragmentManager().beginTransaction()
+                                .hide(fragment)
+                                .remove(fragment)
+                                .commitAllowingStateLoss();
+                        setFullScreenOrNot(false);
+                    }
+                });
     }
 
     public static void startActivity(Context context, String extra, String action) {
