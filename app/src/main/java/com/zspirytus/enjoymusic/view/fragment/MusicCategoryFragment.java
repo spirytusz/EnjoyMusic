@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 @LayoutIdInject(R.layout.fragment_music_category_home_page)
-public class MusicCategoryFragment extends BaseFragment {
+public class MusicCategoryFragment extends CommonHeaderBaseFragment {
 
     private static final int VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT = 5;
 
@@ -45,6 +45,8 @@ public class MusicCategoryFragment extends BaseFragment {
 
     @Override
     protected void initView() {
+        setNavIconAction(true);
+        setTitle(Constant.FragmentName.musicCategoryFragmentName);
         mTabLayout.addTab(mTabLayout.newTab().setText(Constant.HomePageTabTitle.ALL));
         mTabLayout.addTab(mTabLayout.newTab().setText(Constant.HomePageTabTitle.ALBUM));
         mTabLayout.addTab(mTabLayout.newTab().setText(Constant.HomePageTabTitle.ARTIST));

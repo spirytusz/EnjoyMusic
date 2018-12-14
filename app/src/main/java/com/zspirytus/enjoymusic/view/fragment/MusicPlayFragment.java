@@ -32,7 +32,7 @@ import java.io.File;
  */
 
 @LayoutIdInject(R.layout.fragment_music_play)
-public class MusicPlayFragment extends BaseFragment implements View.OnClickListener, MusicPlayStateObserver,
+public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.OnClickListener, MusicPlayStateObserver,
         MusicPlayProgressObserver, PlayedMusicChangeObserver {
 
     @ViewInject(R.id.background)
@@ -133,6 +133,8 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     protected void initView() {
+        setNavIconAction(false);
+        setTitle(Constant.FragmentName.musicPlayFragmentName);
         if (mCurrentPlayingMusic != null) {
             String musicAlbumUri = mCurrentPlayingMusic.getMusicThumbAlbumCoverPath();
             GlideApp.with(this).load(musicAlbumUri != null ? new File(musicAlbumUri) : R.color.grey)

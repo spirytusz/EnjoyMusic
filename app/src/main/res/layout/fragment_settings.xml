@@ -4,6 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <include layout="@layout/common_header_layout" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/settings_recyclerview"
         android:layout_width="match_parent"
@@ -14,9 +16,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:text="SettingsFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="SettingsFragment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

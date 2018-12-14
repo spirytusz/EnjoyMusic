@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -13,11 +12,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -48,7 +44,6 @@ import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.view.fragment.BaseFragment;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 import com.zspirytus.enjoymusic.view.fragment.LaunchAnimationFragment;
-import com.zspirytus.enjoymusic.view.fragment.MusicCategoryFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.enjoymusic.view.widget.CustomNavigationView;
 import com.zspirytus.zspermission.PermissionGroup;
@@ -79,10 +74,6 @@ public class MainActivity extends BaseActivity
     private DrawerLayout mDrawerLayout;
     @ViewInject(R.id.nav_view)
     private CustomNavigationView mCustomNavigationView;
-    @ViewInject(R.id.main_activity_toolbar)
-    private Toolbar mToolbar;
-    @ViewInject(R.id.toolbar_shadow)
-    private View mToolbarShadow;
 
     @ViewInject(R.id.bottom_music_control)
     private View mBottomMusicControl;
@@ -102,7 +93,6 @@ public class MainActivity extends BaseActivity
     private DrawerListenerImpl mDrawerListener;
 
     private ServiceConnection conn;
-    private ActionBarDrawerToggle toggle;
     private long pressedBackLastTime;
     private boolean isPlaying = false;
     private boolean isHomePageRvLoadFinish = false;
@@ -111,9 +101,6 @@ public class MainActivity extends BaseActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTransparentStatusBar();
-
-        setFullScreenOrNot(true);
-        showLaunchAnimation();
 
         FragmentFactory.getInstance().get(HomePageFragment.class).setRecyclerViewLoadStateObserver(this);
         bindPlayMusicService();
@@ -157,7 +144,6 @@ public class MainActivity extends BaseActivity
             return;
         }
         if (FragmentVisibilityManager.getInstance().peek() instanceof MusicPlayFragment) {
-            changeClickToolbarButtonResponseAndToolbarStyle(true);
             showCastFragment(FragmentVisibilityManager.getInstance().getBackFragment());
         } else {
             long now = System.currentTimeMillis();
@@ -172,14 +158,6 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void initView() {
-        setSupportActionBar(mToolbar);
-        toggle = new ActionBarDrawerToggle(
-                this,
-                mDrawerLayout,
-                mToolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close
-        );
         // TODO: 2018/9/15 has not fixed the bugs:
         // TODO: 2018/9/15 1. When switch MusicCategoryFragment#AlbumMusicListFragment to HomePageFragment, the MusicCategoryFragment has not be hidden.
         // TODO: 2018/9/15 2. viewPager current fragment changed caused by navigation menu selected should be smoothly but not.
@@ -188,18 +166,11 @@ public class MainActivity extends BaseActivity
         mBottomMusicControl.setOnClickListener(this);
         mBottomMusicPlayOrPause.setOnClickListener(this);
         mBottomMusicNext.setOnClickListener(this);
-        changeClickToolbarButtonResponseAndToolbarStyle(true);
     }
 
     @Override
     protected void initData() {
         mCustomNavigationView.setNavigationItemSelectedListener(this);
-        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
     }
 
     @Override
@@ -228,7 +199,6 @@ public class MainActivity extends BaseActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mToolbar.setTitle(music.getMusicName());
                 String coverFilePath = music.getMusicThumbAlbumCoverPath();
                 if (coverFilePath != null) {
                     File coverFile = new File(coverFilePath);
@@ -287,13 +257,7 @@ public class MainActivity extends BaseActivity
 
     @Subscriber(tag = Constant.EventBusTag.SHOW_CAST_FRAGMENT)
     public <T extends BaseFragment> void showCastFragment(T shouldShowFragment) {
-        if (shouldShowFragment instanceof MusicCategoryFragment) {
-            setToolbarShadowTranslateZ(0.0f);
-        } else {
-            setToolbarShadowTranslateZ(1.0f);
-        }
         if (shouldShowFragment instanceof MusicPlayFragment) {
-            changeClickToolbarButtonResponseAndToolbarStyle(false);
             setBottomMusicControlVisibility(View.GONE);
             return;
         } else if (isHomePageRvLoadFinish) {
@@ -351,12 +315,6 @@ public class MainActivity extends BaseActivity
                 .request();
     }
 
-    private void setToolbarShadowTranslateZ(float translateZ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mToolbarShadow.setTranslationZ(translateZ);
-        }
-    }
-
     private void setBottomMusicControlVisibility(final int visibility) {
         if (mBottomMusicControl.getVisibility() == visibility)
             return;
@@ -398,24 +356,6 @@ public class MainActivity extends BaseActivity
         mBottomMusicControl.startAnimation(animation);
     }
 
-    private void changeClickToolbarButtonResponseAndToolbarStyle(boolean isShouldShowDrawer) {
-        if (isShouldShowDrawer) {
-            toggle.setDrawerIndicatorEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            mToolbar.setNavigationIcon(R.drawable.ic_rotatable_menu_white);
-            mDrawerLayout.addDrawerListener(toggle);
-            toggle.syncState();
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.LEFT);
-        } else {
-            toggle.setDrawerIndicatorEnabled(false);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            mToolbar.setNavigationIcon(R.drawable.ic_rotatable_arrow_back_white);
-            mDrawerLayout.removeDrawerListener(toggle);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.LEFT);
-        }
-    }
-
     private void bindPlayMusicService() {
         Intent startPlayMusicServiceIntent = new Intent(this, PlayMusicService.class);
         conn = new ServiceConnection() {
@@ -434,6 +374,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void showLaunchAnimation() {
+        setFullScreenOrNot(true);
         final LaunchAnimationFragment fragment = new LaunchAnimationFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.launch_animation_container, fragment)

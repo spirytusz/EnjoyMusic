@@ -1,6 +1,7 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 
 /**
@@ -8,10 +9,16 @@ import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
  */
 
 @LayoutIdInject(R.layout.fragment_about)
-public class AboutFragment extends BaseFragment {
+public class AboutFragment extends CommonHeaderBaseFragment {
 
     public static AboutFragment getInstance() {
         AboutFragment instance = new AboutFragment();
         return instance;
+    }
+
+    @Override
+    protected void initView() {
+        setNavIconAction(true);
+        setTitle(Constant.FragmentName.aboutFragmentName);
     }
 }

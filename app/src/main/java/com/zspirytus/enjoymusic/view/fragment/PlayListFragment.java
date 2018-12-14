@@ -26,7 +26,7 @@ import java.util.List;
  * Created by ZSpirytus on 2018/9/17.
  */
 @LayoutIdInject(R.layout.fragment_play_list)
-public class PlayListFragment extends BaseFragment
+public class PlayListFragment extends CommonHeaderBaseFragment
         implements OnRecyclerViewItemClickListener, PlayListChangeObserver {
 
     @ViewInject(R.id.play_list_rv)
@@ -45,6 +45,8 @@ public class PlayListFragment extends BaseFragment
 
     @Override
     protected void initView() {
+        setNavIconAction(true);
+        setTitle(Constant.FragmentName.playListFragmentName);
         mPlayListRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mPlayListRecyclerView.setHasFixedSize(true);
         mPlayListRecyclerView.setNestedScrollingEnabled(false);

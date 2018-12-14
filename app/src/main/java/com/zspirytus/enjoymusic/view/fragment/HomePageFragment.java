@@ -33,7 +33,7 @@ import io.reactivex.disposables.Disposable;
  */
 
 @LayoutIdInject(R.layout.fragment_home_page)
-public class HomePageFragment extends BaseFragment
+public class HomePageFragment extends CommonHeaderBaseFragment
         implements OnRecyclerViewItemClickListener, OnRecyclerViewHeaderClickListener {
 
     @ViewInject(R.id.home_page_recycler_view)
@@ -54,6 +54,8 @@ public class HomePageFragment extends BaseFragment
 
     @Override
     protected void initView() {
+        setNavIconAction(true);
+        setTitle(Constant.FragmentName.homePageFragmentName);
         ObservableFactory.getHomePageRecyclerViewItemsObservable()
                 .subscribe(new Observer<HomePageRecyclerViewItem>() {
                     @Override

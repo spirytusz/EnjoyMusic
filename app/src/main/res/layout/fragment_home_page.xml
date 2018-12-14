@@ -5,6 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/status_bar_toolbar_holder"
+        layout="@layout/common_header_layout" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/home_page_recycler_view"
         android:layout_width="0dp"
@@ -13,7 +17,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/status_bar_toolbar_holder"
         tools:visibility="visible" />
 
     <ProgressBar

@@ -11,7 +11,7 @@ import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
  */
 
 @LayoutIdInject(R.layout.fragment_settings)
-public class SettingsFragment extends BaseFragment {
+public class SettingsFragment extends CommonHeaderBaseFragment {
 
     @ViewInject(R.id.settings_recyclerview)
     private RecyclerView mSettingFragmentRecyclerView;
@@ -19,5 +19,10 @@ public class SettingsFragment extends BaseFragment {
     public static SettingsFragment getInstance() {
         SettingsFragment instance = new SettingsFragment();
         return instance;
+    }
+
+    @Override
+    protected void initView() {
+        super.initView();
     }
 }

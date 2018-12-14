@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <include layout="@layout/common_header_layout" />
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/music_category_app_bar_layout"
         android:layout_width="0dp"
@@ -15,7 +17,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/status_bar_toolbar_holder">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/music_category_tab_layout"
