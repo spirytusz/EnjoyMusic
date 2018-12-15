@@ -4,7 +4,9 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <include layout="@layout/common_header_layout" />
+    <include
+        android:id="@+id/status_bar_toolbar_holder"
+        layout="@layout/common_header_layout" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/settings_recyclerview"

@@ -19,6 +19,7 @@ public interface Constant {
     interface EventBusTag {
         String SHOW_CAST_FRAGMENT = "show cast fragment";
         String START_MAIN_ACTIVITY = "start MainActivity";
+        String OPEN_DRAWER = "openDrawer";
     }
 
     interface AnimationProperty {
@@ -49,6 +50,7 @@ public interface Constant {
     }
 
     interface FragmentName {
+        String folderSortedMusicListFragment = "FolderSortedMusicListFragment";
         String aboutFragmentName = "AboutFragment";
         String albumMusicListFragmentName = "AlbumMusicListFragment";
         String allMusicListFragmentName = "AllMusicListFragment";

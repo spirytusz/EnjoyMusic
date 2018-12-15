@@ -75,6 +75,7 @@ public class PlayMusicService extends BaseService implements RemotePlayProgressC
 
     @Override
     public void onPlayMusicChange(Music currentPlayingMusic) {
+        NotificationHelper.getInstance().showNotification(currentPlayingMusic);
         if (notifyAllObserverPlayMusicChange(currentPlayingMusic) == 0) {
             // handle play music logic by service
         }

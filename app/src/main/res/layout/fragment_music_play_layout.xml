@@ -7,7 +7,9 @@
     android:gravity="center"
     tools:layout_editor_absoluteY="81dp">
 
-    <include layout="@layout/common_header_layout" />
+    <include
+        android:id="@+id/status_bar_toolbar_holder"
+        layout="@layout/common_header_layout" />
 
     <ImageView
         android:id="@+id/background"

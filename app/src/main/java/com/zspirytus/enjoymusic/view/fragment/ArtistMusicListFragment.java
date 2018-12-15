@@ -26,7 +26,7 @@ import java.util.List;
  * Created by ZSpirytus on 2018/9/12.
  */
 // TODO: 2018/9/17 click recyclerview to navigate to corresponding music list
-@LayoutIdInject(R.layout.fragment_artist_music_list)
+@LayoutIdInject(R.layout.fragment_artist_music_list_layout)
 public class ArtistMusicListFragment extends LazyLoadBaseFragment
         implements OnRecyclerViewItemClickListener {
 

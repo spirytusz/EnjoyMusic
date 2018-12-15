@@ -43,6 +43,8 @@ public class FragmentChangeObservable {
                     observerIterator.next().onFragmentChange(Constant.FragmentName.albumMusicListFragmentName);
                 } else if (category == 2) {
                     observerIterator.next().onFragmentChange(Constant.FragmentName.artistMusicListFragmentName);
+                } else if (category == 3) {
+                    observerIterator.next().onFragmentChange(Constant.FragmentName.folderSortedMusicListFragment);
                 }
             } else {
                 observerIterator.next().onFragmentChange(baseFragmentString);

@@ -32,7 +32,7 @@ import io.reactivex.disposables.Disposable;
  * Created by ZSpirytus on 2018/9/14.
  */
 
-@LayoutIdInject(R.layout.fragment_home_page)
+@LayoutIdInject(R.layout.fragment_home_page_layout)
 public class HomePageFragment extends CommonHeaderBaseFragment
         implements OnRecyclerViewItemClickListener, OnRecyclerViewHeaderClickListener {
 

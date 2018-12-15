@@ -28,7 +28,7 @@ import java.util.List;
  * Created by ZSpirytus on 2018/8/2.
  */
 
-@LayoutIdInject(R.layout.fragment_all_music_list)
+@LayoutIdInject(R.layout.fragment_all_music_list_layout)
 public class AllMusicListFragment extends LazyLoadBaseFragment
         implements OnRecyclerViewItemClickListener {
 

@@ -31,7 +31,7 @@ import java.io.File;
  * Created by ZSpirytus on 2018/8/2.
  */
 
-@LayoutIdInject(R.layout.fragment_music_play)
+@LayoutIdInject(R.layout.fragment_music_play_layout)
 public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.OnClickListener, MusicPlayStateObserver,
         MusicPlayProgressObserver, PlayedMusicChangeObserver {
 

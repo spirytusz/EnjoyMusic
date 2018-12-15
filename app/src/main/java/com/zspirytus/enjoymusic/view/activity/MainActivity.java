@@ -14,6 +14,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -117,7 +118,7 @@ public class MainActivity extends BaseActivity
         // navigate to selected fragment when mDrawerLayout close completed
         // closing state: begin closing, closing finish closing will listen by DrawerListenerImpl
         mDrawerListener.setSelectedNavId(item.getItemId());
-        mDrawerLayout.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(Gravity.START);
         return true;
     }
 
@@ -159,8 +160,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void initView() {
         // TODO: 2018/9/15 has not fixed the bugs:
-        // TODO: 2018/9/15 1. When switch MusicCategoryFragment#AlbumMusicListFragment to HomePageFragment, the MusicCategoryFragment has not be hidden.
-        // TODO: 2018/9/15 2. viewPager current fragment changed caused by navigation menu selected should be smoothly but not.
+        // TODO: 2018/9/15 1. viewPager current fragment changed caused by navigation menu selected should be smoothly but not.
         mDrawerListener = new DrawerListenerImpl();
         mDrawerLayout.addDrawerListener(mDrawerListener);
         mBottomMusicControl.setOnClickListener(this);
@@ -257,13 +257,18 @@ public class MainActivity extends BaseActivity
 
     @Subscriber(tag = Constant.EventBusTag.SHOW_CAST_FRAGMENT)
     public <T extends BaseFragment> void showCastFragment(T shouldShowFragment) {
-        if (shouldShowFragment instanceof MusicPlayFragment) {
+        /*if (shouldShowFragment instanceof MusicPlayFragment) {
             setBottomMusicControlVisibility(View.GONE);
-            return;
         } else if (isHomePageRvLoadFinish) {
             setBottomMusicControlVisibility(View.VISIBLE);
-        }
+        }*/
         FragmentVisibilityManager.getInstance().show(shouldShowFragment);
+    }
+
+    @Subscriber(tag = Constant.EventBusTag.OPEN_DRAWER)
+    public void setDrawerOpenOrNot(boolean isOpen) {
+        if (isOpen)
+            mDrawerLayout.openDrawer(Gravity.START);
     }
 
     private void loadMusicList() {

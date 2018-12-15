@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Created by ZSpirytus on 2018/9/17.
  */
-@LayoutIdInject(R.layout.fragment_play_list)
+@LayoutIdInject(R.layout.fragment_play_list_layout)
 public class PlayListFragment extends CommonHeaderBaseFragment
         implements OnRecyclerViewItemClickListener, PlayListChangeObserver {
 

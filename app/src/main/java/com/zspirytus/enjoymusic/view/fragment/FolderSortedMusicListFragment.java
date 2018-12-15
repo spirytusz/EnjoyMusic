@@ -16,7 +16,7 @@ import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 
 import java.util.List;
 
-@LayoutIdInject(R.layout.fragment_folder_sorted_music_list)
+@LayoutIdInject(R.layout.fragment_folder_sorted_music_list_layout)
 public class FolderSortedMusicListFragment extends LazyLoadBaseFragment implements OnRecyclerViewItemClickListener {
 
     private static final String TAG = "MusicScanner";

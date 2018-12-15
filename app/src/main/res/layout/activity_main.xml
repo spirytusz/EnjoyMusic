@@ -11,6 +11,11 @@
         android:layout_height="match_parent"
         layout="@layout/include_main_container" />
 
+    <FrameLayout
+        android:id="@+id/launch_animation_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <com.zspirytus.enjoymusic.view.widget.CustomNavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
@@ -19,10 +24,5 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
-
-    <FrameLayout
-        android:id="@+id/launch_animation_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </android.support.v4.widget.DrawerLayout>

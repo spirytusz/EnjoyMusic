@@ -12,7 +12,7 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.cache.MusicCoverCache;
+import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -94,14 +94,13 @@ public class NotificationHelper {
 
     private void createNotificationView(Music music) {
         mNotificationContentView = new RemoteViews(MyApplication.getBackgroundContext().getPackageName(), R.layout.notification_music_large);
-        Bitmap cover = MusicCoverCache.getInstance().get(music.hashCode());
+        Bitmap cover = MusicCoverFileCache.getInstance().getCover(music.getMusicThumbAlbumCoverPath());
         if (cover != null) {
             mNotificationContentView.setImageViewBitmap(R.id.notification_music_cover, cover);
         } else {
             String coverUri = music.getMusicThumbAlbumCoverPath();
             if (coverUri != null) {
                 Bitmap newCover = BitmapFactory.decodeFile(coverUri);
-                MusicCoverCache.getInstance().put(music.hashCode(), newCover);
                 mNotificationContentView.setImageViewBitmap(R.id.notification_music_cover, newCover);
             } else {
                 // no cover, set default.

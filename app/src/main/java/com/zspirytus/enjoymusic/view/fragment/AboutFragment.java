@@ -8,7 +8,7 @@ import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
  * Created by ZSpirytus on 2018/9/14.
  */
 
-@LayoutIdInject(R.layout.fragment_about)
+@LayoutIdInject(R.layout.fragment_about_layout)
 public class AboutFragment extends CommonHeaderBaseFragment {
 
     public static AboutFragment getInstance() {
