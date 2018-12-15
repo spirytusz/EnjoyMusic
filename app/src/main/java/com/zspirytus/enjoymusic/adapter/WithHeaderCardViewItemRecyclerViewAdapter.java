@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.viewholder.HeaderViewHolder;
 import com.zspirytus.enjoymusic.cache.viewholder.MusicCardViewHolder;
 import com.zspirytus.enjoymusic.engine.GlideApp;
@@ -69,7 +70,8 @@ public class WithHeaderCardViewItemRecyclerViewAdapter<T>
                 String musicName = itemMusic.getMusicName();
                 String musicAlbum = itemMusic.getMusicAlbumName();
                 if (coverFilePath != null) {
-                    GlideApp.with(mContext).load(new File(coverFilePath)).into(musicHolder.getCoverImageView());
+                    File coverFile = MusicCoverFileCache.getInstance().getCoverFile(coverFilePath);
+                    GlideApp.with(mContext).load(coverFile).into(musicHolder.getCoverImageView());
                 }
                 if (musicName != null) {
                     musicHolder.getTitleTextView().setText(musicName);

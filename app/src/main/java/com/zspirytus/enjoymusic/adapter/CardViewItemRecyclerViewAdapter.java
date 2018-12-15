@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.viewholder.MusicCardViewHolder;
 import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Album;
@@ -61,7 +62,8 @@ public class CardViewItemRecyclerViewAdapter<T>
             subTitle = album.getArtist();
         }
         if (coverFilePath != null && coverFilePath.length() > 0) {
-            GlideApp.with(mContext).load(new File(coverFilePath)).into(holder.getCoverImageView());
+            File coverFile = MusicCoverFileCache.getInstance().getCoverFile(coverFilePath);
+            GlideApp.with(mContext).load(coverFile).into(holder.getCoverImageView());
         }
         holder.getTitleTextView().setText(title);
         holder.getSubTitleTextView().setText(subTitle);
