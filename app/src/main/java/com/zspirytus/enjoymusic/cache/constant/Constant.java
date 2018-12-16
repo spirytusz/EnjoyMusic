@@ -18,7 +18,6 @@ public interface Constant {
 
     interface EventBusTag {
         String SHOW_CAST_FRAGMENT = "show cast fragment";
-        String START_MAIN_ACTIVITY = "start MainActivity";
         String OPEN_DRAWER = "openDrawer";
     }
 

@@ -38,7 +38,6 @@ import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-import com.zspirytus.enjoymusic.receivers.observer.HomePageRecyclerViewLoadObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
@@ -69,7 +68,7 @@ import io.reactivex.disposables.Disposable;
 @LayoutIdInject(R.layout.activity_main)
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, PlayedMusicChangeObserver,
-        MusicPlayStateObserver, HomePageRecyclerViewLoadObserver, View.OnClickListener {
+        MusicPlayStateObserver, View.OnClickListener {
 
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
@@ -96,14 +95,12 @@ public class MainActivity extends BaseActivity
     private ServiceConnection conn;
     private long pressedBackLastTime;
     private boolean isPlaying = false;
-    private boolean isHomePageRvLoadFinish = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTransparentStatusBar();
 
-        FragmentFactory.getInstance().get(HomePageFragment.class).setRecyclerViewLoadStateObserver(this);
         bindPlayMusicService();
     }
 
@@ -224,12 +221,6 @@ public class MainActivity extends BaseActivity
                 mBottomMusicPlayOrPause.setImageResource(isPlaying ? R.drawable.ic_pause_black_48dp : R.drawable.ic_play_arrow_black_48dp);
             }
         });
-    }
-
-    @Override
-    public void onHomePageLoadFinish() {
-        isHomePageRvLoadFinish = true;
-        FragmentFactory.getInstance().get(HomePageFragment.class).setRecyclerViewLoadStateObserver(null);
     }
 
     @Override

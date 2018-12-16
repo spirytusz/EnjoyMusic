@@ -41,15 +41,11 @@
             android:name=".services.PlayMusicService"
             android:enabled="true"
             android:exported="true"
-            android:process=":playMusicProcess">
+            android:process=".playmusicprocess">
             <intent-filter>
-                <action android:name="android.media.browse.MediaBrowserService" />
+                <action android:name="android.media.browse.MediaBrowserService" />>
             </intent-filter>
         </service>
-
-        <receiver android:name=".receivers.StatusBarEventReceiver">
-
-        </receiver>
 
     </application>
 

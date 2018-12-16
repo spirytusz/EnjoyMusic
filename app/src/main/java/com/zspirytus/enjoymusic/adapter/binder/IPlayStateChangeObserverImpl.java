@@ -8,6 +8,8 @@ import java.util.List;
 
 public class IPlayStateChangeObserverImpl extends IPlayStateChangeObserver.Stub {
 
+    private Boolean mEvent;
+
     private static class SingletonHolder {
         static IPlayStateChangeObserverImpl INSTANCE = new IPlayStateChangeObserverImpl();
     }
@@ -19,14 +21,19 @@ public class IPlayStateChangeObserverImpl extends IPlayStateChangeObserver.Stub 
 
     @Override
     public void onPlayStateChange(boolean isPlaying) {
+        mEvent = isPlaying;
         for (MusicPlayStateObserver observer : observers) {
             observer.onPlayingStateChanged(isPlaying);
         }
     }
 
     public void register(MusicPlayStateObserver observer) {
-        if (!observers.contains(observer))
+        if (!observers.contains(observer)) {
             observers.add(observer);
+            if (mEvent != null) {
+                observer.onPlayingStateChanged(mEvent);
+            }
+        }
     }
 
     public void unregister(MusicPlayStateObserver observer) {

@@ -1,6 +1,7 @@
 package com.zspirytus.enjoymusic.engine;
 
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
 /**
  * Created by ZSpirytus on 2018/9/9.
@@ -20,8 +21,15 @@ public class BackgroundMusicController {
     }
 
     public void play(Music music) {
+        if (music != null)
+            MediaPlayController.getInstance().play(music);
     }
 
-    public void pause(Music music) {
+    public void pause() {
+        MediaPlayController.getInstance().pause();
+    }
+
+    public boolean isPlaying() {
+        return MediaPlayController.getInstance().isPlaying();
     }
 }

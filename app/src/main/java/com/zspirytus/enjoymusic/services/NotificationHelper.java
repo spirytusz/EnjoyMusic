@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
@@ -16,7 +15,6 @@ import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.receivers.StatusBarEventReceiver;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -27,7 +25,9 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class NotificationHelper {
 
-    private static NotificationHelper INSTANCE;
+    private static class SingletonHolder {
+        static NotificationHelper INSTANCE = new NotificationHelper();
+    }
 
     private static final int NOTIFICATION_MANAGER_NOTIFY_ID = 1;
 
@@ -39,14 +39,10 @@ public class NotificationHelper {
     private static RemoteViews mNotificationContentView;
 
     private NotificationHelper() {
-
     }
 
     public static NotificationHelper getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new NotificationHelper();
-        }
-        return INSTANCE;
+        return SingletonHolder.INSTANCE;
     }
 
     public void showNotification(Music music) {
@@ -55,17 +51,6 @@ public class NotificationHelper {
         }
         createNotification(music);
         mNotificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
-    }
-
-    public void updateNotificationClearable(boolean canClear) {
-        if (mNotificationManager != null && mCurrentNotification != null) {
-            if (canClear) {
-                mCurrentNotification.flags = Notification.FLAG_AUTO_CANCEL;
-            } else {
-                mCurrentNotification.flags = Notification.FLAG_NO_CLEAR;
-            }
-            mNotificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
-        }
     }
 
     public void setPlayOrPauseBtnRes(int resId) {
@@ -98,13 +83,8 @@ public class NotificationHelper {
         if (cover != null) {
             mNotificationContentView.setImageViewBitmap(R.id.notification_music_cover, cover);
         } else {
-            String coverUri = music.getMusicThumbAlbumCoverPath();
-            if (coverUri != null) {
-                Bitmap newCover = BitmapFactory.decodeFile(coverUri);
-                mNotificationContentView.setImageViewBitmap(R.id.notification_music_cover, newCover);
-            } else {
-                // no cover, set default.
-            }
+            // no default cover in music file, set app default cover
+            mNotificationContentView.setImageViewResource(R.id.notification_music_cover, R.mipmap.ic_launcher);
         }
         String musicName = music.getMusicName();
         if (musicName != null) {
@@ -114,7 +94,7 @@ public class NotificationHelper {
         if (musicArtist != null) {
             mNotificationContentView.setTextViewText(R.id.notification_music_artist, musicArtist);
         }
-        Intent intent = new Intent(MyApplication.getBackgroundContext(), StatusBarEventReceiver.class);
+        Intent intent = new Intent(MyApplication.getBackgroundContext(), PlayMusicService.class);
         intent.putExtra(Constant.StatusBarEvent.EXTRA, Constant.StatusBarEvent.PREVIOUS);
         PendingIntent previousMusicPendingIntent = createPendingIntentByExtra(intent, 0, Constant.StatusBarEvent.EXTRA, Constant.StatusBarEvent.PREVIOUS);
         mNotificationContentView.setOnClickPendingIntent(R.id.notification_music_previous, previousMusicPendingIntent);
@@ -131,7 +111,7 @@ public class NotificationHelper {
 
     private PendingIntent createPendingIntentByExtra(Intent intent, int requestCode, String extra, String value) {
         intent.putExtra(extra, value);
-        return PendingIntent.getBroadcast(MyApplication.getBackgroundContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getService(MyApplication.getBackgroundContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
 }

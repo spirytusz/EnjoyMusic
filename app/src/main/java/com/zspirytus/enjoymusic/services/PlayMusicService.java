@@ -7,13 +7,17 @@ import android.os.Build;
 import android.os.IBinder;
 
 import com.zspirytus.enjoymusic.BinderPool;
+import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.binder.IGetMusicListImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IMusicControlImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IMusicProgressControlImpl;
 import com.zspirytus.enjoymusic.adapter.binder.ISetPlayListImpl;
 import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
+import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
+import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayProgressChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayStateChangeObserver;
@@ -25,10 +29,8 @@ import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
+import com.zspirytus.enjoymusic.utils.StatusBarUtil;
 import com.zspirytus.enjoymusic.view.activity.MainActivity;
-
-import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
 
 /**
  * Service: 负责播放、暂停音乐、发送Notification相关事件
@@ -50,6 +52,12 @@ public class PlayMusicService extends BaseService implements RemotePlayProgressC
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        handleStatusBarEvent(intent);
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
     public IBinder onBind(Intent intent) {
         if (mBinderPool == null)
             mBinderPool = new BinderPoolImpl();
@@ -60,7 +68,6 @@ public class PlayMusicService extends BaseService implements RemotePlayProgressC
     public void onDestroy() {
         super.onDestroy();
         MusicSharedPreferences.saveMusic(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
-        //NotificationHelper.getInstance().updateNotificationClearable(true);
     }
 
     @Override
@@ -81,14 +88,8 @@ public class PlayMusicService extends BaseService implements RemotePlayProgressC
         }
     }
 
-    @Subscriber(tag = Constant.EventBusTag.START_MAIN_ACTIVITY)
-    public void startMainActivity(Object object) {
-        MainActivity.startActivity(this, Constant.StatusBarEvent.EXTRA, Constant.StatusBarEvent.ACTION_NAME);
-    }
-
     @Override
     protected void registerEvent() {
-        EventBus.getDefault().register(this);
         MediaPlayController.getInstance().setPlayProgressCallback(this);
         MediaPlayController.getInstance().setPlayStateChangeCallback(this);
         MediaPlayController.getInstance().setMusicPlayCompleteCallback(this);
@@ -108,12 +109,39 @@ public class PlayMusicService extends BaseService implements RemotePlayProgressC
 
     @Override
     protected void unregisterEvent() {
-        EventBus.getDefault().unregister(this);
+        MediaPlayController.getInstance().setPlayProgressCallback(null);
+        MediaPlayController.getInstance().setPlayStateChangeCallback(null);
+        MediaPlayController.getInstance().setMusicPlayCompleteCallback(null);
 
         unregisterReceiver(myHeadSetPlugOutReceiver);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             unregisterReceiver(myHeadSetButtonClickBelowLReceiver);
+        }
+    }
+
+    private void handleStatusBarEvent(Intent intent) {
+        String value = intent.getStringExtra(Constant.StatusBarEvent.EXTRA);
+        switch (value) {
+            case Constant.StatusBarEvent.SINGLE_CLICK:
+                MainActivity.startActivity(this, Constant.StatusBarEvent.EXTRA, Constant.StatusBarEvent.ACTION_NAME);
+                StatusBarUtil.collapseStatusBar(this);
+                break;
+            case Constant.StatusBarEvent.PREVIOUS:
+                BackgroundMusicController.getInstance().play(PlayHistoryCache.getInstance().getPreviousPlayedMusic());
+                break;
+            case Constant.StatusBarEvent.PLAY_OR_PAUSE:
+                if (BackgroundMusicController.getInstance().isPlaying()) {
+                    BackgroundMusicController.getInstance().pause();
+                    NotificationHelper.getInstance().setPlayOrPauseBtnRes(R.drawable.ic_play_arrow_black_48dp);
+                } else {
+                    BackgroundMusicController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+                    NotificationHelper.getInstance().setPlayOrPauseBtnRes(R.drawable.ic_pause_black_48dp);
+                }
+                break;
+            case Constant.StatusBarEvent.NEXT:
+                BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic());
+                break;
         }
     }
 
