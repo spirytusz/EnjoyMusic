@@ -205,7 +205,7 @@ public class MainActivity extends BaseActivity
                 mBottomMusicAlbum.setText(music.getMusicAlbumName());
                 if (!(FragmentVisibilityManager.getInstance().peek() instanceof MusicPlayFragment)
                         && mBottomMusicControl.getVisibility() == View.GONE) {
-                    mBottomMusicControl.setVisibility(View.VISIBLE);
+                    //mBottomMusicControl.setVisibility(View.VISIBLE);
                     mBottomMusicControlShadow.setVisibility(View.VISIBLE);
                 }
             }
@@ -283,8 +283,8 @@ public class MainActivity extends BaseActivity
                     @Override
                     public void onComplete() {
                         FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
-                        String action = getIntent().getStringExtra(Constant.StatusBarEvent.EXTRA);
-                        if (Constant.StatusBarEvent.ACTION_NAME.equals(action)) {
+                        String action = getIntent().getStringExtra(Constant.NotificationEvent.EXTRA);
+                        if (Constant.NotificationEvent.ACTION_NAME.equals(action)) {
                             showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
                         } else {
                             showCastFragment(FragmentFactory.getInstance().get(HomePageFragment.class));

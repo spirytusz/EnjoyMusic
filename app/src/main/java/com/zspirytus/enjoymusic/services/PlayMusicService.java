@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.IBinder;
 
 import com.zspirytus.enjoymusic.BinderPool;
-import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.binder.IGetMusicListImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IMusicControlImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IMusicProgressControlImpl;
@@ -48,7 +47,7 @@ public class PlayMusicService extends BaseService implements RemotePlayProgressC
     @Override
     public void onCreate() {
         super.onCreate();
-        MyMediaSession.getInstance().init(this);
+        MyMediaSession.getInstance().initMediaSession(this);
     }
 
     @Override
@@ -72,6 +71,7 @@ public class PlayMusicService extends BaseService implements RemotePlayProgressC
 
     @Override
     public void onPlayStateChange(boolean isPlaying) {
+        NotificationHelper.getInstance().setPlayOrPauseBtnRes(isPlaying);
         notifyAllObserverPlayStateChange(isPlaying);
     }
 
@@ -121,25 +121,23 @@ public class PlayMusicService extends BaseService implements RemotePlayProgressC
     }
 
     private void handleStatusBarEvent(Intent intent) {
-        String value = intent.getStringExtra(Constant.StatusBarEvent.EXTRA);
+        String value = intent.getStringExtra(Constant.NotificationEvent.EXTRA);
         switch (value) {
-            case Constant.StatusBarEvent.SINGLE_CLICK:
-                MainActivity.startActivity(this, Constant.StatusBarEvent.EXTRA, Constant.StatusBarEvent.ACTION_NAME);
+            case Constant.NotificationEvent.SINGLE_CLICK:
+                MainActivity.startActivity(this, Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.ACTION_NAME);
                 StatusBarUtil.collapseStatusBar(this);
                 break;
-            case Constant.StatusBarEvent.PREVIOUS:
+            case Constant.NotificationEvent.PREVIOUS:
                 BackgroundMusicController.getInstance().play(PlayHistoryCache.getInstance().getPreviousPlayedMusic());
                 break;
-            case Constant.StatusBarEvent.PLAY_OR_PAUSE:
+            case Constant.NotificationEvent.PLAY_OR_PAUSE:
                 if (BackgroundMusicController.getInstance().isPlaying()) {
                     BackgroundMusicController.getInstance().pause();
-                    NotificationHelper.getInstance().setPlayOrPauseBtnRes(R.drawable.ic_play_arrow_black_48dp);
                 } else {
                     BackgroundMusicController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
-                    NotificationHelper.getInstance().setPlayOrPauseBtnRes(R.drawable.ic_pause_black_48dp);
                 }
                 break;
-            case Constant.StatusBarEvent.NEXT:
+            case Constant.NotificationEvent.NEXT:
                 BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic());
                 break;
         }

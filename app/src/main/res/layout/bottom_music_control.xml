@@ -23,7 +23,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toEndOf="@+id/bottom_music_cover"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="Music Name" />
+        android:text="@string/music_name" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/bottom_music_album"
@@ -34,7 +34,7 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/bottom_music_cover"
-        android:text="Music Album" />
+        android:text="@string/music_artist" />
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/bottom_music_play_pause"

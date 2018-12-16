@@ -32,7 +32,7 @@ public interface Constant {
         int LONG_DURATION = 618;
     }
 
-    interface StatusBarEvent {
+    interface NotificationEvent {
         String ACTION_NAME = "com.zspirytus.enjoymusic.STATUS_BAR_ACTION";
         String EXTRA = "statusBarExtra";
         String PLAY_OR_PAUSE = "playOrPause";

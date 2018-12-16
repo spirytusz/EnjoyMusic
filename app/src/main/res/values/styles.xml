@@ -24,9 +24,24 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="TextViewStyle_18sp_black_marquee">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxEms">9</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
     <style name="TextViewStyle_14sp_black_marquee">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/black</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxEms">9</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <style name="TextViewStyle_14sp_marquee">
+        <item name="android:textSize">14sp</item>
         <item name="android:singleLine">true</item>
         <item name="android:maxEms">9</item>
         <item name="android:ellipsize">marquee</item>

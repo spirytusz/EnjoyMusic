@@ -18,7 +18,9 @@ import com.zspirytus.enjoymusic.utils.LogUtil;
 
 public class MyMediaSession {
 
+    private static final String TAG = "MyMediaSession";
     private static final MyMediaSession INSTANCE = new MyMediaSession();
+
     private static final long MEDIA_SESSION_ACTIONS = PlaybackStateCompat.ACTION_PLAY
             | PlaybackStateCompat.ACTION_PAUSE
             | PlaybackStateCompat.ACTION_PLAY_PAUSE
@@ -28,27 +30,29 @@ public class MyMediaSession {
             | PlaybackStateCompat.ACTION_SEEK_TO;
 
     private MediaSessionCompat mediaSession;
+    private MediaSessionCompat.Token sessionToken;
     private PlaybackStateCompat playbackStateCompat;
 
     private MyMediaSession() {
-
     }
 
     public static MyMediaSession getInstance() {
         return INSTANCE;
     }
 
-    public void init(PlayMusicService service) {
+    public void initMediaSession(PlayMusicService service) {
         playbackStateCompat = new PlaybackStateCompat.Builder()
                 .setState(PlaybackStateCompat.STATE_NONE, 0, 1.0f)
                 .setActions(PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PLAY_PAUSE
                         | PlaybackStateCompat.ACTION_SKIP_TO_NEXT | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
                 .build();
-        mediaSession = new MediaSessionCompat(service, this.getClass().getSimpleName());
-        mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS | MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS);
+
+        mediaSession = new MediaSessionCompat(service, TAG);
+        mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
         mediaSession.setCallback(callback);
         mediaSession.setPlaybackState(playbackStateCompat);
         mediaSession.setActive(true);
+        sessionToken = mediaSession.getSessionToken();
     }
 
     public void setPlaybackState(int state) {
@@ -70,6 +74,14 @@ public class MyMediaSession {
             metaData.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, MusicScanner.getInstance().getAllMusicList().size());
         }
         mediaSession.setMetadata(metaData.build());
+    }
+
+    public MediaSessionCompat getMediaSession() {
+        return mediaSession;
+    }
+
+    public MediaSessionCompat.Token getSessionToken() {
+        return sessionToken;
     }
 
     private MediaSessionCompat.Callback callback = new MediaSessionCompat.Callback() {

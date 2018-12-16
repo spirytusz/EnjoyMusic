@@ -5,4 +5,11 @@
     <string name="title_notifications">Notifications</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- test string start -->
+
+    <string name="music_name">Music Name</string>
+    <string name="music_artist">Music Artist</string>
+    <!-- test string end -->
+
 </resources>

@@ -3,15 +3,22 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <!--notification dimen-->
-    <dimen name="notification_cover_size">96dp</dimen>
-    <dimen name="notification_divider_height">0.1dp</dimen>
-    <dimen name="notification_text_margin_start_dimen">12dp</dimen>
 
-    <!--notification control pane dimen-->
-    <dimen name="previous_next_button_margin_dimen">48dp</dimen>
-    <dimen name="previous_next_button_marginTop_dimen">6dp</dimen>
-    <dimen name="play_pause_button_marginTop_dimen">2dp</dimen>
-    <dimen name="previous_next_button_size">32dp</dimen>
-    <dimen name="play_pause_button_size">40dp</dimen>
+    <!-- notification dimen start -->
+    <dimen name="notification_height">120dp</dimen>
+    <dimen name="notification_music_info_height">72dp</dimen>
+    <dimen name="notification_control_height">48dp</dimen>
+    <!-- notification dimen  end -->
+
+    <!-- notification panel dimen start -->
+    <dimen name="cover_width">120dp</dimen>
+    <dimen name="cover_height">120dp</dimen>
+    <dimen name="previous_button_width">44dp</dimen>
+    <dimen name="previous_button_height">44dp</dimen>
+    <dimen name="play_or_pause_button_width">50dp</dimen>
+    <dimen name="play_or_pause_button_height">50dp</dimen>
+    <dimen name="next_button_width">44dp</dimen>
+    <dimen name="next_button_height">44dp</dimen>
+    <!-- notification panel dimen end -->
+
 </resources>

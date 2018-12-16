@@ -59,4 +59,10 @@ public class CommonHeaderBaseFragment extends BaseFragment {
             });
         }
     }
+
+    public void setHeaderViewColor(int colorResId) {
+        if (mHeaderView != null) {
+            mHeaderView.setBackgroundColor(colorResId);
+        }
+    }
 }

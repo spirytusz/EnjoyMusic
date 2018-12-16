@@ -134,6 +134,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     @Override
     protected void initView() {
         setNavIconAction(false);
+        setHeaderViewColor(R.color.transparent);
         setTitle(Constant.FragmentName.musicPlayFragmentName);
         if (mCurrentPlayingMusic != null) {
             String musicAlbumUri = mCurrentPlayingMusic.getMusicThumbAlbumCoverPath();
