@@ -51,6 +51,7 @@
             android:layout_height="@dimen/previous_button_height"
             android:src="@drawable/ic_skip_previous_black_48dp"
             android:focusable="true"
+            android:layout_centerVertical="true"
             android:layout_marginStart="32dp"
 
             android:layout_alignParentStart="true" />
@@ -61,6 +62,7 @@
             android:layout_height="@dimen/play_or_pause_button_height"
             android:src="@drawable/ic_pause_black_48dp"
             android:focusable="true"
+            android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
 
         <ImageView
@@ -70,6 +72,7 @@
             android:src="@drawable/ic_skip_next_black_48dp"
             android:focusable="true"
             android:layout_marginEnd="32dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true" />
 
     </RelativeLayout>

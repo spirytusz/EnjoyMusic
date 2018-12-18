@@ -5,15 +5,18 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.RequestOptions;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayProgressChangeObserverImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
+import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.impl.BlurTransformation;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.listeners.OnMultiEventImageViewListener;
@@ -105,7 +108,6 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
             @Override
             public void run() {
                 setView(music);
-                setupSeekBar(music);
             }
         });
     }
@@ -208,6 +210,21 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
         }
         mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
         setupSeekBar(music);
+        setBackgroundBlur(music);
+    }
+
+    private void setBackgroundBlur(Music music) {
+        String imagePath = music.getMusicThumbAlbumCoverPath();
+        File file = MusicCoverFileCache.getInstance().getCoverFile(imagePath);
+        if (file != null) {
+            RequestOptions options = new RequestOptions();
+            options = options.transform(new BlurTransformation(getParentActivity(), 24, 3));
+            GlideApp.with(getParentActivity())
+                    .load(file)
+                    .dontAnimate()
+                    .apply(options)
+                    .into(mBackground);
+        }
     }
 
     public static MusicPlayFragment getInstance() {

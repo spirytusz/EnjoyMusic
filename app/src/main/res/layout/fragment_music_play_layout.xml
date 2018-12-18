@@ -15,6 +15,8 @@
         android:id="@+id/background"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:translationZ="-1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,8 +33,10 @@
         android:id="@+id/cover"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:focusable="true"
+        app:layout_constraintBottom_toTopOf="@+id/include2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/status_bar_toolbar_holder"
@@ -72,6 +76,7 @@
         app:srcCompat="@drawable/ic_skip_next_black_48dp" />
 
     <include
+        android:id="@+id/include2"
         layout="@layout/seekbar_with_timestamp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

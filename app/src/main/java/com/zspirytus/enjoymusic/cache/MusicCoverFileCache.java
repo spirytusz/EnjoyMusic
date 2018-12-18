@@ -28,23 +28,45 @@ public class MusicCoverFileCache {
     }
 
     public File getCoverFile(String path) {
-        int key = path.hashCode();
-        File file = mCoverFileCache.get(key);
-        if (file == null) {
-            file = new File(path);
-            mCoverFileCache.put(key, file);
+        if (path != null) {
+            int key = path.hashCode();
+            File file = mCoverFileCache.get(key);
+            if (file == null) {
+                file = new File(path);
+                mCoverFileCache.put(key, file);
+            }
+            return file;
+        } else {
+            return null;
         }
-        return file;
     }
 
     public Bitmap getCover(String path) {
-        int key = path.hashCode();
-        Bitmap bitmap = mCoverCache.get(key);
-        if (bitmap == null) {
-            bitmap = BitmapUtil.compressCenterCrop(path);
-            mCoverCache.put(key, bitmap);
+        if (path != null) {
+            int key = path.hashCode();
+            Bitmap bitmap = mCoverCache.get(key);
+            if (bitmap == null) {
+                bitmap = BitmapUtil.compressCenterCrop(path);
+                mCoverCache.put(key, bitmap);
+            }
+            return bitmap;
+        } else {
+            return null;
         }
-        return bitmap;
+    }
+
+    public Bitmap getCover(int resId) {
+        if (resId != 0) {
+            String stringValue = resId + "";
+            Bitmap bitmap = mCoverCache.get(stringValue.hashCode());
+            if (bitmap == null) {
+                bitmap = BitmapUtil.createBitmapByResId(resId);
+                mCoverCache.put(stringValue.hashCode(), bitmap);
+            }
+            return bitmap;
+        } else {
+            return null;
+        }
     }
 
 }

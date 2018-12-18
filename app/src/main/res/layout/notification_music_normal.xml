@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/notification_normal"
+    android:layout_width="match_parent"
+    android:layout_height="84dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/notification_normal_music_cover"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        tools:background="@color/grey"
+        tools:src="@drawable/ic_music_note_black_48dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@id/notification_normal_music_cover">
+
+        <TextView
+            android:id="@+id/notification_normal_music_name"
+            style="@style/TextViewStyle_16sp_black_marquee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/music_name"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:id="@+id/notification_normal_music_artist"
+            style="@style/TextViewStyle_14sp_marquee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/music_artist"
+            android:layout_marginStart="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="16dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true">
+
+        <ImageView
+            android:id="@+id/notification_normal_play_or_pause"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/ic_play_arrow_black_48dp"
+            android:layout_centerVertical="true" />
+
+        <ImageView
+            android:id="@+id/notification_normal_next"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_skip_next_black_48dp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/notification_normal_play_or_pause"
+            android:layout_marginStart="24dp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

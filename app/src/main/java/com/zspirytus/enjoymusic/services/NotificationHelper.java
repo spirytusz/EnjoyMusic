@@ -1,13 +1,16 @@
 package com.zspirytus.enjoymusic.services;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.graphics.Palette;
 import android.widget.RemoteViews;
 
 import com.zspirytus.enjoymusic.R;
@@ -15,6 +18,12 @@ import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.utils.BitmapUtil;
+import com.zspirytus.enjoymusic.utils.DrawableUtil;
+import com.zspirytus.enjoymusic.utils.LogUtil;
+import com.zspirytus.enjoymusic.utils.OSUtils;
+
+import java.lang.reflect.Field;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -31,14 +40,21 @@ public class NotificationHelper {
 
     private static final int NOTIFICATION_MANAGER_NOTIFY_ID = 1;
 
-    private static final NotificationManager mNotificationManager
-            = (NotificationManager) MyApplication.getBackgroundContext().getSystemService(NOTIFICATION_SERVICE);
+    private final NotificationManager mNotificationManager;
 
-    private static Notification mCurrentNotification;
-    private static String mChannelId;
-    private static RemoteViews mNotificationContentView;
+    private Notification mCurrentNotification;
+    private String mChannelId;
+    private RemoteViews mBigView;
+    private RemoteViews mView;
+
+    private Bitmap previous;
+    private Bitmap play;
+    private Bitmap pause;
+    private Bitmap next;
 
     private NotificationHelper() {
+        Context backgroundContext = MyApplication.getBackgroundContext();
+        mNotificationManager = (NotificationManager) backgroundContext.getSystemService(NOTIFICATION_SERVICE);
     }
 
     public static NotificationHelper getInstance() {
@@ -49,19 +65,23 @@ public class NotificationHelper {
         if (mChannelId == null) {
             createNotificationChannel();
         }
-        if (mNotificationContentView == null) {
+        if (mBigView == null) {
             createNotificationView(music);
             createNotification();
         } else {
-            setupRemoteViews(music);
+            setupRemoteViewsAndBackground(music);
         }
-        mNotificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
     }
 
     public void setPlayOrPauseBtnRes(boolean isPlaying) {
-        if (mNotificationContentView != null) {
-            int resId = isPlaying ? R.drawable.ic_pause_black_48dp : R.drawable.ic_play_arrow_black_48dp;
-            mNotificationContentView.setImageViewResource(R.id.notification_music_play_pause, resId);
+        if (mCurrentNotification != null) {
+            Bitmap bitmap = isPlaying ? pause : play;
+            if (mBigView != null) {
+                mBigView.setImageViewBitmap(R.id.notification_music_play_pause, bitmap);
+            }
+            if (mView != null) {
+                mView.setImageViewBitmap(R.id.notification_normal_play_or_pause, bitmap);
+            }
             mNotificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
         }
     }
@@ -69,7 +89,7 @@ public class NotificationHelper {
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mChannelId = "music_notification";
-            int importance = NotificationManager.IMPORTANCE_NONE;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(mChannelId, "音乐通知栏", importance);
             mNotificationManager.createNotificationChannel(channel);
         } else {
@@ -79,51 +99,156 @@ public class NotificationHelper {
 
     private void createNotification() {
         mCurrentNotification = new NotificationCompat.Builder(MyApplication.getBackgroundContext(), mChannelId)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setCustomContentView(mNotificationContentView)
+                .setSmallIcon(R.drawable.ic_music_note_white_24dp)
+                .setCustomContentView(mView)
+                .setCustomBigContentView(mBigView)
                 .setOngoing(true)
+                .setTicker("Music Playing")
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setDefaults(Notification.DEFAULT_VIBRATE)
                 .build();
+        String osName = OSUtils.getRomType().name();
+        if (osName != null && osName.equals("MIUI")) {
+            prepareNotificationForMIUI(mCurrentNotification);
+        }
     }
 
     private void createNotificationView(Music music) {
-        mNotificationContentView = new RemoteViews(MyApplication.getBackgroundContext().getPackageName(), R.layout.notification_music_large);
-        setupRemoteViews(music);
+        mBigView = new RemoteViews(MyApplication.getBackgroundContext().getPackageName(), R.layout.notification_music_large);
+        mView = new RemoteViews(MyApplication.getBackgroundContext().getPackageName(), R.layout.notification_music_normal);
+        setupRemoteViewsAndBackground(music);
         Intent intent = new Intent(MyApplication.getBackgroundContext(), PlayMusicService.class);
         intent.putExtra(Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.PREVIOUS);
         PendingIntent previousMusicPendingIntent = createPendingIntentByExtra(intent, 0, Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.PREVIOUS);
-        mNotificationContentView.setOnClickPendingIntent(R.id.notification_music_previous, previousMusicPendingIntent);
+        mBigView.setOnClickPendingIntent(R.id.notification_music_previous, previousMusicPendingIntent);
 
         PendingIntent playOrPauseMusicPendingIntent = createPendingIntentByExtra(intent, 1, Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.PLAY_OR_PAUSE);
-        mNotificationContentView.setOnClickPendingIntent(R.id.notification_music_play_pause, playOrPauseMusicPendingIntent);
+        mBigView.setOnClickPendingIntent(R.id.notification_music_play_pause, playOrPauseMusicPendingIntent);
+        mView.setOnClickPendingIntent(R.id.notification_normal_play_or_pause, playOrPauseMusicPendingIntent);
 
         PendingIntent nextMusicPendingIntent = createPendingIntentByExtra(intent, 2, Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.NEXT);
-        mNotificationContentView.setOnClickPendingIntent(R.id.notification_music_next, nextMusicPendingIntent);
+        mBigView.setOnClickPendingIntent(R.id.notification_music_next, nextMusicPendingIntent);
+        mView.setOnClickPendingIntent(R.id.notification_normal_next, nextMusicPendingIntent);
 
         PendingIntent singleClickPendingIntent = createPendingIntentByExtra(intent, 4, Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.SINGLE_CLICK);
-        mNotificationContentView.setOnClickPendingIntent(R.id.notification, singleClickPendingIntent);
+        mBigView.setOnClickPendingIntent(R.id.notification, singleClickPendingIntent);
+        mView.setOnClickPendingIntent(R.id.notification_normal, singleClickPendingIntent);
     }
 
-    private void setupRemoteViews(Music music) {
+    private void setupRemoteViews(Music music, int backgroundColor, int panelColor) {
         Bitmap cover = MusicCoverFileCache.getInstance().getCover(music.getMusicThumbAlbumCoverPath());
         if (cover != null) {
-            mNotificationContentView.setImageViewBitmap(R.id.notification_music_cover, cover);
+            mView.setImageViewBitmap(R.id.notification_normal_music_cover, cover);
+            if (backgroundColor != 0) {
+                mView.setInt(R.id.notification_normal, "setBackgroundColor", backgroundColor);
+            } else {
+                mView.setInt(R.id.notification_normal, "setBackgroundColor", R.color.white);
+            }
+            if (panelColor != 0) {
+                mView.setInt(R.id.notification_normal_music_name, "setTextColor", panelColor);
+                mView.setInt(R.id.notification_normal_music_artist, "setTextColor", panelColor);
+                mView.setImageViewBitmap(R.id.notification_normal_play_or_pause, pause);
+                mView.setImageViewBitmap(R.id.notification_normal_next, next);
+            } else {
+                play = BitmapUtil.createBitmapByResId(R.drawable.ic_play_arrow_black_48dp);
+                pause = BitmapUtil.createBitmapByResId(R.drawable.ic_pause_black_48dp);
+            }
         } else {
-            // no default cover in music file, set app default cover
-            mNotificationContentView.setImageViewResource(R.id.notification_music_cover, R.mipmap.ic_launcher);
+            mView.setImageViewResource(R.id.notification_music_cover, R.mipmap.ic_launcher);
+            play = BitmapUtil.createBitmapByResId(R.drawable.ic_play_arrow_black_48dp);
+            pause = BitmapUtil.createBitmapByResId(R.drawable.ic_pause_black_48dp);
         }
         String musicName = music.getMusicName();
         if (musicName != null) {
-            mNotificationContentView.setTextViewText(R.id.notification_music_name, musicName);
+            mView.setTextViewText(R.id.notification_music_name, musicName);
         }
         String musicArtist = music.getMusicArtist();
         if (musicArtist != null) {
-            mNotificationContentView.setTextViewText(R.id.notification_music_artist, musicArtist);
+            mView.setTextViewText(R.id.notification_music_artist, musicArtist);
+        }
+        mNotificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
+    }
+
+    private void setupBigRemoteViews(Music music, int backgroundColor, int panelColor) {
+        Bitmap cover = MusicCoverFileCache.getInstance().getCover(music.getMusicThumbAlbumCoverPath());
+        if (cover != null) {
+            mBigView.setImageViewBitmap(R.id.notification_music_cover, cover);
+            if (backgroundColor != 0) {
+                mBigView.setInt(R.id.notification, "setBackgroundColor", backgroundColor);
+            } else {
+                mBigView.setInt(R.id.notification, "setBackgroundColor", R.color.white);
+            }
+            if (panelColor != 0) {
+                mBigView.setInt(R.id.notification_music_name, "setTextColor", panelColor);
+                mBigView.setInt(R.id.notification_music_artist, "setTextColor", panelColor);
+                previous = BitmapUtil.drawableToBitmap(DrawableUtil.setColor(MyApplication.getBackgroundContext(), R.drawable.ic_skip_previous_black_48dp, panelColor));
+                play = BitmapUtil.drawableToBitmap(DrawableUtil.setColor(MyApplication.getBackgroundContext(), R.drawable.ic_play_arrow_black_48dp, panelColor));
+                pause = BitmapUtil.drawableToBitmap(DrawableUtil.setColor(MyApplication.getBackgroundContext(), R.drawable.ic_pause_black_48dp, panelColor));
+                next = BitmapUtil.drawableToBitmap(DrawableUtil.setColor(MyApplication.getBackgroundContext(), R.drawable.ic_skip_next_black_48dp, panelColor));
+                mBigView.setImageViewBitmap(R.id.notification_music_previous, previous);
+                mBigView.setImageViewBitmap(R.id.notification_music_play_pause, pause);
+                mBigView.setImageViewBitmap(R.id.notification_music_next, next);
+            } else {
+                play = BitmapUtil.createBitmapByResId(R.drawable.ic_play_arrow_black_48dp);
+                pause = BitmapUtil.createBitmapByResId(R.drawable.ic_pause_black_48dp);
+            }
+        } else {
+            mBigView.setImageViewResource(R.id.notification_music_cover, R.mipmap.ic_launcher);
+            play = BitmapUtil.createBitmapByResId(R.drawable.ic_play_arrow_black_48dp);
+            pause = BitmapUtil.createBitmapByResId(R.drawable.ic_pause_black_48dp);
+        }
+        String musicName = music.getMusicName();
+        if (musicName != null) {
+            mBigView.setTextViewText(R.id.notification_music_name, musicName);
+        }
+        String musicArtist = music.getMusicArtist();
+        if (musicArtist != null) {
+            mBigView.setTextViewText(R.id.notification_music_artist, musicArtist);
+        }
+        mNotificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
+    }
+
+    private void setupRemoteViewsAndBackground(final Music music) {
+        Bitmap cover = MusicCoverFileCache.getInstance().getCover(music.getMusicThumbAlbumCoverPath());
+        if (cover != null) {
+            Palette.from(cover).generate(new Palette.PaletteAsyncListener() {
+                @Override
+                public void onGenerated(Palette palette) {
+                    Palette.Swatch color = palette.getDarkVibrantSwatch();
+                    if (color != null) {
+                        setupBigRemoteViews(music, color.getRgb(), color.getTitleTextColor());
+                        setupRemoteViews(music, color.getRgb(), color.getTitleTextColor());
+                    } else {
+                        setupBigRemoteViews(music, 0, 0);
+                        setupRemoteViews(music, 0, 0);
+                    }
+                }
+            });
+        } else {
+            setupBigRemoteViews(music, 0, 0);
+            setupRemoteViews(music, 0, 0);
         }
     }
 
     private PendingIntent createPendingIntentByExtra(Intent intent, int requestCode, String extra, String value) {
         intent.putExtra(extra, value);
         return PendingIntent.getService(MyApplication.getBackgroundContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private void prepareNotificationForMIUI(Notification notification) {
+        try {
+            @SuppressLint("PrivateApi")
+            Object miuiNotification = Class.forName("android.app.MiuiNotification").newInstance();
+            Field customizedIconField = miuiNotification.getClass().getDeclaredField("customizedIcon");
+            customizedIconField.setAccessible(true);
+            customizedIconField.set(miuiNotification, true);
+
+            Field extraNotificationField = notification.getClass().getField("extraNotification");
+            extraNotificationField.setAccessible(true);
+            extraNotificationField.set(notification, miuiNotification);
+        } catch (Exception e) {
+            LogUtil.e(this.getClass().getSimpleName(), "OS is not MIUI");
+        }
     }
 
 }
