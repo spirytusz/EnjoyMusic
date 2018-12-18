@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="cornerImg">
+        <attr name="topLeft" format="dimension" />
+        <attr name="topRight" format="dimension" />
+        <attr name="bottomLeft" format="dimension" />
+        <attr name="bottomRight" format="dimension" />
+    </declare-styleable>
+</resources>

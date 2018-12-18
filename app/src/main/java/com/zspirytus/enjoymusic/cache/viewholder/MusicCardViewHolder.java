@@ -6,12 +6,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.view.widget.RoundCornerImageView;
 
 public class MusicCardViewHolder extends RecyclerView.ViewHolder {
 
     private View mItemView;
 
-    private AppCompatImageView mCover;
+    private RoundCornerImageView mCover;
     private AppCompatTextView mTitle;
     private AppCompatTextView mSubTitle;
     private AppCompatImageView mMoreInfoButton;
@@ -19,6 +20,7 @@ public class MusicCardViewHolder extends RecyclerView.ViewHolder {
     public MusicCardViewHolder(View itemView) {
         super(itemView);
         mItemView = itemView;
+
         mCover = mItemView.findViewById(R.id.item_cover);
         mTitle = mItemView.findViewById(R.id.item_title);
         mSubTitle = mItemView.findViewById(R.id.item_sub_title);

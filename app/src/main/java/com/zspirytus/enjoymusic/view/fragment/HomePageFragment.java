@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.adapter.ItemSpacingDecoration;
 import com.zspirytus.enjoymusic.adapter.WithHeaderCardViewItemRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
@@ -109,6 +110,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         mHomePageRecyclerView.setAdapter(mAdapter);
         mHomePageRecyclerView.setHasFixedSize(true);
         mHomePageRecyclerView.setNestedScrollingEnabled(false);
+        mHomePageRecyclerView.addItemDecoration(new ItemSpacingDecoration(8, 8, 8, 8, 1, 2));
     }
 
     private void playAnimation(boolean isLoadSuccess) {

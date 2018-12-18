@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.CardViewItemRecyclerViewAdapter;
+import com.zspirytus.enjoymusic.adapter.ItemSpacingDecoration;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -69,6 +70,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
             mAlbumMusicRecyclerView.setAdapter(mAdapter);
             mAlbumMusicRecyclerView.setHasFixedSize(true);
             mAlbumMusicRecyclerView.setNestedScrollingEnabled(false);
+            mAlbumMusicRecyclerView.addItemDecoration(new ItemSpacingDecoration(8, 8, 8, 8, 1, 2));
         } else {
             playWidgetAnimation(true, true);
         }
