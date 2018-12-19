@@ -51,7 +51,7 @@ public class NotificationHelper {
 
         Intent intent = new Intent(MyApplication.getBackgroundContext(), PlayMusicService.class);
         intent.putExtra(Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.PREVIOUS);
-        PendingIntent play = createPendingIntentByExtra(intent, 1, Constant.NotificationEvent.PLAY);
+        PendingIntent play = createPendingIntentByExtra(intent, 4, Constant.NotificationEvent.PLAY);
         playAction = new Notification.Action(R.drawable.ic_play_arrow_black_48dp, "play", play);
         PendingIntent pause = createPendingIntentByExtra(intent, 1, Constant.NotificationEvent.PAUSE);
         pauseAction = new Notification.Action(R.drawable.ic_pause_black_48dp, "pause", pause);
@@ -85,12 +85,6 @@ public class NotificationHelper {
             mChannelId = "music_notification";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(mChannelId, "音乐通知栏", importance);
-            channel.enableLights(false);
-            channel.enableVibration(false);
-            channel.setVibrationPattern(new long[]{0});
-            channel.setSound(null, null);
-            channel.setVibrationPattern(new long[]{0});
-            channel.enableVibration(true);
             mNotificationManager.createNotificationChannel(channel);
         } else {
             mChannelId = "default";
@@ -112,22 +106,24 @@ public class NotificationHelper {
     }
 
     private NotificationCompat.Builder getDefaultBuilder(Music music) {
+        Intent intent = new Intent(MyApplication.getBackgroundContext(), PlayMusicService.class);
+        PendingIntent startActivity = createPendingIntentByExtra(intent, 5, Constant.NotificationEvent.SINGLE_CLICK);
         return new NotificationCompat.Builder(MyApplication.getBackgroundContext(), mChannelId)
                 .setSmallIcon(R.drawable.ic_music_note_white_24dp)
                 .setLargeIcon(MusicCoverFileCache.getInstance().getCover(music.getMusicThumbAlbumCoverPath()))
                 .setContentTitle(music.getMusicName())
                 .setContentText(music.getMusicArtist())
                 .setChannelId(mChannelId)
-                .setAutoCancel(true)
+                .setAutoCancel(false)
                 .setOngoing(true)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setVibrate(new long[]{0})
-                .setSound(null);
+                .setColorized(true)
+                .setVisibility(Notification.VISIBILITY_PUBLIC)
+                .setOnlyAlertOnce(true)
+                .setContentIntent(startActivity);
     }
 
     private NotificationCompat.Builder createNotificationAction(NotificationCompat.Builder builder) {
         Intent intent = new Intent(MyApplication.getBackgroundContext(), PlayMusicService.class);
-        intent.putExtra(Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.PREVIOUS);
         PendingIntent pause = createPendingIntentByExtra(intent, 0, Constant.NotificationEvent.PAUSE);
         PendingIntent next = createPendingIntentByExtra(intent, 1, Constant.NotificationEvent.NEXT);
         PendingIntent previous = createPendingIntentByExtra(intent, 2, Constant.NotificationEvent.PREVIOUS);
