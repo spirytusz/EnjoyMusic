@@ -7,8 +7,7 @@ import android.view.ViewGroup;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
-import com.zspirytus.enjoymusic.cache.viewholder.MusicCardViewHolder;
-import com.zspirytus.enjoymusic.engine.GlideApp;
+import com.zspirytus.enjoymusic.cache.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.annotations.BindAdapterItemLayoutId;
@@ -24,7 +23,7 @@ import java.util.List;
 
 @BindAdapterItemLayoutId(R.layout.item_card_view_type)
 public class CardViewItemRecyclerViewAdapter<T>
-        extends BaseRecyclerViewAdapter<MusicCardViewHolder> {
+        extends BaseRecyclerViewAdapter<CommonViewHolder> {
 
     private Context mContext;
     private List<T> mList;
@@ -36,16 +35,16 @@ public class CardViewItemRecyclerViewAdapter<T>
     }
 
     @Override
-    public MusicCardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CommonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mContext == null) {
             mContext = parent.getContext();
         }
         View view = LayoutInflater.from(mContext).inflate(getItemLayoutId(), parent, false);
-        return new MusicCardViewHolder(view);
+        return new CommonViewHolder(view, getItemLayoutId());
     }
 
     @Override
-    public void onBindViewHolder(final MusicCardViewHolder holder, int position) {
+    public void onBindViewHolder(final CommonViewHolder holder, int position) {
         T t = mList.get(position);
         String coverFilePath = "";
         String title = "";
@@ -63,11 +62,11 @@ public class CardViewItemRecyclerViewAdapter<T>
         }
         if (coverFilePath != null && coverFilePath.length() > 0) {
             File coverFile = MusicCoverFileCache.getInstance().getCoverFile(coverFilePath);
-            GlideApp.with(mContext).load(coverFile).into(holder.getCoverImageView());
+            holder.setImageFile(R.id.item_cover, coverFile);
         }
-        holder.getTitleTextView().setText(title);
-        holder.getSubTitleTextView().setText(subTitle);
-        holder.getMoreInfoButton().setOnClickListener(new View.OnClickListener() {
+        holder.setText(R.id.item_title, title);
+        holder.setText(R.id.item_sub_title, subTitle);
+        holder.getView(R.id.item_more_info_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String[] items = new String[]{"专辑信息", "获取专辑封面", "获取歌词"};
@@ -90,7 +89,7 @@ public class CardViewItemRecyclerViewAdapter<T>
         mList = list;
     }
 
-    private void bindListener(final MusicCardViewHolder holder) {
+    private void bindListener(final CommonViewHolder holder) {
         if (mOnItemClickListener != null) {
             holder.getItemView().setOnClickListener(new View.OnClickListener() {
                 @Override

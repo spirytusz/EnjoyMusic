@@ -1,16 +1,13 @@
 package com.zspirytus.enjoymusic.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
-import com.zspirytus.enjoymusic.cache.viewholder.HeaderViewHolder;
-import com.zspirytus.enjoymusic.cache.viewholder.MusicCardViewHolder;
-import com.zspirytus.enjoymusic.engine.GlideApp;
+import com.zspirytus.enjoymusic.cache.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.entity.HomePageRecyclerViewItem;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.annotations.BindAdapterItemLayoutId;
@@ -26,7 +23,7 @@ import java.util.List;
 
 @BindAdapterItemLayoutId(R.layout.item_card_view_type)
 public class WithHeaderCardViewItemRecyclerViewAdapter<T>
-        extends BaseRecyclerViewAdapter<RecyclerView.ViewHolder> {
+        extends BaseRecyclerViewAdapter<CommonViewHolder> {
 
     private static final int HEADER_FLAG = 1;
     private static final int CONTENT_FLAG = 2;
@@ -45,52 +42,50 @@ public class WithHeaderCardViewItemRecyclerViewAdapter<T>
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CommonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mContext == null) {
             mContext = parent.getContext();
         }
         if (viewType != HEADER_FLAG) {
             View view = LayoutInflater.from(mContext).inflate(getItemLayoutId(), parent, false);
-            return new MusicCardViewHolder(view);
+            return new CommonViewHolder(view, getItemLayoutId());
         } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.home_page_rv_header, parent, false);
-            return new HeaderViewHolder(view);
+            return new CommonViewHolder(view,R.layout.home_page_rv_header);
         }
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final CommonViewHolder holder, int position) {
         T t = mList.get(position);
         if (t instanceof HomePageRecyclerViewItem) {
             HomePageRecyclerViewItem item = (HomePageRecyclerViewItem) t;
             if (getItemViewType(position) == CONTENT_FLAG) {
-                final MusicCardViewHolder musicHolder = (MusicCardViewHolder) holder;
                 Music itemMusic = item.getmMusic();
                 String coverFilePath = itemMusic.getMusicThumbAlbumCoverPath();
                 String musicName = itemMusic.getMusicName();
                 String musicAlbum = itemMusic.getMusicAlbumName();
                 if (coverFilePath != null) {
                     File coverFile = MusicCoverFileCache.getInstance().getCoverFile(coverFilePath);
-                    GlideApp.with(mContext).load(coverFile).into(musicHolder.getCoverImageView());
+                    holder.setImageFile(R.id.item_cover, coverFile);
                 }
                 if (musicName != null) {
-                    musicHolder.getTitleTextView().setText(musicName);
+                    holder.setText(R.id.item_title, musicName);
                 }
                 if (musicAlbum != null) {
-                    musicHolder.getSubTitleTextView().setText(musicAlbum);
+                    holder.setText(R.id.item_sub_title, musicAlbum);
                 }
                 if (mOnItemClickListener != null) {
-                    musicHolder.getItemView().setOnClickListener(new View.OnClickListener() {
+                    holder.getItemView().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mOnItemClickListener.onItemClick(musicHolder.getItemView(), musicHolder.getLayoutPosition());
+                            mOnItemClickListener.onItemClick(holder.getItemView(), holder.getLayoutPosition());
                         }
                     });
                 }
             } else {
                 if (mOnHeaderClickListener != null) {
-                    HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-                    final View mRandomPlayButton = headerViewHolder.getRandomPlayButton();
+                    final View mRandomPlayButton = holder.getView(R.id.random_play_text);
                     mRandomPlayButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

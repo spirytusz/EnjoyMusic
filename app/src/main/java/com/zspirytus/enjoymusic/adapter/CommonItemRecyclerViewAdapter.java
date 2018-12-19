@@ -7,8 +7,7 @@ import android.view.ViewGroup;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
-import com.zspirytus.enjoymusic.cache.viewholder.MusicCommonViewHolder;
-import com.zspirytus.enjoymusic.engine.GlideApp;
+import com.zspirytus.enjoymusic.cache.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
@@ -25,7 +24,7 @@ import java.util.List;
  */
 
 @BindAdapterItemLayoutId(R.layout.item_common_view_type)
-public class CommonItemRecyclerViewAdapter<T> extends BaseRecyclerViewAdapter<MusicCommonViewHolder> {
+public class CommonItemRecyclerViewAdapter<T> extends BaseRecyclerViewAdapter<CommonViewHolder> {
 
     private Context mContext;
     private List<T> mList;
@@ -36,17 +35,17 @@ public class CommonItemRecyclerViewAdapter<T> extends BaseRecyclerViewAdapter<Mu
     }
 
     @Override
-    public MusicCommonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CommonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mContext == null) {
             mContext = parent.getContext();
         }
         View view = LayoutInflater.from(mContext).inflate(getItemLayoutId(), parent, false);
-        return new MusicCommonViewHolder(view);
+        return new CommonViewHolder(view, getItemLayoutId());
     }
 
 
     @Override
-    public void onBindViewHolder(MusicCommonViewHolder holder, int position) {
+    public void onBindViewHolder(CommonViewHolder holder, int position) {
         T t = mList.get(position);
         String coverFilePath;
         String title;
@@ -80,11 +79,11 @@ public class CommonItemRecyclerViewAdapter<T> extends BaseRecyclerViewAdapter<Mu
         }
         if (coverFilePath != null && coverFilePath.length() > 0) {
             File coverFile = MusicCoverFileCache.getInstance().getCoverFile(coverFilePath);
-            GlideApp.with(mContext).load(coverFile).into(holder.getCoverImageView());
+            holder.setImageFile(R.id.item_cover, coverFile);
         }
-        holder.getTitleTextView().setText(title);
-        holder.getSubTitleTextView().setText(subTitle);
-        holder.getMoreInfoButton().setOnClickListener(new View.OnClickListener() {
+        holder.setText(R.id.item_title, title);
+        holder.setText(R.id.item_sub_title, subTitle);
+        holder.getView(R.id.item_more_info_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogBuilder.showSelectDialog(mContext, moreInfoItem).create();
@@ -108,7 +107,7 @@ public class CommonItemRecyclerViewAdapter<T> extends BaseRecyclerViewAdapter<Mu
         this.onItemClickListener = onItemClickListener;
     }
 
-    private void bindListener(final MusicCommonViewHolder holder) {
+    private void bindListener(final CommonViewHolder holder) {
         if (onItemClickListener != null) {
             holder.getItemView().setOnClickListener(new View.OnClickListener() {
                 @Override
