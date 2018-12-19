@@ -7,12 +7,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.graphics.Palette;
-import android.widget.RemoteViews;
-
 import android.support.v4.media.app.NotificationCompat.MediaStyle;
 
 import com.zspirytus.enjoymusic.R;
@@ -21,9 +17,7 @@ import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
-import com.zspirytus.enjoymusic.utils.BitmapUtil;
 import com.zspirytus.enjoymusic.utils.DeviceUtils;
-import com.zspirytus.enjoymusic.utils.DrawableUtil;
 import com.zspirytus.enjoymusic.utils.LogUtil;
 
 import java.lang.reflect.Field;
@@ -57,10 +51,10 @@ public class NotificationHelper {
 
         Intent intent = new Intent(MyApplication.getBackgroundContext(), PlayMusicService.class);
         intent.putExtra(Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.PREVIOUS);
-        PendingIntent play = createPendingIntentByExtra(intent,1, Constant.NotificationEvent.PLAY);
-        playAction = new Notification.Action(R.drawable.ic_play_arrow_black_48dp, "play",play);
-        PendingIntent pause = createPendingIntentByExtra(intent,1, Constant.NotificationEvent.PAUSE);
-        pauseAction = new Notification.Action(R.drawable.ic_pause_black_48dp, "pause",pause);
+        PendingIntent play = createPendingIntentByExtra(intent, 1, Constant.NotificationEvent.PLAY);
+        playAction = new Notification.Action(R.drawable.ic_play_arrow_black_48dp, "play", play);
+        PendingIntent pause = createPendingIntentByExtra(intent, 1, Constant.NotificationEvent.PAUSE);
+        pauseAction = new Notification.Action(R.drawable.ic_pause_black_48dp, "pause", pause);
     }
 
     public static NotificationHelper getInstance() {
@@ -75,9 +69,9 @@ public class NotificationHelper {
         mNotificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
     }
 
-    public void setPlayOrPauseBtnRes(boolean isPlaying) {
+    public void updateNotification(boolean isPlaying) {
         if (mCurrentNotification != null) {
-            if(isPlaying) {
+            if (isPlaying) {
                 mCurrentNotification.actions[1] = pauseAction;
             } else {
                 mCurrentNotification.actions[1] = playAction;
@@ -89,8 +83,14 @@ public class NotificationHelper {
     private void createNotificationChannel() {
         if (DeviceUtils.isOSVersionHigherThan(Build.VERSION_CODES.O)) {
             mChannelId = "music_notification";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(mChannelId, "音乐通知栏", importance);
+            channel.enableLights(false);
+            channel.enableVibration(false);
+            channel.setVibrationPattern(new long[]{0});
+            channel.setSound(null, null);
+            channel.setVibrationPattern(new long[]{0});
+            channel.enableVibration(true);
             mNotificationManager.createNotificationChannel(channel);
         } else {
             mChannelId = "default";
@@ -119,7 +119,10 @@ public class NotificationHelper {
                 .setContentText(music.getMusicArtist())
                 .setChannelId(mChannelId)
                 .setAutoCancel(true)
-                .setOngoing(true);
+                .setOngoing(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setVibrate(new long[]{0})
+                .setSound(null);
     }
 
     private NotificationCompat.Builder createNotificationAction(NotificationCompat.Builder builder) {
@@ -129,7 +132,7 @@ public class NotificationHelper {
         PendingIntent next = createPendingIntentByExtra(intent, 1, Constant.NotificationEvent.NEXT);
         PendingIntent previous = createPendingIntentByExtra(intent, 2, Constant.NotificationEvent.PREVIOUS);
         builder.addAction(new NotificationCompat.Action(R.drawable.ic_skip_previous_black_48dp, "previous", previous))
-                .addAction(new NotificationCompat.Action(R.drawable.ic_pause_black_48dp, "pause",pause))
+                .addAction(new NotificationCompat.Action(R.drawable.ic_pause_black_48dp, "pause", pause))
                 .addAction(new NotificationCompat.Action(R.drawable.ic_skip_next_black_48dp, "next", next));
         return builder;
     }

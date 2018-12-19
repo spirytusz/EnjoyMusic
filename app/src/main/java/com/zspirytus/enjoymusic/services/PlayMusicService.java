@@ -28,6 +28,7 @@ import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
+import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.StatusBarUtil;
 import com.zspirytus.enjoymusic.view.activity.MainActivity;
 
@@ -71,6 +72,7 @@ public class PlayMusicService extends BaseService implements RemotePlayProgressC
 
     @Override
     public void onPlayStateChange(boolean isPlaying) {
+        NotificationHelper.getInstance().updateNotification(isPlaying);
         notifyAllObserverPlayStateChange(isPlaying);
     }
 
@@ -131,11 +133,11 @@ public class PlayMusicService extends BaseService implements RemotePlayProgressC
                 break;
             case Constant.NotificationEvent.PLAY:
                 BackgroundMusicController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
-                NotificationHelper.getInstance().setPlayOrPauseBtnRes(true);
+                LogUtil.e(this.getClass().getSimpleName(), "play");
                 break;
             case Constant.NotificationEvent.PAUSE:
                 BackgroundMusicController.getInstance().pause();
-                NotificationHelper.getInstance().setPlayOrPauseBtnRes(false);
+                LogUtil.e(this.getClass().getSimpleName(), "pause");
                 break;
             case Constant.NotificationEvent.NEXT:
                 BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic());
