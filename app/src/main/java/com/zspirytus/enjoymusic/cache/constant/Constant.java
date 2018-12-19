@@ -35,7 +35,8 @@ public interface Constant {
     interface NotificationEvent {
         String ACTION_NAME = "com.zspirytus.enjoymusic.STATUS_BAR_ACTION";
         String EXTRA = "statusBarExtra";
-        String PLAY_OR_PAUSE = "playOrPause";
+        String PLAY = "play";
+        String PAUSE = "pause";
         String NEXT = "next";
         String PREVIOUS = "previous";
         String SINGLE_CLICK = "singleClick";

@@ -71,7 +71,6 @@ public class PlayMusicService extends BaseService implements RemotePlayProgressC
 
     @Override
     public void onPlayStateChange(boolean isPlaying) {
-        NotificationHelper.getInstance().setPlayOrPauseBtnRes(isPlaying);
         notifyAllObserverPlayStateChange(isPlaying);
     }
 
@@ -130,12 +129,13 @@ public class PlayMusicService extends BaseService implements RemotePlayProgressC
             case Constant.NotificationEvent.PREVIOUS:
                 BackgroundMusicController.getInstance().play(PlayHistoryCache.getInstance().getPreviousPlayedMusic());
                 break;
-            case Constant.NotificationEvent.PLAY_OR_PAUSE:
-                if (BackgroundMusicController.getInstance().isPlaying()) {
-                    BackgroundMusicController.getInstance().pause();
-                } else {
-                    BackgroundMusicController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
-                }
+            case Constant.NotificationEvent.PLAY:
+                BackgroundMusicController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+                NotificationHelper.getInstance().setPlayOrPauseBtnRes(true);
+                break;
+            case Constant.NotificationEvent.PAUSE:
+                BackgroundMusicController.getInstance().pause();
+                NotificationHelper.getInstance().setPlayOrPauseBtnRes(false);
                 break;
             case Constant.NotificationEvent.NEXT:
                 BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic());

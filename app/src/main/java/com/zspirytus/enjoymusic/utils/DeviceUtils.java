@@ -1,8 +1,11 @@
 package com.zspirytus.enjoymusic.utils;
 
+import android.os.Build;
+
 import java.io.IOException;
 
-public class OSUtils {
+public class DeviceUtils {
+
     //MIUI标识
     private static final String KEY_MIUI_VERSION_CODE = "ro.miui.ui.version.code";
     private static final String KEY_MIUI_VERSION_NAME = "ro.miui.ui.version.name";
@@ -20,39 +23,46 @@ public class OSUtils {
     private static final String KEY_FLYME_SETUP_FALG = "ro.meizu.setupwizard.flyme";
     private static final String KEY_FLYME_PUBLISH_FALG = "ro.flyme.published";
 
+    private DeviceUtils() {
+        throw new AssertionError();
+    }
+
     /**
-     * @param
-     * @return ROM_TYPE ROM类型的枚举
-     * @description获取ROM类型: MIUI_ROM, FLYME_ROM, EMUI_ROM, OTHER_ROM
+     * get operating system name
+     * @return os name
      */
-    public static ROM_TYPE getRomType() {
+    public static String getOSName() {
         ROM_TYPE rom_type = ROM_TYPE.OTHER;
         try {
             BuildProperties buildProperties = BuildProperties.getInstance();
 
             if (buildProperties.containsKey(KEY_EMUI_VERSION_CODE) || buildProperties.containsKey(KEY_EMUI_API_LEVEL) || buildProperties.containsKey(KEY_MIUI_INTERNAL_STORAGE)) {
-                return ROM_TYPE.EMUI;
+                return ROM_TYPE.EMUI.name();
             }
             if (buildProperties.containsKey(KEY_MIUI_VERSION_CODE) || buildProperties.containsKey(KEY_MIUI_VERSION_NAME) || buildProperties.containsKey(KEY_MIUI_VERSION_NAME)) {
-                return ROM_TYPE.MIUI;
+                return ROM_TYPE.MIUI.name();
             }
             if (buildProperties.containsKey(KEY_FLYME_ICON_FALG) || buildProperties.containsKey(KEY_FLYME_SETUP_FALG) || buildProperties.containsKey(KEY_FLYME_PUBLISH_FALG)) {
-                return ROM_TYPE.FLYME;
+                return ROM_TYPE.FLYME.name();
             }
             if (buildProperties.containsKey(KEY_FLYME_ID_FALG_KEY)) {
                 String romName = buildProperties.getProperty(KEY_FLYME_ID_FALG_KEY);
                 if (romName != null && romName.length() > 0 && romName.contains(KEY_FLYME_ID_FALG_VALUE_KEYWORD)) {
-                    return ROM_TYPE.FLYME;
+                    return ROM_TYPE.FLYME.name();
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return rom_type;
+        return rom_type.name();
     }
 
-    public enum ROM_TYPE {
+    public static boolean isOSVersionHigherThan(int version) {
+        return Build.VERSION.SDK_INT >= version;
+    }
+
+    private static enum ROM_TYPE {
         MIUI,
         FLYME,
         EMUI,
