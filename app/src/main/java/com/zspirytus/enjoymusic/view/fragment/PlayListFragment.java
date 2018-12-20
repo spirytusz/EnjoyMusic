@@ -5,8 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.CommonItemRecyclerViewAdapter;
+import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
+import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
+import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -19,6 +21,7 @@ import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeObserver;
 
 import org.simple.eventbus.EventBus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,13 +37,28 @@ public class PlayListFragment extends CommonHeaderBaseFragment
     @ViewInject(R.id.play_list_info_tv)
     private AppCompatTextView mInfoTextView;
 
-    private CommonItemRecyclerViewAdapter<Music> mAdapter;
+    private CommonRecyclerViewAdapter<Music> mAdapter;
     private List<Music> mPlayList;
 
     @Override
     protected void initData() {
         mPlayList = new ArrayList<>();
-        mAdapter = new CommonItemRecyclerViewAdapter<>(mPlayList);
+        mAdapter = new CommonRecyclerViewAdapter<Music>() {
+            @Override
+            public int getLayoutId() {
+                return R.layout.item_common_view_type;
+            }
+
+            @Override
+            public void convert(CommonViewHolder holder, Music music, int position) {
+                File coverFile = MusicCoverFileCache.getInstance().getCoverFile(music.getMusicThumbAlbumCoverPath());
+                holder.setImageFile(R.id.item_cover, coverFile);
+                holder.setText(R.id.item_title, music.getMusicName());
+                holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
+                holder.setOnItemClickListener(PlayListFragment.this);
+            }
+        };
+        mAdapter.setList(mPlayList);
     }
 
     @Override
@@ -50,7 +68,6 @@ public class PlayListFragment extends CommonHeaderBaseFragment
         mPlayListRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mPlayListRecyclerView.setHasFixedSize(true);
         mPlayListRecyclerView.setNestedScrollingEnabled(false);
-        mAdapter.setOnItemClickListener(this);
         mPlayListRecyclerView.setAdapter(mAdapter);
         setupInfoTextView(mPlayList.isEmpty());
     }

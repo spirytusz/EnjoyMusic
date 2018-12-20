@@ -1,9 +1,7 @@
-package com.zspirytus.enjoymusic.cache.viewholder;
+package com.zspirytus.enjoymusic.adapter.viewholder;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
@@ -12,6 +10,7 @@ import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.engine.GlideApp;
+import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 
 import java.io.File;
 
@@ -58,7 +57,7 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
 
     public void setImageFile(@IdRes int id, File file) {
         View view = getView(id);
-        if(view != null) {
+        if (view != null) {
             if (view instanceof ImageView) {
                 ImageView imageView = (ImageView) view;
                 GlideApp.with(MyApplication.getForegroundContext())
@@ -70,11 +69,24 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
 
     public void setText(@IdRes int id, String text) {
         View view = getView(id);
-        if(view != null) {
-            if(view instanceof TextView) {
+        if (view != null) {
+            if (view instanceof TextView) {
                 TextView textView = (TextView) view;
                 textView.setText(text);
             }
         }
+    }
+
+    public void setOnItemClickListener(final OnRecyclerViewItemClickListener listener) {
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(mItemView, getAdapterPosition());
+            }
+        });
+    }
+
+    public void setOnItemClickListener(@IdRes int viewId, View.OnClickListener listener) {
+        getView(viewId).setOnClickListener(listener);
     }
 }

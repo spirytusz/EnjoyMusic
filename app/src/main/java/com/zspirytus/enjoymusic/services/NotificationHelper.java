@@ -85,6 +85,10 @@ public class NotificationHelper {
             mChannelId = "music_notification";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(mChannelId, "音乐通知栏", importance);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            channel.setSound(null, null);
+            channel.enableLights(false);
+            channel.enableVibration(false);
             mNotificationManager.createNotificationChannel(channel);
         } else {
             mChannelId = "default";

@@ -6,9 +6,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.CardViewItemRecyclerViewAdapter;
+import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.adapter.ItemSpacingDecoration;
+import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
+import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Album;
@@ -20,6 +22,7 @@ import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -38,7 +41,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     @ViewInject(R.id.album_music_list_fragment_info_tv)
     private TextView mInfoTextView;
 
-    private CardViewItemRecyclerViewAdapter<Album> mAdapter;
+    private CommonRecyclerViewAdapter<Album> mAdapter;
     private List<Album> mAlbumList;
 
     @Override
@@ -58,14 +61,28 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     @Override
     protected void initData() {
         mAlbumList = ForegroundMusicCache.getInstance().getAlbumList();
+        mAdapter = new CommonRecyclerViewAdapter<Album>() {
+            @Override
+            public int getLayoutId() {
+                return R.layout.item_card_view_type;
+            }
+
+            @Override
+            public void convert(CommonViewHolder holder, Album album, int position) {
+                File coverFile = MusicCoverFileCache.getInstance().getCoverFile(album.getAlbumCoverPath());
+                holder.setImageFile(R.id.item_cover, coverFile);
+                holder.setText(R.id.item_title, album.getAlbumName());
+                holder.setText(R.id.item_sub_title, album.getArtist());
+                holder.setOnItemClickListener(AlbumMusicListFragment.this);
+            }
+        };
+        mAdapter.setList(mAlbumList);
     }
 
     @Override
     protected void initView() {
         if (mAlbumList != null && !mAlbumList.isEmpty()) {
             playWidgetAnimation(true, false);
-            mAdapter = new CardViewItemRecyclerViewAdapter<>(mAlbumList);
-            mAdapter.setOnItemClickListener(AlbumMusicListFragment.this);
             mAlbumMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManager(getParentActivity(), 2));
             mAlbumMusicRecyclerView.setAdapter(mAdapter);
             mAlbumMusicRecyclerView.setHasFixedSize(true);

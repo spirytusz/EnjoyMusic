@@ -6,8 +6,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.CommonItemRecyclerViewAdapter;
+import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
+import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
+import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -21,6 +23,7 @@ import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
 import org.simple.eventbus.EventBus;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -40,7 +43,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     private TextView mInfoTextView;
 
     private List<Music> mMusicList;
-    private CommonItemRecyclerViewAdapter<Music> mMusicRecyclerViewAdapter;
+    private CommonRecyclerViewAdapter<Music> mMusicRecyclerViewAdapter;
 
     @Override
     public void onItemClick(View view, int position) {
@@ -51,6 +54,27 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     }
 
     @Override
+    protected void initData() {
+        mMusicList = ForegroundMusicCache.getInstance().getAllMusicList();
+        mMusicRecyclerViewAdapter = new CommonRecyclerViewAdapter<Music>() {
+            @Override
+            public int getLayoutId() {
+                return R.layout.item_common_view_type;
+            }
+
+            @Override
+            public void convert(CommonViewHolder holder, Music music, int position) {
+                File coverFile = MusicCoverFileCache.getInstance().getCoverFile(music.getMusicThumbAlbumCoverPath());
+                holder.setImageFile(R.id.item_cover, coverFile);
+                holder.setText(R.id.item_title, music.getMusicName());
+                holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
+                holder.setOnItemClickListener(AllMusicListFragment.this);
+            }
+        };
+        mMusicRecyclerViewAdapter.setList(mMusicList);
+    }
+
+    @Override
     protected void initView() {
         mMusicRecyclerView.setVisibility(View.GONE);
         mMusicListLoadProgressBar.setVisibility(View.VISIBLE);
@@ -58,12 +82,9 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     }
 
     private void initRecyclerView() {
-        mMusicList = ForegroundMusicCache.getInstance().getAllMusicList();
-        mMusicRecyclerViewAdapter = new CommonItemRecyclerViewAdapter<>(mMusicList);
         mMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mMusicRecyclerView.setHasFixedSize(true);
         mMusicRecyclerView.setNestedScrollingEnabled(false);
-        mMusicRecyclerViewAdapter.setOnItemClickListener(AllMusicListFragment.this);
         mMusicRecyclerView.setAdapter(mMusicRecyclerViewAdapter);
         playAnimator();
     }

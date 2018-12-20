@@ -6,7 +6,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.CommonItemRecyclerViewAdapter;
+import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
+import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -39,7 +40,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
 
     private List<Artist> mArtistList;
 
-    private CommonItemRecyclerViewAdapter<Artist> mAdapter;
+    private CommonRecyclerViewAdapter<Artist> mAdapter;
 
     @Override
     public void onItemClick(View view, int position) {
@@ -58,16 +59,28 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
     @Override
     protected void initData() {
         mArtistList = ForegroundMusicCache.getInstance().getArtistList();
+        mAdapter = new CommonRecyclerViewAdapter<Artist>() {
+            @Override
+            public int getLayoutId() {
+                return R.layout.item_common_view_type;
+            }
+
+            @Override
+            public void convert(CommonViewHolder holder, Artist artist, int position) {
+                holder.setText(R.id.item_title, artist.getArtistName());
+                holder.setText(R.id.item_sub_title, artist.getNumberOfAlbums() + " 首歌曲");
+                holder.setOnItemClickListener(ArtistMusicListFragment.this);
+            }
+        };
+        mAdapter.setList(mArtistList);
     }
 
     @Override
     protected void initView() {
         if (mArtistList != null && !mArtistList.isEmpty()) {
-            mAdapter = new CommonItemRecyclerViewAdapter<>(mArtistList);
             mArtistMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
             mArtistMusicRecyclerView.setHasFixedSize(true);
             mArtistMusicRecyclerView.setNestedScrollingEnabled(false);
-            mAdapter.setOnItemClickListener(ArtistMusicListFragment.this);
             mArtistMusicRecyclerView.setAdapter(mAdapter);
             playWidgetAnimation(true, false);
         } else {
