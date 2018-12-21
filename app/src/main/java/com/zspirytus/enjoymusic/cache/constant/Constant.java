@@ -14,6 +14,7 @@ public interface Constant {
         int PLAY_MUSIC_CHANGE_OBSERVER = 0x08;
         int GET_MUSIC_LIST = 0x10;
         int SET_PLAY_LIST = 0x20;
+        int BACKGROUND_EVENT_PROCESSOR = 0x40;
     }
 
     interface EventBusTag {

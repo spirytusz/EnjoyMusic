@@ -12,9 +12,8 @@ import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.interfaces.RemotePlayMusicChangeCallback;
-import com.zspirytus.enjoymusic.interfaces.RemotePlayProgressCallback;
-import com.zspirytus.enjoymusic.interfaces.RemotePlayStateChangeCallback;
+import com.zspirytus.enjoymusic.listeners.observable.MusicStateObservable;
+import com.zspirytus.enjoymusic.services.NotificationHelper;
 import com.zspirytus.enjoymusic.utils.LogUtil;
 
 import java.io.IOException;
@@ -26,7 +25,8 @@ import java.util.TimerTask;
  * Created by ZSpirytus on 2018/8/10.
  */
 
-public class MediaPlayController implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
+public class MediaPlayController extends MusicStateObservable
+        implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
         AudioManager.OnAudioFocusChangeListener {
 
     private static final int STATE_PLAYING = 1;
@@ -36,10 +36,6 @@ public class MediaPlayController implements MediaPlayer.OnPreparedListener, Medi
     private static MediaPlayer mediaPlayer;
     private static AudioManager audioManager;
     private static PlayTimer mPlayingTimer;
-
-    private RemotePlayProgressCallback mRemotePlayProgressCallback;
-    private RemotePlayStateChangeCallback mRemotePlayStateChangeCallback;
-    private RemotePlayMusicChangeCallback mRemotePlayMusicChangeCallback;
 
     private int state;
     private boolean isPrepared = false;
@@ -65,18 +61,6 @@ public class MediaPlayController implements MediaPlayer.OnPreparedListener, Medi
 
     public static MediaPlayController getInstance() {
         return INSTANCE;
-    }
-
-    public void setPlayProgressCallback(RemotePlayProgressCallback remotePlayProgressCallback) {
-        mRemotePlayProgressCallback = remotePlayProgressCallback;
-    }
-
-    public void setPlayStateChangeCallback(RemotePlayStateChangeCallback remotePlayStateChangeCallback) {
-        mRemotePlayStateChangeCallback = remotePlayStateChangeCallback;
-    }
-
-    public void setMusicPlayCompleteCallback(RemotePlayMusicChangeCallback remotePlayMusicChangeCallback) {
-        mRemotePlayMusicChangeCallback = remotePlayMusicChangeCallback;
     }
 
     @Override
@@ -142,9 +126,8 @@ public class MediaPlayController implements MediaPlayer.OnPreparedListener, Medi
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
             mPlayingTimer.pause();
-            if (mRemotePlayStateChangeCallback != null) {
-                mRemotePlayStateChangeCallback.onPlayStateChange(false);
-            }
+            NotificationHelper.getInstance().updateNotification(false);
+            notifyAllObserverPlayStateChange(false);
             state = STATE_PAUSE;
             MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PAUSED);
         }
@@ -181,12 +164,11 @@ public class MediaPlayController implements MediaPlayer.OnPreparedListener, Medi
         MyMediaSession.getInstance().setMetaData(currentPlayingMusic);
         audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN);
-        if (mRemotePlayStateChangeCallback != null) {
-            mRemotePlayStateChangeCallback.onPlayStateChange(true);
-        }
         mediaPlayer.start();
-        if (mRemotePlayMusicChangeCallback != null)
-            mRemotePlayMusicChangeCallback.onPlayMusicChange(currentPlayingMusic);
+        NotificationHelper.getInstance().showNotification(currentPlayingMusic);
+        NotificationHelper.getInstance().updateNotification(true);
+        notifyAllObserverPlayMusicChange(currentPlayingMusic);
+        notifyAllObserverPlayStateChange(true);
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
         mPlayingTimer.start();
         CurrentPlayingMusicCache.getInstance().setCurrentPlayingMusic(currentPlayingMusic);
@@ -211,9 +193,7 @@ public class MediaPlayController implements MediaPlayer.OnPreparedListener, Medi
                 @Override
                 public void run() {
                     int currentPlayingSeconds = INSTANCE.getCurrentPosition() / 1000;
-                    if (INSTANCE.mRemotePlayProgressCallback != null) {
-                        INSTANCE.mRemotePlayProgressCallback.onProgressChange(currentPlayingSeconds);
-                    }
+                    INSTANCE.notifyAllObserverMusicPlayProgressChange(currentPlayingSeconds);
                 }
             };
             mTimer.schedule(mTimerTask, 0, SECONDS);

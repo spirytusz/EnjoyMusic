@@ -3,7 +3,8 @@ package com.zspirytus.enjoymusic.engine;
 import android.os.IBinder;
 import android.os.RemoteException;
 
-import com.zspirytus.enjoymusic.BinderPool;
+import com.zspirytus.enjoymusic.IBackgroundEventProcessor;
+import com.zspirytus.enjoymusic.IBinderPool;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayProgressChangeObserverImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
@@ -15,18 +16,20 @@ public class ForegroundBinderManager {
         static ForegroundBinderManager INSTANCE = new ForegroundBinderManager();
     }
 
-    private BinderPool mBinderPool;
+    private IBinderPool mBinderPool;
 
     public static ForegroundBinderManager getInstance() {
         return SingletonHolder.INSTANCE;
     }
 
-    public void init(BinderPool binderPool) {
+    public void init(IBinderPool binderPool) {
         mBinderPool = binderPool;
         try {
-            mBinderPool.registerObserver(IPlayStateChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_STATE_CHANGE_OBSERVER);
-            mBinderPool.registerObserver(IPlayProgressChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_PROGRESS_CHANGE_OBSERVER);
-            mBinderPool.registerObserver(IPlayMusicChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER);
+            IBinder iBinder = mBinderPool.queryBinder(Constant.BinderCode.BACKGROUND_EVENT_PROCESSOR);
+            IBackgroundEventProcessor backgroundEventProcessor = IBackgroundEventProcessor.Stub.asInterface(iBinder);
+            backgroundEventProcessor.registerObserver(IPlayStateChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_STATE_CHANGE_OBSERVER);
+            backgroundEventProcessor.registerObserver(IPlayProgressChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_PROGRESS_CHANGE_OBSERVER);
+            backgroundEventProcessor.registerObserver(IPlayMusicChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -43,9 +46,11 @@ public class ForegroundBinderManager {
 
     public void release() {
         try {
-            mBinderPool.unregisterObserver(IPlayStateChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_STATE_CHANGE_OBSERVER);
-            mBinderPool.unregisterObserver(IPlayProgressChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_PROGRESS_CHANGE_OBSERVER);
-            mBinderPool.unregisterObserver(IPlayMusicChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER);
+            IBinder iBinder = mBinderPool.queryBinder(Constant.BinderCode.BACKGROUND_EVENT_PROCESSOR);
+            IBackgroundEventProcessor backgroundEventProcessor = IBackgroundEventProcessor.Stub.asInterface(iBinder);
+            backgroundEventProcessor.unregisterObserver(IPlayStateChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_STATE_CHANGE_OBSERVER);
+            backgroundEventProcessor.unregisterObserver(IPlayProgressChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_PROGRESS_CHANGE_OBSERVER);
+            backgroundEventProcessor.unregisterObserver(IPlayMusicChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

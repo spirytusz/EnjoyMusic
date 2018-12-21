@@ -20,7 +20,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.zspirytus.enjoymusic.BinderPool;
+import com.zspirytus.enjoymusic.IBinderPool;
 import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
@@ -357,7 +357,7 @@ public class MainActivity extends BaseActivity
         conn = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-                ForegroundBinderManager.getInstance().init(BinderPool.Stub.asInterface(service));
+                ForegroundBinderManager.getInstance().init(IBinderPool.Stub.asInterface(service));
                 requestPermission();
             }
 
