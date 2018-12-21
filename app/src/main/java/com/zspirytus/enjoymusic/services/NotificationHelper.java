@@ -31,6 +31,12 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class NotificationHelper {
 
+    private static final int PREIVOUS = 0;
+    private static final int PLAY = 1;
+    private static final int PAUSE = 2;
+    private static final int NEXT = 3;
+    private static final int SINGLE_CLICK = 4;
+
     private static class SingletonHolder {
         static NotificationHelper INSTANCE = new NotificationHelper();
     }
@@ -51,9 +57,9 @@ public class NotificationHelper {
 
         Intent intent = new Intent(MainApplication.getBackgroundContext(), PlayMusicService.class);
         intent.putExtra(Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.PREVIOUS);
-        PendingIntent play = createPendingIntentByExtra(intent, 4, Constant.NotificationEvent.PLAY);
+        PendingIntent play = createPendingIntentByExtra(intent, PLAY, Constant.NotificationEvent.PLAY);
         playAction = new Notification.Action(R.drawable.ic_play_arrow_black_48dp, "play", play);
-        PendingIntent pause = createPendingIntentByExtra(intent, 1, Constant.NotificationEvent.PAUSE);
+        PendingIntent pause = createPendingIntentByExtra(intent, PAUSE, Constant.NotificationEvent.PAUSE);
         pauseAction = new Notification.Action(R.drawable.ic_pause_black_48dp, "pause", pause);
     }
 
@@ -111,7 +117,7 @@ public class NotificationHelper {
 
     private NotificationCompat.Builder getDefaultBuilder(Music music) {
         Intent intent = new Intent(MainApplication.getBackgroundContext(), PlayMusicService.class);
-        PendingIntent startActivity = createPendingIntentByExtra(intent, 5, Constant.NotificationEvent.SINGLE_CLICK);
+        PendingIntent startActivity = createPendingIntentByExtra(intent, SINGLE_CLICK, Constant.NotificationEvent.SINGLE_CLICK);
         return new NotificationCompat.Builder(MainApplication.getBackgroundContext(), mChannelId)
                 .setSmallIcon(R.drawable.ic_music_note_white_24dp)
                 .setLargeIcon(MusicCoverFileCache.getInstance().getCover(music.getMusicThumbAlbumCoverPath()))
@@ -128,9 +134,9 @@ public class NotificationHelper {
 
     private NotificationCompat.Builder createNotificationAction(NotificationCompat.Builder builder) {
         Intent intent = new Intent(MainApplication.getBackgroundContext(), PlayMusicService.class);
-        PendingIntent pause = createPendingIntentByExtra(intent, 0, Constant.NotificationEvent.PAUSE);
-        PendingIntent next = createPendingIntentByExtra(intent, 1, Constant.NotificationEvent.NEXT);
-        PendingIntent previous = createPendingIntentByExtra(intent, 2, Constant.NotificationEvent.PREVIOUS);
+        PendingIntent previous = createPendingIntentByExtra(intent, PREIVOUS, Constant.NotificationEvent.PREVIOUS);
+        PendingIntent pause = createPendingIntentByExtra(intent, PAUSE, Constant.NotificationEvent.PAUSE);
+        PendingIntent next = createPendingIntentByExtra(intent, NEXT, Constant.NotificationEvent.NEXT);
         builder.addAction(new NotificationCompat.Action(R.drawable.ic_skip_previous_black_48dp, "previous", previous))
                 .addAction(new NotificationCompat.Action(R.drawable.ic_pause_black_48dp, "pause", pause))
                 .addAction(new NotificationCompat.Action(R.drawable.ic_skip_next_black_48dp, "next", next));

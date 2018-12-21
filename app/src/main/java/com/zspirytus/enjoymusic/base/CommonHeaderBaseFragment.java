@@ -12,10 +12,13 @@ import android.view.ViewGroup;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
+import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 
 import org.simple.eventbus.EventBus;
 
-public class CommonHeaderBaseFragment extends BaseFragment {
+public class CommonHeaderBaseFragment extends BaseFragment
+        implements PlayedMusicChangeObserver {
 
     private ConstraintLayout mHeaderView;
 
@@ -34,6 +37,17 @@ public class CommonHeaderBaseFragment extends BaseFragment {
             mMenuIcon = mHeaderView.findViewById(R.id.common_header_menu_icon);
         }
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setTitle(getString(R.string.app_name));
+    }
+
+    @Override
+    public void onPlayedMusicChanged(Music music) {
+        setTitle(music.getMusicName());
     }
 
     public void setTitle(String text) {

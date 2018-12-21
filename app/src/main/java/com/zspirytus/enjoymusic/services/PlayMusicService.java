@@ -26,6 +26,8 @@ import com.zspirytus.enjoymusic.view.activity.MainActivity;
 
 public class PlayMusicService extends BaseService {
 
+    private static final String TAG = "PlayMusicService";
+
     private IBinderPoolImpl mBinderPool;
 
     private MyHeadSetPlugOutReceiver myHeadSetPlugOutReceiver;
@@ -77,8 +79,8 @@ public class PlayMusicService extends BaseService {
     }
 
     private void handleStatusBarEvent(Intent intent) {
-        String value = intent.getStringExtra(Constant.NotificationEvent.EXTRA);
-        switch (value) {
+        String event = intent.getStringExtra(Constant.NotificationEvent.EXTRA);
+        switch (event) {
             case Constant.NotificationEvent.SINGLE_CLICK:
                 MainActivity.startActivity(this, Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.ACTION_NAME);
                 StatusBarUtil.collapseStatusBar(this);

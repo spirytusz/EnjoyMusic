@@ -37,14 +37,11 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/common_header_title"
+        style="@style/HomeToolbar_TextView_Light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="39dp"
-        android:fontFamily="@string/title_home"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/common_header_nav_menu_or_back_icon"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Title" />
