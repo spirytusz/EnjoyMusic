@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.services;
+package com.zspirytus.enjoymusic.base;
 
 import android.app.Service;
 

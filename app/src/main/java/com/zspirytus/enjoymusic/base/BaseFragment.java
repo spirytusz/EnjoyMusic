@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.view.fragment;
+package com.zspirytus.enjoymusic.base;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,7 +12,6 @@ import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
-import com.zspirytus.enjoymusic.view.activity.BaseActivity;
 
 import java.lang.reflect.Field;
 

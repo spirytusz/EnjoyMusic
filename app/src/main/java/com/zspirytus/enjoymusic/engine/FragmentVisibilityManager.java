@@ -4,8 +4,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.listeners.observable.FragmentChangeObservable;
-import com.zspirytus.enjoymusic.view.fragment.BaseFragment;
 
 import java.util.LinkedList;
 

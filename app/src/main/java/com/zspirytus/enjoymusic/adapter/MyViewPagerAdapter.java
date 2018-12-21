@@ -3,8 +3,8 @@ package com.zspirytus.enjoymusic.adapter;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
-import com.zspirytus.enjoymusic.view.fragment.LazyLoadBaseFragment;
 
 import java.util.List;
 

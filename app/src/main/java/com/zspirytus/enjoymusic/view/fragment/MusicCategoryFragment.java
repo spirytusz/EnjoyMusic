@@ -5,6 +5,8 @@ import android.support.v4.view.ViewPager;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MyViewPagerAdapter;
+import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
+import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;

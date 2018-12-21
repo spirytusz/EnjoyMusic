@@ -1,8 +1,8 @@
 package com.zspirytus.enjoymusic.listeners.observable;
 
+import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.receivers.observer.FragmentChangeObserver;
-import com.zspirytus.enjoymusic.view.fragment.BaseFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicCategoryFragment;
 
 import java.util.ArrayList;

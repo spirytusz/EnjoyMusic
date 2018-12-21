@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.os.IBinder;
 
 import com.zspirytus.enjoymusic.adapter.binder.IBinderPoolImpl;
+import com.zspirytus.enjoymusic.base.BaseService;
 import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.PlayHistoryCache;

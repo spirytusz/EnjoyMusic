@@ -1,10 +1,10 @@
 package com.zspirytus.enjoymusic.factory;
 
+import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.view.fragment.AboutFragment;
 import com.zspirytus.enjoymusic.view.fragment.AlbumMusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.AllMusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.ArtistMusicListFragment;
-import com.zspirytus.enjoymusic.view.fragment.BaseFragment;
 import com.zspirytus.enjoymusic.view.fragment.FolderSortedMusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicCategoryFragment;

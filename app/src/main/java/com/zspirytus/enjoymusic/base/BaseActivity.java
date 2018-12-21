@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.view.activity;
+package com.zspirytus.enjoymusic.base;
 
 import android.graphics.Color;
 import android.os.Build;

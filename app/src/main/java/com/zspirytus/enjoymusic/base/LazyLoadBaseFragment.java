@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.view.fragment;
+package com.zspirytus.enjoymusic.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
