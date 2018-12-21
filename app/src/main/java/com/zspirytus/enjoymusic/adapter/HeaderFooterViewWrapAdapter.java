@@ -1,6 +1,9 @@
 package com.zspirytus.enjoymusic.adapter;
 
+import android.support.annotation.LayoutRes;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +17,8 @@ public abstract class HeaderFooterViewWrapAdapter extends RecyclerView.Adapter<C
     private static final int INNER_VIEW_TYPE = 666;
     private static final int FOOTER_VIEW_TYPE = 777;
 
-    private int mHeaderViews = 1;
-    private int mFooterViews = 0;
+    private SparseArrayCompat<Integer> mHeaderViews = new SparseArrayCompat<>();
+    private SparseArrayCompat<Integer> mFooterViews = new SparseArrayCompat<>();
 
     private RecyclerView.Adapter<CommonViewHolder> mInnerAdapter;
 
@@ -27,13 +30,15 @@ public abstract class HeaderFooterViewWrapAdapter extends RecyclerView.Adapter<C
 
     public CommonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == HEADER_VIEW_TYPE) {
-            View headerView = LayoutInflater.from(parent.getContext()).inflate(getHeaderLayoutId(), parent, false);
-            return new CommonViewHolder(headerView, getHeaderLayoutId());
+            int headerLayoutId = mHeaderViews.get(HEADER_VIEW_TYPE);
+            View headerView = LayoutInflater.from(parent.getContext()).inflate(headerLayoutId, parent, false);
+            return new CommonViewHolder(headerView, headerLayoutId);
         } else if (viewType == INNER_VIEW_TYPE) {
             return mInnerAdapter.onCreateViewHolder(parent, viewType);
         } else {
-            View footerView = LayoutInflater.from(parent.getContext()).inflate(getFooterLayoutId(), parent, false);
-            return new CommonViewHolder(footerView, getFooterLayoutId());
+            int footerViewLayoutId = mFooterViews.get(FOOTER_VIEW_TYPE);
+            View footerView = LayoutInflater.from(parent.getContext()).inflate(footerViewLayoutId, parent, false);
+            return new CommonViewHolder(footerView, footerViewLayoutId);
         }
     }
 
@@ -52,23 +57,27 @@ public abstract class HeaderFooterViewWrapAdapter extends RecyclerView.Adapter<C
 
     @Override
     public int getItemCount() {
-        return mInnerAdapter.getItemCount() + mHeaderViews + mFooterViews;
+        return mInnerAdapter.getItemCount() + mHeaderViews.size() + mFooterViews.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position < mHeaderViews) {
+        if (position < mHeaderViews.size()) {
             return HEADER_VIEW_TYPE;
-        } else if (position < mHeaderViews + mInnerAdapter.getItemCount()) {
+        } else if (position < mHeaderViews.size() + mInnerAdapter.getItemCount()) {
             return INNER_VIEW_TYPE;
         } else {
             return FOOTER_VIEW_TYPE;
         }
     }
 
-    public abstract int getHeaderLayoutId();
+    public void addHeaderViews(@LayoutRes int layoutId) {
+        mHeaderViews.put(HEADER_VIEW_TYPE, layoutId);
+    }
 
-    public abstract int getFooterLayoutId();
+    public void addFooterViews(@LayoutRes int layoutId) {
+        mFooterViews.put(FOOTER_VIEW_TYPE, layoutId);
+    }
 
     public abstract void convertHeaderView(CommonViewHolder holder, int position);
 

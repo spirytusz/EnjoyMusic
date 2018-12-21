@@ -69,16 +69,6 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             mInnerAdapter.setList(mMusicList);
             mAdapter = new HeaderFooterViewWrapAdapter(mInnerAdapter) {
                 @Override
-                public int getHeaderLayoutId() {
-                    return R.layout.home_page_rv_header;
-                }
-
-                @Override
-                public int getFooterLayoutId() {
-                    return 0;
-                }
-
-                @Override
                 public void convertHeaderView(CommonViewHolder holder, int position) {
                     holder.setOnItemClickListener(R.id.random_play_text, new View.OnClickListener() {
                         @Override
@@ -92,9 +82,9 @@ public class HomePageFragment extends CommonHeaderBaseFragment
 
                 @Override
                 public void convertFooterView(CommonViewHolder holder, int position) {
-
                 }
             };
+            mAdapter.addHeaderViews(R.layout.home_page_rv_header);
         }
     }
 
@@ -116,7 +106,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
 
     @Override
     public void onItemClick(View view, int position) {
-        Music selectMusic = mMusicList.get(position - 1);
+        Music selectMusic = mMusicList.get(position);
         ForegroundMusicController.getInstance().play(selectMusic);
     }
 
