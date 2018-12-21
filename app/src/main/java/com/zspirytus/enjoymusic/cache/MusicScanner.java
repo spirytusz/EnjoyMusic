@@ -11,6 +11,7 @@ import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.global.MainApplication;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -94,7 +95,7 @@ public class MusicScanner {
                 MediaStore.Audio.AudioColumns.DURATION,
                 MediaStore.Audio.AudioColumns.DATE_ADDED,
         };
-        ContentResolver resolver = MyApplication.getBackgroundContext().getContentResolver();
+        ContentResolver resolver = MainApplication.getBackgroundContext().getContentResolver();
         Cursor cursor = resolver.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
@@ -119,7 +120,7 @@ public class MusicScanner {
                     String musicAlbumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM));
                     String musicThumbAlbumCoverPath = getThumbAlbum(albumId);
                     String musicArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST));
-                    String musicFileSize = Formatter.formatFileSize(MyApplication.getBackgroundContext(), cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE)));
+                    String musicFileSize = Formatter.formatFileSize(MainApplication.getBackgroundContext(), cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE)));
                     long musicAddDate = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATE_ADDED));
                     Music itemMusic = new Music(musicFilePath, musicName, musicArtist, musicAlbumName, musicThumbAlbumCoverPath, musicDuration, musicFileSize, musicAddDate);
                     if (!mAllMusicList.contains(itemMusic)) {
@@ -140,7 +141,7 @@ public class MusicScanner {
                 MediaStore.Audio.AlbumColumns.LAST_YEAR,
                 MediaStore.Audio.AlbumColumns.NUMBER_OF_SONGS,
         };
-        ContentResolver resolver = MyApplication.getBackgroundContext().getContentResolver();
+        ContentResolver resolver = MainApplication.getBackgroundContext().getContentResolver();
         Cursor cursor = resolver.query(
                 MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                 projection,
@@ -172,7 +173,7 @@ public class MusicScanner {
                 MediaStore.Audio.ArtistColumns.NUMBER_OF_ALBUMS,
                 MediaStore.Audio.ArtistColumns.NUMBER_OF_TRACKS,
         };
-        ContentResolver resolver = MyApplication.getBackgroundContext().getContentResolver();
+        ContentResolver resolver = MainApplication.getBackgroundContext().getContentResolver();
         Cursor cursor = resolver.query(
                 MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
                 projection,
@@ -214,7 +215,7 @@ public class MusicScanner {
     }
 
     private String getThumbAlbum(String albumId) {
-        ContentResolver resolver = MyApplication.getBackgroundContext().getContentResolver();
+        ContentResolver resolver = MainApplication.getBackgroundContext().getContentResolver();
         Uri albumUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
         String thumbnail = MediaStore.Audio.Albums.ALBUM_ART;
         String id = MediaStore.Audio.Albums._ID;

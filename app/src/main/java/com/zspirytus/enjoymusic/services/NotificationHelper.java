@@ -13,9 +13,9 @@ import android.support.v4.media.app.NotificationCompat.MediaStyle;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
-import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
 import com.zspirytus.enjoymusic.utils.DeviceUtils;
 import com.zspirytus.enjoymusic.utils.LogUtil;
@@ -46,10 +46,10 @@ public class NotificationHelper {
     private Notification.Action pauseAction;
 
     private NotificationHelper() {
-        Context backgroundContext = MyApplication.getBackgroundContext();
+        Context backgroundContext = MainApplication.getBackgroundContext();
         mNotificationManager = (NotificationManager) backgroundContext.getSystemService(NOTIFICATION_SERVICE);
 
-        Intent intent = new Intent(MyApplication.getBackgroundContext(), PlayMusicService.class);
+        Intent intent = new Intent(MainApplication.getBackgroundContext(), PlayMusicService.class);
         intent.putExtra(Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.PREVIOUS);
         PendingIntent play = createPendingIntentByExtra(intent, 4, Constant.NotificationEvent.PLAY);
         playAction = new Notification.Action(R.drawable.ic_play_arrow_black_48dp, "play", play);
@@ -110,9 +110,9 @@ public class NotificationHelper {
     }
 
     private NotificationCompat.Builder getDefaultBuilder(Music music) {
-        Intent intent = new Intent(MyApplication.getBackgroundContext(), PlayMusicService.class);
+        Intent intent = new Intent(MainApplication.getBackgroundContext(), PlayMusicService.class);
         PendingIntent startActivity = createPendingIntentByExtra(intent, 5, Constant.NotificationEvent.SINGLE_CLICK);
-        return new NotificationCompat.Builder(MyApplication.getBackgroundContext(), mChannelId)
+        return new NotificationCompat.Builder(MainApplication.getBackgroundContext(), mChannelId)
                 .setSmallIcon(R.drawable.ic_music_note_white_24dp)
                 .setLargeIcon(MusicCoverFileCache.getInstance().getCover(music.getMusicThumbAlbumCoverPath()))
                 .setContentTitle(music.getMusicName())
@@ -127,7 +127,7 @@ public class NotificationHelper {
     }
 
     private NotificationCompat.Builder createNotificationAction(NotificationCompat.Builder builder) {
-        Intent intent = new Intent(MyApplication.getBackgroundContext(), PlayMusicService.class);
+        Intent intent = new Intent(MainApplication.getBackgroundContext(), PlayMusicService.class);
         PendingIntent pause = createPendingIntentByExtra(intent, 0, Constant.NotificationEvent.PAUSE);
         PendingIntent next = createPendingIntentByExtra(intent, 1, Constant.NotificationEvent.NEXT);
         PendingIntent previous = createPendingIntentByExtra(intent, 2, Constant.NotificationEvent.PREVIOUS);
@@ -139,7 +139,7 @@ public class NotificationHelper {
 
     private PendingIntent createPendingIntentByExtra(Intent intent, int requestCode, String value) {
         intent.putExtra(Constant.NotificationEvent.EXTRA, value);
-        return PendingIntent.getService(MyApplication.getBackgroundContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getService(MainApplication.getBackgroundContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private void prepareNotificationForMIUI(Notification notification) {

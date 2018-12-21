@@ -4,7 +4,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.zspirytus.enjoymusic.cache.MyApplication;
+import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 public class ItemSpacingDecoration extends RecyclerView.ItemDecoration {
@@ -18,10 +18,10 @@ public class ItemSpacingDecoration extends RecyclerView.ItemDecoration {
     private int mColumnCount;
 
     public ItemSpacingDecoration(int topPadding, int bottomPadding, int startPadding, int endPadding, int headerCount, int columnCount) {
-        mTopPadding = PixelsUtil.dp2px(MyApplication.getForegroundContext(), topPadding);
-        mBottomPadding = PixelsUtil.dp2px(MyApplication.getForegroundContext(), bottomPadding);
-        mStartPadding = PixelsUtil.dp2px(MyApplication.getForegroundContext(), startPadding);
-        mEndPadding = PixelsUtil.dp2px(MyApplication.getForegroundContext(), endPadding);
+        mTopPadding = PixelsUtil.dp2px(MainApplication.getForegroundContext(), topPadding);
+        mBottomPadding = PixelsUtil.dp2px(MainApplication.getForegroundContext(), bottomPadding);
+        mStartPadding = PixelsUtil.dp2px(MainApplication.getForegroundContext(), startPadding);
+        mEndPadding = PixelsUtil.dp2px(MainApplication.getForegroundContext(), endPadding);
 
         mHeaderCount = headerCount;
         mColumnCount = columnCount;

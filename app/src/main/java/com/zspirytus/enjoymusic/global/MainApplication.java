@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.cache;
+package com.zspirytus.enjoymusic.global;
 
 import android.app.ActivityManager;
 import android.app.Application;
@@ -8,7 +8,7 @@ import android.content.Context;
  * Created by ZSpirytus on 2018/9/10.
  */
 
-public class MyApplication extends Application {
+public class MainApplication extends Application {
 
     private static final String MAIN_PROCESS_NAME = "com.zspirytus.enjoymusic";
 

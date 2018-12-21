@@ -6,7 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 
-import com.zspirytus.enjoymusic.cache.MyApplication;
+import com.zspirytus.enjoymusic.global.MainApplication;
 
 /**
  * Created by ZSpirytus on 2018/12/15.
@@ -41,7 +41,7 @@ public class BitmapUtil {
     }
 
     public static Bitmap createBitmapByResId(int resId) {
-        return BitmapFactory.decodeResource(MyApplication.getBackgroundContext().getResources(), resId);
+        return BitmapFactory.decodeResource(MainApplication.getBackgroundContext().getResources(), resId);
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
@@ -59,11 +59,11 @@ public class BitmapUtil {
 
     private static int computeInSampleSize(int width, int height) {
         if (width == height) {
-            return width / PixelsUtil.dp2px(MyApplication.getBackgroundContext(), TARGET_WIDTH_DP);
+            return width / PixelsUtil.dp2px(MainApplication.getBackgroundContext(), TARGET_WIDTH_DP);
         } else if (width > height) {
-            return height / PixelsUtil.dp2px(MyApplication.getBackgroundContext(), TARGET_HEIGHT_DP);
+            return height / PixelsUtil.dp2px(MainApplication.getBackgroundContext(), TARGET_HEIGHT_DP);
         } else {
-            return width / PixelsUtil.dp2px(MyApplication.getBackgroundContext(), TARGET_WIDTH_DP);
+            return width / PixelsUtil.dp2px(MainApplication.getBackgroundContext(), TARGET_WIDTH_DP);
         }
     }
 

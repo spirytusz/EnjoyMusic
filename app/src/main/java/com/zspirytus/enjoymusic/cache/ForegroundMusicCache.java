@@ -4,6 +4,7 @@ import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.listeners.observable.PlayListChangeObservable;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class ForegroundMusicCache extends PlayListChangeObservable {
     private List<Music> mPlayList;
 
     private ForegroundMusicCache() {
-        mCurrentPlayingMusic = MusicSharedPreferences.restoreMusic(MyApplication.getForegroundContext());
+        mCurrentPlayingMusic = MusicSharedPreferences.restoreMusic(MainApplication.getForegroundContext());
     }
 
     public static ForegroundMusicCache getInstance() {

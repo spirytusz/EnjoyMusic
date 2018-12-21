@@ -8,10 +8,10 @@ import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
-import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.listeners.observable.MusicStateObservable;
 import com.zspirytus.enjoymusic.services.NotificationHelper;
 import com.zspirytus.enjoymusic.utils.LogUtil;
@@ -48,8 +48,8 @@ public class MediaPlayController extends MusicStateObservable
     private MediaPlayController() {
         // init media obj
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setWakeMode(MyApplication.getBackgroundContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        audioManager = (AudioManager) MyApplication.getBackgroundContext().getSystemService(Service.AUDIO_SERVICE);
+        mediaPlayer.setWakeMode(MainApplication.getBackgroundContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        audioManager = (AudioManager) MainApplication.getBackgroundContext().getSystemService(Service.AUDIO_SERVICE);
 
         // set listeners
         mediaPlayer.setOnPreparedListener(this);

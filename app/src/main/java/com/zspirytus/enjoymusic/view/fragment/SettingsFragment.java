@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
-import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
@@ -26,6 +25,5 @@ public class SettingsFragment extends CommonHeaderBaseFragment {
     @Override
     protected void initView() {
         setNavIconAction(true);
-        setTitle(Constant.FragmentName.settingFragmentName);
     }
 }

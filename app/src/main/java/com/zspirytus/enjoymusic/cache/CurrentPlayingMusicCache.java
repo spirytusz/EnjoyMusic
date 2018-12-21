@@ -1,6 +1,7 @@
 package com.zspirytus.enjoymusic.cache;
 
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.global.MainApplication;
 
 /**
  * Created by ZSpirytus on 2018/9/12.
@@ -17,7 +18,7 @@ public class CurrentPlayingMusicCache {
     }
 
     private CurrentPlayingMusicCache() {
-        currentPlayingMusic = MusicSharedPreferences.restoreMusic(MyApplication.getBackgroundContext());
+        currentPlayingMusic = MusicSharedPreferences.restoreMusic(MainApplication.getBackgroundContext());
     }
 
     public void setCurrentPlayingMusic(Music music) {

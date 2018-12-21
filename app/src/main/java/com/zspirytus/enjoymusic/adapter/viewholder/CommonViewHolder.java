@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zspirytus.enjoymusic.cache.MyApplication;
 import com.zspirytus.enjoymusic.engine.GlideApp;
+import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 
 import java.io.File;
@@ -60,7 +60,7 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
         if (view != null) {
             if (view instanceof ImageView) {
                 ImageView imageView = (ImageView) view;
-                GlideApp.with(MyApplication.getForegroundContext())
+                GlideApp.with(MainApplication.getForegroundContext())
                         .load(file)
                         .into(imageView);
             }

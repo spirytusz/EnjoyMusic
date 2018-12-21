@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.global.MainApplication;
 
 public class MusicSharedPreferences {
 
@@ -23,7 +24,7 @@ public class MusicSharedPreferences {
     public static void saveMusic(Music music) {
         if (music != null) {
             Gson gson = new Gson();
-            SharedPreferences.Editor editor = MyApplication.getBackgroundContext().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = MainApplication.getBackgroundContext().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
             String json = gson.toJson(music);
             editor.putString(CURRENT_PLAYING_MUSIC_KEY, json);
             editor.apply();
