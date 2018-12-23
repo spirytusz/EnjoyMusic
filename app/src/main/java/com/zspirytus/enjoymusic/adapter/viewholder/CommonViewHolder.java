@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
@@ -62,6 +63,7 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
                 ImageView imageView = (ImageView) view;
                 GlideApp.with(MainApplication.getForegroundContext())
                         .load(file)
+                        .error(R.drawable.ic_music_note_black_48dp)
                         .into(imageView);
             }
         }

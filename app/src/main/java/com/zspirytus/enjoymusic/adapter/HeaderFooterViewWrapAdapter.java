@@ -3,13 +3,11 @@ package com.zspirytus.enjoymusic.adapter;
 import android.support.annotation.LayoutRes;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 
 public abstract class HeaderFooterViewWrapAdapter extends RecyclerView.Adapter<CommonViewHolder> {
 
@@ -45,11 +43,10 @@ public abstract class HeaderFooterViewWrapAdapter extends RecyclerView.Adapter<C
     @Override
     public void onBindViewHolder(CommonViewHolder holder, int position) {
         int viewType = getItemViewType(position);
-        LogUtil.e(this.getClass().getSimpleName(), "position = " + position + "\tviewType = " + viewType);
         if (viewType == HEADER_VIEW_TYPE) {
             convertHeaderView(holder, position);
         } else if (viewType == INNER_VIEW_TYPE) {
-            mInnerAdapter.onBindViewHolder(holder, position);
+            mInnerAdapter.onBindViewHolder(holder, position - getHeaderViewCount());
         } else {
             convertFooterView(holder, position);
         }
@@ -77,6 +74,14 @@ public abstract class HeaderFooterViewWrapAdapter extends RecyclerView.Adapter<C
 
     public void addFooterViews(@LayoutRes int layoutId) {
         mFooterViews.put(FOOTER_VIEW_TYPE, layoutId);
+    }
+
+    public int getHeaderViewCount() {
+        return mHeaderViews.size();
+    }
+
+    public int getFooterViewCount() {
+        return mFooterViews.size();
     }
 
     public abstract void convertHeaderView(CommonViewHolder holder, int position);

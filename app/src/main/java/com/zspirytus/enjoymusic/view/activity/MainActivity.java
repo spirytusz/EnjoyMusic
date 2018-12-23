@@ -88,8 +88,6 @@ public class MainActivity extends BaseActivity
     private AppCompatImageView mBottomMusicPlayOrPause;
     @ViewInject(R.id.bottom_music_next)
     private AppCompatImageView mBottomMusicNext;
-    @ViewInject(R.id.bottom_music_control_shadow)
-    private View mBottomMusicControlShadow;
 
     private DrawerListenerImpl mDrawerListener;
 
@@ -206,8 +204,7 @@ public class MainActivity extends BaseActivity
                 mBottomMusicAlbum.setText(music.getMusicAlbumName());
                 if (!(FragmentVisibilityManager.getInstance().peek() instanceof MusicPlayFragment)
                         && mBottomMusicControl.getVisibility() == View.GONE) {
-                    //mBottomMusicControl.setVisibility(View.VISIBLE);
-                    mBottomMusicControlShadow.setVisibility(View.VISIBLE);
+                    mBottomMusicControl.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -326,10 +323,8 @@ public class MainActivity extends BaseActivity
             public void onAnimationStart(Animation animation) {
                 if (visibility == View.VISIBLE) {
                     mBottomMusicControl.setVisibility(View.GONE);
-                    mBottomMusicControlShadow.setVisibility(View.GONE);
                 } else {
                     mBottomMusicControl.setVisibility(View.VISIBLE);
-                    mBottomMusicControlShadow.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -337,10 +332,8 @@ public class MainActivity extends BaseActivity
             public void onAnimationEnd(Animation animation) {
                 if (visibility == View.VISIBLE) {
                     mBottomMusicControl.setVisibility(View.VISIBLE);
-                    mBottomMusicControlShadow.setVisibility(View.VISIBLE);
                 } else {
                     mBottomMusicControl.setVisibility(View.GONE);
-                    mBottomMusicControlShadow.setVisibility(View.GONE);
                     FragmentVisibilityManager.getInstance().show(FragmentFactory.getInstance().get(MusicPlayFragment.class));
                 }
             }
