@@ -10,7 +10,6 @@ import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
-import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -24,7 +23,6 @@ import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
 import org.simple.eventbus.EventBus;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -65,8 +63,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
 
             @Override
             public void convert(CommonViewHolder holder, Music music, int position) {
-                File coverFile = MusicCoverFileCache.getInstance().getCoverFile(music.getMusicThumbAlbumCoverPath());
-                holder.setImageFile(R.id.item_cover, coverFile);
+                holder.setImagePath(R.id.item_cover, music.getMusicThumbAlbumCoverPath());
                 holder.setText(R.id.item_title, music.getMusicName());
                 holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
                 holder.setOnItemClickListener(AllMusicListFragment.this);

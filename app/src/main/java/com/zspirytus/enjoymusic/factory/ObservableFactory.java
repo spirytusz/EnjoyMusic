@@ -6,11 +6,16 @@ import com.zspirytus.enjoymusic.IGetMusicList;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
+import com.zspirytus.enjoymusic.entity.Music;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -33,6 +38,21 @@ public class ObservableFactory {
                 emitter.onComplete();
             }
         }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public static Single<List<Music>> filterMusic(final String filterAlbum, final String filterArtist) {
+        return Observable.fromIterable(ForegroundMusicCache.getInstance().getAllMusicList())
+                .filter(new Predicate<Music>() {
+                    @Override
+                    public boolean test(Music music) throws Exception {
+                        String album = music.getMusicAlbumName();
+                        String artist = music.getMusicArtist();
+                        return (album != null && album.equals(filterAlbum))
+                                || (artist != null && artist.equals(filterArtist));
+                    }
+                }).toList()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }
 

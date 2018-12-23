@@ -23,7 +23,6 @@ import java.util.List;
 @LayoutIdInject(R.layout.fragment_music_category_layout)
 public class MusicCategoryFragment extends CommonHeaderBaseFragment {
 
-    private static final String TAG = "MusicCategoryFragment";
     private static final int VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT = 4;
 
     @ViewInject(R.id.music_category_tab_layout)

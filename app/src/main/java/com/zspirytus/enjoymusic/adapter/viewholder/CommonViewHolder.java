@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
@@ -58,7 +59,7 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
 
     public void setImageFile(@IdRes int id, File file) {
         View view = getView(id);
-        if (view != null) {
+        if (view != null && file != null) {
             if (view instanceof ImageView) {
                 ImageView imageView = (ImageView) view;
                 GlideApp.with(MainApplication.getForegroundContext())
@@ -67,6 +68,11 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
                         .into(imageView);
             }
         }
+    }
+
+    public void setImagePath(@IdRes int id, String path) {
+        File file = MusicCoverFileCache.getInstance().getCoverFile(path);
+        setImageFile(id, file);
     }
 
     public void setText(@IdRes int id, String text) {

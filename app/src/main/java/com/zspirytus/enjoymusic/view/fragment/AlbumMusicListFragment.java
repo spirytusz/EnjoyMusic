@@ -9,21 +9,16 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.adapter.ItemSpacingDecoration;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
-import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
+import com.zspirytus.enjoymusic.base.BaseViewPagerItemFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
-import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
-import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Album;
-import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -32,7 +27,7 @@ import java.util.List;
  */
 // TODO: 2018/9/17 click recyclerview item to navigate to corresponding music list
 @LayoutIdInject(R.layout.fragment_album_music_list_layout)
-public class AlbumMusicListFragment extends LazyLoadBaseFragment
+public class AlbumMusicListFragment extends BaseViewPagerItemFragment
         implements OnRecyclerViewItemClickListener {
 
     @ViewInject(R.id.album_music_recycler_view)
@@ -47,16 +42,8 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     public void onItemClick(View view, int position) {
-        String albumName = mAlbumList.get(position).getAlbumName();
-        Music targetAlbumFirstMusic = null;
-        for (Music music : ForegroundMusicCache.getInstance().getAllMusicList()) {
-            if (albumName.equals(music.getMusicAlbumName())) {
-                targetAlbumFirstMusic = music;
-                break;
-            }
-        }
-        ForegroundMusicController.getInstance().play(targetAlbumFirstMusic);
-        ForegroundMusicController.getInstance().setPlayList(new MusicFilter(albumName, null));
+        String album = mAlbumList.get(position).getAlbumName();
+        showMusicDetailFragment(getParentActivity().getSupportFragmentManager(), album, null);
     }
 
     @Override
@@ -70,8 +57,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
 
             @Override
             public void convert(CommonViewHolder holder, Album album, int position) {
-                File coverFile = MusicCoverFileCache.getInstance().getCoverFile(album.getAlbumCoverPath());
-                holder.setImageFile(R.id.item_cover, coverFile);
+                holder.setImagePath(R.id.item_cover, album.getAlbumCoverPath());
                 holder.setText(R.id.item_title, album.getAlbumName());
                 holder.setText(R.id.item_sub_title, album.getArtist());
                 holder.setOnItemClickListener(AlbumMusicListFragment.this);

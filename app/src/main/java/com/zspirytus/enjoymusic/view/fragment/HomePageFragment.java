@@ -12,7 +12,6 @@ import com.zspirytus.enjoymusic.adapter.ItemSpacingDecoration;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
-import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -23,7 +22,6 @@ import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 import com.zspirytus.enjoymusic.receivers.observer.HomePageRecyclerViewLoadObserver;
 import com.zspirytus.enjoymusic.utils.RandomUtil;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -60,8 +58,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
 
                 @Override
                 public void convert(CommonViewHolder holder, Music music, int position) {
-                    File coverFile = MusicCoverFileCache.getInstance().getCoverFile(music.getMusicThumbAlbumCoverPath());
-                    holder.setImageFile(R.id.item_cover, coverFile);
+                    holder.setImagePath(R.id.item_cover, music.getMusicThumbAlbumCoverPath());
                     holder.setText(R.id.item_title, music.getMusicName());
                     holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
                     holder.setOnItemClickListener(HomePageFragment.this);

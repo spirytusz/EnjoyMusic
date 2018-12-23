@@ -8,13 +8,10 @@ import android.widget.TextView;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
-import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
+import com.zspirytus.enjoymusic.base.BaseViewPagerItemFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
-import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Artist;
-import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -29,7 +26,7 @@ import java.util.List;
  */
 // TODO: 2018/9/17 click recyclerview to navigate to corresponding music list
 @LayoutIdInject(R.layout.fragment_artist_music_list_layout)
-public class ArtistMusicListFragment extends LazyLoadBaseFragment
+public class ArtistMusicListFragment extends BaseViewPagerItemFragment
         implements OnRecyclerViewItemClickListener {
 
     @ViewInject(R.id.artist_music_recycler_view)
@@ -45,16 +42,8 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     public void onItemClick(View view, int position) {
-        String artistName = mArtistList.get(position).getArtistName();
-        Music targetArtistFirstMusic = null;
-        for (Music music : ForegroundMusicCache.getInstance().getAllMusicList()) {
-            if (artistName.equals(music.getMusicArtist())) {
-                targetArtistFirstMusic = music;
-                break;
-            }
-        }
-        ForegroundMusicController.getInstance().play(targetArtistFirstMusic);
-        ForegroundMusicController.getInstance().setPlayList(new MusicFilter(null, artistName));
+        String artist = mArtistList.get(position).getArtistName();
+        showMusicDetailFragment(getParentActivity().getSupportFragmentManager(), null, artist);
     }
 
     @Override
