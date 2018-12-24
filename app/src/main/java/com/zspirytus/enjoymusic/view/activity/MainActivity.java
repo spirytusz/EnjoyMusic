@@ -17,8 +17,6 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import com.zspirytus.enjoymusic.IBinderPool;
 import com.zspirytus.enjoymusic.ISetPlayList;
@@ -38,6 +36,7 @@ import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
+import com.zspirytus.enjoymusic.interfaces.IFragmentBackable;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
@@ -140,8 +139,9 @@ public class MainActivity extends BaseActivity
             mDrawerLayout.closeDrawer(GravityCompat.START);
             return;
         }
-        if (FragmentVisibilityManager.getInstance().peek() instanceof MusicPlayFragment) {
-            showCastFragment(FragmentVisibilityManager.getInstance().getBackFragment());
+        BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
+        if (currentFragment instanceof IFragmentBackable) {
+            ((IFragmentBackable) currentFragment).goBack();
         } else {
             long now = System.currentTimeMillis();
             if (now - pressedBackLastTime < 2 * 1000) {
@@ -246,12 +246,8 @@ public class MainActivity extends BaseActivity
 
     @Subscriber(tag = Constant.EventBusTag.SHOW_CAST_FRAGMENT)
     public <T extends BaseFragment> void showCastFragment(T shouldShowFragment) {
-        /*if (shouldShowFragment instanceof MusicPlayFragment) {
-            setBottomMusicControlVisibility(View.GONE);
-        } else if (isHomePageRvLoadFinish) {
-            setBottomMusicControlVisibility(View.VISIBLE);
-        }*/
-        FragmentVisibilityManager.getInstance().show(shouldShowFragment);
+        int container = shouldShowFragment instanceof MusicPlayFragment ? R.id.full_fragment_container : R.id.fragment_container;
+        FragmentVisibilityManager.getInstance().show(shouldShowFragment, container);
     }
 
     @Subscriber(tag = Constant.EventBusTag.OPEN_DRAWER)
@@ -307,43 +303,6 @@ public class MainActivity extends BaseActivity
                 .permissions(PermissionGroup.PHONE_GROUP)
                 .listenBy(this)
                 .request();
-    }
-
-    private void setBottomMusicControlVisibility(final int visibility) {
-        if (mBottomMusicControl.getVisibility() == visibility)
-            return;
-        Animation animation;
-        if (visibility == View.VISIBLE) {
-            animation = AnimationUtils.loadAnimation(this, R.anim.bottom_music_control_show);
-        } else {
-            animation = AnimationUtils.loadAnimation(this, R.anim.bottom_music_control_hide);
-        }
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                if (visibility == View.VISIBLE) {
-                    mBottomMusicControl.setVisibility(View.GONE);
-                } else {
-                    mBottomMusicControl.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                if (visibility == View.VISIBLE) {
-                    mBottomMusicControl.setVisibility(View.VISIBLE);
-                } else {
-                    mBottomMusicControl.setVisibility(View.GONE);
-                    FragmentVisibilityManager.getInstance().show(FragmentFactory.getInstance().get(MusicPlayFragment.class));
-                }
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        mBottomMusicControl.startAnimation(animation);
     }
 
     private void bindPlayMusicService() {

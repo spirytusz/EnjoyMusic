@@ -12,12 +12,15 @@ import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
+import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
+import com.zspirytus.enjoymusic.interfaces.IFragmentBackable;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 
 import java.io.File;
 import java.util.List;
@@ -26,7 +29,8 @@ import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 
 @LayoutIdInject(R.layout.fragment_music_list_detail_layout)
-public class MusicListDetailFragment extends BaseFragment {
+public class MusicListDetailFragment extends BaseFragment
+        implements OnRecyclerViewItemClickListener, IFragmentBackable {
 
     @ViewInject(R.id.collapsing_toolbar)
     private CollapsingToolbarLayout mCollapsing;
@@ -61,8 +65,17 @@ public class MusicListDetailFragment extends BaseFragment {
                 holder.setImagePath(R.id.item_cover, music.getMusicThumbAlbumCoverPath());
                 holder.setText(R.id.item_title, music.getMusicName());
                 holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
+                holder.setVisibility(R.id.item_more_info_button, View.GONE);
+                holder.setOnItemClickListener(MusicListDetailFragment.this);
             }
         };
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Music firstMusic = mAdapter.getList().get(0);
+                ForegroundMusicController.getInstance().play(firstMusic);
+            }
+        });
     }
 
     @Override
@@ -86,6 +99,19 @@ public class MusicListDetailFragment extends BaseFragment {
                 });
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+        Music selectedMusic = mAdapter.getList().get(position);
+        ForegroundMusicController.getInstance().play(selectedMusic);
+    }
+
+    @Override
+    public void goBack() {
+        getFragmentManager().beginTransaction()
+                .remove(this)
+                .commitAllowingStateLoss();
+    }
+
     private void loadDataIntoView(List<Music> musicList) {
         if (musicList != null && !musicList.isEmpty()) {
             Music music = musicList.get(0);
@@ -105,9 +131,7 @@ public class MusicListDetailFragment extends BaseFragment {
             mBackBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getFragmentManager().beginTransaction()
-                            .remove(MusicListDetailFragment.this)
-                            .commitAllowingStateLoss();
+                    goBack();
                 }
             });
         }

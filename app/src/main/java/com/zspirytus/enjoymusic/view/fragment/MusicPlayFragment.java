@@ -18,6 +18,7 @@ import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.impl.BlurTransformation;
+import com.zspirytus.enjoymusic.interfaces.IFragmentBackable;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.listeners.OnMultiEventImageViewListener;
@@ -30,6 +31,8 @@ import com.zspirytus.enjoymusic.view.widget.MultiEventImageView;
 
 import java.io.File;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+
 /**
  * Fragment: 显示音乐播放界面
  * Created by ZSpirytus on 2018/8/2.
@@ -37,7 +40,7 @@ import java.io.File;
 
 @LayoutIdInject(R.layout.fragment_music_play_layout)
 public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.OnClickListener, MusicPlayStateObserver,
-        MusicPlayProgressObserver, PlayedMusicChangeObserver {
+        MusicPlayProgressObserver, PlayedMusicChangeObserver, IFragmentBackable {
 
     @ViewInject(R.id.background)
     private ImageView mBackground;
@@ -85,31 +88,22 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
 
     @Override
     public void onProgressChanged(final int progress) {
-        getParentActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mSeekBar.setProgress(progress);
-            }
+        AndroidSchedulers.mainThread().scheduleDirect(() -> {
+            mSeekBar.setProgress(progress);
         });
     }
 
     @Override
     public void onPlayingStateChanged(final boolean isPlaying) {
-        getParentActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                setButtonSrc(isPlaying);
-            }
+        AndroidSchedulers.mainThread().scheduleDirect(() -> {
+            setButtonSrc(isPlaying);
         });
     }
 
     @Override
     public void onPlayedMusicChanged(final Music music) {
-        getParentActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                setView(music);
-            }
+        AndroidSchedulers.mainThread().scheduleDirect(() -> {
+            setView(music);
         });
     }
 
@@ -137,6 +131,9 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     @Override
     protected void initView() {
         setNavIconAction(false);
+        mNavIcon.setOnClickListener(v -> {
+            goBack();
+        });
         setHeaderViewColor(R.color.transparent);
         if (mCurrentPlayingMusic != null) {
             String musicAlbumUri = mCurrentPlayingMusic.getMusicThumbAlbumCoverPath();
@@ -163,6 +160,13 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
         IPlayMusicChangeObserverImpl.getInstance().unregister(this);
         IPlayStateChangeObserverImpl.getInstance().unregister(this);
         IPlayProgressChangeObserverImpl.getInstance().unregister(this);
+    }
+
+    @Override
+    public void goBack() {
+        getFragmentManager().beginTransaction()
+                .hide(this)
+                .commitAllowingStateLoss();
     }
 
     private void setButtonSrc(boolean isPlaying) {

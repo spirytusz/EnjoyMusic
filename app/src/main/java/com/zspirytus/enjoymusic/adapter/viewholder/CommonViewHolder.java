@@ -71,17 +71,26 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setImagePath(@IdRes int id, String path) {
-        File file = MusicCoverFileCache.getInstance().getCoverFile(path);
-        setImageFile(id, file);
+        if (path != null) {
+            File file = MusicCoverFileCache.getInstance().getCoverFile(path);
+            setImageFile(id, file);
+        }
     }
 
     public void setText(@IdRes int id, String text) {
         View view = getView(id);
-        if (view != null) {
+        if (view != null && text != null) {
             if (view instanceof TextView) {
                 TextView textView = (TextView) view;
                 textView.setText(text);
             }
+        }
+    }
+
+    public void setVisibility(@IdRes int id, int visibility) {
+        View view = getView(id);
+        if (view != null) {
+            view.setVisibility(visibility);
         }
     }
 

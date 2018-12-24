@@ -33,6 +33,10 @@ public abstract class CommonRecyclerViewAdapter<T> extends RecyclerView.Adapter<
         notifyDataSetChanged();
     }
 
+    public List<T> getList() {
+        return mList;
+    }
+
     public abstract int getLayoutId();
 
     public abstract void convert(CommonViewHolder holder, T t, int position);

@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
-import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 
@@ -22,9 +21,9 @@ public class CommonHeaderBaseFragment extends BaseFragment
 
     private ConstraintLayout mHeaderView;
 
-    private AppCompatImageView mNavIcon;
-    private AppCompatTextView mTitle;
-    private AppCompatImageView mMenuIcon;
+    protected AppCompatImageView mNavIcon;
+    protected AppCompatTextView mTitle;
+    protected AppCompatImageView mMenuIcon;
 
     @Nullable
     @Override
@@ -65,12 +64,6 @@ public class CommonHeaderBaseFragment extends BaseFragment
             });
         } else {
             mNavIcon.setImageResource(R.drawable.ic_arrow_back_white_24dp);
-            mNavIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EventBus.getDefault().post(FragmentVisibilityManager.getInstance().getBackFragment(), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
-                }
-            });
         }
     }
 
