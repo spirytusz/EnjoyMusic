@@ -1,10 +1,14 @@
 package com.zspirytus.enjoymusic.services.media;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.view.KeyEvent;
 
 import com.zspirytus.enjoymusic.cache.MusicScanner;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -27,7 +31,10 @@ public class MyMediaSession {
             | PlaybackStateCompat.ACTION_SKIP_TO_NEXT
             | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
             | PlaybackStateCompat.ACTION_STOP
-            | PlaybackStateCompat.ACTION_SEEK_TO;
+            | PlaybackStateCompat.ACTION_SEEK_TO
+            | PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID
+            | PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
+            | PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM;
 
     private MediaSessionCompat mediaSession;
     private MediaSessionCompat.Token sessionToken;
@@ -47,7 +54,8 @@ public class MyMediaSession {
                         | PlaybackStateCompat.ACTION_SKIP_TO_NEXT | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
                 .build();
 
-        mediaSession = new MediaSessionCompat(service, TAG);
+        ComponentName mbr = new ComponentName(service.getPackageName(), MediaButtonReceiver.class.getName());
+        mediaSession = new MediaSessionCompat(service, TAG, mbr, null);
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
         mediaSession.setCallback(callback);
         mediaSession.setPlaybackState(playbackStateCompat);
@@ -86,46 +94,14 @@ public class MyMediaSession {
 
     private MediaSessionCompat.Callback callback = new MediaSessionCompat.Callback() {
         @Override
-        public void onPlay() {
-            super.onPlay();
-            //MediaPlayController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
-            LogUtil.e(this.getClass().getSimpleName(), "MediaSession#onPlay");
-        }
-
-        @Override
-        public void onPause() {
-            super.onPause();
-            //MediaPlayController.getInstance().pause();
-            LogUtil.e(this.getClass().getSimpleName(), "MediaSession#onPause");
-        }
-
-        @Override
-        public void onSkipToNext() {
-            super.onSkipToNext();
-            /*Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
-            MediaPlayController.getInstance().play(nextMusic);*/
-            LogUtil.e(this.getClass().getSimpleName(), "MediaSession#onSkipToNext");
-        }
-
-        @Override
-        public void onSkipToPrevious() {
-            super.onSkipToPrevious();
-            /*Music previousMusic = MusicPlayOrderManager.getInstance().getPreviousMusic();
-            MediaPlayController.getInstance().play(previousMusic);*/
-            LogUtil.e(this.getClass().getSimpleName(), "MediaSession#onSkipToPrevious");
-        }
-
-        @Override
-        public void onStop() {
-            super.onStop();
-            MediaPlayController.getInstance().stop();
-        }
-
-        @Override
-        public void onSeekTo(long pos) {
-            super.onSeekTo(pos);
-            MediaPlayController.getInstance().seekTo((int) pos);
-            System.out.println("MediaSession#onSeekTo");
+        public boolean onMediaButtonEvent(Intent mediaButtonEvent) {
+            KeyEvent ke = mediaButtonEvent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+            if (ke != null) {
+                LogUtil.e(TAG, "EVENT = " + ke.getAction());
+                LogUtil.e(TAG, "CODE = " + ke.getKeyCode());
+                LogUtil.e(TAG, "REPEAT" + ke.getRepeatCount());
+            }
+            return true;
         }
     };
 

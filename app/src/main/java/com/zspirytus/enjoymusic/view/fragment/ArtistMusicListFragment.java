@@ -43,7 +43,7 @@ public class ArtistMusicListFragment extends BaseViewPagerItemFragment
     @Override
     public void onItemClick(View view, int position) {
         String artist = mArtistList.get(position).getArtistName();
-        showMusicDetailFragment(getParentActivity().getSupportFragmentManager(), null, artist);
+        showMusicDetailFragment(null, artist);
     }
 
     @Override

@@ -69,12 +69,9 @@ public class MusicListDetailFragment extends BaseFragment
                 holder.setOnItemClickListener(MusicListDetailFragment.this);
             }
         };
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Music firstMusic = mAdapter.getList().get(0);
-                ForegroundMusicController.getInstance().play(firstMusic);
-            }
+        mFab.setOnClickListener(v -> {
+            Music firstMusic = mAdapter.getList().get(0);
+            ForegroundMusicController.getInstance().play(firstMusic);
         });
     }
 
@@ -128,11 +125,8 @@ public class MusicListDetailFragment extends BaseFragment
                     .load(coverFile)
                     .centerCrop()
                     .into(mCover);
-            mBackBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    goBack();
-                }
+            mBackBtn.setOnClickListener(v -> {
+                goBack();
             });
         }
     }

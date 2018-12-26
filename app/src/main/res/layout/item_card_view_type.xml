@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/card_view_bg"
-    android:translationZ="2dp">
+    android:translationZ="2dp"
+    android:elevation="6dp">
 
     <com.zspirytus.enjoymusic.view.widget.RoundCornerImageView
         android:id="@+id/item_cover"

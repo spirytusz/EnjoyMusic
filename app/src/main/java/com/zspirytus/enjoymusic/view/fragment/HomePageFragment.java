@@ -104,7 +104,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
 
     @Override
     public void onItemClick(View view, int position) {
-        Music selectMusic = mMusicList.get(position);
+        Music selectMusic = mMusicList.get(position - mAdapter.getHeaderViewCount());
         ForegroundMusicController.getInstance().play(selectMusic);
     }
 

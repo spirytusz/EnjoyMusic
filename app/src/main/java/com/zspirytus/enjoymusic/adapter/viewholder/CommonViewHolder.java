@@ -64,6 +64,15 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
                 ImageView imageView = (ImageView) view;
                 GlideApp.with(MainApplication.getForegroundContext())
                         .load(file)
+                        .placeholder(R.color.grey)
+                        .error(R.drawable.ic_music_note_black_48dp)
+                        .into(imageView);
+            }
+        } else {
+            if (view instanceof ImageView) {
+                ImageView imageView = (ImageView) view;
+                GlideApp.with(MainApplication.getForegroundContext())
+                        .load(R.color.grey)
                         .error(R.drawable.ic_music_note_black_48dp)
                         .into(imageView);
             }
@@ -74,6 +83,8 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
         if (path != null) {
             File file = MusicCoverFileCache.getInstance().getCoverFile(path);
             setImageFile(id, file);
+        } else {
+            setImageFile(id, null);
         }
     }
 

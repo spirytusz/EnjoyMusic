@@ -192,32 +192,22 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onPlayedMusicChanged(final Music music) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                String coverFilePath = music.getMusicThumbAlbumCoverPath();
-                if (coverFilePath != null) {
-                    File coverFile = new File(coverFilePath);
-                    GlideApp.with(MainActivity.this).load(coverFile).into(mBottomMusicCover);
-                }
-                mBottomMusicName.setText(music.getMusicName());
-                mBottomMusicAlbum.setText(music.getMusicAlbumName());
-                if (!(FragmentVisibilityManager.getInstance().peek() instanceof MusicPlayFragment)
-                        && mBottomMusicControl.getVisibility() == View.GONE) {
-                    mBottomMusicControl.setVisibility(View.VISIBLE);
-                }
+        runOnUiThread(() -> {
+            String coverFilePath = music.getMusicThumbAlbumCoverPath();
+            if (coverFilePath != null) {
+                File coverFile = new File(coverFilePath);
+                GlideApp.with(MainActivity.this).load(coverFile).into(mBottomMusicCover);
             }
+            mBottomMusicName.setText(music.getMusicName());
+            mBottomMusicAlbum.setText(music.getMusicAlbumName());
         });
     }
 
     @Override
     public void onPlayingStateChanged(final boolean isPlaying) {
         this.isPlaying = isPlaying;
-        mBottomMusicPlayOrPause.post(new Runnable() {
-            @Override
-            public void run() {
-                mBottomMusicPlayOrPause.setImageResource(isPlaying ? R.drawable.ic_pause_black_48dp : R.drawable.ic_play_arrow_black_48dp);
-            }
+        mBottomMusicPlayOrPause.post(() -> {
+            mBottomMusicPlayOrPause.setImageResource(isPlaying ? R.drawable.ic_pause_black_48dp : R.drawable.ic_play_arrow_black_48dp);
         });
     }
 

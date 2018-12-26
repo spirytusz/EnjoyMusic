@@ -40,14 +40,6 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         return mCurrentFragment;
     }
 
-    public BaseFragment peek() {
-        if (size > 0) {
-            return fragments.get(size - 1);
-        } else {
-            throw new UnsupportedOperationException("no fragment in fragment stack!");
-        }
-    }
-
     public void show(BaseFragment shouldShowFragment, int fragmentContainer) {
         show(shouldShowFragment, fragmentContainer, R.anim.anim_fragment_translate_show_up, R.anim.anim_fragment_translate_show_down);
     }
