@@ -110,10 +110,10 @@ public class NotificationHelper {
         builder.setStyle(mediaStyle);
         builder = createNotificationAction(builder);
         mCurrentNotification = builder.build();
-        String osName = DeviceUtils.getOSName();
+        /*String osName = DeviceUtils.getOSName();
         if (osName != null && osName.equals("MIUI")) {
             prepareNotificationForMIUI(mCurrentNotification);
-        }
+        }*/
     }
 
     private NotificationCompat.Builder getDefaultBuilder(Music music) {

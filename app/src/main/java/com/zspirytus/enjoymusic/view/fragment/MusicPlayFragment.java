@@ -16,7 +16,6 @@ import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
-import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -27,7 +26,6 @@ import com.zspirytus.enjoymusic.listeners.OnMultiEventImageViewListener;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
-import com.zspirytus.enjoymusic.utils.AnimationUtil;
 import com.zspirytus.enjoymusic.utils.BitmapUtil;
 import com.zspirytus.enjoymusic.utils.ColorUtils;
 import com.zspirytus.enjoymusic.utils.DrawableUtil;
@@ -68,6 +66,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     private ImageView mNextButton;
 
     private Music mCurrentPlayingMusic;
+    private int selfAdaptionColor = Color.parseColor("#FFFFFF");
 
     @Override
     public void onClick(View view) {
@@ -177,13 +176,9 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
 
     private void setButtonSrc(boolean isPlaying) {
         if (isPlaying) {
-            AnimationUtil.ofFloat(mPlayOrPauseButton, Constant.AnimationProperty.ALPHA, 1f, 0f).start();
-            GlideApp.with(this).load(R.drawable.ic_pause_black_48dp).into(mPlayOrPauseButton);
-            AnimationUtil.ofFloat(mPlayOrPauseButton, Constant.AnimationProperty.ALPHA, 0f, 1f).start();
+            GlideApp.with(this).load(DrawableUtil.setColor(getContext(), R.drawable.ic_pause_black_48dp, selfAdaptionColor)).into(mPlayOrPauseButton);
         } else {
-            AnimationUtil.ofFloat(mPlayOrPauseButton, Constant.AnimationProperty.ALPHA, 1f, 0f).start();
-            GlideApp.with(this).load(R.drawable.ic_play_arrow_black_48dp).into(mPlayOrPauseButton);
-            AnimationUtil.ofFloat(mPlayOrPauseButton, Constant.AnimationProperty.ALPHA, 0f, 1f).start();
+            GlideApp.with(this).load(DrawableUtil.setColor(getContext(), R.drawable.ic_play_arrow_black_48dp, selfAdaptionColor)).into(mPlayOrPauseButton);
         }
     }
 
@@ -234,24 +229,24 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
                     .into(mBackground);
             ColorUtils.setSelfAdaptionColor(bitmapBlur, (palette -> {
                 Palette.Swatch swatch = palette.getVibrantSwatch();
-                if (swatch != null) {
-                    int rgb = swatch.getTitleTextColor();
-                    if (rgb != 0) {
-                        setTitleColor(rgb);
-                        setNavIconColor(rgb);
-                        mPlayOrPauseButton.setImageDrawable(DrawableUtil.setColor(mPlayOrPauseButton.getDrawable(), rgb));
-                        mPreviousButton.setImageDrawable(DrawableUtil.setColor(mPreviousButton.getDrawable(), rgb));
-                        mNextButton.setImageDrawable(DrawableUtil.setColor(mNextButton.getDrawable(), rgb));
-                    }
+                int rgb;
+                if (swatch != null && (rgb = swatch.getTitleTextColor()) != 0) {
+                    selfAdaptionColor = rgb;
+                    setPanelColor();
                 } else {
-                    setTitleColor(Color.parseColor("#FFFFFF"));
-                    setNavIconColor(Color.parseColor("#FFFFFF"));
-                    mPlayOrPauseButton.setImageResource(R.drawable.ic_pause_black_48dp);
-                    mPreviousButton.setImageResource(R.drawable.ic_skip_previous_black_48dp);
-                    mNextButton.setImageResource(R.drawable.ic_skip_next_black_48dp);
+                    selfAdaptionColor = Color.parseColor("#FFFFFF");
+                    setPanelColor();
                 }
             }));
         }
+    }
+
+    private void setPanelColor() {
+        setTitleColor(selfAdaptionColor);
+        setNavIconColor(selfAdaptionColor);
+        mPlayOrPauseButton.setImageDrawable(DrawableUtil.setColor(mPlayOrPauseButton.getDrawable(), selfAdaptionColor));
+        mPreviousButton.setImageDrawable(DrawableUtil.setColor(mPreviousButton.getDrawable(), selfAdaptionColor));
+        mNextButton.setImageDrawable(DrawableUtil.setColor(mNextButton.getDrawable(), selfAdaptionColor));
     }
 
     public static MusicPlayFragment getInstance() {

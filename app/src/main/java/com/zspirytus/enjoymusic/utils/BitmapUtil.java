@@ -63,8 +63,9 @@ public class BitmapUtil {
     }
 
     public static Bitmap bitmapBlur(Context context, Bitmap source, int radius) {
-        int width = Math.round(source.getWidth() * 0.125f);
-        int height = Math.round(source.getHeight() * 0.125f);
+        final float scale = 1 / 16f;
+        int width = Math.round(source.getWidth() * scale);
+        int height = Math.round(source.getHeight() * scale);
         Bitmap inputBmp = Bitmap.createScaledBitmap(source, width, height, false);
         RenderScript renderScript = RenderScript.create(context);
         final Allocation input = Allocation.createFromBitmap(renderScript, inputBmp);
