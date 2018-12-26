@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.base;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -13,6 +14,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
+import com.zspirytus.enjoymusic.utils.DrawableUtil;
 
 import org.simple.eventbus.EventBus;
 
@@ -53,6 +55,10 @@ public class CommonHeaderBaseFragment extends BaseFragment
         mTitle.setText(text);
     }
 
+    public void setTitleColor(int color) {
+        mTitle.setTextColor(color);
+    }
+
     public void setNavIconAction(boolean showNavigationViewOrNot) {
         if (showNavigationViewOrNot) {
             mNavIcon.setImageResource(R.drawable.ic_menu_white_24dp);
@@ -65,6 +71,11 @@ public class CommonHeaderBaseFragment extends BaseFragment
         } else {
             mNavIcon.setImageResource(R.drawable.ic_arrow_back_white_24dp);
         }
+    }
+
+    public void setNavIconColor(int color) {
+        Drawable drawable = mNavIcon.getDrawable();
+        DrawableUtil.setColor(drawable, color);
     }
 
     public void setHeaderViewColor(int colorResId) {

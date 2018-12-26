@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.view.fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.support.v7.graphics.Palette;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -28,6 +29,8 @@ import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 import com.zspirytus.enjoymusic.utils.BitmapUtil;
+import com.zspirytus.enjoymusic.utils.ColorUtils;
+import com.zspirytus.enjoymusic.utils.DrawableUtil;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 import com.zspirytus.enjoymusic.view.widget.MultiEventImageView;
 
@@ -105,6 +108,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     @Override
     public void onPlayedMusicChanged(final Music music) {
         AndroidSchedulers.mainThread().scheduleDirect(() -> {
+            mCurrentPlayingMusic = music;
             setView(music);
         });
     }
@@ -228,6 +232,25 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
             GlideApp.with(getParentActivity())
                     .load(bitmapBlur)
                     .into(mBackground);
+            ColorUtils.setSelfAdaptionColor(bitmapBlur, (palette -> {
+                Palette.Swatch swatch = palette.getVibrantSwatch();
+                if (swatch != null) {
+                    int rgb = swatch.getTitleTextColor();
+                    if (rgb != 0) {
+                        setTitleColor(rgb);
+                        setNavIconColor(rgb);
+                        mPlayOrPauseButton.setImageDrawable(DrawableUtil.setColor(mPlayOrPauseButton.getDrawable(), rgb));
+                        mPreviousButton.setImageDrawable(DrawableUtil.setColor(mPreviousButton.getDrawable(), rgb));
+                        mNextButton.setImageDrawable(DrawableUtil.setColor(mNextButton.getDrawable(), rgb));
+                    }
+                } else {
+                    setTitleColor(Color.parseColor("#FFFFFF"));
+                    setNavIconColor(Color.parseColor("#FFFFFF"));
+                    mPlayOrPauseButton.setImageResource(R.drawable.ic_pause_black_48dp);
+                    mPreviousButton.setImageResource(R.drawable.ic_skip_previous_black_48dp);
+                    mNextButton.setImageResource(R.drawable.ic_skip_next_black_48dp);
+                }
+            }));
         }
     }
 

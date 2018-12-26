@@ -33,9 +33,9 @@ public class MediaPlayController extends MusicStateObservable
     private static final int STATE_PAUSE = 2;
     private static final int STATE_PREPARING = 4;
 
-    private static MediaPlayer mediaPlayer;
-    private static AudioManager audioManager;
-    private static PlayTimer mPlayingTimer;
+    private MediaPlayer mediaPlayer;
+    private AudioManager audioManager;
+    private PlayTimer mPlayingTimer;
 
     private int state;
     private boolean isPrepared = false;
@@ -160,6 +160,9 @@ public class MediaPlayController extends MusicStateObservable
     private void beginPlay() {
         isPrepared = true;
         state = STATE_PLAYING;
+        if (currentPlayingMusic == null || !requestedToPlayMusic.equals(currentPlayingMusic)) {
+            notifyAllObserverPlayMusicChange(requestedToPlayMusic);
+        }
         currentPlayingMusic = requestedToPlayMusic;
         MyMediaSession.getInstance().setMetaData(currentPlayingMusic);
         audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
@@ -167,7 +170,6 @@ public class MediaPlayController extends MusicStateObservable
         mediaPlayer.start();
         NotificationHelper.getInstance().showNotification(currentPlayingMusic);
         NotificationHelper.getInstance().updateNotification(true);
-        notifyAllObserverPlayMusicChange(currentPlayingMusic);
         notifyAllObserverPlayStateChange(true);
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
         mPlayingTimer.start();

@@ -17,4 +17,11 @@ public class DrawableUtil {
         }
         return drawable;
     }
+
+    public static Drawable setColor(Drawable drawable, int color) {
+        if (drawable != null) {
+            DrawableCompat.setTint(drawable, color);
+        }
+        return drawable;
+    }
 }

@@ -31,7 +31,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class NotificationHelper {
 
-    private static final int PREIVOUS = 0;
+    private static final int PREVIOUS = 0;
     private static final int PLAY = 1;
     private static final int PAUSE = 2;
     private static final int NEXT = 3;
@@ -50,6 +50,7 @@ public class NotificationHelper {
 
     private Notification.Action playAction;
     private Notification.Action pauseAction;
+
 
     private NotificationHelper() {
         Context backgroundContext = MainApplication.getBackgroundContext();
@@ -134,7 +135,7 @@ public class NotificationHelper {
 
     private NotificationCompat.Builder createNotificationAction(NotificationCompat.Builder builder) {
         Intent intent = new Intent(MainApplication.getBackgroundContext(), PlayMusicService.class);
-        PendingIntent previous = createPendingIntentByExtra(intent, PREIVOUS, Constant.NotificationEvent.PREVIOUS);
+        PendingIntent previous = createPendingIntentByExtra(intent, PREVIOUS, Constant.NotificationEvent.PREVIOUS);
         PendingIntent pause = createPendingIntentByExtra(intent, PAUSE, Constant.NotificationEvent.PAUSE);
         PendingIntent next = createPendingIntentByExtra(intent, NEXT, Constant.NotificationEvent.NEXT);
         builder.addAction(new NotificationCompat.Action(R.drawable.ic_skip_previous_black_48dp, "previous", previous))
