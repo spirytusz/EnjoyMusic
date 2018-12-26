@@ -3,15 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="81dp"
-    android:background="@color/colorPrimary">
+    android:layout_height="81dp">
 
     <View
+        android:id="@+id/bg"
         android:layout_width="0dp"
         android:layout_height="81dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/colorPrimary" />
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/common_header_nav_menu_or_back_icon"

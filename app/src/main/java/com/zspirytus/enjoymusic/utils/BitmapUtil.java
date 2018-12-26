@@ -1,10 +1,15 @@
 package com.zspirytus.enjoymusic.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 
 import com.zspirytus.enjoymusic.global.MainApplication;
 
@@ -55,6 +60,22 @@ public class BitmapUtil {
         drawable.setBounds(0, 0, w, h);
         drawable.draw(canvas);
         return bitmap;
+    }
+
+    public static Bitmap bitmapBlur(Context context, Bitmap source, int radius) {
+        int width = Math.round(source.getWidth() * 0.125f);
+        int height = Math.round(source.getHeight() * 0.125f);
+        Bitmap inputBmp = Bitmap.createScaledBitmap(source, width, height, false);
+        RenderScript renderScript = RenderScript.create(context);
+        final Allocation input = Allocation.createFromBitmap(renderScript, inputBmp);
+        final Allocation output = Allocation.createTyped(renderScript, input.getType());
+        ScriptIntrinsicBlur scriptIntrinsicBlur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
+        scriptIntrinsicBlur.setInput(input);
+        scriptIntrinsicBlur.setRadius(radius);
+        scriptIntrinsicBlur.forEach(output);
+        output.copyTo(inputBmp);
+        renderScript.destroy();
+        return inputBmp;
     }
 
     private static int computeInSampleSize(int width, int height) {

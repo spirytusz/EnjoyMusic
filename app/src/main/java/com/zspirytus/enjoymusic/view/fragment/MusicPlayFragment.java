@@ -1,11 +1,13 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.request.RequestOptions;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayProgressChangeObserverImpl;
@@ -17,7 +19,6 @@ import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.impl.BlurTransformation;
 import com.zspirytus.enjoymusic.interfaces.IFragmentBackable;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -26,6 +27,7 @@ import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
+import com.zspirytus.enjoymusic.utils.BitmapUtil;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 import com.zspirytus.enjoymusic.view.widget.MultiEventImageView;
 
@@ -134,7 +136,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
         mNavIcon.setOnClickListener(v -> {
             goBack();
         });
-        setHeaderViewColor(R.color.transparent);
+        setHeaderViewColor(Color.TRANSPARENT);
         if (mCurrentPlayingMusic != null) {
             String musicAlbumUri = mCurrentPlayingMusic.getMusicThumbAlbumCoverPath();
             GlideApp.with(this).load(musicAlbumUri != null ? new File(musicAlbumUri) : R.color.grey)
@@ -220,13 +222,11 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     private void setBackgroundBlur(Music music) {
         String imagePath = music.getMusicThumbAlbumCoverPath();
         File file = MusicCoverFileCache.getInstance().getCoverFile(imagePath);
-        if (file != null) {
-            RequestOptions options = new RequestOptions();
-            options = options.transform(new BlurTransformation(getParentActivity(), 24, 3));
+        if (file != null && file.exists()) {
+            Bitmap source = BitmapFactory.decodeFile(file.getAbsolutePath());
+            Bitmap bitmapBlur = BitmapUtil.bitmapBlur(getContext(), source, 25);
             GlideApp.with(getParentActivity())
-                    .load(file)
-                    .dontAnimate()
-                    .apply(options)
+                    .load(bitmapBlur)
                     .into(mBackground);
         }
     }

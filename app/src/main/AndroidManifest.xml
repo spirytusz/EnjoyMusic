@@ -42,11 +42,7 @@
             android:name=".services.PlayMusicService"
             android:enabled="true"
             android:exported="true"
-            android:process=".playmusicprocess">
-            <intent-filter>
-                <action android:name="android.media.browse.MediaBrowserService" />>
-            </intent-filter>
-        </service>
+            android:process=".playmusicprocess" />
 
     </application>
 

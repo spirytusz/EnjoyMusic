@@ -19,21 +19,21 @@ import org.simple.eventbus.EventBus;
 public class CommonHeaderBaseFragment extends BaseFragment
         implements PlayedMusicChangeObserver {
 
-    private ConstraintLayout mHeaderView;
-
     protected AppCompatImageView mNavIcon;
     protected AppCompatTextView mTitle;
     protected AppCompatImageView mMenuIcon;
+    protected View mBg;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        mHeaderView = view.findViewById(R.id.status_bar_toolbar_holder);
+        ConstraintLayout mHeaderView = view.findViewById(R.id.status_bar_toolbar_holder);
         if (mHeaderView != null) {
             mNavIcon = mHeaderView.findViewById(R.id.common_header_nav_menu_or_back_icon);
             mTitle = mHeaderView.findViewById(R.id.common_header_title);
             mMenuIcon = mHeaderView.findViewById(R.id.common_header_menu_icon);
+            mBg = mHeaderView.findViewById(R.id.bg);
         }
         return view;
     }
@@ -68,8 +68,8 @@ public class CommonHeaderBaseFragment extends BaseFragment
     }
 
     public void setHeaderViewColor(int colorResId) {
-        if (mHeaderView != null) {
-            mHeaderView.setBackgroundColor(colorResId);
+        if (mBg != null) {
+            mBg.setBackgroundColor(colorResId);
         }
     }
 }
