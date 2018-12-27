@@ -1,9 +1,6 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.support.v7.graphics.Palette;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -15,21 +12,17 @@ import com.zspirytus.enjoymusic.adapter.binder.IPlayProgressChangeObserverImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
-import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.interfaces.IFragmentBackable;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-import com.zspirytus.enjoymusic.listeners.OnMultiEventImageViewListener;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
-import com.zspirytus.enjoymusic.utils.BitmapUtil;
-import com.zspirytus.enjoymusic.utils.ColorUtils;
-import com.zspirytus.enjoymusic.utils.DrawableUtil;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
+import com.zspirytus.enjoymusic.view.widget.BlurImageView;
 import com.zspirytus.enjoymusic.view.widget.MultiEventImageView;
 
 import java.io.File;
@@ -46,7 +39,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
         MusicPlayProgressObserver, PlayedMusicChangeObserver, IFragmentBackable {
 
     @ViewInject(R.id.background)
-    private ImageView mBackground;
+    private BlurImageView mBackground;
 
     @ViewInject(R.id.cover)
     private MultiEventImageView mCover;
@@ -115,22 +108,6 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     @Override
     protected void initData() {
         mCurrentPlayingMusic = ForegroundMusicCache.getInstance().getCurrentPlayingMusic();
-        mCover.setOnMultiEventImageViewListener(new OnMultiEventImageViewListener() {
-            @Override
-            public void onClick() {
-
-            }
-
-            @Override
-            public void onMoveToLeft() {
-                ForegroundMusicController.getInstance().playPrevious();
-            }
-
-            @Override
-            public void onMoveToRight() {
-                ForegroundMusicController.getInstance().playNext();
-            }
-        });
     }
 
     @Override
@@ -175,11 +152,8 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     }
 
     private void setButtonSrc(boolean isPlaying) {
-        if (isPlaying) {
-            GlideApp.with(this).load(DrawableUtil.setColor(getContext(), R.drawable.ic_pause_black_48dp, selfAdaptionColor)).into(mPlayOrPauseButton);
-        } else {
-            GlideApp.with(this).load(DrawableUtil.setColor(getContext(), R.drawable.ic_play_arrow_black_48dp, selfAdaptionColor)).into(mPlayOrPauseButton);
-        }
+        int resId = isPlaying ? R.drawable.ic_pause_black_48dp : R.drawable.ic_play_arrow_black_48dp;
+        GlideApp.with(this).load(resId).into(mPlayOrPauseButton);
     }
 
     private void setupSeekBar(Music music) {
@@ -213,6 +187,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
             File coverFile = new File(musicThumbAlbumCoverPath);
             GlideApp.with(this).load(coverFile).into(mCover);
         }
+        setTitle(music.getMusicName());
         mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
         setupSeekBar(music);
         setBackgroundBlur(music);
@@ -220,33 +195,9 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
 
     private void setBackgroundBlur(Music music) {
         String imagePath = music.getMusicThumbAlbumCoverPath();
-        File file = MusicCoverFileCache.getInstance().getCoverFile(imagePath);
-        if (file != null && file.exists()) {
-            Bitmap source = BitmapFactory.decodeFile(file.getAbsolutePath());
-            Bitmap bitmapBlur = BitmapUtil.bitmapBlur(getContext(), source, 25);
-            GlideApp.with(getParentActivity())
-                    .load(bitmapBlur)
-                    .into(mBackground);
-            ColorUtils.setSelfAdaptionColor(bitmapBlur, (palette -> {
-                Palette.Swatch swatch = palette.getVibrantSwatch();
-                int rgb;
-                if (swatch != null && (rgb = swatch.getTitleTextColor()) != 0) {
-                    selfAdaptionColor = rgb;
-                    setPanelColor();
-                } else {
-                    selfAdaptionColor = Color.parseColor("#FFFFFF");
-                    setPanelColor();
-                }
-            }));
-        }
-    }
-
-    private void setPanelColor() {
-        setTitleColor(selfAdaptionColor);
-        setNavIconColor(selfAdaptionColor);
-        mPlayOrPauseButton.setImageDrawable(DrawableUtil.setColor(mPlayOrPauseButton.getDrawable(), selfAdaptionColor));
-        mPreviousButton.setImageDrawable(DrawableUtil.setColor(mPreviousButton.getDrawable(), selfAdaptionColor));
-        mNextButton.setImageDrawable(DrawableUtil.setColor(mNextButton.getDrawable(), selfAdaptionColor));
+        mBackground.setImagePath(imagePath);
+        /*ColorUtils.setSelfAdaptionDarkMutedColor(mBackground.getImageBitmap(),
+                mTitle, mNavIcon, mPreviousButton, mPlayOrPauseButton, mNextButton);*/
     }
 
     public static MusicPlayFragment getInstance() {
