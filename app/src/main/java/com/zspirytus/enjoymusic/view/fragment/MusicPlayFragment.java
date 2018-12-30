@@ -196,8 +196,6 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     private void setBackgroundBlur(Music music) {
         String imagePath = music.getMusicThumbAlbumCoverPath();
         mBackground.setImagePath(imagePath);
-        /*ColorUtils.setSelfAdaptionDarkMutedColor(mBackground.getImageBitmap(),
-                mTitle, mNavIcon, mPreviousButton, mPlayOrPauseButton, mNextButton);*/
     }
 
     public static MusicPlayFragment getInstance() {

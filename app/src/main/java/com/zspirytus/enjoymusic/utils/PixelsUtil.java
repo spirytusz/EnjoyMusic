@@ -1,8 +1,7 @@
 package com.zspirytus.enjoymusic.utils;
 
 import android.content.Context;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
+import android.content.res.Resources;
 
 /**
  * Created by ZSpirytus on 2018/12/15.
@@ -26,17 +25,15 @@ public class PixelsUtil {
         return (int) (px / scale + 0.5f);
     }
 
-    public static int getScreenMaxWidth(Context context) {
-        DisplayMetrics dm = new DisplayMetrics();
-        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        manager.getDefaultDisplay().getMetrics(dm);
-        return px2dp(context, dm.widthPixels);
-    }
-
-    public static int getScreenMaxHeight(Context context) {
-        DisplayMetrics dm = new DisplayMetrics();
-        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        manager.getDefaultDisplay().getMetrics(dm);
-        return px2dp(context, dm.heightPixels);
+    /**
+     * Get Screen Width & Height Pixels
+     *
+     * @return Screen Width & Height Pixels wrapped in array
+     */
+    public static int[] getPixelsConfig() {
+        int[] pixelsConfig = new int[2];
+        pixelsConfig[0] = Resources.getSystem().getDisplayMetrics().widthPixels;
+        pixelsConfig[1] = Resources.getSystem().getDisplayMetrics().heightPixels;
+        return pixelsConfig;
     }
 }

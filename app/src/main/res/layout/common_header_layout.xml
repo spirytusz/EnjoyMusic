@@ -43,6 +43,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="39dp"
+        android:maxEms="15"
+        android:singleLine="true"
         app:layout_constraintStart_toEndOf="@+id/common_header_nav_menu_or_back_icon"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Title" />
