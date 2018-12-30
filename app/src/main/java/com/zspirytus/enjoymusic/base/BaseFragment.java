@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zspirytus.enjoymusic.interfaces.IBackPressed;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.LogUtil;
@@ -23,7 +24,9 @@ import io.reactivex.schedulers.Schedulers;
  * Created by ZSpirytus on 2018/8/2.
  */
 
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment implements IBackPressed {
+
+    protected long pressedBackLastTime;
 
     private BaseActivity parentActivity;
     private volatile boolean isLoadSuccess;

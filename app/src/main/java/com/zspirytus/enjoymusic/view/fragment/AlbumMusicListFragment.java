@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -9,7 +10,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.adapter.ItemSpacingDecoration;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
-import com.zspirytus.enjoymusic.base.BaseViewPagerItemFragment;
+import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Album;
@@ -19,6 +20,8 @@ import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
+import org.simple.eventbus.EventBus;
+
 import java.util.List;
 
 /**
@@ -27,7 +30,7 @@ import java.util.List;
  */
 
 @LayoutIdInject(R.layout.fragment_album_music_list_layout)
-public class AlbumMusicListFragment extends BaseViewPagerItemFragment
+public class AlbumMusicListFragment extends LazyLoadBaseFragment
         implements OnRecyclerViewItemClickListener {
 
     @ViewInject(R.id.album_music_recycler_view)
@@ -43,7 +46,11 @@ public class AlbumMusicListFragment extends BaseViewPagerItemFragment
     @Override
     public void onItemClick(View view, int position) {
         String album = mAlbumList.get(position).getAlbumName();
-        showMusicDetailFragment(album, null);
+        MusicListDetailFragment fragment = MusicListDetailFragment.getInstance();
+        Bundle bundle = new Bundle();
+        bundle.putString("album", album);
+        fragment.setArguments(bundle);
+        EventBus.getDefault().post(fragment, Constant.EventBusTag.SHOW_CAST_FRAGMENT);
     }
 
     @Override
@@ -97,6 +104,17 @@ public class AlbumMusicListFragment extends BaseViewPagerItemFragment
             AnimationUtil.ofFloat(mInfoTextView, Constant.AnimationProperty.ALPHA, 0f, 1f);
             mInfoTextView.setVisibility(View.VISIBLE);
             mInfoTextView.setText("Error");
+        }
+    }
+
+    @Override
+    public void goBack() {
+        long now = System.currentTimeMillis();
+        if (now - pressedBackLastTime < 2 * 1000) {
+            getParentActivity().finish();
+        } else {
+            toast("Press back again to quit");
+            pressedBackLastTime = now;
         }
     }
 

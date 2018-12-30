@@ -98,6 +98,17 @@ public class PlayListFragment extends CommonHeaderBaseFragment
         EventBus.getDefault().post(FragmentFactory.getInstance().get(MusicPlayFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
     }
 
+    @Override
+    public void goBack() {
+        long now = System.currentTimeMillis();
+        if (now - pressedBackLastTime < 2 * 1000) {
+            getParentActivity().finish();
+        } else {
+            toast("Press back again to quit");
+            pressedBackLastTime = now;
+        }
+    }
+
     private void setupInfoTextView(boolean isPlayListEmpty) {
         if (!isPlayListEmpty) {
             mInfoTextView.setVisibility(View.GONE);

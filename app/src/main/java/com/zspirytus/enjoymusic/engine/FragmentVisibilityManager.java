@@ -9,6 +9,7 @@ import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.listeners.observable.FragmentChangeObservable;
 
 import java.util.LinkedList;
+import java.util.Stack;
 
 /**
  * Created by ZSpirytus on 2018/9/14.
@@ -19,8 +20,8 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
     private static final FragmentVisibilityManager ourInstance = new FragmentVisibilityManager();
 
     private LinkedList<BaseFragment> fragments;
+    private Stack<BaseFragment> backStack;
     private FragmentManager mFragmentManager;
-    private int size;
 
     private BaseFragment mCurrentFragment;
 
@@ -34,10 +35,15 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
 
     public void init(FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
+        backStack = new Stack<>();
     }
 
     public BaseFragment getCurrentFragment() {
         return mCurrentFragment;
+    }
+
+    public void setCurrentFragment(BaseFragment fragment) {
+        mCurrentFragment = fragment;
     }
 
     public void show(BaseFragment shouldShowFragment, int fragmentContainer) {
@@ -59,7 +65,26 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         }
         transaction.commitAllowingStateLoss();
         notifyAllFragmentChangeObserver(shouldShowFragment);
-        mCurrentFragment = shouldShowFragment;
+        setCurrentFragment(shouldShowFragment);
+    }
+
+    public void remove(BaseFragment fragment) {
+        mFragmentManager.beginTransaction()
+                .remove(fragment)
+                .commitAllowingStateLoss();
+        setCurrentFragment(popBackStack());
+    }
+
+    public void addToBackStack(BaseFragment fragment) {
+        if (fragment != null && !backStack.contains(fragment)) {
+            backStack.push(fragment);
+        }
+    }
+
+    public BaseFragment popBackStack() {
+        if (!backStack.isEmpty())
+            return backStack.pop();
+        return null;
     }
 
 }

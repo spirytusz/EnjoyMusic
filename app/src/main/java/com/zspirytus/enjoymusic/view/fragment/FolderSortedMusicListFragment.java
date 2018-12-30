@@ -8,7 +8,7 @@ import android.widget.ProgressBar;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
-import com.zspirytus.enjoymusic.base.BaseViewPagerItemFragment;
+import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -20,7 +20,7 @@ import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 import java.util.List;
 
 @LayoutIdInject(R.layout.fragment_folder_sorted_music_list_layout)
-public class FolderSortedMusicListFragment extends BaseViewPagerItemFragment
+public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
         implements OnRecyclerViewItemClickListener {
 
     @ViewInject(R.id.file_sorted_music_fragment_progress_bar)
@@ -86,6 +86,17 @@ public class FolderSortedMusicListFragment extends BaseViewPagerItemFragment
     @Override
     public void onItemClick(View view, int position) {
 
+    }
+
+    @Override
+    public void goBack() {
+        long now = System.currentTimeMillis();
+        if (now - pressedBackLastTime < 2 * 1000) {
+            getParentActivity().finish();
+        } else {
+            toast("Press back again to quit");
+            pressedBackLastTime = now;
+        }
     }
 
     public static FolderSortedMusicListFragment getInstance() {

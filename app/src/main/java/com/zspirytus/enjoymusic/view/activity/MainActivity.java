@@ -36,7 +36,6 @@ import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
-import com.zspirytus.enjoymusic.interfaces.IFragmentBackable;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
@@ -44,6 +43,7 @@ import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 import com.zspirytus.enjoymusic.view.fragment.LaunchAnimationFragment;
+import com.zspirytus.enjoymusic.view.fragment.MusicListDetailFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.enjoymusic.view.widget.CustomNavigationView;
 import com.zspirytus.zspermission.PermissionGroup;
@@ -91,7 +91,6 @@ public class MainActivity extends BaseActivity
     private DrawerListenerImpl mDrawerListener;
 
     private ServiceConnection conn;
-    private long pressedBackLastTime;
     private boolean isPlaying = false;
 
     @Override
@@ -118,16 +117,6 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
@@ -140,17 +129,7 @@ public class MainActivity extends BaseActivity
             return;
         }
         BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
-        if (currentFragment instanceof IFragmentBackable) {
-            ((IFragmentBackable) currentFragment).goBack();
-        } else {
-            long now = System.currentTimeMillis();
-            if (now - pressedBackLastTime < 2 * 1000) {
-                finish();
-            } else {
-                toast("Press back again to quit");
-                pressedBackLastTime = now;
-            }
-        }
+        currentFragment.goBack();
     }
 
     @Override
@@ -236,7 +215,14 @@ public class MainActivity extends BaseActivity
 
     @Subscriber(tag = Constant.EventBusTag.SHOW_CAST_FRAGMENT)
     public <T extends BaseFragment> void showCastFragment(T shouldShowFragment) {
-        int container = shouldShowFragment instanceof MusicPlayFragment ? R.id.full_fragment_container : R.id.fragment_container;
+        int container;
+        if (shouldShowFragment instanceof MusicPlayFragment || shouldShowFragment instanceof MusicListDetailFragment) {
+            container = R.id.full_fragment_container;
+            BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
+            FragmentVisibilityManager.getInstance().addToBackStack(currentFragment);
+        } else {
+            container = R.id.fragment_container;
+        }
         FragmentVisibilityManager.getInstance().show(shouldShowFragment, container);
     }
 

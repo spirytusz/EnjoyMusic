@@ -13,9 +13,9 @@ import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
+import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.interfaces.IFragmentBackable;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
@@ -36,7 +36,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 
 @LayoutIdInject(R.layout.fragment_music_play_layout)
 public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.OnClickListener, MusicPlayStateObserver,
-        MusicPlayProgressObserver, PlayedMusicChangeObserver, IFragmentBackable {
+        MusicPlayProgressObserver, PlayedMusicChangeObserver {
 
     @ViewInject(R.id.background)
     private BlurImageView mBackground;
@@ -158,9 +158,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
 
     @Override
     public void goBack() {
-        getFragmentManager().beginTransaction()
-                .hide(this)
-                .commitAllowingStateLoss();
+        FragmentVisibilityManager.getInstance().remove(this);
     }
 
     private void setButtonSrc(boolean isPlaying) {

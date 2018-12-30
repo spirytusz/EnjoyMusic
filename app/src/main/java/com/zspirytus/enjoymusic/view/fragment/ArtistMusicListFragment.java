@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -8,13 +9,16 @@ import android.widget.TextView;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
-import com.zspirytus.enjoymusic.base.BaseViewPagerItemFragment;
+import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
+import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
+
+import org.simple.eventbus.EventBus;
 
 import java.util.List;
 
@@ -24,7 +28,7 @@ import java.util.List;
  */
 // TODO: 2018/9/17 click recyclerview to navigate to corresponding music list
 @LayoutIdInject(R.layout.fragment_artist_music_list_layout)
-public class ArtistMusicListFragment extends BaseViewPagerItemFragment
+public class ArtistMusicListFragment extends LazyLoadBaseFragment
         implements OnRecyclerViewItemClickListener {
 
     @ViewInject(R.id.artist_music_recycler_view)
@@ -41,7 +45,11 @@ public class ArtistMusicListFragment extends BaseViewPagerItemFragment
     @Override
     public void onItemClick(View view, int position) {
         String artist = mArtistList.get(position).getArtistName();
-        showMusicDetailFragment(null, artist);
+        MusicListDetailFragment fragment = MusicListDetailFragment.getInstance();
+        Bundle bundle = new Bundle();
+        bundle.putString("artist", artist);
+        fragment.setArguments(bundle);
+        EventBus.getDefault().post(fragment, Constant.EventBusTag.SHOW_CAST_FRAGMENT);
     }
 
     @Override
@@ -85,6 +93,17 @@ public class ArtistMusicListFragment extends BaseViewPagerItemFragment
         } else {
             mInfoTextView.setVisibility(View.VISIBLE);
             mInfoTextView.setText("Error");
+        }
+    }
+
+    @Override
+    public void goBack() {
+        long now = System.currentTimeMillis();
+        if (now - pressedBackLastTime < 2 * 1000) {
+            getParentActivity().finish();
+        } else {
+            toast("Press back again to quit");
+            pressedBackLastTime = now;
         }
     }
 

@@ -1,5 +1,5 @@
 package com.zspirytus.enjoymusic.interfaces;
 
-public interface IFragmentBackable {
+public interface IBackPressed {
     void goBack();
 }

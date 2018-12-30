@@ -99,6 +99,17 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
         }
     }
 
+    @Override
+    public void goBack() {
+        long now = System.currentTimeMillis();
+        if (now - pressedBackLastTime < 2 * 1000) {
+            getParentActivity().finish();
+        } else {
+            toast("Press back again to quit");
+            pressedBackLastTime = now;
+        }
+    }
+
     private void initRecyclerView() {
         mMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mMusicRecyclerView.setHasFixedSize(true);

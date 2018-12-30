@@ -13,11 +13,11 @@ import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
+import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
-import com.zspirytus.enjoymusic.interfaces.IFragmentBackable;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
@@ -30,7 +30,7 @@ import io.reactivex.disposables.Disposable;
 
 @LayoutIdInject(R.layout.fragment_music_list_detail_layout)
 public class MusicListDetailFragment extends BaseFragment
-        implements OnRecyclerViewItemClickListener, IFragmentBackable {
+        implements OnRecyclerViewItemClickListener {
 
     @ViewInject(R.id.collapsing_toolbar)
     private CollapsingToolbarLayout mCollapsing;
@@ -113,9 +113,7 @@ public class MusicListDetailFragment extends BaseFragment
 
     @Override
     public void goBack() {
-        getFragmentManager().beginTransaction()
-                .remove(this)
-                .commitAllowingStateLoss();
+        FragmentVisibilityManager.getInstance().remove(this);
     }
 
     private void loadDataIntoView(List<Music> musicList) {

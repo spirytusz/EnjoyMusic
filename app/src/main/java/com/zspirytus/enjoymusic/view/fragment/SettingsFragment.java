@@ -34,4 +34,15 @@ public class SettingsFragment extends CommonHeaderBaseFragment {
     @Override
     protected void onLoadState(boolean isSuccess) {
     }
+
+    @Override
+    public void goBack() {
+        long now = System.currentTimeMillis();
+        if (now - pressedBackLastTime < 2 * 1000) {
+            getParentActivity().finish();
+        } else {
+            toast("Press back again to quit");
+            pressedBackLastTime = now;
+        }
+    }
 }
