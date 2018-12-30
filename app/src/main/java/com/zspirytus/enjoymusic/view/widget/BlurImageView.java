@@ -29,13 +29,22 @@ public class BlurImageView extends AppCompatImageView {
             if (file.exists() && file.isFile()) {
                 GlideApp.with(BlurImageView.this)
                         .load(file)
-                        .thumbnail(0.1f)
                         .centerCrop()
                         .transform(new BlurTransformation(getContext(), 25, 16))
                         .transition(new DrawableTransitionOptions().crossFade(1000))
                         .into(BlurImageView.this);
             }
         }
+    }
+
+    @Override
+    public void setImageResource(int resId) {
+        GlideApp.with(BlurImageView.this)
+                .load(resId)
+                .centerCrop()
+                .transform(new BlurTransformation(getContext(), 25, 16))
+                .transition(new DrawableTransitionOptions().crossFade(1000))
+                .into(BlurImageView.this);
     }
 
     public Bitmap getImageBitmap() {

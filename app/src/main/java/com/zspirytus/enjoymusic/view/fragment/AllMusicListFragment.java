@@ -63,7 +63,12 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
 
             @Override
             public void convert(CommonViewHolder holder, Music music, int position) {
-                holder.setImagePath(R.id.item_cover, music.getMusicThumbAlbumCoverPath());
+                String coverPath = music.getMusicThumbAlbumCoverPath();
+                if (coverPath != null && !coverPath.isEmpty()) {
+                    holder.setImagePath(R.id.item_cover, coverPath);
+                } else {
+                    holder.setImageResource(R.id.item_cover, R.drawable.defalut_cover);
+                }
                 holder.setText(R.id.item_title, music.getMusicName());
                 holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
                 holder.setOnItemClickListener(AllMusicListFragment.this);

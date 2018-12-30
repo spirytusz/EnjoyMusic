@@ -62,7 +62,12 @@ public class MusicListDetailFragment extends BaseFragment
 
             @Override
             public void convert(CommonViewHolder holder, Music music, int position) {
-                holder.setImagePath(R.id.item_cover, music.getMusicThumbAlbumCoverPath());
+                String path = music.getMusicThumbAlbumCoverPath();
+                if (path != null && !path.isEmpty()) {
+                    holder.setImagePath(R.id.item_cover, music.getMusicThumbAlbumCoverPath());
+                } else {
+                    holder.setImageResource(R.id.item_cover, R.drawable.defalut_cover);
+                }
                 holder.setText(R.id.item_title, music.getMusicName());
                 holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
                 holder.setVisibility(R.id.item_more_info_button, View.GONE);
@@ -120,11 +125,21 @@ public class MusicListDetailFragment extends BaseFragment
                 mToolbar.setTitle(music.getMusicArtist());
                 mCollapsing.setTitle(music.getMusicArtist());
             }
-            File coverFile = MusicCoverFileCache.getInstance().getCoverFile(music.getMusicThumbAlbumCoverPath());
-            GlideApp.with(getContext())
-                    .load(coverFile)
+            GlideApp.with(this)
+                    .load(R.drawable.defalut_cover)
                     .centerCrop()
                     .into(mCover);
+            for (Music exitCoverMusic : musicList) {
+                String path = exitCoverMusic.getMusicThumbAlbumCoverPath();
+                if (path != null && !path.isEmpty()) {
+                    File coverFile = MusicCoverFileCache.getInstance().getCoverFile(exitCoverMusic.getMusicThumbAlbumCoverPath());
+                    GlideApp.with(this)
+                            .load(coverFile)
+                            .centerCrop()
+                            .into(mCover);
+                    break;
+                }
+            }
             mBackBtn.setOnClickListener(v -> {
                 goBack();
             });

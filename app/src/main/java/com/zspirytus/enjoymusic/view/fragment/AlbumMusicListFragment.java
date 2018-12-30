@@ -25,7 +25,7 @@ import java.util.List;
  * Fragment 显示以专辑名筛选的音乐列表
  * Created by ZSpirytus on 2018/9/12.
  */
-// TODO: 2018/9/17 click recyclerview item to navigate to corresponding music list
+
 @LayoutIdInject(R.layout.fragment_album_music_list_layout)
 public class AlbumMusicListFragment extends BaseViewPagerItemFragment
         implements OnRecyclerViewItemClickListener {
@@ -57,7 +57,12 @@ public class AlbumMusicListFragment extends BaseViewPagerItemFragment
 
             @Override
             public void convert(CommonViewHolder holder, Album album, int position) {
-                holder.setImagePath(R.id.item_cover, album.getAlbumCoverPath());
+                String coverPath = album.getAlbumCoverPath();
+                if (coverPath != null && !coverPath.isEmpty()) {
+                    holder.setImagePath(R.id.item_cover, coverPath);
+                } else {
+                    holder.setImageResource(R.id.item_cover, R.drawable.defalut_cover);
+                }
                 holder.setText(R.id.item_title, album.getAlbumName());
                 holder.setText(R.id.item_sub_title, album.getArtist());
                 holder.setOnItemClickListener(AlbumMusicListFragment.this);

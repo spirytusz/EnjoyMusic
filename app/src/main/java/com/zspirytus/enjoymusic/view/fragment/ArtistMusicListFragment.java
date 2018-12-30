@@ -57,6 +57,7 @@ public class ArtistMusicListFragment extends BaseViewPagerItemFragment
 
             @Override
             public void convert(CommonViewHolder holder, Artist artist, int position) {
+                holder.setImageResource(R.id.item_cover, R.drawable.defalut_cover);
                 holder.setText(R.id.item_title, artist.getArtistName());
                 holder.setText(R.id.item_sub_title, artist.getNumberOfAlbums() + " 首歌曲");
                 holder.setOnItemClickListener(ArtistMusicListFragment.this);

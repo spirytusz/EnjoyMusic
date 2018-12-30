@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.adapter.viewholder;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
@@ -85,6 +86,19 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
             setImageFile(id, file);
         } else {
             setImageFile(id, null);
+        }
+    }
+
+    public void setImageResource(@IdRes int viewId, @DrawableRes int resId) {
+        if (resId != 0) {
+            View view = getView(viewId);
+            if (view instanceof ImageView) {
+                ImageView imageView = (ImageView) view;
+                GlideApp.with(view)
+                        .load(resId)
+                        .error(R.drawable.ic_music_note_black_48dp)
+                        .into((ImageView) view);
+            }
         }
     }
 

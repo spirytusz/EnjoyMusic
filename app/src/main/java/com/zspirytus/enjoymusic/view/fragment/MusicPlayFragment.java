@@ -186,6 +186,8 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
         if (musicThumbAlbumCoverPath != null) {
             File coverFile = new File(musicThumbAlbumCoverPath);
             GlideApp.with(this).load(coverFile).into(mCover);
+        } else {
+            GlideApp.with(this).load(R.drawable.defalut_cover).into(mCover);
         }
         setTitle(music.getMusicName());
         mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
@@ -195,7 +197,11 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
 
     private void setBackgroundBlur(Music music) {
         String imagePath = music.getMusicThumbAlbumCoverPath();
-        mBackground.setImagePath(imagePath);
+        if (imagePath != null && !imagePath.isEmpty()) {
+            mBackground.setImagePath(imagePath);
+        } else {
+
+        }
     }
 
     public static MusicPlayFragment getInstance() {
