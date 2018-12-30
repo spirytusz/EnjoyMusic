@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/grey"
+    tools:background="@color/white">
 
     <include
         android:id="@+id/status_bar_toolbar_holder"
@@ -27,7 +29,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <com.zspirytus.enjoymusic.view.widget.MultiEventImageView
+    <com.zspirytus.enjoymusic.view.widget.AutoRotateCircleImage
         android:id="@+id/cover"
         android:layout_width="300dp"
         android:layout_height="300dp"
@@ -38,7 +40,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/status_bar_toolbar_holder"
-        app:srcCompat="@android:color/darker_gray" />
+        app:civ_border_width="4dp"
+        app:civ_border_color="@color/translucent_grey"
+        app:cycle_seconds="24" />
 
     <ImageView
         android:id="@+id/play_pause"

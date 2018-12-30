@@ -6,4 +6,8 @@
         <attr name="bottomLeft" format="dimension" />
         <attr name="bottomRight" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="AutoRotateCircleImage">
+        <attr name="cycle_seconds" format="integer" />
+    </declare-styleable>
 </resources>

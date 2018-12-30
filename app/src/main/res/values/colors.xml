@@ -7,4 +7,6 @@
     <color name="grey">#AAAAAA</color>
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
+
+    <color name="translucent_grey">#88AAAAAA</color>
 </resources>

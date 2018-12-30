@@ -22,8 +22,8 @@ import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
+import com.zspirytus.enjoymusic.view.widget.AutoRotateCircleImage;
 import com.zspirytus.enjoymusic.view.widget.BlurImageView;
-import com.zspirytus.enjoymusic.view.widget.MultiEventImageView;
 
 import java.io.File;
 
@@ -42,7 +42,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     private BlurImageView mBackground;
 
     @ViewInject(R.id.cover)
-    private MultiEventImageView mCover;
+    private AutoRotateCircleImage mCover;
 
     @ViewInject(R.id.now_time)
     private TextView mNowTime;
@@ -94,6 +94,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     public void onPlayingStateChanged(final boolean isPlaying) {
         AndroidSchedulers.mainThread().scheduleDirect(() -> {
             setButtonSrc(isPlaying);
+            mCover.setRotating(isPlaying);
         });
     }
 
