@@ -84,6 +84,12 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        mCover.setRotating(!hidden);
+    }
+
+    @Override
     public void onProgressChanged(final int progress) {
         AndroidSchedulers.mainThread().scheduleDirect(() -> {
             mSeekBar.setProgress(progress);
@@ -103,6 +109,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
         AndroidSchedulers.mainThread().scheduleDirect(() -> {
             mCurrentPlayingMusic = music;
             setView(music);
+            mCover.resetRotation();
         });
     }
 
@@ -186,9 +193,13 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
         String musicThumbAlbumCoverPath = music.getMusicThumbAlbumCoverPath();
         if (musicThumbAlbumCoverPath != null) {
             File coverFile = new File(musicThumbAlbumCoverPath);
-            GlideApp.with(this).load(coverFile).into(mCover);
+            GlideApp.with(this)
+                    .load(coverFile)
+                    .into(mCover);
         } else {
-            GlideApp.with(this).load(R.drawable.defalut_cover).into(mCover);
+            GlideApp.with(this)
+                    .load(R.drawable.defalut_cover)
+                    .into(mCover);
         }
         setTitle(music.getMusicName());
         mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));

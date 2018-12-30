@@ -59,4 +59,11 @@ public class AutoRotateCircleImage extends CircleImageView {
             }
         }
     }
+
+    public void resetRotation() {
+        if (mRotateAnim.isStarted()) {
+            mRotateAnim.end();
+        }
+        initAnim();
+    }
 }

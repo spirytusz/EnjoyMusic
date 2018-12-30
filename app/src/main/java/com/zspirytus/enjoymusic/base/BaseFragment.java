@@ -15,6 +15,9 @@ import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 import java.lang.reflect.Field;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * Fragment 基类
  * Created by ZSpirytus on 2018/8/2.
@@ -40,9 +43,13 @@ public abstract class BaseFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        initData();
-        initView();
-        registerEvent();
+        Schedulers.io().scheduleDirect(() -> {
+            initData();
+            AndroidSchedulers.mainThread().scheduleDirect(() -> {
+                initView();
+                registerEvent();
+            });
+        });
     }
 
     @Override
