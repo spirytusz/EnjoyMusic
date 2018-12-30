@@ -70,6 +70,10 @@ public class PlayListFragment extends CommonHeaderBaseFragment
     }
 
     @Override
+    protected void onLoadState(boolean isSuccess) {
+    }
+
+    @Override
     protected void registerEvent() {
         ForegroundMusicCache.getInstance().register(this);
     }

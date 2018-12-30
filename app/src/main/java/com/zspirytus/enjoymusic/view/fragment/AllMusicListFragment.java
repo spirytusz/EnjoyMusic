@@ -19,7 +19,6 @@ import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
-import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
 import org.simple.eventbus.EventBus;
 
@@ -84,32 +83,27 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
         initRecyclerView();
     }
 
+    @Override
+    protected void onLoadState(boolean isSuccess) {
+        mMusicListLoadProgressBar.setVisibility(View.GONE);
+        if (isSuccess) {
+            if (!mMusicRecyclerViewAdapter.getList().isEmpty()) {
+                mMusicRecyclerView.setVisibility(View.VISIBLE);
+            } else {
+                mInfoTextView.setVisibility(View.VISIBLE);
+                mInfoTextView.setText("No music in this device");
+            }
+        } else {
+            mInfoTextView.setVisibility(View.GONE);
+            mInfoTextView.setText("Error");
+        }
+    }
+
     private void initRecyclerView() {
         mMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mMusicRecyclerView.setHasFixedSize(true);
         mMusicRecyclerView.setNestedScrollingEnabled(false);
         mMusicRecyclerView.setAdapter(mMusicRecyclerViewAdapter);
-        playAnimator();
-    }
-
-    private void playAnimator() {
-        AnimationUtil.ofFloat(mMusicListLoadProgressBar, Constant.AnimationProperty.ALPHA, 1f, 0f).start();
-        mMusicListLoadProgressBar.setVisibility(View.GONE);
-        if (mMusicList != null && mMusicList.size() != 0) {
-            AnimationUtil.ofFloat(mMusicRecyclerView, Constant.AnimationProperty.ALPHA, 0f, 1f).start();
-            mMusicRecyclerView.setVisibility(View.VISIBLE);
-        } else {
-            showInfoTextView(true);
-        }
-    }
-
-    private void showInfoTextView(boolean isSuccessAndNoMusic) {
-        mInfoTextView.setVisibility(View.VISIBLE);
-        if (isSuccessAndNoMusic) {
-            mInfoTextView.setText("No music in this device");
-        } else {
-            mInfoTextView.setText("Error");
-        }
     }
 
     public static AllMusicListFragment getInstance() {

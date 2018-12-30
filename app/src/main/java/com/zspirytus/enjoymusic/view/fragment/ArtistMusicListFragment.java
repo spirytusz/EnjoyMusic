@@ -10,13 +10,11 @@ import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.BaseViewPagerItemFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
-import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
-import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
 import java.util.List;
 
@@ -68,30 +66,25 @@ public class ArtistMusicListFragment extends BaseViewPagerItemFragment
 
     @Override
     protected void initView() {
-        if (mArtistList != null && !mArtistList.isEmpty()) {
-            mArtistMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
-            mArtistMusicRecyclerView.setHasFixedSize(true);
-            mArtistMusicRecyclerView.setNestedScrollingEnabled(false);
-            mArtistMusicRecyclerView.setAdapter(mAdapter);
-            playWidgetAnimation(true, false);
-        } else {
-            playWidgetAnimation(true, true);
-        }
+        mArtistMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
+        mArtistMusicRecyclerView.setHasFixedSize(true);
+        mArtistMusicRecyclerView.setNestedScrollingEnabled(false);
+        mArtistMusicRecyclerView.setAdapter(mAdapter);
     }
 
-    private void playWidgetAnimation(boolean isSuccess, boolean isEmpty) {
-        AnimationUtil.ofFloat(mLoadProgressBar, Constant.AnimationProperty.ALPHA, 1f, 0f).start();
+    @Override
+    protected void onLoadState(boolean isSuccess) {
         mLoadProgressBar.setVisibility(View.GONE);
         if (isSuccess) {
-            if (!isEmpty) {
-                AnimationUtil.ofFloat(mArtistMusicRecyclerView, Constant.AnimationProperty.ALPHA, 0f, 1f).start();
+            if (!mAdapter.getList().isEmpty()) {
+                mArtistMusicRecyclerView.setVisibility(View.VISIBLE);
             } else {
-                AnimationUtil.ofFloat(mInfoTextView, Constant.AnimationProperty.ALPHA, 0f, 1f).start();
                 mInfoTextView.setVisibility(View.VISIBLE);
+                mInfoTextView.setText("No Artist to Show");
             }
         } else {
-            AnimationUtil.ofFloat(mInfoTextView, Constant.AnimationProperty.ALPHA, 0f, 1f).start();
             mInfoTextView.setVisibility(View.VISIBLE);
+            mInfoTextView.setText("Error");
         }
     }
 

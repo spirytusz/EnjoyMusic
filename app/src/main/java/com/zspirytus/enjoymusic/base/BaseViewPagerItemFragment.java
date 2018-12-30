@@ -6,7 +6,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.view.fragment.MusicListDetailFragment;
 
-public class BaseViewPagerItemFragment extends LazyLoadBaseFragment {
+public abstract class BaseViewPagerItemFragment extends LazyLoadBaseFragment {
 
     protected void showMusicDetailFragment(String filterAlbum, String filterArtist) {
         MusicListDetailFragment fragment = MusicListDetailFragment.getInstance();

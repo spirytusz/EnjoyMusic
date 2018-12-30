@@ -73,23 +73,19 @@ public class AlbumMusicListFragment extends BaseViewPagerItemFragment
 
     @Override
     protected void initView() {
-        if (mAlbumList != null && !mAlbumList.isEmpty()) {
-            playWidgetAnimation(true, false);
-            mAlbumMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManager(getParentActivity(), 2));
-            mAlbumMusicRecyclerView.setAdapter(mAdapter);
-            mAlbumMusicRecyclerView.setHasFixedSize(true);
-            mAlbumMusicRecyclerView.setNestedScrollingEnabled(false);
-            mAlbumMusicRecyclerView.addItemDecoration(new ItemSpacingDecoration(8, 8, 8, 8, 1, 2));
-        } else {
-            playWidgetAnimation(true, true);
-        }
+        mAlbumMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManager(getParentActivity(), 2));
+        mAlbumMusicRecyclerView.setAdapter(mAdapter);
+        mAlbumMusicRecyclerView.setHasFixedSize(true);
+        mAlbumMusicRecyclerView.setNestedScrollingEnabled(false);
+        mAlbumMusicRecyclerView.addItemDecoration(new ItemSpacingDecoration(8, 8, 8, 8, 1, 2));
     }
 
-    private void playWidgetAnimation(boolean isSuccess, boolean isEmpty) {
+    @Override
+    protected void onLoadState(boolean isSuccess) {
         AnimationUtil.ofFloat(mLoadProgressBar, Constant.AnimationProperty.ALPHA, 1f, 0f);
         mLoadProgressBar.setVisibility(View.GONE);
         if (isSuccess) {
-            if (!isEmpty) {
+            if (!mAlbumList.isEmpty()) {
                 AnimationUtil.ofFloat(mAlbumMusicRecyclerView, Constant.AnimationProperty.ALPHA, 0f, 1f).start();
                 mAlbumMusicRecyclerView.setVisibility(View.VISIBLE);
             } else {

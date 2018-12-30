@@ -6,9 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
@@ -18,7 +16,7 @@ import com.zspirytus.enjoymusic.utils.DrawableUtil;
 
 import org.simple.eventbus.EventBus;
 
-public class CommonHeaderBaseFragment extends BaseFragment
+public abstract class CommonHeaderBaseFragment extends BaseFragment
         implements PlayedMusicChangeObserver {
 
     protected AppCompatImageView mNavIcon;
@@ -26,10 +24,9 @@ public class CommonHeaderBaseFragment extends BaseFragment
     protected AppCompatImageView mMenuIcon;
     protected View mBg;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         ConstraintLayout mHeaderView = view.findViewById(R.id.status_bar_toolbar_holder);
         if (mHeaderView != null) {
             mNavIcon = mHeaderView.findViewById(R.id.common_header_nav_menu_or_back_icon);
@@ -37,12 +34,6 @@ public class CommonHeaderBaseFragment extends BaseFragment
             mMenuIcon = mHeaderView.findViewById(R.id.common_header_menu_icon);
             mBg = mHeaderView.findViewById(R.id.bg);
         }
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         setTitle(getString(R.string.app_name));
     }
 

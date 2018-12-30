@@ -61,30 +61,31 @@ public class FolderSortedMusicListFragment extends BaseViewPagerItemFragment
 
     @Override
     protected void initView() {
-        if (mFolderSortedMusicList != null && !mFolderSortedMusicList.isEmpty()) {
-            mFileSortedMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
-            mFileSortedMusicRecyclerView.setHasFixedSize(true);
-            mFileSortedMusicRecyclerView.setNestedScrollingEnabled(false);
-            mFileSortedMusicRecyclerView.setAdapter(mAdapter);
-            playAnimation(true);
+        mFileSortedMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
+        mFileSortedMusicRecyclerView.setHasFixedSize(true);
+        mFileSortedMusicRecyclerView.setNestedScrollingEnabled(false);
+        mFileSortedMusicRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    protected void onLoadState(boolean isSuccess) {
+        mLoadProgressBar.setVisibility(View.GONE);
+        if (isSuccess) {
+            if (!mAdapter.getList().isEmpty()) {
+                mFileSortedMusicRecyclerView.setVisibility(View.VISIBLE);
+            } else {
+                mInfoTextView.setVisibility(View.VISIBLE);
+                mInfoTextView.setText("No File to show");
+            }
         } else {
-            playAnimation(false);
-            mInfoTextView.setText("No Music In Device");
+            mInfoTextView.setVisibility(View.VISIBLE);
+            mInfoTextView.setText("Error");
         }
     }
 
     @Override
     public void onItemClick(View view, int position) {
 
-    }
-
-    private void playAnimation(boolean isSuccess) {
-        mLoadProgressBar.setVisibility(View.GONE);
-        if (isSuccess) {
-            mFileSortedMusicRecyclerView.setVisibility(View.VISIBLE);
-        } else {
-            mInfoTextView.setVisibility(View.VISIBLE);
-        }
     }
 
     public static FolderSortedMusicListFragment getInstance() {

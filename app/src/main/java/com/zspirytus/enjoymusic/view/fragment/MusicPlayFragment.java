@@ -139,6 +139,10 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     }
 
     @Override
+    protected void onLoadState(boolean isSuccess) {
+    }
+
+    @Override
     protected void registerEvent() {
         IPlayMusicChangeObserverImpl.getInstance().register(this);
         IPlayStateChangeObserverImpl.getInstance().register(this);

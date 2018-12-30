@@ -102,6 +102,10 @@ public class MusicListDetailFragment extends BaseFragment
     }
 
     @Override
+    protected void onLoadState(boolean isSuccess) {
+    }
+
+    @Override
     public void onItemClick(View view, int position) {
         Music selectedMusic = mAdapter.getList().get(position);
         ForegroundMusicController.getInstance().play(selectedMusic);

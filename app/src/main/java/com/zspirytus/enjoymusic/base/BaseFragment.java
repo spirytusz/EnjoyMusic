@@ -26,6 +26,7 @@ import io.reactivex.schedulers.Schedulers;
 public abstract class BaseFragment extends Fragment {
 
     private BaseActivity parentActivity;
+    private volatile boolean isLoadSuccess;
 
     @Override
     public void onAttach(Context context) {
@@ -44,9 +45,16 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Schedulers.io().scheduleDirect(() -> {
-            initData();
+            try {
+                initData();
+                isLoadSuccess = true;
+            } catch (Throwable e) {
+                isLoadSuccess = false;
+                e.printStackTrace();
+            }
             AndroidSchedulers.mainThread().scheduleDirect(() -> {
                 initView();
+                onLoadState(isLoadSuccess);
                 registerEvent();
             });
         });
@@ -58,11 +66,11 @@ public abstract class BaseFragment extends Fragment {
         unregisterEvent();
     }
 
-    protected void initData() {
-    }
+    protected abstract void initData();
 
-    protected void initView() {
-    }
+    protected abstract void initView();
+
+    protected abstract void onLoadState(boolean isSuccess);
 
     protected void registerEvent() {
     }

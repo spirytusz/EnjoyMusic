@@ -94,16 +94,27 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     @Override
     protected void initView() {
         setNavIconAction(true);
-        if (mMusicList != null && !mMusicList.isEmpty()) {
-            mHomePageRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManagerWithHeader(getParentActivity(), 2, 2));
-            mHomePageRecyclerView.setAdapter(mAdapter);
-            mHomePageRecyclerView.setHasFixedSize(true);
-            mHomePageRecyclerView.setNestedScrollingEnabled(false);
-            mHomePageRecyclerView.addItemDecoration(new ItemSpacingDecoration(8, 8, 8, 8, 1, 2));
-            playAnimation(true);
-            notifyObserverRecyclerViewLoadFinish();
+        mHomePageRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManagerWithHeader(getParentActivity(), 2, 2));
+        mHomePageRecyclerView.setAdapter(mAdapter);
+        mHomePageRecyclerView.setHasFixedSize(true);
+        mHomePageRecyclerView.setNestedScrollingEnabled(false);
+        mHomePageRecyclerView.addItemDecoration(new ItemSpacingDecoration(8, 8, 8, 8, 1, 2));
+        notifyObserverRecyclerViewLoadFinish();
+    }
+
+    @Override
+    protected void onLoadState(boolean isSuccess) {
+        mListLoadProgressBar.setVisibility(View.GONE);
+        if (isSuccess) {
+            if (!mInnerAdapter.getList().isEmpty()) {
+                mHomePageRecyclerView.setVisibility(View.VISIBLE);
+            } else {
+                mInfoTextView.setVisibility(View.VISIBLE);
+                mInfoTextView.setText("No Music to show");
+            }
         } else {
-            playAnimation(false);
+            mInfoTextView.setVisibility(View.VISIBLE);
+            mInfoTextView.setText("Load HomePage Error");
         }
     }
 
@@ -111,16 +122,6 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     public void onItemClick(View view, int position) {
         Music selectMusic = mMusicList.get(position - mAdapter.getHeaderViewCount());
         ForegroundMusicController.getInstance().play(selectMusic);
-    }
-
-    private void playAnimation(boolean isLoadSuccess) {
-        if (isLoadSuccess) {
-            mListLoadProgressBar.setVisibility(View.GONE);
-            mHomePageRecyclerView.setVisibility(View.VISIBLE);
-        } else {
-            mInfoTextView.setText("Load HomePage Error!");
-            mInfoTextView.setVisibility(View.VISIBLE);
-        }
     }
 
     private void notifyObserverRecyclerViewLoadFinish() {

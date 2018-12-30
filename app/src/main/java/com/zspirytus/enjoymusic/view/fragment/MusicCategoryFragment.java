@@ -54,6 +54,10 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
         mViewPager.setCurrentItem(mCurrentPosition, true);
     }
 
+    @Override
+    protected void onLoadState(boolean isSuccess) {
+    }
+
     public void setCurrentPosition(int currentPosition) {
         mCurrentPosition = currentPosition;
         if (mViewPager != null) {
