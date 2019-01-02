@@ -59,7 +59,6 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     private ImageView mNextButton;
 
     private Music mCurrentPlayingMusic;
-    private int selfAdaptionColor = Color.parseColor("#FFFFFF");
 
     @Override
     public void onClick(View view) {
@@ -120,6 +119,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
 
     @Override
     protected void initView() {
+        getParentActivity().setTransparentNavBar();
         setNavIconAction(false);
         mNavIcon.setOnClickListener(v -> {
             goBack();
@@ -159,6 +159,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     @Override
     public void goBack() {
         FragmentVisibilityManager.getInstance().remove(this);
+        getParentActivity().setDefaultNavBar();
     }
 
     private void setButtonSrc(boolean isPlaying) {

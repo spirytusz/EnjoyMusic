@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
@@ -28,6 +29,8 @@ public abstract class BaseActivity extends AppCompatActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTransparentStatusBar();
+
         autoInjectLayoutId();
         autoInjectAllField();
         registerEvent();
@@ -69,6 +72,16 @@ public abstract class BaseActivity extends AppCompatActivity
             decorView.setSystemUiVisibility(option);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
+    }
+
+    public void setTransparentNavBar() {
+        Window w = getWindow();
+        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+    }
+
+    public void setDefaultNavBar() {
+        Window w = getWindow();
+        w.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
     }
 
     public void setFullScreenOrNot(boolean isFullScreen) {

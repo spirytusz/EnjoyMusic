@@ -43,52 +43,50 @@ public class HomePageFragment extends CommonHeaderBaseFragment
 
     private List<Music> mMusicList;
 
-    private CommonRecyclerViewAdapter<Music> mInnerAdapter;
-    private HeaderFooterViewWrapAdapter mAdapter;
+    private volatile CommonRecyclerViewAdapter<Music> mInnerAdapter;
+    private volatile HeaderFooterViewWrapAdapter mAdapter;
 
     @Override
     protected void initData() {
         mMusicList = ForegroundMusicCache.getInstance().getAllMusicList();
-        if (mMusicList != null && !mMusicList.isEmpty()) {
-            mInnerAdapter = new CommonRecyclerViewAdapter<Music>() {
-                @Override
-                public int getLayoutId() {
-                    return R.layout.item_card_view_type;
-                }
+        mInnerAdapter = new CommonRecyclerViewAdapter<Music>() {
+            @Override
+            public int getLayoutId() {
+                return R.layout.item_card_view_type;
+            }
 
-                @Override
-                public void convert(CommonViewHolder holder, Music music, int position) {
-                    String coverPath = music.getMusicThumbAlbumCoverPath();
-                    if (coverPath != null && !coverPath.isEmpty()) {
-                        holder.setImagePath(R.id.item_cover, coverPath);
-                    } else {
-                        holder.setImageResource(R.id.item_cover, R.drawable.defalut_cover);
+            @Override
+            public void convert(CommonViewHolder holder, Music music, int position) {
+                String coverPath = music.getMusicThumbAlbumCoverPath();
+                if (coverPath != null && !coverPath.isEmpty()) {
+                    holder.setImagePath(R.id.item_cover, coverPath);
+                } else {
+                    holder.setImageResource(R.id.item_cover, R.drawable.defalut_cover);
+                }
+                holder.setText(R.id.item_title, music.getMusicName());
+                holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
+                holder.setOnItemClickListener(HomePageFragment.this);
+            }
+        };
+        mInnerAdapter.setList(mMusicList);
+        mAdapter = new HeaderFooterViewWrapAdapter(mInnerAdapter) {
+            @Override
+            public void convertHeaderView(CommonViewHolder holder, int position) {
+                holder.setOnItemClickListener(R.id.random_play_text, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ForegroundMusicController.getInstance().setPlayMode(Constant.PlayMode.RANDOM);
+                        Music randomMusic = mMusicList.get(RandomUtil.rand(mMusicList.size()));
+                        ForegroundMusicController.getInstance().play(randomMusic);
                     }
-                    holder.setText(R.id.item_title, music.getMusicName());
-                    holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
-                    holder.setOnItemClickListener(HomePageFragment.this);
-                }
-            };
-            mInnerAdapter.setList(mMusicList);
-            mAdapter = new HeaderFooterViewWrapAdapter(mInnerAdapter) {
-                @Override
-                public void convertHeaderView(CommonViewHolder holder, int position) {
-                    holder.setOnItemClickListener(R.id.random_play_text, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ForegroundMusicController.getInstance().setPlayMode(Constant.PlayMode.RANDOM);
-                            Music randomMusic = mMusicList.get(RandomUtil.rand(mMusicList.size()));
-                            ForegroundMusicController.getInstance().play(randomMusic);
-                        }
-                    });
-                }
+                });
+            }
 
-                @Override
-                public void convertFooterView(CommonViewHolder holder, int position) {
-                }
-            };
-            mAdapter.addHeaderViews(R.layout.home_page_rv_header);
-        }
+            @Override
+            public void convertFooterView(CommonViewHolder holder, int position) {
+            }
+        };
+        mAdapter.addHeaderViews(R.layout.home_page_rv_header);
     }
 
     @Override

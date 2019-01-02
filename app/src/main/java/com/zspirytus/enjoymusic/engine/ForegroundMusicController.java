@@ -42,18 +42,15 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
 
     public void play(final Music music) {
         if (music != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (mIMusicControl == null) {
-                        IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                        mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
-                    }
-                    try {
-                        mIMusicControl.play(music);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+            new Thread(() -> {
+                if (mIMusicControl == null) {
+                    IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
+                    mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
+                }
+                try {
+                    mIMusicControl.play(music);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
             }).start();
         }
@@ -61,18 +58,15 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
 
     public void playPrevious() {
         if (ForegroundMusicCache.getInstance().getCurrentPlayingMusic() != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (mIMusicControl == null) {
-                        IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                        mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
-                    }
-                    try {
-                        mIMusicControl.playPrevious();
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+            new Thread(() -> {
+                if (mIMusicControl == null) {
+                    IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
+                    mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
+                }
+                try {
+                    mIMusicControl.playPrevious();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
             }).start();
         }
@@ -80,18 +74,15 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
 
     public void playNext() {
         if (ForegroundMusicCache.getInstance().getCurrentPlayingMusic() != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (mIMusicControl == null) {
-                        IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                        mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
-                    }
-                    try {
-                        mIMusicControl.playNext();
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+            new Thread(() -> {
+                if (mIMusicControl == null) {
+                    IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
+                    mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
+                }
+                try {
+                    mIMusicControl.playNext();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
             }).start();
         }
@@ -99,54 +90,45 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
 
     public void pause() {
         if (ForegroundMusicCache.getInstance().getCurrentPlayingMusic() != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (mIMusicControl == null) {
-                        IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                        mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
-                    }
-                    try {
-                        mIMusicControl.pause();
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+            new Thread(() -> {
+                if (mIMusicControl == null) {
+                    IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
+                    mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
+                }
+                try {
+                    mIMusicControl.pause();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
             }).start();
         }
     }
 
     public void seekTo(final int milliseconds) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (mIMusicProgressControl == null) {
-                    IBinder musicProgressControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_PROGRESS_CONTROL);
-                    mIMusicProgressControl = IMusicProgressControlImpl.asInterface(musicProgressControlBinder);
-                }
-                try {
-                    mIMusicProgressControl.seekTo(milliseconds);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            if (mIMusicProgressControl == null) {
+                IBinder musicProgressControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_PROGRESS_CONTROL);
+                mIMusicProgressControl = IMusicProgressControlImpl.asInterface(musicProgressControlBinder);
+            }
+            try {
+                mIMusicProgressControl.seekTo(milliseconds);
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
         }).start();
     }
 
     public void setPlayList(final MusicFilter musicFilter) {
         if (musicFilter != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (mISetPlayList == null) {
-                        IBinder setPlayListBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
-                        mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
-                    }
-                    try {
-                        mISetPlayList.setPlayList(musicFilter);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+            new Thread(() -> {
+                if (mISetPlayList == null) {
+                    IBinder setPlayListBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
+                    mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
+                }
+                try {
+                    mISetPlayList.setPlayList(musicFilter);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
             }).start();
             ForegroundMusicCache.getInstance().setPlayList(musicFilter.filter(ForegroundMusicCache.getInstance().getAllMusicList()));
@@ -155,18 +137,15 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
 
     public void setPlayMode(final int playMode) {
         if (playMode >= 0 && playMode < 4) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (mIMusicControl == null) {
-                        IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                        mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
-                    }
-                    try {
-                        mIMusicControl.setPlayMode(playMode);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+            new Thread(() -> {
+                if (mIMusicControl == null) {
+                    IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
+                    mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
+                }
+                try {
+                    mIMusicControl.setPlayMode(playMode);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
             }).start();
         }

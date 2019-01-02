@@ -6,6 +6,7 @@ import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.global.MainApplication;
+import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.RandomUtil;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public class MusicPlayOrderManager {
         } else if (mPlayMode == Constant.PlayMode.RANDOM) {
             // 随机播放
             int nextPosition = RandomUtil.rand(mPlayList.size());
+            LogUtil.e(this.getClass().getSimpleName(), "total size = " + mPlayList.size() + "\tnext = " + nextPosition);
             nextMusic = mPlayList.get(nextPosition);
         } else {
             // 列表播放一次

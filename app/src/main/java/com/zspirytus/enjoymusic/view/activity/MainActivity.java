@@ -12,11 +12,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.zspirytus.enjoymusic.IBinderPool;
 import com.zspirytus.enjoymusic.ISetPlayList;
@@ -30,7 +27,6 @@ import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
-import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
@@ -46,13 +42,13 @@ import com.zspirytus.enjoymusic.view.fragment.LaunchAnimationFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicListDetailFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.enjoymusic.view.widget.CustomNavigationView;
+import com.zspirytus.enjoymusic.view.widget.MusicControlPane;
 import com.zspirytus.zspermission.PermissionGroup;
 import com.zspirytus.zspermission.ZSPermission;
 
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -68,7 +64,7 @@ import io.reactivex.disposables.Disposable;
 @LayoutIdInject(R.layout.activity_main)
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, PlayedMusicChangeObserver,
-        MusicPlayStateObserver, View.OnClickListener {
+        MusicPlayStateObserver {
 
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
@@ -76,17 +72,7 @@ public class MainActivity extends BaseActivity
     private CustomNavigationView mCustomNavigationView;
 
     @ViewInject(R.id.bottom_music_control)
-    private View mBottomMusicControl;
-    @ViewInject(R.id.bottom_music_cover)
-    private AppCompatImageView mBottomMusicCover;
-    @ViewInject(R.id.bottom_music_name)
-    private AppCompatTextView mBottomMusicName;
-    @ViewInject(R.id.bottom_music_album)
-    private AppCompatTextView mBottomMusicAlbum;
-    @ViewInject(R.id.bottom_music_play_pause)
-    private AppCompatImageView mBottomMusicPlayOrPause;
-    @ViewInject(R.id.bottom_music_next)
-    private AppCompatImageView mBottomMusicNext;
+    private MusicControlPane mBottomMusicControl;
 
     private DrawerListenerImpl mDrawerListener;
 
@@ -96,8 +82,6 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTransparentStatusBar();
-
         bindPlayMusicService();
     }
 
@@ -138,9 +122,26 @@ public class MainActivity extends BaseActivity
         // TODO: 2018/9/15 1. viewPager current fragment changed caused by navigation menu selected should be smoothly but not.
         mDrawerListener = new DrawerListenerImpl();
         mDrawerLayout.addDrawerListener(mDrawerListener);
-        mBottomMusicControl.setOnClickListener(this);
-        mBottomMusicPlayOrPause.setOnClickListener(this);
-        mBottomMusicNext.setOnClickListener(this);
+        mBottomMusicControl.setOnViewClickListener(new MusicControlPane.OnViewClickListener() {
+            @Override
+            public void onPlayOrPause() {
+                if (isPlaying) {
+                    ForegroundMusicController.getInstance().pause();
+                } else {
+                    ForegroundMusicController.getInstance().play(ForegroundMusicCache.getInstance().getCurrentPlayingMusic());
+                }
+            }
+
+            @Override
+            public void onNext() {
+                ForegroundMusicController.getInstance().playNext();
+            }
+
+            @Override
+            public void onClick() {
+                showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
+            }
+        });
     }
 
     @Override
@@ -171,46 +172,18 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onPlayedMusicChanged(final Music music) {
-        runOnUiThread(() -> {
-            String coverFilePath = music.getMusicThumbAlbumCoverPath();
-            if (coverFilePath != null) {
-                File coverFile = new File(coverFilePath);
-                GlideApp.with(MainActivity.this).load(coverFile).into(mBottomMusicCover);
-            }
-            mBottomMusicName.setText(music.getMusicName());
-            mBottomMusicAlbum.setText(music.getMusicAlbumName());
+        AndroidSchedulers.mainThread().scheduleDirect(() -> {
+            mBottomMusicControl.wrapMusic(music);
+            mBottomMusicControl.setPlayState(true);
         });
     }
 
     @Override
     public void onPlayingStateChanged(final boolean isPlaying) {
-        this.isPlaying = isPlaying;
-        mBottomMusicPlayOrPause.post(() -> {
-            mBottomMusicPlayOrPause.setImageResource(isPlaying ? R.drawable.ic_pause_black_48dp : R.drawable.ic_play_arrow_black_48dp);
+        AndroidSchedulers.mainThread().scheduleDirect(() -> {
+            this.isPlaying = isPlaying;
+            mBottomMusicControl.setPlayState(isPlaying);
         });
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.bottom_music_control:
-                if (ForegroundMusicCache.getInstance().getCurrentPlayingMusic() != null) {
-                    showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
-                }
-                break;
-            case R.id.bottom_music_play_pause:
-                if (isPlaying) {
-                    GlideApp.with(MainActivity.this).load(R.drawable.ic_play_arrow_black_48dp).into(mBottomMusicPlayOrPause);
-                    ForegroundMusicController.getInstance().pause();
-                } else {
-                    GlideApp.with(MainActivity.this).load(R.drawable.ic_pause_black_48dp).into(mBottomMusicPlayOrPause);
-                    ForegroundMusicController.getInstance().play(ForegroundMusicCache.getInstance().getCurrentPlayingMusic());
-                }
-                break;
-            case R.id.bottom_music_next:
-                ForegroundMusicController.getInstance().playNext();
-                break;
-        }
     }
 
     @Subscriber(tag = Constant.EventBusTag.SHOW_CAST_FRAGMENT)
@@ -325,7 +298,6 @@ public class MainActivity extends BaseActivity
                     @Override
                     public void onComplete() {
                         getSupportFragmentManager().beginTransaction()
-                                .hide(fragment)
                                 .remove(fragment)
                                 .commitAllowingStateLoss();
                         setFullScreenOrNot(false);
