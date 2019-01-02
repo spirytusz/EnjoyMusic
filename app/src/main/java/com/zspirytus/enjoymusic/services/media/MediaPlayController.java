@@ -29,16 +29,19 @@ public class MediaPlayController extends MusicStateObservable
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
         AudioManager.OnAudioFocusChangeListener {
 
-    private static final int STATE_PLAYING = 1;
-    private static final int STATE_PAUSE = 2;
-    private static final int STATE_PREPARING = 4;
+    private static final int STATE_IDLE = 0;
+    private static final int STATE_INITIALIZED = 1;
+    private static final int STATE_PREPARING = 2;
+    private static final int STATE_PREPARED = 3;
+    private static final int STATE_STARTED = 4;
+    private static final int STATE_PAUSED = 5;
+    private static final int STATE_PLAYBACK_COMPLETED = 6;
 
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
     private PlayTimer mPlayingTimer;
 
     private int state;
-    private boolean isPrepared = false;
 
     private Music requestedToPlayMusic;
     private Music currentPlayingMusic;
@@ -46,8 +49,9 @@ public class MediaPlayController extends MusicStateObservable
     private static final MediaPlayController INSTANCE = new MediaPlayController();
 
     private MediaPlayController() {
-        // init media obj
+        // init MediaPlayer
         mediaPlayer = new MediaPlayer();
+        mediaPlayer.reset();
         mediaPlayer.setWakeMode(MainApplication.getBackgroundContext(), PowerManager.PARTIAL_WAKE_LOCK);
         audioManager = (AudioManager) MainApplication.getBackgroundContext().getSystemService(Service.AUDIO_SERVICE);
 
@@ -57,6 +61,9 @@ public class MediaPlayController extends MusicStateObservable
 
         // init timer
         mPlayingTimer = new PlayTimer();
+
+        // set MediaPlayer State
+        state = STATE_IDLE;
     }
 
     public static MediaPlayController getInstance() {
@@ -70,6 +77,7 @@ public class MediaPlayController extends MusicStateObservable
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+        state = STATE_PLAYBACK_COMPLETED;
         Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
         if (nextMusic != null) {
             play(nextMusic);
@@ -92,10 +100,10 @@ public class MediaPlayController extends MusicStateObservable
     }
 
     public boolean isPlaying() {
-        return state == STATE_PLAYING;
+        return state == STATE_STARTED;
     }
 
-    protected int getCurrentPosition() {
+    public int getCurrentPosition() {
         return mediaPlayer.getCurrentPosition();
     }
 
@@ -104,12 +112,12 @@ public class MediaPlayController extends MusicStateObservable
             requestedToPlayMusic = music;
             if (currentPlayingMusic != null && currentPlayingMusic.equals(requestedToPlayMusic)) {
                 // selected music is currently playing or pausing or has not prepared
-                if (isPrepared) {
+                if (state == STATE_PREPARED) {
                     // if has prepared, play it
                     if (!isPlaying()) {
                         beginPlay();
                     }
-                } else if (state != STATE_PREPARING) {
+                } else if (state == STATE_IDLE) {
                     // else if has not in preparing, prepare it
                     prepareMusic(requestedToPlayMusic);
                 }
@@ -123,12 +131,12 @@ public class MediaPlayController extends MusicStateObservable
     }
 
     public void pause() {
-        if (mediaPlayer.isPlaying()) {
+        if (state == STATE_STARTED) {
             mediaPlayer.pause();
+            state = STATE_PAUSED;
             mPlayingTimer.pause();
             NotificationHelper.getInstance().updateNotification(false);
             notifyAllObserverPlayStateChange(false);
-            state = STATE_PAUSE;
             MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PAUSED);
         }
     }
@@ -148,18 +156,16 @@ public class MediaPlayController extends MusicStateObservable
     }
 
     private void prepareMusic(Music music) throws IOException {
-        isPrepared = false;
-        state = STATE_PREPARING;
         mPlayingTimer.pause();
         mediaPlayer.reset();
         mediaPlayer.setDataSource(music.getMusicFilePath());
+        state = STATE_INITIALIZED;
         mediaPlayer.prepareAsync();
+        state = STATE_PREPARING;
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_BUFFERING);
     }
 
     private void beginPlay() {
-        isPrepared = true;
-        state = STATE_PLAYING;
         if (currentPlayingMusic == null || !requestedToPlayMusic.equals(currentPlayingMusic)) {
             notifyAllObserverPlayMusicChange(requestedToPlayMusic);
         }
@@ -168,11 +174,12 @@ public class MediaPlayController extends MusicStateObservable
         audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN);
         mediaPlayer.start();
+        state = STATE_STARTED;
+        mPlayingTimer.start();
         NotificationHelper.getInstance().showNotification(currentPlayingMusic);
         NotificationHelper.getInstance().updateNotification(true);
         notifyAllObserverPlayStateChange(true);
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
-        mPlayingTimer.start();
         CurrentPlayingMusicCache.getInstance().setCurrentPlayingMusic(currentPlayingMusic);
         PlayHistoryCache.getInstance().add(currentPlayingMusic);
     }
