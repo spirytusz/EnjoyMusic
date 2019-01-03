@@ -8,13 +8,13 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.zspirytus.enjoymusic.utils.BitmapUtil;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 
-import static android.os.Build.ID;
 
 public class BlurTransformation extends BitmapTransformation {
 
-    private static final byte[] ID_BYTES = ID.getBytes(CHARSET);
+    private static String ID;
 
     private Context mContext;
     private int mBlurRadius;
@@ -48,6 +48,7 @@ public class BlurTransformation extends BitmapTransformation {
         mContext = context;
         mBlurRadius = blurRadius;
         mScale = scale;
+        ID = "com.zspirytus.enjoymusic.impl.glide.BitmapTransformation Context = " + context.toString() + " blurRadius = " + blurRadius + " scale = " + scale;
     }
 
     @Override
@@ -57,6 +58,23 @@ public class BlurTransformation extends BitmapTransformation {
 
     @Override
     public void updateDiskCacheKey(MessageDigest messageDigest) {
-        messageDigest.update(ID_BYTES);
+        try {
+            messageDigest.update(ID.getBytes(STRING_CHARSET_NAME));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return ID.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof BlurTransformation) {
+            return hashCode() == obj.hashCode();
+        }
+        return false;
     }
 }
