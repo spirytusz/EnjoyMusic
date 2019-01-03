@@ -48,7 +48,7 @@ public class BlurTransformation extends BitmapTransformation {
         mContext = context;
         mBlurRadius = blurRadius;
         mScale = scale;
-        ID = "com.zspirytus.enjoymusic.impl.glide.BitmapTransformation Context = " + context.toString() + " blurRadius = " + blurRadius + " scale = " + scale;
+        ID = "com.zspirytus.enjoymusic.impl.glide.BlurTransformation Context = " + context.toString() + " blurRadius = " + blurRadius + " scale = " + scale;
     }
 
     @Override

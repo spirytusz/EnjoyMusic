@@ -163,7 +163,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     }
 
     private void setButtonSrc(boolean isPlaying) {
-        int resId = isPlaying ? R.drawable.ic_pause_black_48dp : R.drawable.ic_play_arrow_black_48dp;
+        int resId = isPlaying ? R.drawable.ic_pause_white_48dp : R.drawable.ic_play_arrow_white_48dp;
         GlideApp.with(this).load(resId).into(mPlayOrPauseButton);
     }
 

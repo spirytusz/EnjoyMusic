@@ -7,7 +7,6 @@ import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
 import com.bumptech.glide.load.MultiTransformation;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.zspirytus.enjoymusic.engine.GlideApp;
@@ -36,9 +35,10 @@ public class BlurImageView extends AppCompatImageView {
                         .load(file)
                         .transform(new MultiTransformation(
                                 new CenterCrop(),
+                                new GradientTransformation(getContext()),
                                 new BlurTransformation(getContext(), 25, 16)
                         ))
-                        .transition(new BitmapTransitionOptions().crossFade(1000))
+                        .transition(new DrawableTransitionOptions().crossFade(1000))
                         .into(BlurImageView.this);
             }
         }

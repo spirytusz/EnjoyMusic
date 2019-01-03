@@ -53,7 +53,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:srcCompat="@drawable/ic_play_arrow_black_48dp" />
+        app:srcCompat="@drawable/ic_play_arrow_white_48dp" />
 
     <ImageView
         android:id="@+id/previous"
@@ -64,7 +64,7 @@
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/play_pause"
-        app:srcCompat="@drawable/ic_skip_previous_black_48dp" />
+        app:srcCompat="@drawable/ic_skip_previous_white_48dp" />
 
     <ImageView
         android:id="@+id/next"
@@ -75,7 +75,7 @@
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/play_pause"
-        app:srcCompat="@drawable/ic_skip_next_black_48dp" />
+        app:srcCompat="@drawable/ic_skip_next_white_48dp" />
 
     <include
         android:id="@+id/include2"
