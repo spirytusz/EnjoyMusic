@@ -44,12 +44,16 @@ public class BlurImageView extends AppCompatImageView {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void setImageResource(int resId) {
         GlideApp.with(BlurImageView.this)
                 .load(resId)
-                .centerCrop()
-                .transform(new BlurTransformation(getContext(), 25, 16))
+                .transform(new MultiTransformation(
+                        new CenterCrop(),
+                        new GradientTransformation(getContext()),
+                        new BlurTransformation(getContext(), 25, 16)
+                ))
                 .transition(new DrawableTransitionOptions().crossFade(1000))
                 .into(BlurImageView.this);
     }

@@ -215,7 +215,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
         if (imagePath != null && !imagePath.isEmpty()) {
             mBackground.setImagePath(imagePath);
         } else {
-
+            mBackground.setImageResource(R.drawable.defalut_cover);
         }
     }
 

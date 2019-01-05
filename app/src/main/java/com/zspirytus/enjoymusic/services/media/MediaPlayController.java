@@ -112,7 +112,7 @@ public class MediaPlayController extends MusicStateObservable
             requestedToPlayMusic = music;
             if (currentPlayingMusic != null && currentPlayingMusic.equals(requestedToPlayMusic)) {
                 // selected music is currently playing or pausing or has not prepared
-                if (state == STATE_PREPARED) {
+                if (state >= STATE_PREPARED) {
                     // if has prepared, play it
                     if (!isPlaying()) {
                         beginPlay();
