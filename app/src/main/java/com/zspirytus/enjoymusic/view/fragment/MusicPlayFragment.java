@@ -136,6 +136,8 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     protected void initView() {
         getParentActivity().setTransparentNavBar();
         setNavIconAction(false);
+        setDividerLineVisibility(true);
+        setMusicPlayStyle();
         mNavIcon.setOnClickListener(v -> {
             goBack();
         });
@@ -221,7 +223,8 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
                     .load(R.drawable.defalut_cover)
                     .into(mCover);
         }
-        setTitle(music.getMusicName());
+        mATitle.setText(music.getMusicName());
+        mASubTitle.setText(music.getMusicArtist());
         mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
         setupSeekBar(music);
         setBackgroundBlur(music);

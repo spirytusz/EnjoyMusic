@@ -22,6 +22,9 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment
     protected AppCompatImageView mNavIcon;
     protected AppCompatTextView mTitle;
     protected AppCompatImageView mMenuIcon;
+    protected AppCompatImageView mDividerLine;
+    protected AppCompatTextView mATitle;
+    protected AppCompatTextView mASubTitle;
     protected View mBg;
 
     @Override
@@ -33,6 +36,9 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment
             mTitle = mHeaderView.findViewById(R.id.common_header_title);
             mMenuIcon = mHeaderView.findViewById(R.id.common_header_menu_icon);
             mBg = mHeaderView.findViewById(R.id.bg);
+            mDividerLine = mHeaderView.findViewById(R.id.divider_line);
+            mATitle = mHeaderView.findViewById(R.id.alternative_title);
+            mASubTitle = mHeaderView.findViewById(R.id.alternative_sub_title);
         }
         setTitle(getString(R.string.app_name));
     }
@@ -69,9 +75,19 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment
         DrawableUtil.setColor(drawable, color);
     }
 
+    protected void setDividerLineVisibility(boolean isVisible) {
+        mDividerLine.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
     public void setHeaderViewColor(int colorResId) {
         if (mBg != null) {
             mBg.setBackgroundColor(colorResId);
         }
+    }
+
+    public void setMusicPlayStyle() {
+        mATitle.setVisibility(View.VISIBLE);
+        mASubTitle.setVisibility(View.VISIBLE);
+        mTitle.setVisibility(View.GONE);
     }
 }
