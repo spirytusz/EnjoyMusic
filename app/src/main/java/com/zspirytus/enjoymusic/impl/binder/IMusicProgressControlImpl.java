@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.adapter.binder;
+package com.zspirytus.enjoymusic.impl.binder;
 
 import com.zspirytus.enjoymusic.IMusicProgressControl;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;

@@ -1,10 +1,8 @@
 package com.zspirytus.enjoymusic.engine;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.listeners.observable.FragmentChangeObservable;
 
@@ -46,23 +44,16 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         mCurrentFragment = fragment;
     }
 
-    public void show(BaseFragment shouldShowFragment, int fragmentContainer) {
-        show(shouldShowFragment, fragmentContainer, R.anim.anim_fragment_translate_show_up, R.anim.anim_fragment_translate_show_down);
-    }
-
     public void show(BaseFragment shouldShowFragment, int fragmentContainer, int enter, int exit) {
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         if (!shouldShowFragment.isAdded()) {
             transaction.add(fragmentContainer, shouldShowFragment);
         }
-        Fragment fragment = mFragmentManager.findFragmentById(fragmentContainer);
-        if (fragment != null) {
-            transaction.hide(fragment);
+        if (mCurrentFragment != null) {
+            transaction.hide(mCurrentFragment);
         }
         transaction.show(shouldShowFragment);
-        if (enter != 0 && exit != 0) {
-            transaction.setCustomAnimations(enter, exit);
-        }
+        transaction.setCustomAnimations(enter, exit);
         transaction.commitAllowingStateLoss();
         notifyAllFragmentChangeObserver(shouldShowFragment);
         setCurrentFragment(shouldShowFragment);
@@ -72,14 +63,12 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         mFragmentManager.beginTransaction()
                 .remove(fragment)
                 .commitAllowingStateLoss();
-        setCurrentFragment(popBackStack());
     }
 
     public void hide(BaseFragment fragment) {
         mFragmentManager.beginTransaction()
                 .hide(fragment)
                 .commitAllowingStateLoss();
-        setCurrentFragment(popBackStack());
     }
 
     public void addToBackStack(BaseFragment fragment) {

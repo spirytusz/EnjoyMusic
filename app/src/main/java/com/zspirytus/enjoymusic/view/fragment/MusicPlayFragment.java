@@ -8,16 +8,16 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
-import com.zspirytus.enjoymusic.adapter.binder.IPlayProgressChangeObserverImpl;
-import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
-import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.impl.binder.IPlayMusicChangeObserverImpl;
+import com.zspirytus.enjoymusic.impl.binder.IPlayProgressChangeObserverImpl;
+import com.zspirytus.enjoymusic.impl.binder.IPlayStateChangeObserverImpl;
+import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
@@ -63,7 +63,6 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     private ImageView mNextButton;
 
     private Music mCurrentPlayingMusic;
-    private int mCurrentMode;
     private SparseIntArray mPlayModeResId;
 
     @Override

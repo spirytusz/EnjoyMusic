@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.impl.glide;
+package com.zspirytus.enjoymusic.impl.glide.transformation;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -24,7 +24,7 @@ public class GradientTransformation extends BitmapTransformation {
 
     public GradientTransformation(Context context) {
         mContext = context;
-        ID = "com.zspirytus.enjoymusic.impl.glide.GradientTransformation context = " + context.toString();
+        ID = "com.zspirytus.enjoymusic.impl.glide.transformation.GradientTransformation context = " + context.toString();
     }
 
     @Override

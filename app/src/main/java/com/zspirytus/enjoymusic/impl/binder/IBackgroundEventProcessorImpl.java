@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.adapter.binder;
+package com.zspirytus.enjoymusic.impl.binder;
 
 import android.os.IBinder;
 

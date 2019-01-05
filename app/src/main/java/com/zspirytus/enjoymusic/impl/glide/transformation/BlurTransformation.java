@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.impl.glide;
+package com.zspirytus.enjoymusic.impl.glide.transformation;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -48,7 +48,7 @@ public class BlurTransformation extends BitmapTransformation {
         mContext = context;
         mBlurRadius = blurRadius;
         mScale = scale;
-        ID = "com.zspirytus.enjoymusic.impl.glide.BlurTransformation Context = " + context.toString() + " blurRadius = " + blurRadius + " scale = " + scale;
+        ID = "com.zspirytus.enjoymusic.impl.glide.transformation.BlurTransformation Context = " + context.toString() + " blurRadius = " + blurRadius + " scale = " + scale;
     }
 
     @Override

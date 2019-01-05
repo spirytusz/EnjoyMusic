@@ -9,9 +9,9 @@ import android.util.AttributeSet;
 import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.zspirytus.enjoymusic.engine.GlideApp;
-import com.zspirytus.enjoymusic.impl.glide.BlurTransformation;
-import com.zspirytus.enjoymusic.impl.glide.GradientTransformation;
+import com.zspirytus.enjoymusic.impl.glide.GlideApp;
+import com.zspirytus.enjoymusic.impl.glide.transformation.BlurTransformation;
+import com.zspirytus.enjoymusic.impl.glide.transformation.GradientTransformation;
 import com.zspirytus.enjoymusic.utils.BitmapUtil;
 
 import java.io.File;

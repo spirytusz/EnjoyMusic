@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
-import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.global.MainApplication;
+import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 
 import java.io.File;

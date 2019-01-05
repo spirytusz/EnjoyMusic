@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
-import com.zspirytus.enjoymusic.engine.GlideApp;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 
 public class MusicControlPane extends LinearLayout implements View.OnClickListener {
 

@@ -18,8 +18,6 @@ import android.view.MenuItem;
 import com.zspirytus.enjoymusic.IBinderPool;
 import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
-import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.base.BaseActivity;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
@@ -32,6 +30,8 @@ import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
+import com.zspirytus.enjoymusic.impl.binder.IPlayMusicChangeObserverImpl;
+import com.zspirytus.enjoymusic.impl.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
@@ -113,6 +113,10 @@ public class MainActivity extends BaseActivity
             return;
         }
         BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
+        if (currentFragment instanceof MusicPlayFragment || currentFragment instanceof MusicListDetailFragment) {
+            BaseFragment popFragment = FragmentVisibilityManager.getInstance().popBackStack();
+            FragmentVisibilityManager.getInstance().show(popFragment, R.id.fragment_container, popFragment.enterAnim(), currentFragment.exitAnim());
+        }
         currentFragment.goBack();
     }
 
@@ -190,6 +194,11 @@ public class MainActivity extends BaseActivity
     @Subscriber(tag = Constant.EventBusTag.SHOW_CAST_FRAGMENT)
     public <T extends BaseFragment> void showCastFragment(T shouldShowFragment) {
         int container;
+        int enterAnim = shouldShowFragment.enterAnim();
+        int exitAnim = 0;
+        if (FragmentVisibilityManager.getInstance().getCurrentFragment() != null) {
+            exitAnim = FragmentVisibilityManager.getInstance().getCurrentFragment().exitAnim();
+        }
         if (shouldShowFragment instanceof MusicPlayFragment || shouldShowFragment instanceof MusicListDetailFragment) {
             container = R.id.full_fragment_container;
             BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
@@ -197,7 +206,7 @@ public class MainActivity extends BaseActivity
         } else {
             container = R.id.fragment_container;
         }
-        FragmentVisibilityManager.getInstance().show(shouldShowFragment, container);
+        FragmentVisibilityManager.getInstance().show(shouldShowFragment, container, enterAnim, exitAnim);
     }
 
     @Subscriber(tag = Constant.EventBusTag.OPEN_DRAWER)

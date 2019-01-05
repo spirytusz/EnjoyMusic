@@ -6,13 +6,13 @@ import android.os.RemoteException;
 import com.zspirytus.enjoymusic.IMusicControl;
 import com.zspirytus.enjoymusic.IMusicProgressControl;
 import com.zspirytus.enjoymusic.ISetPlayList;
-import com.zspirytus.enjoymusic.adapter.binder.IMusicControlImpl;
-import com.zspirytus.enjoymusic.adapter.binder.IMusicProgressControlImpl;
-import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
+import com.zspirytus.enjoymusic.impl.binder.IMusicControlImpl;
+import com.zspirytus.enjoymusic.impl.binder.IMusicProgressControlImpl;
+import com.zspirytus.enjoymusic.impl.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 
 /**

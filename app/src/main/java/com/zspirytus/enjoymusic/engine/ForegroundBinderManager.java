@@ -5,10 +5,10 @@ import android.os.RemoteException;
 
 import com.zspirytus.enjoymusic.IBackgroundEventProcessor;
 import com.zspirytus.enjoymusic.IBinderPool;
-import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
-import com.zspirytus.enjoymusic.adapter.binder.IPlayProgressChangeObserverImpl;
-import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.impl.binder.IPlayMusicChangeObserverImpl;
+import com.zspirytus.enjoymusic.impl.binder.IPlayProgressChangeObserverImpl;
+import com.zspirytus.enjoymusic.impl.binder.IPlayStateChangeObserverImpl;
 
 public class ForegroundBinderManager {
 

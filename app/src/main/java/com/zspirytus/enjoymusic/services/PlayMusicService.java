@@ -5,7 +5,6 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.IBinder;
 
-import com.zspirytus.enjoymusic.adapter.binder.IBinderPoolImpl;
 import com.zspirytus.enjoymusic.base.BaseService;
 import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
@@ -13,6 +12,7 @@ import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
+import com.zspirytus.enjoymusic.impl.binder.IBinderPoolImpl;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;

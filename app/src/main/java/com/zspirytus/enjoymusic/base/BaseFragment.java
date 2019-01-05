@@ -7,7 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
+import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.interfaces.IBackPressed;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -29,12 +32,40 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
     protected long pressedBackLastTime;
 
     private BaseActivity parentActivity;
+    private boolean hasAnim = false;
+    private volatile boolean isAnimLoadFinish = false;
     private volatile boolean isLoadSuccess;
 
     @Override
     public void onAttach(Context context) {
         parentActivity = (BaseActivity) context;
         super.onAttach(context);
+    }
+
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        LogUtil.e(this.getClass().getSimpleName(), "nextAnim = " + nextAnim);
+        if (nextAnim != 0) {
+            hasAnim = true;
+            Animation anim = AnimationUtils.loadAnimation(getContext(), nextAnim);
+            anim.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    isAnimLoadFinish = true;
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+        }
+        return super.onCreateAnimation(transit, enter, nextAnim);
     }
 
     @Nullable
@@ -55,6 +86,8 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
                 isLoadSuccess = false;
                 e.printStackTrace();
             }
+            while (hasAnim && !isAnimLoadFinish) ;
+            LogUtil.e(this.getClass().getSimpleName(), "isAnimLoadFinish = " + isAnimLoadFinish);
             AndroidSchedulers.mainThread().scheduleDirect(() -> {
                 initView();
                 onLoadState(isLoadSuccess);
@@ -72,6 +105,14 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
     protected abstract void initData();
 
     protected abstract void initView();
+
+    public int enterAnim() {
+        return R.anim.anim_fragment_translate_show_up;
+    }
+
+    public int exitAnim() {
+        return R.anim.anim_fragment_translate_show_down;
+    }
 
     protected abstract void onLoadState(boolean isSuccess);
 
