@@ -11,7 +11,7 @@ import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.adapter.ItemSpacingDecoration;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
-import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
+import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
@@ -55,7 +55,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     protected void initData() {
-        mAlbumList = ForegroundMusicCache.getInstance().getAlbumList();
+        mAlbumList = ForegroundMusicStateCache.getInstance().getAlbumList();
         mAdapter = new CommonRecyclerViewAdapter<Album>() {
             @Override
             public int getLayoutId() {

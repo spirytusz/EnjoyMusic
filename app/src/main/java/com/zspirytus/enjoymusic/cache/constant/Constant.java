@@ -67,6 +67,5 @@ public interface Constant {
         int RANDOM = 0;
         int SINGLE_LOOP = 1;
         int LIST_LOOP = 2;
-        int PLAY_LIST = 3;
     }
 }

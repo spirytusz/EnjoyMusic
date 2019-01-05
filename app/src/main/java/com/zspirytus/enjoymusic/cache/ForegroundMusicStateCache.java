@@ -10,11 +10,12 @@ import com.zspirytus.enjoymusic.listeners.observable.PlayListChangeObservable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ForegroundMusicCache extends PlayListChangeObservable {
+public class ForegroundMusicStateCache extends PlayListChangeObservable {
 
-    private static final ForegroundMusicCache INSTANCE = new ForegroundMusicCache();
+    private static final ForegroundMusicStateCache INSTANCE = new ForegroundMusicStateCache();
 
     private Music mCurrentPlayingMusic;
+    private int mPlayMode;
 
     private List<Music> mAllMusicList;
     private List<Album> mAlbumList;
@@ -23,7 +24,7 @@ public class ForegroundMusicCache extends PlayListChangeObservable {
 
     private List<Music> mPlayList = new ArrayList<>();
 
-    private ForegroundMusicCache() {
+    private ForegroundMusicStateCache() {
         mCurrentPlayingMusic = MusicSharedPreferences.restoreMusic(MainApplication.getForegroundContext());
         mAllMusicList = new ArrayList<>();
         mAllMusicList = new ArrayList<>();
@@ -31,7 +32,7 @@ public class ForegroundMusicCache extends PlayListChangeObservable {
         mFolderSortedMusicList = new ArrayList<>();
     }
 
-    public static ForegroundMusicCache getInstance() {
+    public static ForegroundMusicStateCache getInstance() {
         return INSTANCE;
     }
 
@@ -82,5 +83,13 @@ public class ForegroundMusicCache extends PlayListChangeObservable {
 
     public void setFolderSortedMusicList(List<FolderSortedMusic> folderSortedMusicList) {
         mFolderSortedMusicList = folderSortedMusicList;
+    }
+
+    public int getPlayMode() {
+        return mPlayMode;
+    }
+
+    public void setPlayMode(int playMode) {
+        mPlayMode = playMode;
     }
 }

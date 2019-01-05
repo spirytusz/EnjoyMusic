@@ -95,7 +95,7 @@ public class PlayMusicService extends BaseService {
                 BackgroundMusicController.getInstance().pause();
                 break;
             case Constant.NotificationEvent.NEXT:
-                BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic());
+                BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic(true));
                 break;
         }
     }

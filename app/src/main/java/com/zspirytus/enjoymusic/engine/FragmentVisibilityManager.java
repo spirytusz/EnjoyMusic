@@ -75,6 +75,13 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         setCurrentFragment(popBackStack());
     }
 
+    public void hide(BaseFragment fragment) {
+        mFragmentManager.beginTransaction()
+                .hide(fragment)
+                .commitAllowingStateLoss();
+        setCurrentFragment(popBackStack());
+    }
+
     public void addToBackStack(BaseFragment fragment) {
         if (fragment != null && !backStack.contains(fragment)) {
             backStack.push(fragment);

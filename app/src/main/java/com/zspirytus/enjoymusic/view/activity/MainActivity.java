@@ -22,7 +22,7 @@ import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.base.BaseActivity;
 import com.zspirytus.enjoymusic.base.BaseFragment;
-import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
+import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -122,19 +122,20 @@ public class MainActivity extends BaseActivity
         // TODO: 2018/9/15 1. viewPager current fragment changed caused by navigation menu selected should be smoothly but not.
         mDrawerListener = new DrawerListenerImpl();
         mDrawerLayout.addDrawerListener(mDrawerListener);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mBottomMusicControl.setOnViewClickListener(new MusicControlPane.OnViewClickListener() {
             @Override
             public void onPlayOrPause() {
                 if (isPlaying) {
                     ForegroundMusicController.getInstance().pause();
                 } else {
-                    ForegroundMusicController.getInstance().play(ForegroundMusicCache.getInstance().getCurrentPlayingMusic());
+                    ForegroundMusicController.getInstance().play(ForegroundMusicStateCache.getInstance().getCurrentPlayingMusic());
                 }
             }
 
             @Override
             public void onNext() {
-                ForegroundMusicController.getInstance().playNext();
+                ForegroundMusicController.getInstance().playNext(true);
             }
 
             @Override

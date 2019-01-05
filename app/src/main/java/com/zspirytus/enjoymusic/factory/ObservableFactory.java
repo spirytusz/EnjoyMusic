@@ -3,7 +3,7 @@ package com.zspirytus.enjoymusic.factory;
 import android.os.IBinder;
 
 import com.zspirytus.enjoymusic.IGetMusicList;
-import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
+import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -30,10 +30,10 @@ public class ObservableFactory {
             public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
                 IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.GET_MUSIC_LIST);
                 IGetMusicList getMusicListBinder = IGetMusicList.Stub.asInterface(binder);
-                ForegroundMusicCache.getInstance().setAllMusicList(getMusicListBinder.getMusicList());
-                ForegroundMusicCache.getInstance().setAlbumList(getMusicListBinder.getMusicAlbumList());
-                ForegroundMusicCache.getInstance().setArtistList(getMusicListBinder.getMusicArtistList());
-                ForegroundMusicCache.getInstance().setFolderSortedMusicList(getMusicListBinder.getFolderSortedMusicList());
+                ForegroundMusicStateCache.getInstance().setAllMusicList(getMusicListBinder.getMusicList());
+                ForegroundMusicStateCache.getInstance().setAlbumList(getMusicListBinder.getMusicAlbumList());
+                ForegroundMusicStateCache.getInstance().setArtistList(getMusicListBinder.getMusicArtistList());
+                ForegroundMusicStateCache.getInstance().setFolderSortedMusicList(getMusicListBinder.getFolderSortedMusicList());
                 emitter.onNext(1);
                 emitter.onComplete();
             }
@@ -42,7 +42,7 @@ public class ObservableFactory {
     }
 
     public static Single<List<Music>> filterMusic(final String filterAlbum, final String filterArtist) {
-        return Observable.fromIterable(ForegroundMusicCache.getInstance().getAllMusicList())
+        return Observable.fromIterable(ForegroundMusicStateCache.getInstance().getAllMusicList())
                 .filter(new Predicate<Music>() {
                     @Override
                     public boolean test(Music music) throws Exception {

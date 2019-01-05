@@ -29,8 +29,8 @@ public class IMusicControlImpl extends IMusicControl.Stub {
     }
 
     @Override
-    public void playNext() {
-        Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
+    public void playNext(boolean fromUser) {
+        Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic(fromUser);
         if (nextMusic != null) {
             play(nextMusic);
         }

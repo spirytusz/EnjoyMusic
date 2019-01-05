@@ -11,7 +11,7 @@ import com.zspirytus.enjoymusic.adapter.HeaderFooterViewWrapAdapter;
 import com.zspirytus.enjoymusic.adapter.ItemSpacingDecoration;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
-import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
+import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -48,7 +48,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
 
     @Override
     protected void initData() {
-        mMusicList = ForegroundMusicCache.getInstance().getAllMusicList();
+        mMusicList = ForegroundMusicStateCache.getInstance().getAllMusicList();
         mInnerAdapter = new CommonRecyclerViewAdapter<Music>() {
             @Override
             public int getLayoutId() {

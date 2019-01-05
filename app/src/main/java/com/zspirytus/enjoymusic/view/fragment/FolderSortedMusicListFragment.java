@@ -9,7 +9,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
-import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
+import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
@@ -35,7 +35,7 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     protected void initData() {
-        mFolderSortedMusicList = ForegroundMusicCache.getInstance().getFolderSortedMusicList();
+        mFolderSortedMusicList = ForegroundMusicStateCache.getInstance().getFolderSortedMusicList();
         mAdapter = new CommonRecyclerViewAdapter<FolderSortedMusic>() {
             @Override
             public int getLayoutId() {

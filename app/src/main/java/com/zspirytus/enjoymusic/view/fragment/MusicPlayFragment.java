@@ -1,6 +1,7 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import android.graphics.Color;
+import android.util.SparseIntArray;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -11,7 +12,8 @@ import com.zspirytus.enjoymusic.adapter.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayProgressChangeObserverImpl;
 import com.zspirytus.enjoymusic.adapter.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
-import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
+import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
+import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.GlideApp;
@@ -51,6 +53,8 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     @ViewInject(R.id.total_time)
     private TextView mTotalTime;
 
+    @ViewInject(R.id.play_mode)
+    private ImageView mPlayMode;
     @ViewInject(R.id.previous)
     private ImageView mPreviousButton;
     @ViewInject(R.id.play_pause)
@@ -59,6 +63,8 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     private ImageView mNextButton;
 
     private Music mCurrentPlayingMusic;
+    private int mCurrentMode;
+    private SparseIntArray mPlayModeResId;
 
     @Override
     public void onClick(View view) {
@@ -69,7 +75,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
                 break;
             case R.id.play_pause:
                 boolean isPlaying = ForegroundMusicController.getInstance().isPlaying();
-                Music currentPlayingMusic = ForegroundMusicCache.getInstance().getCurrentPlayingMusic();
+                Music currentPlayingMusic = ForegroundMusicStateCache.getInstance().getCurrentPlayingMusic();
                 if (isPlaying) {
                     ForegroundMusicController.getInstance().pause();
                 } else {
@@ -77,7 +83,13 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
                 }
                 break;
             case R.id.next:
-                ForegroundMusicController.getInstance().playNext();
+                ForegroundMusicController.getInstance().playNext(true);
+                break;
+            case R.id.play_mode:
+                int mode = ForegroundMusicStateCache.getInstance().getPlayMode() + 1;
+                mode %= mPlayModeResId.size();
+                mPlayMode.setImageResource(mPlayModeResId.get(mode));
+                ForegroundMusicController.getInstance().setPlayMode(mode);
                 break;
         }
     }
@@ -114,7 +126,11 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
 
     @Override
     protected void initData() {
-        mCurrentPlayingMusic = ForegroundMusicCache.getInstance().getCurrentPlayingMusic();
+        mCurrentPlayingMusic = ForegroundMusicStateCache.getInstance().getCurrentPlayingMusic();
+        mPlayModeResId = new SparseIntArray();
+        mPlayModeResId.put(Constant.PlayMode.LIST_LOOP, R.drawable.ic_list_loop);
+        mPlayModeResId.put(Constant.PlayMode.RANDOM, R.drawable.ic_random);
+        mPlayModeResId.put(Constant.PlayMode.SINGLE_LOOP, R.drawable.ic_single_loop);
     }
 
     @Override
@@ -136,6 +152,8 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
         mPreviousButton.setOnClickListener(this);
         mPlayOrPauseButton.setOnClickListener(this);
         mNextButton.setOnClickListener(this);
+        mPlayMode.setOnClickListener(this);
+        mPlayMode.setImageResource(mPlayModeResId.get(0));
     }
 
     @Override
@@ -158,13 +176,13 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
 
     @Override
     public void goBack() {
-        FragmentVisibilityManager.getInstance().remove(this);
+        FragmentVisibilityManager.getInstance().hide(this);
         getParentActivity().setDefaultNavBar();
     }
 
     private void setButtonSrc(boolean isPlaying) {
-        int resId = isPlaying ? R.drawable.ic_pause_white_48dp : R.drawable.ic_play_arrow_white_48dp;
-        GlideApp.with(this).load(resId).into(mPlayOrPauseButton);
+        int resId = isPlaying ? R.drawable.ic_pause : R.drawable.ic_play;
+        mPlayOrPauseButton.setImageResource(resId);
     }
 
     private void setupSeekBar(Music music) {

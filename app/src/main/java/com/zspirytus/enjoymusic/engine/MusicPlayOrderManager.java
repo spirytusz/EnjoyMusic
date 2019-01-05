@@ -6,7 +6,6 @@ import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.global.MainApplication;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.RandomUtil;
 
 import java.util.List;
@@ -39,25 +38,29 @@ public class MusicPlayOrderManager {
         mPlayList = playList;
     }
 
-    public Music getNextMusic() {
+    public Music getNextMusic(boolean fromUser) {
         Music nextMusic = null;
-        if (mPlayMode == Constant.PlayMode.LIST_LOOP || mPlayMode == Constant.PlayMode.SINGLE_LOOP) {
-            // 列表循环 || 单曲循环
-            int currentPosition = mPlayList.indexOf(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
-            int nextPosition = (currentPosition + 1) % mPlayList.size();
-            nextMusic = mPlayList.get(nextPosition);
-        } else if (mPlayMode == Constant.PlayMode.RANDOM) {
-            // 随机播放
-            int nextPosition = RandomUtil.rand(mPlayList.size());
-            LogUtil.e(this.getClass().getSimpleName(), "total size = " + mPlayList.size() + "\tnext = " + nextPosition);
-            nextMusic = mPlayList.get(nextPosition);
-        } else {
-            // 列表播放一次
-            int currentPosition = mPlayList.indexOf(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
-            int nextPosition = (currentPosition + 1) % mPlayList.size();
-            if (nextPosition != 0) {
+        int nextPosition;
+        switch (mPlayMode) {
+            case Constant.PlayMode.SINGLE_LOOP:
+                // 单曲循环
+                // 如果是用户操作，逻辑同列表循环
+                // 否则，继续播放当前音乐
+                if (!fromUser) {
+                    nextMusic = CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic();
+                    break;
+                }
+            case Constant.PlayMode.LIST_LOOP:
+                // 列表循环
+                int currentPosition = mPlayList.indexOf(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+                nextPosition = (currentPosition + 1) % mPlayList.size();
                 nextMusic = mPlayList.get(nextPosition);
-            }
+                break;
+            case Constant.PlayMode.RANDOM:
+                // 随机播放
+                nextPosition = RandomUtil.rand(mPlayList.size());
+                nextMusic = mPlayList.get(nextPosition);
+                break;
         }
         return nextMusic;
     }

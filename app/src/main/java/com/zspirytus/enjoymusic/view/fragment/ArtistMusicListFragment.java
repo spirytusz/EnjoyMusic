@@ -10,7 +10,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
-import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
+import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
@@ -54,7 +54,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     protected void initData() {
-        mArtistList = ForegroundMusicCache.getInstance().getArtistList();
+        mArtistList = ForegroundMusicStateCache.getInstance().getArtistList();
         mAdapter = new CommonRecyclerViewAdapter<Artist>() {
             @Override
             public int getLayoutId() {

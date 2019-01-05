@@ -78,7 +78,7 @@ public class MediaPlayController extends MusicStateObservable
     @Override
     public void onCompletion(MediaPlayer mp) {
         state = STATE_PLAYBACK_COMPLETED;
-        Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic();
+        Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic(false);
         if (nextMusic != null) {
             play(nextMusic);
         }

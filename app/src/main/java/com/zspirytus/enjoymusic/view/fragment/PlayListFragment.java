@@ -8,7 +8,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
-import com.zspirytus.enjoymusic.cache.ForegroundMusicCache;
+import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -75,12 +75,12 @@ public class PlayListFragment extends CommonHeaderBaseFragment
 
     @Override
     protected void registerEvent() {
-        ForegroundMusicCache.getInstance().register(this);
+        ForegroundMusicStateCache.getInstance().register(this);
     }
 
     @Override
     protected void unregisterEvent() {
-        ForegroundMusicCache.getInstance().unregister(this);
+        ForegroundMusicStateCache.getInstance().unregister(this);
     }
 
     @Override
