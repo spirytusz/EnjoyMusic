@@ -50,7 +50,6 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
         setNavIconAction(true);
         initTabLayout();
         mViewPager.setAdapter(mAdapter);
-        mViewPager.setCurrentItem(mCurrentPosition);
         mViewPager.setOffscreenPageLimit(VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT);
         mViewPager.setCurrentItem(mCurrentPosition, true);
     }
@@ -84,8 +83,15 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                setCurrentPosition(tab.getPosition());
-                FragmentVisibilityManager.getInstance().setCurrentFragment(MusicCategoryFragment.this);
+                /**
+                 * ViewPager初始化Adapter后再响应Tab选中事件。
+                 * 否则第一次tab.getPosition()只会返回0，
+                 * 返回0，NavigationView中的菜单项选中态就不正确.
+                 */
+                if (mViewPager.getAdapter() != null) {
+                    mCurrentPosition = tab.getPosition();
+                    FragmentVisibilityManager.getInstance().setCurrentFragment(MusicCategoryFragment.this);
+                }
             }
 
             @Override

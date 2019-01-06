@@ -315,6 +315,8 @@ public class MainActivity extends BaseActivity
         Intent intent = new Intent(context, MainActivity.class);
         if (extra != null && action != null) {
             intent.putExtra(extra, action);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
         }
         context.startActivity(intent);
     }
