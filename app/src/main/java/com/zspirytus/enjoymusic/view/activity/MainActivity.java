@@ -118,8 +118,6 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void initView() {
-        // TODO: 2018/9/15 has not fixed the bugs:
-        // TODO: 2018/9/15 1. viewPager current fragment changed caused by navigation menu selected should be smoothly but not.
         mDrawerListener = new DrawerListenerImpl();
         mDrawerLayout.addDrawerListener(mDrawerListener);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -235,6 +233,8 @@ public class MainActivity extends BaseActivity
                         String action = getIntent().getStringExtra(Constant.NotificationEvent.EXTRA);
                         if (Constant.NotificationEvent.ACTION_NAME.equals(action)) {
                             showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
+                            BaseFragment homeFragment = FragmentFactory.getInstance().get(HomePageFragment.class);
+                            FragmentVisibilityManager.getInstance().addToBackStack(homeFragment);
                         } else {
                             showCastFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
                         }

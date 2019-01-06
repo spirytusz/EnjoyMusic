@@ -155,7 +155,6 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
     public void release() {
         mIMusicControl = null;
         mIMusicProgressControl = null;
-        SingletonHolder.INSTANCE = null;
     }
 
     public boolean isPlaying() {
