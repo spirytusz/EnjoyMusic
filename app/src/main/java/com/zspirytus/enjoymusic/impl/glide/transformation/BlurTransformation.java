@@ -72,7 +72,7 @@ public class BlurTransformation extends BitmapTransformation {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof BlurTransformation) {
+        if (obj instanceof BlurTransformation) {
             return hashCode() == obj.hashCode();
         }
         return false;

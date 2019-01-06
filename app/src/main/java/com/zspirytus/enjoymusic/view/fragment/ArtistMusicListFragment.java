@@ -101,17 +101,6 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
         }
     }
 
-    @Override
-    public void goBack() {
-        long now = System.currentTimeMillis();
-        if (now - pressedBackLastTime < 2 * 1000) {
-            getParentActivity().finish();
-        } else {
-            toast("Press back again to quit");
-            pressedBackLastTime = now;
-        }
-    }
-
     public static ArtistMusicListFragment getInstance() {
         ArtistMusicListFragment instance = new ArtistMusicListFragment();
         return instance;

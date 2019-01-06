@@ -127,17 +127,6 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         ForegroundMusicController.getInstance().play(selectMusic);
     }
 
-    @Override
-    public void goBack() {
-        long now = System.currentTimeMillis();
-        if (now - pressedBackLastTime < 2 * 1000) {
-            getParentActivity().finish();
-        } else {
-            toast("Press back again to quit");
-            pressedBackLastTime = now;
-        }
-    }
-
     private void notifyObserverRecyclerViewLoadFinish() {
         if (mRecyclerViewLoadStateObserver != null)
             mRecyclerViewLoadStateObserver.onHomePageLoadFinish();

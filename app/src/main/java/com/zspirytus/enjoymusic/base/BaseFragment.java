@@ -102,6 +102,17 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
         unregisterEvent();
     }
 
+    @Override
+    public void goBack() {
+        long now = System.currentTimeMillis();
+        if (now - pressedBackLastTime < 2 * 1000) {
+            getParentActivity().finish();
+        } else {
+            toast("Press back again to quit");
+            pressedBackLastTime = now;
+        }
+    }
+
     protected abstract void initData();
 
     protected abstract void initView();
