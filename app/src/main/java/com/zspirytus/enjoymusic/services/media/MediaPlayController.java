@@ -103,6 +103,10 @@ public class MediaPlayController extends MusicStateObservable
         return state == STATE_STARTED;
     }
 
+    public int getState() {
+        return state;
+    }
+
     public int getCurrentPosition() {
         return mediaPlayer.getCurrentPosition();
     }

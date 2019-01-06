@@ -106,7 +106,9 @@ public class MainActivity extends BaseActivity
         super.onNewIntent(intent);
         String action = intent.getStringExtra(Constant.NotificationEvent.EXTRA);
         if (Constant.NotificationEvent.ACTION_NAME.equals(action)) {
-            showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
+            if (!FragmentVisibilityManager.getInstance().getCurrentFragment().getClass().getSimpleName().equals("MusicPlayingFragment")) {
+                showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
+            }
         }
     }
 
@@ -237,7 +239,6 @@ public class MainActivity extends BaseActivity
                     public void onComplete() {
                         FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
                         String action = getIntent().getStringExtra(Constant.NotificationEvent.EXTRA);
-                        toast("onComplete: action = " + action);
                         if (Constant.NotificationEvent.ACTION_NAME.equals(action)) {
                             showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
                             BaseFragment homeFragment = FragmentFactory.getInstance().get(HomePageFragment.class);

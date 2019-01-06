@@ -146,10 +146,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
         });
         setHeaderViewColor(Color.TRANSPARENT);
         if (mCurrentPlayingMusic != null) {
-            String musicAlbumUri = mCurrentPlayingMusic.getMusicThumbAlbumCoverPath();
-            GlideApp.with(this).load(musicAlbumUri != null ? new File(musicAlbumUri) : R.color.grey)
-                    .into(mCover);
-            mTotalTime.setText(TimeUtil.convertLongToMinsSec(mCurrentPlayingMusic.getMusicDuration()));
+            setView(mCurrentPlayingMusic);
         }
         setButtonSrc(ForegroundMusicController.getInstance().isPlaying());
         mCover.setOnClickListener(this);

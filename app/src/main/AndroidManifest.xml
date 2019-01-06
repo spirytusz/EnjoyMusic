@@ -42,7 +42,8 @@
             android:name=".services.PlayMusicService"
             android:enabled="true"
             android:exported="true"
-            android:process=".playmusicprocess" />
+            android:process=".playmusicprocess"
+            android:stopWithTask="false" />
 
     </application>
 

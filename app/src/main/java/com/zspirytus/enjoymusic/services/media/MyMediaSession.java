@@ -1,14 +1,19 @@
 package com.zspirytus.enjoymusic.services.media;
 
 import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.view.KeyEvent;
 
+import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.MusicScanner;
+import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
+import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 
@@ -86,6 +91,32 @@ public class MyMediaSession {
     }
 
     private MediaSessionCompat.Callback callback = new MediaSessionCompat.Callback() {
+        @Override
+        public boolean onMediaButtonEvent(Intent mediaButtonEvent) {
+            KeyEvent event = mediaButtonEvent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+            if (event != null) {
+                MediaButtonHandler.getInstance().handleEvent(event).response((clickNum) -> {
+                    switch (clickNum) {
+                        case 1:
+                            if (BackgroundMusicController.getInstance().isPlaying()) {
+                                BackgroundMusicController.getInstance().pause();
+                            } else {
+                                Music music = CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic();
+                                BackgroundMusicController.getInstance().play(music);
+                            }
+                            break;
+                        case 2:
+                            BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic(true));
+                            break;
+                        case 3:
+                            BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getPreviousMusic());
+                            break;
+                    }
+                });
+                return true;
+            }
+            return super.onMediaButtonEvent(mediaButtonEvent);
+        }
     };
 
 }

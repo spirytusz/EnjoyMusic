@@ -16,6 +16,7 @@ import com.zspirytus.enjoymusic.impl.binder.IBinderPoolImpl;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
+import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.StatusBarUtil;
 import com.zspirytus.enjoymusic.view.activity.MainActivity;
 
@@ -36,13 +37,14 @@ public class PlayMusicService extends BaseService {
     @Override
     public void onCreate() {
         super.onCreate();
+        LogUtil.e(this.getClass().getSimpleName(), "onCreate");
         MyMediaSession.getInstance().initMediaSession(this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         handleStatusBarEvent(intent);
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     @Override
@@ -79,24 +81,26 @@ public class PlayMusicService extends BaseService {
     }
 
     private void handleStatusBarEvent(Intent intent) {
-        String event = intent.getStringExtra(Constant.NotificationEvent.EXTRA);
-        switch (event) {
-            case Constant.NotificationEvent.SINGLE_CLICK:
-                MainActivity.startActivity(this, Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.ACTION_NAME);
-                StatusBarUtil.collapseStatusBar(this);
-                break;
-            case Constant.NotificationEvent.PREVIOUS:
-                BackgroundMusicController.getInstance().play(PlayHistoryCache.getInstance().getPreviousPlayedMusic());
-                break;
-            case Constant.NotificationEvent.PLAY:
-                BackgroundMusicController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
-                break;
-            case Constant.NotificationEvent.PAUSE:
-                BackgroundMusicController.getInstance().pause();
-                break;
-            case Constant.NotificationEvent.NEXT:
-                BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic(true));
-                break;
+        if (intent != null) {
+            String event = intent.getStringExtra(Constant.NotificationEvent.EXTRA);
+            switch (event) {
+                case Constant.NotificationEvent.SINGLE_CLICK:
+                    MainActivity.startActivity(this, Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.ACTION_NAME);
+                    StatusBarUtil.collapseStatusBar(this);
+                    break;
+                case Constant.NotificationEvent.PREVIOUS:
+                    BackgroundMusicController.getInstance().play(PlayHistoryCache.getInstance().getPreviousPlayedMusic());
+                    break;
+                case Constant.NotificationEvent.PLAY:
+                    BackgroundMusicController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+                    break;
+                case Constant.NotificationEvent.PAUSE:
+                    BackgroundMusicController.getInstance().pause();
+                    break;
+                case Constant.NotificationEvent.NEXT:
+                    BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic(true));
+                    break;
+            }
         }
     }
 }
