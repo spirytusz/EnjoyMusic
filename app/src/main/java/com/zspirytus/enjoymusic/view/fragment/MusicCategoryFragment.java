@@ -8,6 +8,7 @@ import com.zspirytus.enjoymusic.adapter.MyViewPagerAdapter;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -91,10 +92,26 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
         mTabLayout.addTab(mTabLayout.newTab().setText(Constant.HomePageTabTitle.ARTIST));
         mTabLayout.addTab(mTabLayout.newTab().setText(Constant.HomePageTabTitle.FOLDER));
         mTabLayout.setupWithViewPager(mViewPager);
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                setCurrentPosition(tab.getPosition());
+                FragmentVisibilityManager.getInstance().setCurrentFragment(MusicCategoryFragment.this);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     public static MusicCategoryFragment getInstance() {
-        MusicCategoryFragment instance = new MusicCategoryFragment();
-        return instance;
+        return new MusicCategoryFragment();
     }
 }

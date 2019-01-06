@@ -39,6 +39,7 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
 
     public void setCurrentFragment(BaseFragment fragment) {
         mCurrentFragment = fragment;
+        notifyAllFragmentChangeObserver(fragment);
     }
 
     public void show(BaseFragment shouldShowFragment, int fragmentContainer, int enter, int exit) {
@@ -52,7 +53,6 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         transaction.show(shouldShowFragment);
         transaction.setCustomAnimations(enter, exit);
         transaction.commitAllowingStateLoss();
-        notifyAllFragmentChangeObserver(shouldShowFragment);
         setCurrentFragment(shouldShowFragment);
     }
 
