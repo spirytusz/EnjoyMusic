@@ -83,6 +83,7 @@ public class MainActivity extends BaseActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bindPlayMusicService();
+
     }
 
     @Override
@@ -103,7 +104,10 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
+        String action = intent.getStringExtra(Constant.NotificationEvent.EXTRA);
+        if (Constant.NotificationEvent.ACTION_NAME.equals(action)) {
+            showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
+        }
     }
 
     @Override
@@ -190,13 +194,15 @@ public class MainActivity extends BaseActivity
         int container;
         int enterAnim = shouldShowFragment.enterAnim();
         int exitAnim = 0;
-        if (FragmentVisibilityManager.getInstance().getCurrentFragment() != null) {
-            exitAnim = FragmentVisibilityManager.getInstance().getCurrentFragment().exitAnim();
+        BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
+        if (currentFragment != null) {
+            exitAnim = currentFragment.exitAnim();
         }
         if (shouldShowFragment instanceof MusicPlayFragment || shouldShowFragment instanceof MusicListDetailFragment) {
             container = R.id.full_fragment_container;
-            BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
-            FragmentVisibilityManager.getInstance().addToBackStack(currentFragment);
+            if (currentFragment != null) {
+                FragmentVisibilityManager.getInstance().addToBackStack(currentFragment);
+            }
         } else {
             container = R.id.fragment_container;
         }
@@ -231,6 +237,7 @@ public class MainActivity extends BaseActivity
                     public void onComplete() {
                         FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
                         String action = getIntent().getStringExtra(Constant.NotificationEvent.EXTRA);
+                        toast("onComplete: action = " + action);
                         if (Constant.NotificationEvent.ACTION_NAME.equals(action)) {
                             showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
                             BaseFragment homeFragment = FragmentFactory.getInstance().get(HomePageFragment.class);
@@ -315,8 +322,6 @@ public class MainActivity extends BaseActivity
         Intent intent = new Intent(context, MainActivity.class);
         if (extra != null && action != null) {
             intent.putExtra(extra, action);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
         }
         context.startActivity(intent);
     }

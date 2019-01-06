@@ -130,9 +130,9 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     protected void initData() {
         mCurrentPlayingMusic = ForegroundMusicStateCache.getInstance().getCurrentPlayingMusic();
         mPlayModeResId = new SparseIntArray();
-        mPlayModeResId.put(Constant.PlayMode.LIST_LOOP, R.drawable.ic_list_loop);
-        mPlayModeResId.put(Constant.PlayMode.RANDOM, R.drawable.ic_random);
-        mPlayModeResId.put(Constant.PlayMode.SINGLE_LOOP, R.drawable.ic_single_loop);
+        mPlayModeResId.put(Constant.PlayMode.LIST_LOOP, R.drawable.ic_list_loop_pressed);
+        mPlayModeResId.put(Constant.PlayMode.RANDOM, R.drawable.ic_random_pressed);
+        mPlayModeResId.put(Constant.PlayMode.SINGLE_LOOP, R.drawable.ic_single_loop_pressed);
     }
 
     @Override
@@ -190,8 +190,8 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     }
 
     private void setButtonSrc(boolean isPlaying) {
-        int resId = isPlaying ? R.drawable.ic_pause : R.drawable.ic_play;
-        mPlayOrPauseButton.setImageResource(resId);
+        int resId = isPlaying ? R.drawable.ic_pause_pressed : R.drawable.ic_play_pressed;
+        GlideApp.with(this).load(resId).into(mPlayOrPauseButton);
     }
 
     private void setupSeekBar(Music music) {
