@@ -158,6 +158,11 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     }
 
     @Override
+    public int getContainerId() {
+        return R.id.full_fragment_container;
+    }
+
+    @Override
     protected void onLoadState(boolean isSuccess) {
     }
 

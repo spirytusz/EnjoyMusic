@@ -22,6 +22,11 @@ public class LaunchAnimationFragment extends BaseFragment {
     }
 
     @Override
+    public int getContainerId() {
+        return R.id.full_fragment_container;
+    }
+
+    @Override
     public void goBack() {
         long now = System.currentTimeMillis();
         if (now - pressedBackLastTime < 2 * 1000) {

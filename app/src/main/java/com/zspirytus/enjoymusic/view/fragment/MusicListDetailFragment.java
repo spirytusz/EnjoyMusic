@@ -102,6 +102,11 @@ public class MusicListDetailFragment extends BaseFragment
     }
 
     @Override
+    public int getContainerId() {
+        return R.id.full_fragment_container;
+    }
+
+    @Override
     protected void onLoadState(boolean isSuccess) {
     }
 

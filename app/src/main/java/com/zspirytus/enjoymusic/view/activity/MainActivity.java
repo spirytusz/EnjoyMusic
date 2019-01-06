@@ -113,10 +113,6 @@ public class MainActivity extends BaseActivity
             return;
         }
         BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
-        if (currentFragment instanceof MusicPlayFragment || currentFragment instanceof MusicListDetailFragment) {
-            BaseFragment popFragment = FragmentVisibilityManager.getInstance().popBackStack();
-            FragmentVisibilityManager.getInstance().show(popFragment, R.id.fragment_container, popFragment.enterAnim(), currentFragment.exitAnim());
-        }
         currentFragment.goBack();
     }
 

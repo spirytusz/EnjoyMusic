@@ -70,6 +70,11 @@ public class PlayListFragment extends CommonHeaderBaseFragment
     }
 
     @Override
+    public int getContainerId() {
+        return R.id.fragment_container;
+    }
+
+    @Override
     protected void onLoadState(boolean isSuccess) {
     }
 

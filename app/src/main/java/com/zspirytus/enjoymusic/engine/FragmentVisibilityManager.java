@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentTransaction;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.listeners.observable.FragmentChangeObservable;
 
-import java.util.LinkedList;
 import java.util.Stack;
 
 /**
@@ -17,7 +16,6 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
 
     private static final FragmentVisibilityManager ourInstance = new FragmentVisibilityManager();
 
-    private LinkedList<BaseFragment> fragments;
     private Stack<BaseFragment> backStack;
     private FragmentManager mFragmentManager;
 
@@ -28,7 +26,6 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
     }
 
     private FragmentVisibilityManager() {
-        fragments = new LinkedList<>();
     }
 
     public void init(FragmentManager fragmentManager) {
@@ -63,12 +60,14 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         mFragmentManager.beginTransaction()
                 .remove(fragment)
                 .commitAllowingStateLoss();
+        showBackFragment(fragment);
     }
 
     public void hide(BaseFragment fragment) {
         mFragmentManager.beginTransaction()
                 .hide(fragment)
                 .commitAllowingStateLoss();
+        showBackFragment(fragment);
     }
 
     public void addToBackStack(BaseFragment fragment) {
@@ -77,10 +76,15 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         }
     }
 
-    public BaseFragment popBackStack() {
+    private BaseFragment popBackStack() {
         if (!backStack.isEmpty())
             return backStack.pop();
         return null;
+    }
+
+    private void showBackFragment(BaseFragment invisibleFragment) {
+        BaseFragment backFragment = popBackStack();
+        show(backFragment, backFragment.getContainerId(), backFragment.enterAnim(), invisibleFragment.exitAnim());
     }
 
 }

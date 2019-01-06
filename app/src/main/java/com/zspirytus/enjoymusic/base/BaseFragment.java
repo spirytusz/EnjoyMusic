@@ -106,6 +106,8 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
 
     protected abstract void initView();
 
+    public abstract int getContainerId();
+
     public int enterAnim() {
         return R.anim.anim_fragment_translate_show_up;
     }

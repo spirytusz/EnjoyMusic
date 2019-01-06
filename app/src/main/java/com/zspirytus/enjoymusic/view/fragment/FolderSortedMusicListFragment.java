@@ -68,6 +68,11 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
     }
 
     @Override
+    public int getContainerId() {
+        return 0;
+    }
+
+    @Override
     protected void onLoadState(boolean isSuccess) {
         mLoadProgressBar.setVisibility(View.GONE);
         if (isSuccess) {
