@@ -87,6 +87,10 @@ public class NotificationHelper {
         }
     }
 
+    public void cancelNotification() {
+        mNotificationManager.cancel(NOTIFICATION_MANAGER_NOTIFY_ID);
+    }
+
     private void createNotificationChannel() {
         if (DeviceUtils.isOSVersionHigherThan(Build.VERSION_CODES.O)) {
             mChannelId = "music_notification";

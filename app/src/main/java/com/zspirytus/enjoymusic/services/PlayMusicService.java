@@ -15,6 +15,7 @@ import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.impl.binder.IBinderPoolImpl;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
+import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
 import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.StatusBarUtil;
@@ -52,6 +53,12 @@ public class PlayMusicService extends BaseService {
         if (mBinderPool == null)
             mBinderPool = new IBinderPoolImpl();
         return mBinderPool;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        MediaPlayController.getInstance().timingToClearNotification();
+        return true;
     }
 
     @Override

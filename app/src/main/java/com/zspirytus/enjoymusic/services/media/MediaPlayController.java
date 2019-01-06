@@ -19,6 +19,10 @@ import com.zspirytus.enjoymusic.utils.LogUtil;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 /**
  * 音乐播放暂停控制类
@@ -28,6 +32,8 @@ import java.util.TimerTask;
 public class MediaPlayController extends MusicStateObservable
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
         AudioManager.OnAudioFocusChangeListener {
+
+    private static final String TAG = "MediaPlayController";
 
     private static final int STATE_IDLE = 0;
     private static final int STATE_INITIALIZED = 1;
@@ -40,8 +46,10 @@ public class MediaPlayController extends MusicStateObservable
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
     private PlayTimer mPlayingTimer;
+    private Disposable mClearTask;
 
     private int state;
+    private boolean shouldTimingToClearNotification = false;
 
     private Music requestedToPlayMusic;
     private Music currentPlayingMusic;
@@ -63,7 +71,7 @@ public class MediaPlayController extends MusicStateObservable
         mPlayingTimer = new PlayTimer();
 
         // set MediaPlayer State
-        state = STATE_IDLE;
+        setState(STATE_IDLE);
     }
 
     public static MediaPlayController getInstance() {
@@ -77,7 +85,7 @@ public class MediaPlayController extends MusicStateObservable
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        state = STATE_PLAYBACK_COMPLETED;
+        setState(STATE_PLAYBACK_COMPLETED);
         Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic(false);
         if (nextMusic != null) {
             play(nextMusic);
@@ -103,8 +111,25 @@ public class MediaPlayController extends MusicStateObservable
         return state == STATE_STARTED;
     }
 
-    public int getState() {
-        return state;
+    private void setState(int state) {
+        this.state = state;
+        /**
+         * Activity在onUnBind后，暂停状态持续10分钟后自动清除Notification.
+         */
+        if (shouldTimingToClearNotification) {
+            if (state == STATE_PAUSED) {
+                mClearTask = AndroidSchedulers.mainThread().scheduleDirect(
+                        () -> {
+                            NotificationHelper.getInstance().cancelNotification();
+                            stop();
+                        },
+                        10,
+                        TimeUnit.MINUTES
+                );
+            } else if (mClearTask != null) {
+                mClearTask.dispose();
+            }
+        }
     }
 
     public int getCurrentPosition() {
@@ -137,7 +162,7 @@ public class MediaPlayController extends MusicStateObservable
     public void pause() {
         if (state == STATE_STARTED) {
             mediaPlayer.pause();
-            state = STATE_PAUSED;
+            setState(STATE_PAUSED);
             mPlayingTimer.pause();
             NotificationHelper.getInstance().updateNotification(false);
             notifyAllObserverPlayStateChange(false);
@@ -155,17 +180,20 @@ public class MediaPlayController extends MusicStateObservable
             mediaPlayer.reset();
             mediaPlayer.release();
             mediaPlayer = null;
-            MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_STOPPED);
         }
+    }
+
+    public void timingToClearNotification() {
+        shouldTimingToClearNotification = true;
     }
 
     private void prepareMusic(Music music) throws IOException {
         mPlayingTimer.pause();
         mediaPlayer.reset();
         mediaPlayer.setDataSource(music.getMusicFilePath());
-        state = STATE_INITIALIZED;
+        setState(STATE_INITIALIZED);
         mediaPlayer.prepareAsync();
-        state = STATE_PREPARING;
+        setState(STATE_PREPARING);
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_BUFFERING);
     }
 
@@ -178,7 +206,7 @@ public class MediaPlayController extends MusicStateObservable
         audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN);
         mediaPlayer.start();
-        state = STATE_STARTED;
+        setState(STATE_STARTED);
         mPlayingTimer.start();
         NotificationHelper.getInstance().showNotification(currentPlayingMusic);
         NotificationHelper.getInstance().updateNotification(true);

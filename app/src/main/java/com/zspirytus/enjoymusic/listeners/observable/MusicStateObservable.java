@@ -71,7 +71,7 @@ public class MusicStateObservable {
         mPlayProgressObservers.finishBroadcast();
     }
 
-    protected int notifyAllObserverPlayMusicChange(Music currentPlayingMusic) {
+    protected void notifyAllObserverPlayMusicChange(Music currentPlayingMusic) {
         int size = mPlayMusicChangeObservers.beginBroadcast();
         for (int i = 0; i < size; i++) {
             try {
@@ -81,7 +81,6 @@ public class MusicStateObservable {
             }
         }
         mPlayMusicChangeObservers.finishBroadcast();
-        return size;
     }
 
 }
