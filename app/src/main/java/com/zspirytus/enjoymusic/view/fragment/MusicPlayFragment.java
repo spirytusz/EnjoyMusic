@@ -97,6 +97,9 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         mCover.setRotating(!hidden);
+        if (!hidden) {
+            getParentActivity().setTransparentNavBar();
+        }
     }
 
     @Override
@@ -230,6 +233,7 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
         }
         mATitle.setText(music.getMusicName());
         mASubTitle.setText(music.getMusicArtist());
+        mNowTime.setText("00:00");
         mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
         setupSeekBar(music);
         setBackgroundBlur(music);

@@ -5,14 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:paddingLeft="8dp"
-    android:paddingRight="8dp">
+    android:paddingRight="8dp"
+    tools:background="@color/grey">
 
     <TextView
         android:id="@+id/now_time"
+        style="@style/LightFont"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:textColor="@color/white"
-        android:text="00:00"/>
+        tools:text="00:00" />
 
     <SeekBar
         android:id="@+id/music_seekbar"
@@ -24,6 +26,7 @@
 
     <TextView
         android:id="@+id/total_time"
+        style="@style/LightFont"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:textColor="@color/white"

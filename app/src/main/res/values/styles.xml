@@ -108,4 +108,14 @@
         <item name="tabMinWidth">135dp</item>
     </style>
 
+    <style name="MediumFont">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="LightFont">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
 </resources>
