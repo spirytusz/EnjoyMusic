@@ -19,6 +19,7 @@ import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
 import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.StatusBarUtil;
+import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.activity.MainActivity;
 
 /**
@@ -85,6 +86,13 @@ public class PlayMusicService extends BaseService {
         unregisterReceiver(myHeadSetPlugOutReceiver);
 
         unregisterReceiver(myHeadSetButtonClickBelowLReceiver);
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        LogUtil.e(TAG, "onTaskRemoved");
+        ToastUtil.showToast(this, "onTaskRemoved");
     }
 
     private void handleStatusBarEvent(Intent intent) {

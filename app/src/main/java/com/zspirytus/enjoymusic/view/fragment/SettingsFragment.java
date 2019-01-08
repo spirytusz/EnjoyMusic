@@ -25,6 +25,7 @@ public class SettingsFragment extends CommonHeaderBaseFragment {
     @Override
     protected void initView() {
         setNavIconAction(true);
+        setupHeaderView();
     }
 
     @Override

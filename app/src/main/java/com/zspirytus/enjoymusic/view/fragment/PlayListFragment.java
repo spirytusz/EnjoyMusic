@@ -62,6 +62,7 @@ public class PlayListFragment extends CommonHeaderBaseFragment
     @Override
     protected void initView() {
         setNavIconAction(true);
+        setupHeaderView();
         mPlayListRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mPlayListRecyclerView.setHasFixedSize(true);
         mPlayListRecyclerView.setNestedScrollingEnabled(false);

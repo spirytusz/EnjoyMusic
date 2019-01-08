@@ -89,10 +89,10 @@
     </style>
 
     <style name="TabLayoutStyle">
-        <item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabSelectedTextColor">@color/colorAccent</item>
         <item name="tabTextColor">@color/grey</item>
-        <item name="tabIndicatorColor">@color/white</item>
-        <item name="tabBackground">@color/colorPrimary</item>
+        <item name="tabIndicatorColor">@color/colorAccent</item>
+        <item name="tabBackground">@color/white</item>
         <item name="tabGravity">center</item>
         <item name="tabMode">fixed</item>
         <item name="tabMinWidth">135dp</item>

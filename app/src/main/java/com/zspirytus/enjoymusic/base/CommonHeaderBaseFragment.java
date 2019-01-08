@@ -1,6 +1,8 @@
 package com.zspirytus.enjoymusic.base;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -25,7 +27,8 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment
     protected AppCompatImageView mDividerLine;
     protected AppCompatTextView mATitle;
     protected AppCompatTextView mASubTitle;
-    protected View mBg;
+    protected View mStatusBar;
+    protected View mToolbar;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -35,7 +38,8 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment
             mNavIcon = mHeaderView.findViewById(R.id.common_header_nav_menu_or_back_icon);
             mTitle = mHeaderView.findViewById(R.id.common_header_title);
             mMenuIcon = mHeaderView.findViewById(R.id.common_header_menu_icon);
-            mBg = mHeaderView.findViewById(R.id.bg);
+            mStatusBar = mHeaderView.findViewById(R.id.status_bar);
+            mToolbar = mHeaderView.findViewById(R.id.tool_bar);
             mDividerLine = mHeaderView.findViewById(R.id.divider_line);
             mATitle = mHeaderView.findViewById(R.id.alternative_title);
             mASubTitle = mHeaderView.findViewById(R.id.alternative_sub_title);
@@ -80,9 +84,23 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment
     }
 
     public void setHeaderViewColor(int colorResId) {
-        if (mBg != null) {
-            mBg.setBackgroundColor(colorResId);
+        if (mStatusBar != null && mToolbar != null) {
+            mStatusBar.setBackgroundColor(colorResId);
+            mToolbar.setBackgroundColor(colorResId);
         }
+    }
+
+    public void setupHeaderView() {
+        if (mStatusBar != null && mToolbar != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                mStatusBar.setBackgroundColor(Color.WHITE);
+            } else {
+                mStatusBar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            }
+            mToolbar.setBackgroundColor(Color.WHITE);
+        }
+        setNavIconColor(Color.parseColor("#666666"));
+        mTitle.setTextColor(Color.parseColor("#666666"));
     }
 
     public void setMusicPlayStyle() {

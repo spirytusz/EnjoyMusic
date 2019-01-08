@@ -66,6 +66,8 @@ public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, PlayedMusicChangeObserver,
         MusicPlayStateObserver {
 
+    private static final String TAG = "MainActivity";
+
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
     @ViewInject(R.id.nav_view)
