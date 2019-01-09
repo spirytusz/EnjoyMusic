@@ -51,6 +51,9 @@ public class NotificationHelper {
     private Notification.Action playAction;
     private Notification.Action pauseAction;
 
+    protected Notification getCurrentNotification() {
+        return mCurrentNotification;
+    }
 
     private NotificationHelper() {
         Context backgroundContext = MainApplication.getBackgroundContext();

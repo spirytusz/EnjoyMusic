@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.services;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
@@ -13,6 +14,7 @@ import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.impl.binder.IBinderPoolImpl;
+import com.zspirytus.enjoymusic.interfaces.IOnRemotePlayedListener;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
@@ -27,7 +29,7 @@ import com.zspirytus.enjoymusic.view.activity.MainActivity;
  * Created by ZSpirytus on 2018/8/2.
  */
 
-public class PlayMusicService extends BaseService {
+public class PlayMusicService extends BaseService implements IOnRemotePlayedListener {
 
     private static final String TAG = "PlayMusicService";
 
@@ -41,6 +43,7 @@ public class PlayMusicService extends BaseService {
         super.onCreate();
         LogUtil.e(this.getClass().getSimpleName(), "onCreate");
         MyMediaSession.getInstance().initMediaSession(this);
+        MediaPlayController.getInstance().setOnPlayListener(this);
     }
 
     @Override
@@ -86,6 +89,13 @@ public class PlayMusicService extends BaseService {
         unregisterReceiver(myHeadSetPlugOutReceiver);
 
         unregisterReceiver(myHeadSetButtonClickBelowLReceiver);
+    }
+
+    @Override
+    public void onPlay() {
+        Notification currentNotification = NotificationHelper.getInstance().getCurrentNotification();
+        startForeground(0, currentNotification);
+        MediaPlayController.getInstance().setOnPlayListener(null);
     }
 
     @Override
