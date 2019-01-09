@@ -3,11 +3,88 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/grey">
 
-    <include
-        android:id="@+id/status_bar_toolbar_holder"
-        layout="@layout/common_header_layout" />
+    <View
+        android:id="@+id/status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/status_bar" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/back_btn"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="12dp"
+        android:focusable="true"
+        android:src="@drawable/ic_arrow_back_white_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="@id/guideline" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/common_header_menu_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="12dp"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        tools:src="@drawable/ic_more_vert_white_48dp" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/gradient_divider_line"
+        app:layout_constraintBottom_toBottomOf="@id/tool_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/title"
+        style="@style/MediumFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/back_btn"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        tools:text="Alternative Title" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="2dp"
+        android:textColor="#747474"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/back_btn"
+        app:layout_constraintTop_toBottomOf="@+id/guideline"
+        tools:text="Alternative Sub Title" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="56dp" />
 
     <com.zspirytus.enjoymusic.view.widget.BlurImageView
         android:id="@+id/background"
@@ -40,7 +117,7 @@
         app:layout_constraintBottom_toTopOf="@+id/include2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/status_bar_toolbar_holder" />
+        app:layout_constraintTop_toBottomOf="@+id/tool_bar" />
 
     <ImageView
         android:id="@+id/play_pause"

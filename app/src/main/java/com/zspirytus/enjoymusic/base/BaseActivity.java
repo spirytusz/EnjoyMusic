@@ -30,6 +30,7 @@ public abstract class BaseActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTransparentStatusBar();
+        setLightStatusBarIconColor();
 
         autoInjectLayoutId();
         autoInjectAllField();
@@ -68,12 +69,27 @@ public abstract class BaseActivity extends AppCompatActivity
     public void setTransparentStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             View decorView = getWindow().getDecorView();
-            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                option |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            }
+            int option = decorView.getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
             decorView.setSystemUiVisibility(option);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
+    public void setLightStatusBarIconColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            View decorView = getWindow().getDecorView();
+            int currentOptions = decorView.getSystemUiVisibility();
+            currentOptions |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            decorView.setSystemUiVisibility(currentOptions);
+        }
+    }
+
+    public void setDefaultStatusBarIconColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            View decorView = getWindow().getDecorView();
+            int currentOptions = decorView.getSystemUiVisibility();
+            currentOptions &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            decorView.setSystemUiVisibility(currentOptions);
         }
     }
 

@@ -25,8 +25,6 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment
     protected AppCompatTextView mTitle;
     protected AppCompatImageView mMenuIcon;
     protected AppCompatImageView mDividerLine;
-    protected AppCompatTextView mATitle;
-    protected AppCompatTextView mASubTitle;
     protected View mStatusBar;
     protected View mToolbar;
 
@@ -41,8 +39,6 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment
             mStatusBar = mHeaderView.findViewById(R.id.status_bar);
             mToolbar = mHeaderView.findViewById(R.id.tool_bar);
             mDividerLine = mHeaderView.findViewById(R.id.divider_line);
-            mATitle = mHeaderView.findViewById(R.id.alternative_title);
-            mASubTitle = mHeaderView.findViewById(R.id.alternative_sub_title);
         }
         setTitle(getString(R.string.app_name));
     }
@@ -79,17 +75,6 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment
         DrawableUtil.setColor(drawable, color);
     }
 
-    protected void setDividerLineVisibility(boolean isVisible) {
-        mDividerLine.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-    }
-
-    public void setHeaderViewColor(int colorResId) {
-        if (mStatusBar != null && mToolbar != null) {
-            mStatusBar.setBackgroundColor(colorResId);
-            mToolbar.setBackgroundColor(colorResId);
-        }
-    }
-
     public void setupHeaderView() {
         if (mStatusBar != null && mToolbar != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -101,11 +86,5 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment
         }
         setNavIconColor(Color.parseColor("#666666"));
         mTitle.setTextColor(Color.parseColor("#666666"));
-    }
-
-    public void setMusicPlayStyle() {
-        mATitle.setVisibility(View.VISIBLE);
-        mASubTitle.setVisibility(View.VISIBLE);
-        mTitle.setVisibility(View.GONE);
     }
 }

@@ -1,6 +1,7 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
-import android.graphics.Color;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,7 +9,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
+import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -37,11 +38,17 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  */
 
 @LayoutIdInject(R.layout.fragment_music_play_layout)
-public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.OnClickListener, MusicPlayStateObserver,
+public class MusicPlayFragment extends BaseFragment implements View.OnClickListener, MusicPlayStateObserver,
         MusicPlayProgressObserver, PlayedMusicChangeObserver {
 
     @ViewInject(R.id.background)
     private BlurImageView mBackground;
+    @ViewInject(R.id.back_btn)
+    private AppCompatImageView mBackBtn;
+    @ViewInject(R.id.title)
+    private AppCompatTextView mTitle;
+    @ViewInject(R.id.sub_title)
+    private AppCompatTextView mSubTitle;
 
     @ViewInject(R.id.cover)
     private AutoRotateCircleImage mCover;
@@ -138,13 +145,9 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
     @Override
     protected void initView() {
         getParentActivity().setTransparentNavBar();
-        setNavIconAction(false);
-        setDividerLineVisibility(true);
-        setMusicPlayStyle();
-        mNavIcon.setOnClickListener(v -> {
+        mBackBtn.setOnClickListener((view) -> {
             goBack();
         });
-        setHeaderViewColor(Color.TRANSPARENT);
         if (mCurrentPlayingMusic != null) {
             setView(mCurrentPlayingMusic);
         }
@@ -228,8 +231,8 @@ public class MusicPlayFragment extends CommonHeaderBaseFragment implements View.
                     .load(R.drawable.defalut_cover)
                     .into(mCover);
         }
-        mATitle.setText(music.getMusicName());
-        mASubTitle.setText(music.getMusicArtist());
+        mTitle.setText(music.getMusicName());
+        mSubTitle.setText(music.getMusicArtist());
         mNowTime.setText("00:00");
         mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
         setupSeekBar(music);

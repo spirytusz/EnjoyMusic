@@ -9,7 +9,7 @@
         android:id="@+id/status_bar"
         android:layout_width="match_parent"
         android:layout_height="25dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -18,7 +18,7 @@
         android:id="@+id/tool_bar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/status_bar" />
@@ -30,6 +30,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="40dp"
         android:focusable="true"
+        android:tint="#666666"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/ic_menu_white_24dp" />
@@ -41,6 +42,7 @@
         android:layout_marginTop="41dp"
         android:layout_marginEnd="8dp"
         android:focusable="true"
+        android:tint="#666666"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/ic_more_vert_white_48dp" />
@@ -56,52 +58,6 @@
         android:singleLine="true"
         app:layout_constraintStart_toEndOf="@+id/common_header_nav_menu_or_back_icon"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Title"
-        tools:visibility="gone" />
-
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/divider_line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/gradient_divider_line"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/alternative_title"
-        style="@style/MediumFont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@+id/common_header_nav_menu_or_back_icon"
-        app:layout_constraintBottom_toBottomOf="@id/guideline"
-        tools:text="Alternative Title"
-        tools:visibility="visible" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/alternative_sub_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="2dp"
-        android:textColor="#747474"
-        android:textSize="12sp"
-        android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@+id/common_header_nav_menu_or_back_icon"
-        app:layout_constraintTop_toBottomOf="@+id/guideline"
-        tools:text="Alternative Sub Title"
-        tools:visibility="visible" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="52dp" />
+        tools:text="Title" />
 
 </android.support.constraint.ConstraintLayout>
