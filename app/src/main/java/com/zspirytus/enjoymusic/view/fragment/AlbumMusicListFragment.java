@@ -84,7 +84,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
         mAlbumMusicRecyclerView.setAdapter(mAdapter);
         mAlbumMusicRecyclerView.setHasFixedSize(true);
         mAlbumMusicRecyclerView.setNestedScrollingEnabled(false);
-        mAlbumMusicRecyclerView.addItemDecoration(new ItemSpacingDecoration(8, 8, 8, 8, 1, 2));
+        mAlbumMusicRecyclerView.addItemDecoration(new ItemSpacingDecoration(16, 16, 16, 16, 1, 2));
     }
 
     @Override

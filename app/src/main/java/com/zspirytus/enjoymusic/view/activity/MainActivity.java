@@ -124,6 +124,7 @@ public class MainActivity extends BaseActivity
         currentFragment.goBack();
         if (currentFragment instanceof MusicPlayFragment) {
             setLightStatusBarIconColor();
+            setLightNavigationBarColor();
         }
     }
 
@@ -204,6 +205,7 @@ public class MainActivity extends BaseActivity
         BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
         if (shouldShowFragment instanceof MusicPlayFragment) {
             setDefaultStatusBarIconColor();
+            setDefaultNavigationBarColor();
         }
         if (currentFragment != null) {
             exitAnim = currentFragment.exitAnim();

@@ -23,8 +23,6 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment
 
     protected AppCompatImageView mNavIcon;
     protected AppCompatTextView mTitle;
-    protected AppCompatImageView mMenuIcon;
-    protected AppCompatImageView mDividerLine;
     protected View mStatusBar;
     protected View mToolbar;
 
@@ -35,10 +33,8 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment
         if (mHeaderView != null) {
             mNavIcon = mHeaderView.findViewById(R.id.common_header_nav_menu_or_back_icon);
             mTitle = mHeaderView.findViewById(R.id.common_header_title);
-            mMenuIcon = mHeaderView.findViewById(R.id.common_header_menu_icon);
             mStatusBar = mHeaderView.findViewById(R.id.status_bar);
             mToolbar = mHeaderView.findViewById(R.id.tool_bar);
-            mDividerLine = mHeaderView.findViewById(R.id.divider_line);
         }
         setTitle(getString(R.string.app_name));
     }
