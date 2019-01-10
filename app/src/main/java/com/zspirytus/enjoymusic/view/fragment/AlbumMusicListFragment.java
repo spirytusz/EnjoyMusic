@@ -65,11 +65,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
             @Override
             public void convert(CommonViewHolder holder, Album album, int position) {
                 String coverPath = album.getAlbumCoverPath();
-                if (coverPath != null && !coverPath.isEmpty()) {
-                    holder.setImagePath(R.id.item_cover, coverPath);
-                } else {
-                    holder.setImageResource(R.id.item_cover, R.drawable.defalut_cover);
-                }
+                holder.setImagePath(R.id.item_cover, coverPath);
                 holder.setText(R.id.item_title, album.getAlbumName());
                 holder.setText(R.id.item_sub_title, album.getArtist());
                 holder.setOnItemClickListener(AlbumMusicListFragment.this);

@@ -83,9 +83,13 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
     public void setImagePath(@IdRes int id, String path) {
         if (path != null) {
             File file = MusicCoverFileCache.getInstance().getCoverFile(path);
-            setImageFile(id, file);
+            if (file != null && file.exists()) {
+                setImageFile(id, file);
+            } else {
+                setImageResource(id, R.drawable.defalut_cover);
+            }
         } else {
-            setImageFile(id, null);
+            setImageResource(id, R.drawable.defalut_cover);
         }
     }
 

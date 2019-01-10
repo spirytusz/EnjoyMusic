@@ -57,12 +57,10 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/title"
-        style="@style/MediumFont"
+        style="@style/MusicPlayFragment_Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:textColor="@color/white"
-        android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/back_btn"
         app:layout_constraintBottom_toBottomOf="@id/guideline"
         tools:text="Alternative Title" />

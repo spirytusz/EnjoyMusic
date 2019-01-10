@@ -223,9 +223,15 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
         String musicThumbAlbumCoverPath = music.getMusicThumbAlbumCoverPath();
         if (musicThumbAlbumCoverPath != null) {
             File coverFile = new File(musicThumbAlbumCoverPath);
-            GlideApp.with(this)
-                    .load(coverFile)
-                    .into(mCover);
+            if (coverFile.exists()) {
+                GlideApp.with(this)
+                        .load(coverFile)
+                        .into(mCover);
+            } else {
+                GlideApp.with(this)
+                        .load(R.drawable.defalut_cover)
+                        .into(mCover);
+            }
         } else {
             GlideApp.with(this)
                     .load(R.drawable.defalut_cover)
@@ -242,7 +248,12 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     private void setBackgroundBlur(Music music) {
         String imagePath = music.getMusicThumbAlbumCoverPath();
         if (imagePath != null && !imagePath.isEmpty()) {
-            mBackground.setImagePath(imagePath);
+            File file = new File(imagePath);
+            if (file.exists()) {
+                mBackground.setImagePath(imagePath);
+            } else {
+                mBackground.setImageResource(R.drawable.defalut_cover);
+            }
         } else {
             mBackground.setImageResource(R.drawable.defalut_cover);
         }

@@ -7,10 +7,11 @@ import android.view.ViewGroup;
 
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CommonRecyclerViewAdapter<T> extends RecyclerView.Adapter<CommonViewHolder> {
-    private List<T> mList;
+    private List<T> mList = new ArrayList<>();
 
     @Override
     public CommonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -31,6 +32,14 @@ public abstract class CommonRecyclerViewAdapter<T> extends RecyclerView.Adapter<
     public void setList(List<T> list) {
         mList = list;
         notifyDataSetChanged();
+    }
+
+    public void addData(List<T> list) {
+        if (mList != null) {
+            mList.addAll(list);
+        } else {
+            mList = list;
+        }
     }
 
     public List<T> getList() {

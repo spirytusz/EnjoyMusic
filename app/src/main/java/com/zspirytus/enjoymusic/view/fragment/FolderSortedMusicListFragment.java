@@ -46,11 +46,7 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
             public void convert(CommonViewHolder holder, FolderSortedMusic folderSortedMusic, int position) {
                 Music firstMusicInFolder = folderSortedMusic.getFolderMusicList().get(0);
                 String coverPath = firstMusicInFolder.getMusicThumbAlbumCoverPath();
-                if (coverPath != null && !coverPath.isEmpty()) {
-                    holder.setImagePath(R.id.item_cover, coverPath);
-                } else {
-                    holder.setImageResource(R.id.item_cover, R.drawable.defalut_cover);
-                }
+                holder.setImagePath(R.id.item_cover, coverPath);
                 holder.setText(R.id.item_title, folderSortedMusic.getParentFolderDir());
                 holder.setText(R.id.item_sub_title, folderSortedMusic.getFolderName());
                 holder.setOnItemClickListener(FolderSortedMusicListFragment.this);

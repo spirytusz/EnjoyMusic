@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.cache;
 import android.graphics.Bitmap;
 import android.util.SparseArray;
 
+import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.utils.BitmapUtil;
 
 import java.io.File;
@@ -33,7 +34,9 @@ public class MusicCoverFileCache {
             File file = mCoverFileCache.get(key);
             if (file == null) {
                 file = new File(path);
-                mCoverFileCache.put(key, file);
+                if (file.exists()) {
+                    mCoverFileCache.put(key, file);
+                }
             }
             return file;
         } else {
@@ -43,6 +46,10 @@ public class MusicCoverFileCache {
 
     public Bitmap getCover(String path) {
         if (path != null) {
+            File file = new File(path);
+            if (!file.exists()) {
+                return getCover(R.drawable.defalut_cover);
+            }
             int key = path.hashCode();
             Bitmap bitmap = mCoverCache.get(key);
             if (bitmap == null) {
@@ -51,7 +58,7 @@ public class MusicCoverFileCache {
             }
             return bitmap;
         } else {
-            return null;
+            return getCover(R.drawable.defalut_cover);
         }
     }
 
