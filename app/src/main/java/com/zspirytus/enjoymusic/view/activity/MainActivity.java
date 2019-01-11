@@ -126,6 +126,7 @@ public class MainActivity extends BaseActivity
             setLightStatusBarIconColor();
             setLightNavigationBarColor();
         }
+        super.onBackPressed();
     }
 
     @Override

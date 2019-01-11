@@ -103,32 +103,30 @@ public class MusicScanner {
                 null,
                 null);
         if (cursor != null) {
-            synchronized (this) {
-                while (cursor.moveToNext()) {
-                    int isMusic = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.IS_MUSIC));
-                    if (isMusic == 0) {
-                        continue;
-                    }
-                    long musicDuration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-                    if (musicDuration <= 60 * 1000) {
-                        continue;
-                    }
-                    String musicFilePath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA));
-                    String musicName = cursor.getString(cursor
-                            .getColumnIndex(MediaStore.Audio.AudioColumns.TITLE));
-                    String albumId = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM_ID));
-                    String musicAlbumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM));
-                    String musicThumbAlbumCoverPath = getThumbAlbum(albumId);
-                    String musicArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST));
-                    String musicFileSize = Formatter.formatFileSize(MainApplication.getBackgroundContext(), cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE)));
-                    long musicAddDate = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATE_ADDED));
-                    Music itemMusic = new Music(musicFilePath, musicName, musicArtist, musicAlbumName, musicThumbAlbumCoverPath, musicDuration, musicFileSize, musicAddDate);
-                    if (!mAllMusicList.contains(itemMusic)) {
-                        mAllMusicList.add(itemMusic);
-                    }
+            while (cursor.moveToNext()) {
+                int isMusic = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.IS_MUSIC));
+                if (isMusic == 0) {
+                    continue;
                 }
-                cursor.close();
+                long musicDuration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                if (musicDuration <= 60 * 1000) {
+                    continue;
+                }
+                String musicFilePath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA));
+                String musicName = cursor.getString(cursor
+                        .getColumnIndex(MediaStore.Audio.AudioColumns.TITLE));
+                String albumId = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM_ID));
+                String musicAlbumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM));
+                String musicThumbAlbumCoverPath = getThumbAlbum(albumId);
+                String musicArtist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST));
+                String musicFileSize = Formatter.formatFileSize(MainApplication.getBackgroundContext(), cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE)));
+                long musicAddDate = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATE_ADDED));
+                Music itemMusic = new Music(musicFilePath, musicName, musicArtist, musicAlbumName, musicThumbAlbumCoverPath, musicDuration, musicFileSize, musicAddDate);
+                if (!mAllMusicList.contains(itemMusic)) {
+                    mAllMusicList.add(itemMusic);
+                }
             }
+            cursor.close();
         }
     }
 
@@ -149,19 +147,18 @@ public class MusicScanner {
                 null,
                 null);
         if (cursor != null) {
-            synchronized (this) {
-                while (cursor.moveToNext()) {
-                    String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM));
-                    String albumCoverFilePath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_ART));
-                    String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ARTIST));
-                    String firstYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.FIRST_YEAR));
-                    String lastYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.LAST_YEAR));
-                    int numberOfSong = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.NUMBER_OF_SONGS));
-                    Album album = new Album(albumName, albumCoverFilePath, artist, firstYear, lastYear, numberOfSong);
-                    if (!mAlbumList.contains(album)) {
-                        mAlbumList.add(album);
-                    }
+            while (cursor.moveToNext()) {
+                String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM));
+                String albumCoverFilePath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_ART));
+                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ARTIST));
+                String firstYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.FIRST_YEAR));
+                String lastYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.LAST_YEAR));
+                int numberOfSong = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.NUMBER_OF_SONGS));
+                Album album = new Album(albumName, albumCoverFilePath, artist, firstYear, lastYear, numberOfSong);
+                if (!mAlbumList.contains(album)) {
+                    mAlbumList.add(album);
                 }
+
             }
         }
         cursor.close();
@@ -181,17 +178,16 @@ public class MusicScanner {
                 null,
                 null);
         if (cursor != null) {
-            synchronized (this) {
-                while (cursor.moveToNext()) {
-                    String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.ARTIST));
-                    int numberOfAlbums = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.NUMBER_OF_ALBUMS));
-                    int numberOfTracks = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.NUMBER_OF_TRACKS));
-                    Artist artist = new Artist(artistName, numberOfAlbums, numberOfTracks);
-                    if (!mArtistList.contains(artist)) {
-                        mArtistList.add(artist);
-                    }
+            while (cursor.moveToNext()) {
+                String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.ARTIST));
+                int numberOfAlbums = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.NUMBER_OF_ALBUMS));
+                int numberOfTracks = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.NUMBER_OF_TRACKS));
+                Artist artist = new Artist(artistName, numberOfAlbums, numberOfTracks);
+                if (!mArtistList.contains(artist)) {
+                    mArtistList.add(artist);
                 }
             }
+            
         }
         cursor.close();
     }
