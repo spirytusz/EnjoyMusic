@@ -49,30 +49,8 @@ public class MusicScanner {
     public List<Music> getAllMusicList() {
         if (mAllMusicList.isEmpty()) {
             scanMusic();
-            scanArtist();
         }
         return mAllMusicList;
-    }
-
-    public List<Album> getAlbumList() {
-        if (mAlbumList.isEmpty()) {
-            scanAlbum();
-        }
-        return mAlbumList;
-    }
-
-    public List<Artist> getArtistList() {
-        if (mArtistList.isEmpty()) {
-            scanArtist();
-        }
-        return mArtistList;
-    }
-
-    public List<FolderSortedMusic> getFolderSortedMusicList() {
-        if (mFolderSortedMusicList.isEmpty()) {
-            sortedMusicByFolder();
-        }
-        return mFolderSortedMusicList;
     }
 
     private void scanMusic() {
@@ -127,86 +105,6 @@ public class MusicScanner {
                 }
             }
             cursor.close();
-        }
-    }
-
-    private void scanAlbum() {
-        final String[] projection = {
-                MediaStore.Audio.AlbumColumns.ALBUM,
-                MediaStore.Audio.AlbumColumns.ALBUM_ART,
-                MediaStore.Audio.AlbumColumns.ARTIST,
-                MediaStore.Audio.AlbumColumns.FIRST_YEAR,
-                MediaStore.Audio.AlbumColumns.LAST_YEAR,
-                MediaStore.Audio.AlbumColumns.NUMBER_OF_SONGS,
-        };
-        ContentResolver resolver = MainApplication.getBackgroundContext().getContentResolver();
-        Cursor cursor = resolver.query(
-                MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                projection,
-                null,
-                null,
-                null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM));
-                String albumCoverFilePath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_ART));
-                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ARTIST));
-                String firstYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.FIRST_YEAR));
-                String lastYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.LAST_YEAR));
-                int numberOfSong = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.NUMBER_OF_SONGS));
-                Album album = new Album(albumName, albumCoverFilePath, artist, firstYear, lastYear, numberOfSong);
-                if (!mAlbumList.contains(album)) {
-                    mAlbumList.add(album);
-                }
-
-            }
-        }
-        cursor.close();
-    }
-
-    private void scanArtist() {
-        final String[] projection = {
-                MediaStore.Audio.ArtistColumns.ARTIST,
-                MediaStore.Audio.ArtistColumns.NUMBER_OF_ALBUMS,
-                MediaStore.Audio.ArtistColumns.NUMBER_OF_TRACKS,
-        };
-        ContentResolver resolver = MainApplication.getBackgroundContext().getContentResolver();
-        Cursor cursor = resolver.query(
-                MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
-                projection,
-                null,
-                null,
-                null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.ARTIST));
-                int numberOfAlbums = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.NUMBER_OF_ALBUMS));
-                int numberOfTracks = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.NUMBER_OF_TRACKS));
-                Artist artist = new Artist(artistName, numberOfAlbums, numberOfTracks);
-                if (!mArtistList.contains(artist)) {
-                    mArtistList.add(artist);
-                }
-            }
-            
-        }
-        cursor.close();
-    }
-
-    private void sortedMusicByFolder() {
-        SparseIntArray indexMemory = new SparseIntArray();
-        for (Music music : getAllMusicList()) {
-            File file = new File(music.getMusicFilePath());
-            String parentDir = file.getParentFile().getParentFile().getPath();
-            int findIndex = indexMemory.get(parentDir.hashCode());
-            if (findIndex <= 0) {
-                List<Music> musicList = new ArrayList<>();
-                musicList.add(music);
-                FolderSortedMusic folderSortedMusic = new FolderSortedMusic(file.getParentFile().getName(), file.getParentFile().getParentFile().getPath(), musicList);
-                mFolderSortedMusicList.add(folderSortedMusic);
-                indexMemory.put(parentDir.hashCode(), mFolderSortedMusicList.size());
-            } else {
-                mFolderSortedMusicList.get(findIndex - 1).getFolderMusicList().add(music);
-            }
         }
     }
 

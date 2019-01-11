@@ -6,6 +6,7 @@ import com.zspirytus.enjoymusic.IGetMusicList;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
+import com.zspirytus.enjoymusic.entity.Converter;
 import com.zspirytus.enjoymusic.entity.Music;
 
 import java.util.List;
@@ -30,10 +31,11 @@ public class ObservableFactory {
             public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
                 IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.GET_MUSIC_LIST);
                 IGetMusicList getMusicListBinder = IGetMusicList.Stub.asInterface(binder);
+                List<Music> musicList = getMusicListBinder.getMusicList();
                 ForegroundMusicStateCache.getInstance().setAllMusicList(getMusicListBinder.getMusicList());
-                ForegroundMusicStateCache.getInstance().setAlbumList(getMusicListBinder.getMusicAlbumList());
-                ForegroundMusicStateCache.getInstance().setArtistList(getMusicListBinder.getMusicArtistList());
-                ForegroundMusicStateCache.getInstance().setFolderSortedMusicList(getMusicListBinder.getFolderSortedMusicList());
+                ForegroundMusicStateCache.getInstance().setAlbumList(Converter.Companion.covertMusicListToAlbumList(musicList));
+                ForegroundMusicStateCache.getInstance().setArtistList(Converter.Companion.convertMusicListToArtistList(musicList));
+                ForegroundMusicStateCache.getInstance().setFolderSortedMusicList(Converter.Companion.sortMusicListByFolder(musicList));
                 emitter.onNext(1);
                 emitter.onComplete();
             }
