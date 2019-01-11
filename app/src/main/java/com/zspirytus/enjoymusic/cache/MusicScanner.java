@@ -5,15 +5,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
-import android.util.SparseIntArray;
 
-import com.zspirytus.enjoymusic.entity.Album;
-import com.zspirytus.enjoymusic.entity.Artist;
-import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.global.MainApplication;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,15 +26,9 @@ public class MusicScanner {
     }
 
     private List<Music> mAllMusicList;
-    private List<Album> mAlbumList;
-    private List<Artist> mArtistList;
-    private List<FolderSortedMusic> mFolderSortedMusicList;
 
     private MusicScanner() {
         mAllMusicList = new ArrayList<>();
-        mAlbumList = new ArrayList<>();
-        mArtistList = new ArrayList<>();
-        mFolderSortedMusicList = new ArrayList<>();
     }
 
     public static MusicScanner getInstance() {
