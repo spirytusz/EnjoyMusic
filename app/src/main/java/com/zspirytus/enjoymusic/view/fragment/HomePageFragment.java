@@ -9,6 +9,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.enjoymusic.adapter.HeaderFooterViewWrapAdapter;
 import com.zspirytus.enjoymusic.adapter.ItemSpacingDecoration;
+import com.zspirytus.enjoymusic.adapter.SegmentLoadAdapter;
 import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
@@ -68,13 +69,10 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         mAdapter = new HeaderFooterViewWrapAdapter(mInnerAdapter) {
             @Override
             public void convertHeaderView(CommonViewHolder holder, int position) {
-                holder.setOnItemClickListener(R.id.random_play_text, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ForegroundMusicController.getInstance().setPlayMode(Constant.PlayMode.RANDOM);
-                        Music randomMusic = mMusicList.get(RandomUtil.rand(mMusicList.size()));
-                        ForegroundMusicController.getInstance().play(randomMusic);
-                    }
+                holder.setOnItemClickListener(R.id.random_play_text, (view) -> {
+                    ForegroundMusicController.getInstance().setPlayMode(Constant.PlayMode.RANDOM);
+                    Music randomMusic = mMusicList.get(RandomUtil.rand(mMusicList.size()));
+                    ForegroundMusicController.getInstance().play(randomMusic);
                 });
             }
 
@@ -90,7 +88,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         setNavIconAction(true);
         setupHeaderView();
         mHomePageRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManagerWithHeader(getParentActivity(), 2, 2));
-        mHomePageRecyclerView.setAdapter(mAdapter);
+        mHomePageRecyclerView.setAdapter(new SegmentLoadAdapter(mAdapter));
         mHomePageRecyclerView.setHasFixedSize(true);
         mHomePageRecyclerView.setNestedScrollingEnabled(false);
         mHomePageRecyclerView.addItemDecoration(new ItemSpacingDecoration(8, 8, 8, 8, 1, 2));

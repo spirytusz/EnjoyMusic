@@ -31,13 +31,14 @@ public abstract class HeaderFooterViewWrapAdapter extends RecyclerView.Adapter<C
             int headerLayoutId = mHeaderViews.get(HEADER_VIEW_TYPE);
             View headerView = LayoutInflater.from(parent.getContext()).inflate(headerLayoutId, parent, false);
             return new CommonViewHolder(headerView, headerLayoutId);
-        } else if (viewType == INNER_VIEW_TYPE) {
-            return mInnerAdapter.onCreateViewHolder(parent, viewType);
-        } else {
+        } else if (viewType == FOOTER_VIEW_TYPE) {
             int footerViewLayoutId = mFooterViews.get(FOOTER_VIEW_TYPE);
             View footerView = LayoutInflater.from(parent.getContext()).inflate(footerViewLayoutId, parent, false);
             return new CommonViewHolder(footerView, footerViewLayoutId);
+        } else {
+            return mInnerAdapter.onCreateViewHolder(parent, viewType);
         }
+
     }
 
     @Override
