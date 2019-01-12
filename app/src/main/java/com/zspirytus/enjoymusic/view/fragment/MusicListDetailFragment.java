@@ -7,20 +7,21 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
+import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
+import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
-import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
+import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 
 import java.io.File;
 import java.util.List;
@@ -30,7 +31,7 @@ import io.reactivex.disposables.Disposable;
 
 @LayoutIdInject(R.layout.fragment_music_list_detail_layout)
 public class MusicListDetailFragment extends BaseFragment
-        implements OnRecyclerViewItemClickListener {
+        implements OnItemClickListener {
 
     @ViewInject(R.id.collapsing_toolbar)
     private CollapsingToolbarLayout mCollapsing;
@@ -63,11 +64,7 @@ public class MusicListDetailFragment extends BaseFragment
             @Override
             public void convert(CommonViewHolder holder, Music music, int position) {
                 String path = music.getMusicThumbAlbumCoverPath();
-                if (path != null && !path.isEmpty()) {
-                    holder.setImagePath(R.id.item_cover, music.getMusicThumbAlbumCoverPath());
-                } else {
-                    holder.setImageResource(R.id.item_cover, R.drawable.defalut_cover);
-                }
+                ImageLoader.load(holder.getView(R.id.item_cover), path, R.drawable.defalut_cover);
                 holder.setText(R.id.item_title, music.getMusicName());
                 holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
                 holder.setVisibility(R.id.item_more_info_button, View.GONE);

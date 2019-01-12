@@ -6,18 +6,19 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
+import com.zspirytus.basesdk.recyclerview.adapter.ItemSpacingDecoration;
+import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
+import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
-import com.zspirytus.enjoymusic.adapter.ItemSpacingDecoration;
-import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
 
 import org.simple.eventbus.EventBus;
@@ -31,7 +32,7 @@ import java.util.List;
 
 @LayoutIdInject(R.layout.fragment_album_music_list_layout)
 public class AlbumMusicListFragment extends LazyLoadBaseFragment
-        implements OnRecyclerViewItemClickListener {
+        implements OnItemClickListener {
 
     @ViewInject(R.id.album_music_recycler_view)
     private RecyclerView mAlbumMusicRecyclerView;
@@ -65,7 +66,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
             @Override
             public void convert(CommonViewHolder holder, Album album, int position) {
                 String coverPath = album.getAlbumCoverPath();
-                holder.setImagePath(R.id.item_cover, coverPath);
+                ImageLoader.load(holder.getView(R.id.item_cover), coverPath, R.drawable.defalut_cover);
                 holder.setText(R.id.item_title, album.getAlbumName());
                 holder.setText(R.id.item_sub_title, album.getArtist());
                 holder.setOnItemClickListener(AlbumMusicListFragment.this);
@@ -80,7 +81,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
         mAlbumMusicRecyclerView.setAdapter(mAdapter);
         mAlbumMusicRecyclerView.setHasFixedSize(true);
         mAlbumMusicRecyclerView.setNestedScrollingEnabled(false);
-        mAlbumMusicRecyclerView.addItemDecoration(new ItemSpacingDecoration(16, 16, 16, 16, 1, 2));
+        mAlbumMusicRecyclerView.addItemDecoration(new ItemSpacingDecoration(getContext(), 16, 16, 16, 16, 1, 2));
     }
 
     @Override

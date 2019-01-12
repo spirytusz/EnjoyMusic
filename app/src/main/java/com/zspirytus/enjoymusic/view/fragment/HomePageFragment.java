@@ -5,21 +5,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
+import com.zspirytus.basesdk.recyclerview.adapter.HeaderFooterViewWrapAdapter;
+import com.zspirytus.basesdk.recyclerview.adapter.ItemSpacingDecoration;
+import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
+import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
+import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
-import com.zspirytus.enjoymusic.adapter.HeaderFooterViewWrapAdapter;
-import com.zspirytus.enjoymusic.adapter.ItemSpacingDecoration;
-import com.zspirytus.enjoymusic.adapter.SegmentLoadAdapter;
-import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
+import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 import com.zspirytus.enjoymusic.receivers.observer.HomePageRecyclerViewLoadObserver;
 import com.zspirytus.enjoymusic.utils.RandomUtil;
 
@@ -31,7 +32,7 @@ import java.util.List;
 
 @LayoutIdInject(R.layout.fragment_home_page_layout)
 public class HomePageFragment extends CommonHeaderBaseFragment
-        implements OnRecyclerViewItemClickListener {
+        implements OnItemClickListener {
 
     @ViewInject(R.id.home_page_recycler_view)
     private RecyclerView mHomePageRecyclerView;
@@ -59,7 +60,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             @Override
             public void convert(CommonViewHolder holder, Music music, int position) {
                 String coverPath = music.getMusicThumbAlbumCoverPath();
-                holder.setImagePath(R.id.item_cover, coverPath);
+                ImageLoader.load(holder.getView(R.id.item_cover), coverPath, R.drawable.defalut_cover);
                 holder.setText(R.id.item_title, music.getMusicName());
                 holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
                 holder.setOnItemClickListener(HomePageFragment.this);
@@ -91,7 +92,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         mHomePageRecyclerView.setAdapter(new SegmentLoadAdapter(mAdapter));
         mHomePageRecyclerView.setHasFixedSize(true);
         mHomePageRecyclerView.setNestedScrollingEnabled(false);
-        mHomePageRecyclerView.addItemDecoration(new ItemSpacingDecoration(8, 8, 8, 8, 1, 2));
+        mHomePageRecyclerView.addItemDecoration(new ItemSpacingDecoration(getContext(), 8, 8, 8, 8, 1, 2));
         notifyObserverRecyclerViewLoadFinish();
     }
 

@@ -5,23 +5,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
+import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
+import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
-import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
+import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 
 import java.util.List;
 
 @LayoutIdInject(R.layout.fragment_folder_sorted_music_list_layout)
 public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
-        implements OnRecyclerViewItemClickListener {
+        implements OnItemClickListener {
 
     @ViewInject(R.id.file_sorted_music_fragment_progress_bar)
     private ProgressBar mLoadProgressBar;
@@ -46,7 +47,7 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
             public void convert(CommonViewHolder holder, FolderSortedMusic folderSortedMusic, int position) {
                 Music firstMusicInFolder = folderSortedMusic.getFolderMusicList().get(0);
                 String coverPath = firstMusicInFolder.getMusicThumbAlbumCoverPath();
-                holder.setImagePath(R.id.item_cover, coverPath);
+                ImageLoader.load(holder.getView(R.id.item_cover), coverPath, R.drawable.defalut_cover);
                 holder.setText(R.id.item_title, folderSortedMusic.getParentFolderDir());
                 holder.setText(R.id.item_sub_title, folderSortedMusic.getFolderName());
                 holder.setOnItemClickListener(FolderSortedMusicListFragment.this);

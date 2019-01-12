@@ -36,6 +36,8 @@ public class MusicCoverFileCache {
                 file = new File(path);
                 if (file.exists()) {
                     mCoverFileCache.put(key, file);
+                } else {
+                    file = null;
                 }
             }
             return file;

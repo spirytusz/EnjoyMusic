@@ -4,19 +4,20 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
+import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
+import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.CommonRecyclerViewAdapter;
-import com.zspirytus.enjoymusic.adapter.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
+import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-import com.zspirytus.enjoymusic.listeners.OnRecyclerViewItemClickListener;
 import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeObserver;
 
 import org.simple.eventbus.EventBus;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 @LayoutIdInject(R.layout.fragment_play_list_layout)
 public class PlayListFragment extends CommonHeaderBaseFragment
-        implements OnRecyclerViewItemClickListener, PlayListChangeObserver {
+        implements OnItemClickListener, PlayListChangeObserver {
 
     @ViewInject(R.id.play_list_rv)
     private RecyclerView mPlayListRecyclerView;
@@ -50,7 +51,8 @@ public class PlayListFragment extends CommonHeaderBaseFragment
 
             @Override
             public void convert(CommonViewHolder holder, Music music, int position) {
-                holder.setImagePath(R.id.item_cover, music.getMusicThumbAlbumCoverPath());
+                String coverPath = music.getMusicThumbAlbumCoverPath();
+                ImageLoader.load(holder.getView(R.id.item_cover), coverPath, R.drawable.defalut_cover);
                 holder.setText(R.id.item_title, music.getMusicName());
                 holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
                 holder.setOnItemClickListener(PlayListFragment.this);

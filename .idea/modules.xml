@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/EnjoyMusic.iml" filepath="$PROJECT_DIR$/EnjoyMusic.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/EnjoyMusic.iml" filepath="$PROJECT_DIR$/.idea/EnjoyMusic.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/basesdk/basesdk.iml" filepath="$PROJECT_DIR$/basesdk/basesdk.iml" />
     </modules>
   </component>
 </project>

@@ -61,6 +61,8 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$android_arch_version"
     implementation "android.arch.lifecycle:viewmodel:$android_arch_version"
 
+    implementation project(path: ':basesdk')
+
 }
 repositories {
     mavenCentral()
