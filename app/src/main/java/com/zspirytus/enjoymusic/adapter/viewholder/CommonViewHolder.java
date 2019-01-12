@@ -33,6 +33,11 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
         mViews = new SparseArray<>();
     }
 
+    public CommonViewHolder(View view) {
+        super(view);
+        mItemView = view;
+    }
+
     /**
      * get ItemView
      *

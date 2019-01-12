@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CommonRecyclerViewAdapter<T> extends RecyclerView.Adapter<CommonViewHolder> {
-    private List<T> mList = new ArrayList<>();
+    protected List<T> mList = new ArrayList<>();
 
     @Override
     public CommonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
