@@ -1,8 +1,12 @@
-package com.zspirytus.enjoymusic.entity
+package com.zspirytus.enjoymusic.entity.converter
 
 import android.util.SparseIntArray
+import com.zspirytus.enjoymusic.entity.Album
+import com.zspirytus.enjoymusic.entity.Artist
+import com.zspirytus.enjoymusic.entity.FolderSortedMusic
+import com.zspirytus.enjoymusic.entity.Music
 import java.io.File
-import java.util.ArrayList
+import java.util.*
 
 class Converter {
 

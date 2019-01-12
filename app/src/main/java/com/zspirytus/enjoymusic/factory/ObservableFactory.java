@@ -6,8 +6,8 @@ import com.zspirytus.enjoymusic.IGetMusicList;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
-import com.zspirytus.enjoymusic.entity.Converter;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.entity.converter.Converter;
 
 import java.util.List;
 
