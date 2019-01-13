@@ -47,7 +47,7 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
 
     @Override
     protected void initView() {
-        setNavIconAction(true);
+        setNavIconAction();
         setupHeaderView();
         initTabLayout();
         mViewPager.setAdapter(mAdapter);
