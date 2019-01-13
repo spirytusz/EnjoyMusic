@@ -26,4 +26,19 @@ public class IGetMusicListImpl extends IGetMusicList.Stub {
     public List<Music> getMusicList() {
         return MusicScanner.getInstance().getAllMusicList();
     }
+
+    @Override
+    public List<Album> getAlbumList() {
+        return MusicScanner.getInstance().getAlbumList();
+    }
+
+    @Override
+    public List<Artist> getArtistList() {
+        return MusicScanner.getInstance().getArtistList();
+    }
+
+    @Override
+    public List<FolderSortedMusic> getFolderSortedMusic() {
+        return MusicScanner.getInstance().getFolderSortedMusicList();
+    }
 }

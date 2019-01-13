@@ -122,10 +122,6 @@ public class MainActivity extends BaseActivity
         }
         BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
         currentFragment.goBack();
-        if (currentFragment instanceof MusicPlayFragment) {
-            setLightStatusBarIconColor();
-            setLightNavigationBarColor();
-        }
     }
 
     @Override
@@ -203,10 +199,6 @@ public class MainActivity extends BaseActivity
         int enterAnim = shouldShowFragment.enterAnim();
         int exitAnim = 0;
         BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
-        if (shouldShowFragment instanceof MusicPlayFragment) {
-            setDefaultStatusBarIconColor();
-            setDefaultNavigationBarColor();
-        }
         if (currentFragment != null) {
             exitAnim = currentFragment.exitAnim();
         }

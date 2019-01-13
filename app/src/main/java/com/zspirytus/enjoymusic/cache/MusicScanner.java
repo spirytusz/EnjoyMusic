@@ -1,8 +1,8 @@
 package com.zspirytus.enjoymusic.cache;
 
-import android.content.ContentResolver;
+import android.content.ContentQueryMap;
+import android.content.ContentValues;
 import android.database.Cursor;
-import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
 import android.util.SparseIntArray;
@@ -17,6 +17,7 @@ import com.zspirytus.enjoymusic.utils.LogUtil;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 音乐扫描类，获取本机所有音乐。
@@ -55,44 +56,30 @@ public class MusicScanner {
     }
 
     public List<Album> getAlbumList() {
-        if (mAlbumList.isEmpty()) {
-            scanAlbum();
-        }
         return mAlbumList;
     }
 
     public List<Artist> getArtistList() {
-        if (mArtistList.isEmpty()) {
-            scanArtist();
-        }
         return mArtistList;
     }
 
     public List<FolderSortedMusic> getFolderSortedMusicList() {
-        if (mFolderSortedMusicList.isEmpty()) {
-            sortedMusicByFolder();
-        }
         return mFolderSortedMusicList;
     }
 
     private void scanMusic() {
         long start = System.currentTimeMillis();
+        SparseIntArray indexMemory = new SparseIntArray();
+        Map<String, ContentValues> albumQueryMap = prepareAlbums();
+        Map<String, ContentValues> artistQueryMap = prepareArtist();
         final String[] musicProjection = {
-                // Music path
                 MediaStore.Audio.AudioColumns.DATA,
-                // Music name
                 MediaStore.Audio.Media.TITLE,
-                // Music artist
                 MediaStore.Audio.Media.ARTIST,
-                // Music album
                 MediaStore.Audio.Media.ALBUM,
-                // Music album id
                 MediaStore.Audio.Media.ALBUM_ID,
-                // Music file size
                 MediaStore.Audio.Media.SIZE,
-                // Music duration
                 MediaStore.Audio.Media.DURATION,
-                // Music add date
                 MediaStore.Audio.Media.DATE_ADDED
         };
         final String selection = MediaStore.Audio.AudioColumns.IS_MUSIC + " != ? And "
@@ -107,118 +94,123 @@ public class MusicScanner {
         );
         if (musicCursor != null) {
             while (musicCursor.moveToNext()) {
+                // scan item music
                 String musicFilePath = musicCursor.getString(0);
                 String musicName = musicCursor.getString(1);
                 String musicArtist = musicCursor.getString(2);
                 String musicAlbumName = musicCursor.getString(3);
                 String albumId = musicCursor.getString(4);
-                String coverPath = getThumbAlbum(albumId);
+                String coverPath = albumQueryMap.get(albumId).getAsString(MediaStore.Audio.Albums.ALBUM_ART);
                 String musicFileSize = Formatter.formatFileSize(MainApplication.getBackgroundContext(), musicCursor.getLong(5));
                 long musicDuration = musicCursor.getLong(6);
                 long musicAddDate = musicCursor.getLong(7);
                 Music itemMusic = new Music(musicFilePath, musicName, musicArtist, musicAlbumName, coverPath, musicDuration, musicFileSize, musicAddDate);
                 mAllMusicList.add(itemMusic);
+
+                // add to folder sorted music list
+                String[] strings = getParentFileNameAndDir(musicFilePath);
+                String fileName = strings[0];
+                String parentDir = strings[1];
+                int findIndex = indexMemory.get(parentDir.hashCode());
+                if (findIndex <= 0) {
+                    List<Music> musicList = new ArrayList<>();
+                    musicList.add(itemMusic);
+                    FolderSortedMusic folderSortedMusic = new FolderSortedMusic(fileName, parentDir, musicList);
+                    mFolderSortedMusicList.add(folderSortedMusic);
+                    indexMemory.put(parentDir.hashCode(), mFolderSortedMusicList.size());
+                } else {
+                    mFolderSortedMusicList.get(findIndex - 1).getFolderMusicList().add(itemMusic);
+                }
             }
             musicCursor.close();
         }
         LogUtil.e(TAG, "Scan Used Time = " + (System.currentTimeMillis() - start) + "ms With ResultSet Size = " + mAllMusicList.size());
     }
 
-    private String getThumbAlbum(String albumId) {
-        ContentResolver resolver = MainApplication.getBackgroundContext().getContentResolver();
-        Uri albumUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-        String id = MediaStore.Audio.Albums._ID;
-        String[] selection = new String[]{MediaStore.Audio.Albums.ALBUM_ART};
-        String[] selectionArgs = new String[]{albumId};
-        Cursor cursor = resolver.query(albumUri, selection, id + "=?", selectionArgs, null);
-        if (cursor != null && cursor.moveToNext()) {
-            try {
-                return cursor.getString(0);
-            } finally {
-                cursor.close();
-            }
-        }
-        return null;
-    }
-
-    private void scanAlbum() {
+    private Map<String, ContentValues> prepareAlbums() {
         final String[] projection = {
-                MediaStore.Audio.AlbumColumns.ALBUM,
-                MediaStore.Audio.AlbumColumns.ALBUM_ART,
-                MediaStore.Audio.AlbumColumns.ARTIST,
-                MediaStore.Audio.AlbumColumns.FIRST_YEAR,
-                MediaStore.Audio.AlbumColumns.LAST_YEAR,
-                MediaStore.Audio.AlbumColumns.NUMBER_OF_SONGS,
+                MediaStore.Audio.Albums._ID,
+                MediaStore.Audio.Albums.ALBUM,
+                MediaStore.Audio.Albums.ALBUM_ART,
+                MediaStore.Audio.Albums.ARTIST,
+                MediaStore.Audio.Albums.FIRST_YEAR,
+                MediaStore.Audio.Albums.LAST_YEAR,
+                MediaStore.Audio.Albums.NUMBER_OF_SONGS,
         };
-        ContentResolver resolver = MainApplication.getBackgroundContext().getContentResolver();
-        Cursor cursor = resolver.query(
+        Cursor cursor = MainApplication.getBackgroundContext().getContentResolver().query(
                 MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                 projection,
                 null,
                 null,
                 null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String albumName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM));
-                String albumCoverFilePath = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_ART));
-                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.ARTIST));
-                String firstYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.FIRST_YEAR));
-                String lastYear = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.LAST_YEAR));
-                int numberOfSong = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.AlbumColumns.NUMBER_OF_SONGS));
-                Album album = new Album(albumName, albumCoverFilePath, artist, firstYear, lastYear, numberOfSong);
-                if (!mAlbumList.contains(album)) {
-                    mAlbumList.add(album);
-                }
-
-            }
+        ContentQueryMap queryMap = new ContentQueryMap(
+                cursor,
+                MediaStore.Audio.Albums._ID,
+                false,
+                null
+        );
+        Map<String, ContentValues> map = queryMap.getRows();
+        for (String albumId : map.keySet()) {
+            ContentValues values = map.get(albumId);
+            String albumName = values.getAsString(MediaStore.Audio.Albums.ALBUM);
+            String albumArt = values.getAsString(MediaStore.Audio.Albums.ALBUM_ART);
+            String artist = values.getAsString(MediaStore.Audio.Albums.ARTIST);
+            String firstYear = values.getAsString(MediaStore.Audio.Albums.FIRST_YEAR);
+            String lastYear = values.getAsString(MediaStore.Audio.Albums.LAST_YEAR);
+            int numberOfSongs = values.getAsInteger(MediaStore.Audio.Artists.Albums.NUMBER_OF_SONGS);
+            Album item = new Album(albumName, albumArt, artist, firstYear, lastYear, numberOfSongs);
+            mAlbumList.add(item);
         }
-        cursor.close();
+        try {
+            return map;
+        } finally {
+            cursor.close();
+            queryMap.close();
+        }
     }
 
-    private void scanArtist() {
+    private Map<String, ContentValues> prepareArtist() {
         final String[] projection = {
-                MediaStore.Audio.ArtistColumns.ARTIST,
-                MediaStore.Audio.ArtistColumns.NUMBER_OF_ALBUMS,
-                MediaStore.Audio.ArtistColumns.NUMBER_OF_TRACKS,
+                MediaStore.Audio.Artists._ID,
+                MediaStore.Audio.Artists.ARTIST,
+                MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
+                MediaStore.Audio.Artists.NUMBER_OF_TRACKS,
         };
-        ContentResolver resolver = MainApplication.getBackgroundContext().getContentResolver();
-        Cursor cursor = resolver.query(
+        Cursor cursor = MainApplication.getBackgroundContext().getContentResolver().query(
                 MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
                 projection,
                 null,
                 null,
                 null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String artistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.ARTIST));
-                int numberOfAlbums = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.NUMBER_OF_ALBUMS));
-                int numberOfTracks = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.ArtistColumns.NUMBER_OF_TRACKS));
-                Artist artist = new Artist(artistName, numberOfAlbums, numberOfTracks);
-                if (!mArtistList.contains(artist)) {
-                    mArtistList.add(artist);
-                }
-            }
-
+        ContentQueryMap queryMap = new ContentQueryMap(
+                cursor,
+                MediaStore.Audio.Artists._ID,
+                false,
+                null
+        );
+        Map<String, ContentValues> map = queryMap.getRows();
+        for (String artistId : map.keySet()) {
+            ContentValues values = map.get(artistId);
+            String artist = values.getAsString(MediaStore.Audio.Artists.ARTIST);
+            int numberOfAlbums = values.getAsInteger(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS);
+            int numberOfTracks = values.getAsInteger(MediaStore.Audio.Artists.NUMBER_OF_TRACKS);
+            Artist item = new Artist(artist, numberOfAlbums, numberOfTracks);
+            mArtistList.add(item);
         }
-        cursor.close();
+        try {
+            return map;
+        } finally {
+            cursor.close();
+            queryMap.close();
+        }
     }
 
-    private void sortedMusicByFolder() {
-        SparseIntArray indexMemory = new SparseIntArray();
-        for (Music music : getAllMusicList()) {
-            File file = new File(music.getMusicFilePath());
-            String parentDir = file.getParentFile().getParentFile().getPath();
-            int findIndex = indexMemory.get(parentDir.hashCode());
-            if (findIndex <= 0) {
-                List<Music> musicList = new ArrayList<>();
-                musicList.add(music);
-                FolderSortedMusic folderSortedMusic = new FolderSortedMusic(file.getParentFile().getName(), file.getParentFile().getParentFile().getPath(), musicList);
-                mFolderSortedMusicList.add(folderSortedMusic);
-                indexMemory.put(parentDir.hashCode(), mFolderSortedMusicList.size());
-            } else {
-                mFolderSortedMusicList.get(findIndex - 1).getFolderMusicList().add(music);
-            }
-        }
+    private String[] getParentFileNameAndDir(String path) {
+        File parent = new File(path).getParentFile();
+        return new String[]{
+                parent.getName(),
+                parent.getParentFile().getAbsolutePath()
+        };
     }
 
 }

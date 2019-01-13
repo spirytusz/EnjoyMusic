@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.LogUtil;
@@ -31,8 +30,6 @@ public abstract class BaseActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTransparentStatusBar();
-        setLightStatusBarIconColor();
-        setLightNavigationBarColor();
 
         autoInjectLayoutId();
         autoInjectAllField();
@@ -77,24 +74,6 @@ public abstract class BaseActivity extends AppCompatActivity
         }
     }
 
-    public void setLightStatusBarIconColor() {
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View decorView = getWindow().getDecorView();
-            int currentOptions = decorView.getSystemUiVisibility();
-            currentOptions |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            decorView.setSystemUiVisibility(currentOptions);
-        }*/
-    }
-
-    public void setDefaultStatusBarIconColor() {
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View decorView = getWindow().getDecorView();
-            int currentOptions = decorView.getSystemUiVisibility();
-            currentOptions &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            decorView.setSystemUiVisibility(currentOptions);
-        }*/
-    }
-
     public void setTransparentNavBar() {
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -103,26 +82,6 @@ public abstract class BaseActivity extends AppCompatActivity
     public void setDefaultNavBar() {
         Window w = getWindow();
         w.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-    }
-
-    public void setLightNavigationBarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            View decorView = getWindow().getDecorView();
-            int currentOptions = decorView.getSystemUiVisibility();
-            currentOptions |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-            decorView.setSystemUiVisibility(currentOptions);
-            getWindow().setNavigationBarColor(getColor(R.color.white));
-        }
-    }
-
-    public void setDefaultNavigationBarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            View decorView = getWindow().getDecorView();
-            int currentOptions = decorView.getSystemUiVisibility();
-            currentOptions &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-            decorView.setSystemUiVisibility(currentOptions);
-            getWindow().setNavigationBarColor(getColor(R.color.white));
-        }
     }
 
     public void setFullScreenOrNot(boolean isFullScreen) {

@@ -106,6 +106,8 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
         mCover.setRotating(!hidden);
         if (!hidden) {
             getParentActivity().setTransparentNavBar();
+        } else {
+            getParentActivity().setDefaultNavBar();
         }
     }
 
