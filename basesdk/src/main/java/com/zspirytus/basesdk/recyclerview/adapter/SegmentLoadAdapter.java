@@ -46,8 +46,9 @@ public class SegmentLoadAdapter extends Adapter<CommonViewHolder> {
 
     @Override
     public int getItemCount() {
-        return mHeadIndex + mHeaderViewCount + mSegmentSize <= mInnerAdapter.getItemCount() ?
-                mHeadIndex + mHeaderViewCount + mSegmentSize : mInnerAdapter.getItemCount();
+        int size = mHeadIndex + mHeaderViewCount + mSegmentSize;
+        int maxSize = mInnerAdapter.getItemCount();
+        return size <= maxSize ? size : maxSize;
     }
 
     @Override
@@ -94,6 +95,16 @@ public class SegmentLoadAdapter extends Adapter<CommonViewHolder> {
 
     private void loadMore() {
         mHeadIndex += mSegmentSize;
-        notifyItemRangeChanged(mHeadIndex, MAX_LOAD_SEGMENT);
+        int total = mHeadIndex + mHeaderViewCount;
+        if (total < mInnerAdapter.getItemCount()) {
+            if (total < mInnerAdapter.getItemCount() - mSegmentSize) {
+                notifyItemRangeInserted(total, mSegmentSize);
+            } else {
+                int segmentSize = mInnerAdapter.getItemCount() - total;
+                notifyItemRangeInserted(total, segmentSize);
+            }
+        } else {
+            mHeadIndex -= mSegmentSize;
+        }
     }
 }

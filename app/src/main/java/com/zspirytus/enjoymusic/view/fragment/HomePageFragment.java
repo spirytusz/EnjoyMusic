@@ -99,10 +99,10 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         mHomePageRecyclerView.setNestedScrollingEnabled(false);
         mHomePageRecyclerView.addItemDecoration(
                 new ItemSpacingDecoration.Builder(
-                        PixelsUtil.dp2px(getContext(), 16),
-                        PixelsUtil.dp2px(getContext(), 16),
-                        PixelsUtil.dp2px(getContext(), 16),
-                        PixelsUtil.dp2px(getContext(), 16)
+                        PixelsUtil.dp2px(getContext(), 12),
+                        PixelsUtil.dp2px(getContext(), 12),
+                        PixelsUtil.dp2px(getContext(), 12),
+                        PixelsUtil.dp2px(getContext(), 12)
                 ).setHeaderViewCount(1).build()
         );
         notifyObserverRecyclerViewLoadFinish();
