@@ -12,9 +12,9 @@ import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.global.MainApplication;
+import com.zspirytus.enjoymusic.utils.FileUtil;
 import com.zspirytus.enjoymusic.utils.LogUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -108,16 +108,18 @@ public class MusicScanner {
                 mAllMusicList.add(itemMusic);
 
                 // add to folder sorted music list
-                String[] strings = getParentFileNameAndDir(musicFilePath);
-                String fileName = strings[0];
-                String parentDir = strings[1];
-                int findIndex = indexMemory.get(parentDir.hashCode());
-                if (findIndex <= 0) {
+                int hash = FileUtil.getParent(musicFilePath).hashCode();
+                int findIndex = indexMemory.get(hash, -1);
+                if (findIndex == -1) {
+                    String[] strings = FileUtil.getParentFileNameAndDir(musicFilePath);
+                    String fileName = strings[0];
+                    String parentDir = strings[1];
                     List<Music> musicList = new ArrayList<>();
                     musicList.add(itemMusic);
+                    LogUtil.e(TAG, "fileName = " + fileName + "\tparentDir = " + parentDir);
                     FolderSortedMusic folderSortedMusic = new FolderSortedMusic(fileName, parentDir, musicList);
                     mFolderSortedMusicList.add(folderSortedMusic);
-                    indexMemory.put(parentDir.hashCode(), mFolderSortedMusicList.size());
+                    indexMemory.put(hash, mFolderSortedMusicList.size());
                 } else {
                     mFolderSortedMusicList.get(findIndex - 1).getFolderMusicList().add(itemMusic);
                 }
@@ -203,14 +205,6 @@ public class MusicScanner {
             cursor.close();
             queryMap.close();
         }
-    }
-
-    private String[] getParentFileNameAndDir(String path) {
-        File parent = new File(path).getParentFile();
-        return new String[]{
-                parent.getName(),
-                parent.getParentFile().getAbsolutePath()
-        };
     }
 
 }
