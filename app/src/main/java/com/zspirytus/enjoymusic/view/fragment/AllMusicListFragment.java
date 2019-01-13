@@ -2,6 +2,7 @@ package com.zspirytus.enjoymusic.view.fragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -25,6 +26,8 @@ import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import org.simple.eventbus.EventBus;
 
 import java.util.List;
+
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 
 /**
  * Fragment: 显示本地全部音乐列表
@@ -106,7 +109,10 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
         mMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mMusicRecyclerView.setHasFixedSize(true);
         mMusicRecyclerView.setNestedScrollingEnabled(false);
-        mMusicRecyclerView.setAdapter(new SegmentLoadAdapter(mMusicRecyclerViewAdapter));
+        ScaleInAnimationAdapter adapter = new ScaleInAnimationAdapter(new SegmentLoadAdapter(mMusicRecyclerViewAdapter));
+        adapter.setDuration(618);
+        adapter.setInterpolator(new DecelerateInterpolator());
+        mMusicRecyclerView.setAdapter(adapter);
     }
 
     public static AllMusicListFragment getInstance() {

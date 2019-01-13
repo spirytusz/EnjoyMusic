@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.view.fragment;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
@@ -22,9 +23,12 @@ import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.receivers.observer.HomePageRecyclerViewLoadObserver;
+import com.zspirytus.enjoymusic.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.utils.RandomUtil;
 
 import java.util.List;
+
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 
 /**
  * Created by ZSpirytus on 2018/9/14.
@@ -87,10 +91,20 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     @Override
     protected void initView() {
         mHomePageRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManagerWithHeader(getParentActivity(), 2, 2));
-        mHomePageRecyclerView.setAdapter(new SegmentLoadAdapter(mAdapter));
+        ScaleInAnimationAdapter adapter = new ScaleInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
+        adapter.setDuration(618);
+        adapter.setInterpolator(new DecelerateInterpolator());
+        mHomePageRecyclerView.setAdapter(adapter);
         mHomePageRecyclerView.setHasFixedSize(true);
         mHomePageRecyclerView.setNestedScrollingEnabled(false);
-        mHomePageRecyclerView.addItemDecoration(new ItemSpacingDecoration(getContext(), 8, 8, 8, 8, 1, 2));
+        mHomePageRecyclerView.addItemDecoration(
+                new ItemSpacingDecoration.Builder(
+                        PixelsUtil.dp2px(getContext(), 16),
+                        PixelsUtil.dp2px(getContext(), 16),
+                        PixelsUtil.dp2px(getContext(), 16),
+                        PixelsUtil.dp2px(getContext(), 16)
+                ).setHeaderViewCount(1).build()
+        );
         notifyObserverRecyclerViewLoadFinish();
     }
 

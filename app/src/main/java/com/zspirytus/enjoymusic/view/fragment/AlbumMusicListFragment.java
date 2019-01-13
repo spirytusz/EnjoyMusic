@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.view.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -21,10 +22,13 @@ import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.AnimationUtil;
+import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 import org.simple.eventbus.EventBus;
 
 import java.util.List;
+
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 
 /**
  * Fragment 显示以专辑名筛选的音乐列表
@@ -79,10 +83,20 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     @Override
     protected void initView() {
         mAlbumMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManager(getParentActivity(), 2));
-        mAlbumMusicRecyclerView.setAdapter(new SegmentLoadAdapter(mAdapter));
+        ScaleInAnimationAdapter adapter = new ScaleInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
+        adapter.setDuration(618);
+        adapter.setInterpolator(new DecelerateInterpolator());
+        mAlbumMusicRecyclerView.setAdapter(adapter);
         mAlbumMusicRecyclerView.setHasFixedSize(true);
         mAlbumMusicRecyclerView.setNestedScrollingEnabled(false);
-        mAlbumMusicRecyclerView.addItemDecoration(new ItemSpacingDecoration(getContext(), 16, 16, 16, 16, 1, 2));
+        mAlbumMusicRecyclerView.addItemDecoration(
+                new ItemSpacingDecoration.Builder(
+                        PixelsUtil.dp2px(getContext(), 16),
+                        PixelsUtil.dp2px(getContext(), 16),
+                        PixelsUtil.dp2px(getContext(), 16),
+                        PixelsUtil.dp2px(getContext(), 16)
+                ).build()
+        );
     }
 
     @Override

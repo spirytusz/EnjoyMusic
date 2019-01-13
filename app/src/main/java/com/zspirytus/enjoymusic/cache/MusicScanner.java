@@ -13,7 +13,6 @@ import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.utils.FileUtil;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +67,6 @@ public class MusicScanner {
     }
 
     private void scanMusic() {
-        long start = System.currentTimeMillis();
         SparseIntArray indexMemory = new SparseIntArray();
         Map<String, ContentValues> albumQueryMap = prepareAlbums();
         Map<String, ContentValues> artistQueryMap = prepareArtist();
@@ -116,7 +114,6 @@ public class MusicScanner {
                     String parentDir = strings[1];
                     List<Music> musicList = new ArrayList<>();
                     musicList.add(itemMusic);
-                    LogUtil.e(TAG, "fileName = " + fileName + "\tparentDir = " + parentDir);
                     FolderSortedMusic folderSortedMusic = new FolderSortedMusic(fileName, parentDir, musicList);
                     mFolderSortedMusicList.add(folderSortedMusic);
                     indexMemory.put(hash, mFolderSortedMusicList.size());
@@ -126,7 +123,6 @@ public class MusicScanner {
             }
             musicCursor.close();
         }
-        LogUtil.e(TAG, "Scan Used Time = " + (System.currentTimeMillis() - start) + "ms With ResultSet Size = " + mAllMusicList.size());
     }
 
     private Map<String, ContentValues> prepareAlbums() {

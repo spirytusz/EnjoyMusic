@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.view.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -22,6 +23,8 @@ import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import org.simple.eventbus.EventBus;
 
 import java.util.List;
+
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 
 /**
  * Fragment 以艺术家名筛选的音乐列表
@@ -78,7 +81,10 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
         mArtistMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mArtistMusicRecyclerView.setHasFixedSize(true);
         mArtistMusicRecyclerView.setNestedScrollingEnabled(false);
-        mArtistMusicRecyclerView.setAdapter(new SegmentLoadAdapter(mAdapter));
+        ScaleInAnimationAdapter adapter = new ScaleInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
+        adapter.setDuration(618);
+        adapter.setInterpolator(new DecelerateInterpolator());
+        mArtistMusicRecyclerView.setAdapter(adapter);
     }
 
     @Override

@@ -89,10 +89,11 @@ public class SegmentLoadAdapter extends Adapter<CommonViewHolder> {
                 }
             });
         }
+        notifyItemRangeChanged(0, mSegmentSize + mHeaderViewCount);
     }
 
     private void loadMore() {
         mHeadIndex += mSegmentSize;
-        notifyDataSetChanged();
+        notifyItemRangeChanged(mHeadIndex, MAX_LOAD_SEGMENT);
     }
 }
