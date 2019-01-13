@@ -20,7 +20,7 @@
     </style>
 
     <style name="HomeToolbar_TextView_Light">
-        <item name="android:textColor">#666666</item>
+        <item name="android:textColor">#ffffff</item>
         <item name="android:textSize">22sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -110,10 +110,10 @@
     </style>
 
     <style name="TabLayoutStyle">
-        <item name="tabSelectedTextColor">@color/colorAccent</item>
+        <item name="tabSelectedTextColor">@color/white</item>
         <item name="tabTextColor">@color/grey</item>
-        <item name="tabIndicatorColor">@color/colorAccent</item>
-        <item name="tabBackground">@color/white</item>
+        <item name="tabIndicatorColor">@color/white</item>
+        <item name="tabBackground">@color/colorPrimary</item>
         <item name="tabGravity">center</item>
         <item name="tabMode">fixed</item>
         <item name="tabMinWidth">135dp</item>

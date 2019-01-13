@@ -86,8 +86,6 @@ public class HomePageFragment extends CommonHeaderBaseFragment
 
     @Override
     protected void initView() {
-        setNavIconAction();
-        setupHeaderView();
         mHomePageRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManagerWithHeader(getParentActivity(), 2, 2));
         mHomePageRecyclerView.setAdapter(new SegmentLoadAdapter(mAdapter));
         mHomePageRecyclerView.setHasFixedSize(true);

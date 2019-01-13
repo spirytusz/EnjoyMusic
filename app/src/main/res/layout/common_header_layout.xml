@@ -6,7 +6,7 @@
         android:id="@+id/status_bar"
         android:layout_width="match_parent"
         android:layout_height="25dp"
-        android:background="@color/white"
+        android:background="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -15,12 +15,34 @@
         android:id="@+id/tool_bar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@android:color/transparent"
+        android:background="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/status_bar" />
 
-    <android.support.v7.widget.CardView
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/common_header_nav_btn"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        android:focusable="true"
+        android:src="@drawable/ic_menu_white_24dp"
+        app:layout_constraintBottom_toBottomOf="@id/tool_bar"
+        app:layout_constraintStart_toStartOf="@id/tool_bar"
+        app:layout_constraintTop_toTopOf="@id/tool_bar" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/common_header_title"
+        style="@style/HomeToolbar_TextView_Light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/app_name"
+        app:layout_constraintBottom_toBottomOf="@id/common_header_nav_btn"
+        app:layout_constraintStart_toEndOf="@id/common_header_nav_btn"
+        app:layout_constraintTop_toTopOf="@id/common_header_nav_btn" />
+
+    <!--<android.support.v7.widget.CardView
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
@@ -61,6 +83,6 @@
                 app:layout_constraintTop_toTopOf="@id/common_header_nav_btn" />
         </android.support.constraint.ConstraintLayout>
 
-    </android.support.v7.widget.CardView>
+    </android.support.v7.widget.CardView>-->
 
 </merge>

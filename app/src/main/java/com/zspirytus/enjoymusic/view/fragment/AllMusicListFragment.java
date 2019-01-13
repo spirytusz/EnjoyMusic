@@ -6,6 +6,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
+import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
@@ -105,7 +106,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
         mMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mMusicRecyclerView.setHasFixedSize(true);
         mMusicRecyclerView.setNestedScrollingEnabled(false);
-        mMusicRecyclerView.setAdapter(mMusicRecyclerViewAdapter);
+        mMusicRecyclerView.setAdapter(new SegmentLoadAdapter(mMusicRecyclerViewAdapter));
     }
 
     public static AllMusicListFragment getInstance() {

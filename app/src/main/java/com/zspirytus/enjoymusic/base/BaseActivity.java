@@ -78,21 +78,21 @@ public abstract class BaseActivity extends AppCompatActivity
     }
 
     public void setLightStatusBarIconColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View decorView = getWindow().getDecorView();
             int currentOptions = decorView.getSystemUiVisibility();
             currentOptions |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             decorView.setSystemUiVisibility(currentOptions);
-        }
+        }*/
     }
 
     public void setDefaultStatusBarIconColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View decorView = getWindow().getDecorView();
             int currentOptions = decorView.getSystemUiVisibility();
             currentOptions &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             decorView.setSystemUiVisibility(currentOptions);
-        }
+        }*/
     }
 
     public void setTransparentNavBar() {

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.adapter.ItemSpacingDecoration;
+import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
@@ -78,7 +79,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     @Override
     protected void initView() {
         mAlbumMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManager(getParentActivity(), 2));
-        mAlbumMusicRecyclerView.setAdapter(mAdapter);
+        mAlbumMusicRecyclerView.setAdapter(new SegmentLoadAdapter(mAdapter));
         mAlbumMusicRecyclerView.setHasFixedSize(true);
         mAlbumMusicRecyclerView.setNestedScrollingEnabled(false);
         mAlbumMusicRecyclerView.addItemDecoration(new ItemSpacingDecoration(getContext(), 16, 16, 16, 16, 1, 2));
