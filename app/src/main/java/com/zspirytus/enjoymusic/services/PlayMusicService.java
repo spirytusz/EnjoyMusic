@@ -94,18 +94,14 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
     @Override
     public void onPlay() {
         Notification currentNotification = NotificationHelper.getInstance().getCurrentNotification();
-        startForeground(233, currentNotification);
-        MediaPlayController.getInstance().setOnPlayListener(null);
-    }
-
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        /**
-         * 当用户处在当前Activity界面在多任务界面划掉本App时，会回调此方法
-         * 请不要执行super.onTaskRemoved(rootIntent);
-         * 否则Service会被杀掉！！
-         */
+        int notificationNotifyId = NotificationHelper.getInstance().getNotificationNotifyId();
         // TODO: 2019/1/14 用户在任意位置（Launcher, 其他App可见时）从多任务界面杀掉本App保活方法待研究。
+        /**
+         * notificationNotifyId 不能为0
+         * @see #startForeground(int, Notification)
+         */
+        startForeground(notificationNotifyId, currentNotification);
+        MediaPlayController.getInstance().setOnPlayListener(null);
     }
 
     private void handleStatusBarEvent(Intent intent) {

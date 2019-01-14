@@ -90,6 +90,10 @@ public class NotificationHelper {
         }
     }
 
+    public int getNotificationNotifyId() {
+        return NOTIFICATION_MANAGER_NOTIFY_ID;
+    }
+
     public void cancelNotification() {
         mNotificationManager.cancel(NOTIFICATION_MANAGER_NOTIFY_ID);
     }
