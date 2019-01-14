@@ -49,7 +49,7 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         handleStatusBarEvent(intent);
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     @Override
