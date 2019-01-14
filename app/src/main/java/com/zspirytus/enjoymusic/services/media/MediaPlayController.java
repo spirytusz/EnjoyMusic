@@ -214,10 +214,10 @@ public class MediaPlayController extends MusicStateObservable
         mediaPlayer.start();
         setState(STATE_STARTED);
         mPlayingTimer.start();
-        if(mOnPlayListener != null)
-            mOnPlayListener.onPlay();
         NotificationHelper.getInstance().showNotification(currentPlayingMusic);
         NotificationHelper.getInstance().updateNotification(true);
+        if(mOnPlayListener != null)
+            mOnPlayListener.onPlay();
         notifyAllObserverPlayStateChange(true);
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
         CurrentPlayingMusicCache.getInstance().setCurrentPlayingMusic(currentPlayingMusic);

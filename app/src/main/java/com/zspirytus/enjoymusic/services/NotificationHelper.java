@@ -41,7 +41,7 @@ public class NotificationHelper {
         static NotificationHelper INSTANCE = new NotificationHelper();
     }
 
-    private static final int NOTIFICATION_MANAGER_NOTIFY_ID = 1;
+    private static final int NOTIFICATION_MANAGER_NOTIFY_ID = 233;
 
     private final NotificationManager mNotificationManager;
 
