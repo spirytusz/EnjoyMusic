@@ -27,7 +27,7 @@ import org.simple.eventbus.EventBus;
 
 import java.util.List;
 
-import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
 /**
  * Fragment: 显示本地全部音乐列表
@@ -109,7 +109,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
         mMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mMusicRecyclerView.setHasFixedSize(true);
         mMusicRecyclerView.setNestedScrollingEnabled(false);
-        ScaleInAnimationAdapter adapter = new ScaleInAnimationAdapter(new SegmentLoadAdapter(mMusicRecyclerViewAdapter));
+        AlphaInAnimationAdapter adapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mMusicRecyclerViewAdapter));
         adapter.setDuration(618);
         adapter.setInterpolator(new DecelerateInterpolator());
         mMusicRecyclerView.setAdapter(adapter);

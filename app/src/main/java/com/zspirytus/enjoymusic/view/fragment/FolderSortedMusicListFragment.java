@@ -3,9 +3,11 @@ package com.zspirytus.enjoymusic.view.fragment;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
+import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
@@ -19,6 +21,8 @@ import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
 import java.util.List;
+
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
 @LayoutIdInject(R.layout.fragment_folder_sorted_music_list_layout)
 public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
@@ -61,7 +65,10 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
         mFileSortedMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mFileSortedMusicRecyclerView.setHasFixedSize(true);
         mFileSortedMusicRecyclerView.setNestedScrollingEnabled(false);
-        mFileSortedMusicRecyclerView.setAdapter(mAdapter);
+        AlphaInAnimationAdapter adapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
+        adapter.setDuration(618);
+        adapter.setInterpolator(new DecelerateInterpolator());
+        mFileSortedMusicRecyclerView.setAdapter(adapter);
     }
 
     @Override

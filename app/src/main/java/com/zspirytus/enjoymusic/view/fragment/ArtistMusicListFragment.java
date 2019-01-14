@@ -24,7 +24,7 @@ import org.simple.eventbus.EventBus;
 
 import java.util.List;
 
-import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
 /**
  * Fragment 以艺术家名筛选的音乐列表
@@ -81,7 +81,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
         mArtistMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mArtistMusicRecyclerView.setHasFixedSize(true);
         mArtistMusicRecyclerView.setNestedScrollingEnabled(false);
-        ScaleInAnimationAdapter adapter = new ScaleInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
+        AlphaInAnimationAdapter adapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         adapter.setDuration(618);
         adapter.setInterpolator(new DecelerateInterpolator());
         mArtistMusicRecyclerView.setAdapter(adapter);
