@@ -13,6 +13,7 @@ import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
+import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.impl.binder.IBinderPoolImpl;
 import com.zspirytus.enjoymusic.interfaces.IOnRemotePlayedListener;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
@@ -21,7 +22,6 @@ import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
 import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.StatusBarUtil;
-import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.activity.MainActivity;
 
 /**
@@ -62,7 +62,7 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
     @Override
     public boolean onUnbind(Intent intent) {
         MediaPlayController.getInstance().timingToClearNotification();
-        return true;
+        return super.onUnbind(intent);
     }
 
     @Override
@@ -104,12 +104,20 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
         MediaPlayController.getInstance().setOnPlayListener(null);
     }
 
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        NotificationHelper.getInstance().showNotification(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+        Notification currentNotification = NotificationHelper.getInstance().getCurrentNotification();
+        int notificationNotifyId = NotificationHelper.getInstance().getNotificationNotifyId();
+        startForeground(notificationNotifyId, currentNotification);
+    }
+
     private void handleStatusBarEvent(Intent intent) {
         if (intent != null) {
             String event = intent.getStringExtra(Constant.NotificationEvent.EXTRA);
             switch (event) {
                 case Constant.NotificationEvent.SINGLE_CLICK:
-                    MainActivity.startActivity(this, Constant.NotificationEvent.EXTRA, Constant.NotificationEvent.ACTION_NAME);
+                    startActivity();
                     StatusBarUtil.collapseStatusBar(this);
                     break;
                 case Constant.NotificationEvent.PREVIOUS:
@@ -126,5 +134,12 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
                     break;
             }
         }
+    }
+
+    private void startActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        Music music = CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic();
+        intent.putExtra(Constant.NotificationEvent.EXTRA, music);
+        this.startActivity(intent);
     }
 }

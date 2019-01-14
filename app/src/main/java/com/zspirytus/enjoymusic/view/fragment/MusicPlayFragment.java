@@ -137,7 +137,10 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     protected void initData() {
-        mCurrentPlayingMusic = ForegroundMusicStateCache.getInstance().getCurrentPlayingMusic();
+        mCurrentPlayingMusic = getArguments().getParcelable("music");
+        if (mCurrentPlayingMusic == null) {
+            mCurrentPlayingMusic = ForegroundMusicStateCache.getInstance().getCurrentPlayingMusic();
+        }
         mPlayModeResId = new SparseIntArray();
         mPlayModeResId.put(Constant.PlayMode.LIST_LOOP, R.drawable.ic_list_loop_pressed);
         mPlayModeResId.put(Constant.PlayMode.RANDOM, R.drawable.ic_random_pressed);

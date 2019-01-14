@@ -1,7 +1,6 @@
 package com.zspirytus.enjoymusic.view.activity;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -106,10 +105,14 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        String action = intent.getStringExtra(Constant.NotificationEvent.EXTRA);
-        if (Constant.NotificationEvent.ACTION_NAME.equals(action)) {
+        Music action = intent.getParcelableExtra(Constant.NotificationEvent.EXTRA);
+        if (action != null) {
             if (!FragmentVisibilityManager.getInstance().getCurrentFragment().getClass().getSimpleName().equals("MusicPlayingFragment")) {
-                showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
+                MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("music", action);
+                fragment.setArguments(bundle);
+                showCastFragment(fragment);
             }
         }
     }
@@ -240,9 +243,13 @@ public class MainActivity extends BaseActivity
                     @Override
                     public void onComplete() {
                         FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
-                        String action = getIntent().getStringExtra(Constant.NotificationEvent.EXTRA);
-                        if (Constant.NotificationEvent.ACTION_NAME.equals(action)) {
-                            showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
+                        Music action = getIntent().getParcelableExtra(Constant.NotificationEvent.EXTRA);
+                        if (action != null) {
+                            MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("music", action);
+                            fragment.setArguments(bundle);
+                            showCastFragment(fragment);
                             BaseFragment homeFragment = FragmentFactory.getInstance().get(HomePageFragment.class);
                             FragmentVisibilityManager.getInstance().addToBackStack(homeFragment);
                         } else {
@@ -319,13 +326,5 @@ public class MainActivity extends BaseActivity
                         setFullScreenOrNot(false);
                     }
                 });
-    }
-
-    public static void startActivity(Context context, String extra, String action) {
-        Intent intent = new Intent(context, MainActivity.class);
-        if (extra != null && action != null) {
-            intent.putExtra(extra, action);
-        }
-        context.startActivity(intent);
     }
 }
