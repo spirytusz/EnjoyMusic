@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.cache;
+package com.zspirytus.enjoymusic.cache.viewmodels;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;

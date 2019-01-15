@@ -15,7 +15,7 @@ import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
-import com.zspirytus.enjoymusic.cache.MusicDataSharedViewModels;
+import com.zspirytus.enjoymusic.cache.viewmodels.MusicDataSharedViewModels;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;

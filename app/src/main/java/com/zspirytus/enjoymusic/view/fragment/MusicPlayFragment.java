@@ -1,5 +1,8 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.arch.lifecycle.ViewModelProviders;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.SparseIntArray;
@@ -12,25 +15,18 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.cache.viewmodels.MusicPlayFragmentViewModels;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.impl.binder.IPlayMusicChangeObserverImpl;
-import com.zspirytus.enjoymusic.impl.binder.IPlayProgressChangeObserverImpl;
-import com.zspirytus.enjoymusic.impl.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
-import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
-import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 import com.zspirytus.enjoymusic.view.widget.AutoRotateCircleImage;
 import com.zspirytus.enjoymusic.view.widget.BlurImageView;
 
 import java.io.File;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Fragment: 显示音乐播放界面
@@ -38,8 +34,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  */
 
 @LayoutIdInject(R.layout.fragment_music_play_layout)
-public class MusicPlayFragment extends BaseFragment implements View.OnClickListener, MusicPlayStateObserver,
-        MusicPlayProgressObserver, PlayedMusicChangeObserver {
+public class MusicPlayFragment extends BaseFragment implements View.OnClickListener {
 
     @ViewInject(R.id.background)
     private BlurImageView mBackground;
@@ -69,6 +64,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     @ViewInject(R.id.next)
     private ImageView mNextButton;
 
+    private MusicPlayFragmentViewModels mViewModel;
     private Music mCurrentPlayingMusic;
     private SparseIntArray mPlayModeResId;
 
@@ -112,39 +108,13 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     }
 
     @Override
-    public void onProgressChanged(final int progress) {
-        AndroidSchedulers.mainThread().scheduleDirect(() -> {
-            mSeekBar.setProgress(progress);
-        });
-    }
-
-    @Override
-    public void onPlayingStateChanged(final boolean isPlaying) {
-        AndroidSchedulers.mainThread().scheduleDirect(() -> {
-            setButtonSrc(isPlaying);
-            mCover.setRotating(isPlaying);
-        });
-    }
-
-    @Override
-    public void onPlayedMusicChanged(final Music music) {
-        AndroidSchedulers.mainThread().scheduleDirect(() -> {
-            mCurrentPlayingMusic = music;
-            setView(music);
-            mCover.resetRotation();
-        });
-    }
-
-    @Override
     protected void initData() {
-        mCurrentPlayingMusic = getArguments().getParcelable("music");
-        if (mCurrentPlayingMusic == null) {
-            mCurrentPlayingMusic = ForegroundMusicStateCache.getInstance().getCurrentPlayingMusic();
-        }
         mPlayModeResId = new SparseIntArray();
         mPlayModeResId.put(Constant.PlayMode.LIST_LOOP, R.drawable.ic_list_loop_pressed);
         mPlayModeResId.put(Constant.PlayMode.RANDOM, R.drawable.ic_random_pressed);
         mPlayModeResId.put(Constant.PlayMode.SINGLE_LOOP, R.drawable.ic_single_loop_pressed);
+        mViewModel = ViewModelProviders.of(this).get(MusicPlayFragmentViewModels.class);
+        mViewModel.init();
     }
 
     @Override
@@ -166,26 +136,35 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel.getPlayProgress().observe(this, (values) -> {
+            if (values != null) {
+                mSeekBar.setProgress(values);
+            }
+        });
+        mViewModel.getPlayState().observe(this, (values) -> {
+            if (values != null) {
+                setButtonSrc(values);
+                mCover.setRotating(values);
+            }
+        });
+        mViewModel.getCurrentPlayingMusic().observe(this, (values) -> {
+            if (values != null) {
+                mCurrentPlayingMusic = values;
+                setView(values);
+                mCover.resetRotation();
+            }
+        });
+    }
+
+    @Override
     public int getContainerId() {
         return R.id.full_fragment_container;
     }
 
     @Override
     protected void onLoadState(boolean isSuccess) {
-    }
-
-    @Override
-    protected void registerEvent() {
-        IPlayMusicChangeObserverImpl.getInstance().register(this);
-        IPlayStateChangeObserverImpl.getInstance().register(this);
-        IPlayProgressChangeObserverImpl.getInstance().register(this);
-    }
-
-    @Override
-    protected void unregisterEvent() {
-        IPlayMusicChangeObserverImpl.getInstance().unregister(this);
-        IPlayStateChangeObserverImpl.getInstance().unregister(this);
-        IPlayProgressChangeObserverImpl.getInstance().unregister(this);
     }
 
     @Override
