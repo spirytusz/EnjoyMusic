@@ -279,6 +279,7 @@ public class MainActivity extends BaseActivity
 
     private void bindPlayMusicService() {
         Intent startPlayMusicServiceIntent = new Intent(this, PlayMusicService.class);
+        startService(startPlayMusicServiceIntent);
         conn = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
