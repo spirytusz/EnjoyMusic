@@ -20,6 +20,9 @@ public abstract class HeaderFooterViewWrapAdapter extends RecyclerView.Adapter<C
 
     private RecyclerView.Adapter<CommonViewHolder> mInnerAdapter;
 
+    public HeaderFooterViewWrapAdapter() {
+    }
+
     public HeaderFooterViewWrapAdapter(RecyclerView.Adapter<CommonViewHolder> adapter) {
         mInnerAdapter = adapter;
     }
@@ -55,7 +58,7 @@ public abstract class HeaderFooterViewWrapAdapter extends RecyclerView.Adapter<C
 
     @Override
     public int getItemCount() {
-        return mInnerAdapter.getItemCount() + mHeaderViews.size() + mFooterViews.size();
+        return mInnerAdapter != null ? mInnerAdapter.getItemCount() + mHeaderViews.size() + mFooterViews.size() : 0;
     }
 
     @Override

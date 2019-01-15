@@ -26,7 +26,7 @@ public class MusicDataSharedViewModels extends ViewModel {
         mMusicListLiveData.setValue(musicList);
     }
 
-    public MutableLiveData<List<Album>> getAlbumListLive() {
+    public MutableLiveData<List<Album>> getAlbumList() {
         return mAlbumListLiveData;
     }
 

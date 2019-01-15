@@ -1,5 +1,8 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.arch.lifecycle.ViewModelProviders;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,8 +14,8 @@ import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
-import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
+import com.zspirytus.enjoymusic.base.BaseFragment;
+import com.zspirytus.enjoymusic.cache.MusicDataSharedViewModels;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -20,12 +23,10 @@ import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
-import java.util.List;
-
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
 @LayoutIdInject(R.layout.fragment_folder_sorted_music_list_layout)
-public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
+public class FolderSortedMusicListFragment extends BaseFragment
         implements OnItemClickListener {
 
     @ViewInject(R.id.file_sorted_music_fragment_progress_bar)
@@ -35,12 +36,13 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
     @ViewInject(R.id.file_sorted_music_fragment_recycler_view)
     private RecyclerView mFileSortedMusicRecyclerView;
 
+    private MusicDataSharedViewModels mViewModel;
+
     private CommonRecyclerViewAdapter<FolderSortedMusic> mAdapter;
-    private List<FolderSortedMusic> mFolderSortedMusicList;
+    private AlphaInAnimationAdapter mAnimationWrapAdapter;
 
     @Override
     protected void initData() {
-        mFolderSortedMusicList = ForegroundMusicStateCache.getInstance().getFolderSortedMusicList();
         mAdapter = new CommonRecyclerViewAdapter<FolderSortedMusic>() {
             @Override
             public int getLayoutId() {
@@ -57,7 +59,9 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
                 holder.setOnItemClickListener(FolderSortedMusicListFragment.this);
             }
         };
-        mAdapter.setList(mFolderSortedMusicList);
+        mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
+        mAnimationWrapAdapter.setDuration(618);
+        mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
     }
 
     @Override
@@ -65,31 +69,29 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
         mFileSortedMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mFileSortedMusicRecyclerView.setHasFixedSize(true);
         mFileSortedMusicRecyclerView.setNestedScrollingEnabled(false);
-        AlphaInAnimationAdapter adapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
-        adapter.setDuration(618);
-        adapter.setInterpolator(new DecelerateInterpolator());
-        mFileSortedMusicRecyclerView.setAdapter(adapter);
+        mFileSortedMusicRecyclerView.setAdapter(mAnimationWrapAdapter);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel = ViewModelProviders.of(getParentActivity()).get(MusicDataSharedViewModels.class);
+        mViewModel.getFolderList().observe(getParentActivity(), (values) -> {
+            mLoadProgressBar.setVisibility(View.GONE);
+            if (values != null && !values.isEmpty()) {
+                mAdapter.setList(values);
+                mAnimationWrapAdapter.notifyDataSetChanged();
+                mFileSortedMusicRecyclerView.setVisibility(View.VISIBLE);
+            } else {
+                mInfoTextView.setVisibility(View.VISIBLE);
+                mInfoTextView.setText("No Folder to show");
+            }
+        });
     }
 
     @Override
     public int getContainerId() {
         return 0;
-    }
-
-    @Override
-    protected void onLoadState(boolean isSuccess) {
-        mLoadProgressBar.setVisibility(View.GONE);
-        if (isSuccess) {
-            if (!mAdapter.getList().isEmpty()) {
-                mFileSortedMusicRecyclerView.setVisibility(View.VISIBLE);
-            } else {
-                mInfoTextView.setVisibility(View.VISIBLE);
-                mInfoTextView.setText("No File to show");
-            }
-        } else {
-            mInfoTextView.setVisibility(View.VISIBLE);
-            mInfoTextView.setText("Error");
-        }
     }
 
     @Override

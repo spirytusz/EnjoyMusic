@@ -1,12 +1,15 @@
 package com.zspirytus.enjoymusic.factory;
 
 import android.os.IBinder;
+import android.os.RemoteException;
 
 import com.zspirytus.enjoymusic.IGetMusicList;
+import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.entity.MusicFilter;
 
 import java.util.List;
 
@@ -29,6 +32,13 @@ public class ObservableFactory {
             ForegroundMusicStateCache.getInstance().setAlbumList(getMusicListBinder.getAlbumList());
             ForegroundMusicStateCache.getInstance().setArtistList(getMusicListBinder.getArtistList());
             ForegroundMusicStateCache.getInstance().setFolderSortedMusicList(getMusicListBinder.getFolderSortedMusic());
+            IBinder iBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
+            ISetPlayList setPlayList = ISetPlayList.Stub.asInterface(iBinder);
+            try {
+                setPlayList.setPlayList(MusicFilter.NO_FILTER);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             emitter.onNext(1);
             emitter.onComplete();
         }).observeOn(AndroidSchedulers.mainThread())

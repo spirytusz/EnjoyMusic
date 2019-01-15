@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.view.activity;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -15,19 +16,23 @@ import android.view.Gravity;
 import android.view.MenuItem;
 
 import com.zspirytus.enjoymusic.IBinderPool;
+import com.zspirytus.enjoymusic.IGetMusicList;
 import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseActivity;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
+import com.zspirytus.enjoymusic.cache.MusicDataSharedViewModels;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
+import com.zspirytus.enjoymusic.entity.Album;
+import com.zspirytus.enjoymusic.entity.Artist;
+import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
-import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
 import com.zspirytus.enjoymusic.impl.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.impl.binder.IPlayStateChangeObserverImpl;
@@ -48,12 +53,14 @@ import com.zspirytus.zspermission.ZSPermission;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Activity: 控制显示、隐藏MusicPlayingFragment、AllMusicListFragment
@@ -77,14 +84,16 @@ public class MainActivity extends BaseActivity
 
     private DrawerListenerImpl mDrawerListener;
 
+    private MusicDataSharedViewModels mViewModel;
     private ServiceConnection conn;
     private boolean isPlaying = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bindPlayMusicService();
-
+        if (savedInstanceState == null) {
+            bindPlayMusicService();
+        }
     }
 
     @Override
@@ -109,9 +118,7 @@ public class MainActivity extends BaseActivity
         if (action != null) {
             if (!FragmentVisibilityManager.getInstance().getCurrentFragment().getClass().getSimpleName().equals("MusicPlayingFragment")) {
                 MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("music", action);
-                fragment.setArguments(bundle);
+                mViewModel.setCurrentMusic(action);
                 showCastFragment(fragment);
             }
         }
@@ -152,11 +159,23 @@ public class MainActivity extends BaseActivity
                 showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
             }
         });
+        mCustomNavigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
     protected void initData() {
-        mCustomNavigationView.setNavigationItemSelectedListener(this);
+        FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
+        mViewModel = ViewModelProviders.of(this).get(MusicDataSharedViewModels.class);
+        Music music = getIntent().getParcelableExtra("music");
+        if (music != null) {
+            mViewModel.setCurrentMusic(music);
+            MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
+            showCastFragment(fragment);
+            BaseFragment homeFragment = FragmentFactory.getInstance().get(HomePageFragment.class);
+            FragmentVisibilityManager.getInstance().addToBackStack(homeFragment);
+        } else {
+            showCastFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
+        }
     }
 
     @Override
@@ -223,47 +242,27 @@ public class MainActivity extends BaseActivity
     }
 
     private void loadMusicList() {
-        ObservableFactory.getMusicListInForegroundObservable()
-                .subscribe(new Observer<Object>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Object o) {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
-                        Music action = getIntent().getParcelableExtra(Constant.NotificationEvent.EXTRA);
-                        if (action != null) {
-                            MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable("music", action);
-                            fragment.setArguments(bundle);
-                            showCastFragment(fragment);
-                            BaseFragment homeFragment = FragmentFactory.getInstance().get(HomePageFragment.class);
-                            FragmentVisibilityManager.getInstance().addToBackStack(homeFragment);
-                        } else {
-                            showCastFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
-                        }
-                        IBinder iBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
-                        ISetPlayList setPlayList = ISetPlayList.Stub.asInterface(iBinder);
-                        try {
-                            setPlayList.setPlayList(MusicFilter.NO_FILTER);
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                    }
+        Schedulers.io().scheduleDirect(() -> {
+            try {
+                IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.GET_MUSIC_LIST);
+                IGetMusicList getMusicListBinder = IGetMusicList.Stub.asInterface(binder);
+                final List<Music> musicList = getMusicListBinder.getMusicList();
+                final List<Album> albumList = getMusicListBinder.getAlbumList();
+                final List<Artist> artistList = getMusicListBinder.getArtistList();
+                final List<FolderSortedMusic> folderSortedMusicList = getMusicListBinder.getFolderSortedMusic();
+                IBinder iBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
+                ISetPlayList setPlayList = ISetPlayList.Stub.asInterface(iBinder);
+                setPlayList.setPlayList(MusicFilter.NO_FILTER);
+                AndroidSchedulers.mainThread().scheduleDirect(() -> {
+                    mViewModel.setMusicList(musicList);
+                    mViewModel.setAlbumList(albumList);
+                    mViewModel.setArtistList(artistList);
+                    mViewModel.setFolderList(folderSortedMusicList);
                 });
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private void requestPermission() {
@@ -279,6 +278,10 @@ public class MainActivity extends BaseActivity
 
     private void bindPlayMusicService() {
         Intent startPlayMusicServiceIntent = new Intent(this, PlayMusicService.class);
+        /**
+         * 先启动Service，走onStartCommand并返回START_STICKY.
+         * 这样Service就一直是粘性的.
+         */
         startService(startPlayMusicServiceIntent);
         conn = new ServiceConnection() {
             @Override

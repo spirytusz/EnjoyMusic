@@ -5,8 +5,8 @@ import android.support.v4.view.ViewPager;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MyViewPagerAdapter;
+import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
-import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
@@ -37,7 +37,7 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
 
     @Override
     protected void initData() {
-        List<LazyLoadBaseFragment> fragments = new LinkedList<>();
+        List<BaseFragment> fragments = new LinkedList<>();
         fragments.add(FragmentFactory.getInstance().get(AllMusicListFragment.class));
         fragments.add(FragmentFactory.getInstance().get(AlbumMusicListFragment.class));
         fragments.add(FragmentFactory.getInstance().get(ArtistMusicListFragment.class));

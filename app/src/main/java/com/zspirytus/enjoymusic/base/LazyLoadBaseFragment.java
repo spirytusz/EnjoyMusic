@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-
 /**
  * LazyLoadBaseFragment 懒加载Fragment基类
  * 懒加载的条件:
@@ -33,8 +30,6 @@ public abstract class LazyLoadBaseFragment extends BaseFragment {
     protected boolean isVisibleToUser = false;
     protected boolean hasLoaded = false;
 
-    private volatile boolean isSuccess;
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -48,21 +43,16 @@ public abstract class LazyLoadBaseFragment extends BaseFragment {
         lazyLoad();
     }
 
+    @Override
+    public void onResume() {
+    }
+
     protected void lazyLoad() {
         if (isViewCreated && isVisibleToUser && !hasLoaded) {
-            Schedulers.io().scheduleDirect(() -> {
-                try {
-                    initData();
-                    isSuccess = true;
-                } catch (Throwable e) {
-                    isSuccess = false;
-                    e.printStackTrace();
-                }
-                AndroidSchedulers.mainThread().scheduleDirect(() -> {
-                    initView();
-                    onLoadState(isSuccess);
-                });
-            });
+            initData();
+            initView();
+            onLoadState(true);
+            registerEvent();
             hasLoaded = true;
         }
     }

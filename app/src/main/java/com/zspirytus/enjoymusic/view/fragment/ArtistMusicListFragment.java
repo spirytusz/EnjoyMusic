@@ -1,6 +1,8 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -12,8 +14,8 @@ import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
-import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
+import com.zspirytus.enjoymusic.base.BaseFragment;
+import com.zspirytus.enjoymusic.cache.MusicDataSharedViewModels;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
@@ -21,8 +23,6 @@ import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
 import org.simple.eventbus.EventBus;
-
-import java.util.List;
 
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
@@ -32,7 +32,7 @@ import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
  */
 // TODO: 2018/9/17 click recyclerview to navigate to corresponding music list
 @LayoutIdInject(R.layout.fragment_artist_music_list_layout)
-public class ArtistMusicListFragment extends LazyLoadBaseFragment
+public class ArtistMusicListFragment extends BaseFragment
         implements OnItemClickListener {
 
     @ViewInject(R.id.artist_music_recycler_view)
@@ -42,13 +42,14 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
     @ViewInject(R.id.artist_music_list_fragment_info_tv)
     private TextView mInfoTextView;
 
-    private List<Artist> mArtistList;
+    private MusicDataSharedViewModels mViewModel;
 
     private CommonRecyclerViewAdapter<Artist> mAdapter;
+    private AlphaInAnimationAdapter mAnimationWrapAdapter;
 
     @Override
     public void onItemClick(View view, int position) {
-        String artist = mArtistList.get(position).getArtistName();
+        String artist = mAdapter.getList().get(position).getArtistName();
         MusicListDetailFragment fragment = MusicListDetailFragment.getInstance();
         Bundle bundle = new Bundle();
         bundle.putString("artist", artist);
@@ -58,7 +59,6 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     protected void initData() {
-        mArtistList = ForegroundMusicStateCache.getInstance().getArtistList();
         mAdapter = new CommonRecyclerViewAdapter<Artist>() {
             @Override
             public int getLayoutId() {
@@ -73,7 +73,9 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
                 holder.setOnItemClickListener(ArtistMusicListFragment.this);
             }
         };
-        mAdapter.setList(mArtistList);
+        mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
+        mAnimationWrapAdapter.setDuration(618);
+        mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
     }
 
     @Override
@@ -81,31 +83,29 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
         mArtistMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mArtistMusicRecyclerView.setHasFixedSize(true);
         mArtistMusicRecyclerView.setNestedScrollingEnabled(false);
-        AlphaInAnimationAdapter adapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
-        adapter.setDuration(618);
-        adapter.setInterpolator(new DecelerateInterpolator());
-        mArtistMusicRecyclerView.setAdapter(adapter);
+        mArtistMusicRecyclerView.setAdapter(mAnimationWrapAdapter);
     }
 
     @Override
-    public int getContainerId() {
-        return 0;
-    }
-
-    @Override
-    protected void onLoadState(boolean isSuccess) {
-        mLoadProgressBar.setVisibility(View.GONE);
-        if (isSuccess) {
-            if (!mAdapter.getList().isEmpty()) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel = ViewModelProviders.of(getParentActivity()).get(MusicDataSharedViewModels.class);
+        mViewModel.getArtistList().observe(getParentActivity(), (values) -> {
+            mLoadProgressBar.setVisibility(View.GONE);
+            if (values != null && !values.isEmpty()) {
+                mAdapter.setList(values);
+                mAnimationWrapAdapter.notifyDataSetChanged();
                 mArtistMusicRecyclerView.setVisibility(View.VISIBLE);
             } else {
                 mInfoTextView.setVisibility(View.VISIBLE);
                 mInfoTextView.setText("No Artist to Show");
             }
-        } else {
-            mInfoTextView.setVisibility(View.VISIBLE);
-            mInfoTextView.setText("Error");
-        }
+        });
+    }
+
+    @Override
+    public int getContainerId() {
+        return 0;
     }
 
     public static ArtistMusicListFragment getInstance() {

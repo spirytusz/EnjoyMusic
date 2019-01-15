@@ -34,6 +34,10 @@ public class SegmentLoadAdapter extends Adapter<CommonViewHolder> {
         }
     }
 
+    public Adapter<CommonViewHolder> getInnerAdapter() {
+        return mInnerAdapter;
+    }
+
     @Override
     public CommonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return mInnerAdapter.onCreateViewHolder(parent, viewType);

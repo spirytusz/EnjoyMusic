@@ -19,9 +19,6 @@ import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 import java.lang.reflect.Field;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-
 /**
  * Fragment 基类
  * Created by ZSpirytus on 2018/8/2.
@@ -78,22 +75,21 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Schedulers.io().scheduleDirect(() -> {
-            try {
-                initData();
-                isLoadSuccess = true;
-            } catch (Throwable e) {
-                isLoadSuccess = false;
-                e.printStackTrace();
-            }
-            while (hasAnim && !isAnimLoadFinish) ;
-            LogUtil.e(this.getClass().getSimpleName(), "isAnimLoadFinish = " + isAnimLoadFinish);
-            AndroidSchedulers.mainThread().scheduleDirect(() -> {
-                initView();
-                onLoadState(isLoadSuccess);
-                registerEvent();
-            });
-        });
+        initData();
+        initView();
+        onLoadState(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerEvent();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterEvent();
     }
 
     @Override
@@ -127,7 +123,8 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
         return R.anim.anim_fragment_translate_show_down;
     }
 
-    protected abstract void onLoadState(boolean isSuccess);
+    protected void onLoadState(boolean isSuccess) {
+    }
 
     protected void registerEvent() {
     }

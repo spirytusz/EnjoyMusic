@@ -1,6 +1,8 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -13,20 +15,17 @@ import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
-import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
+import com.zspirytus.enjoymusic.base.BaseFragment;
+import com.zspirytus.enjoymusic.cache.MusicDataSharedViewModels;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-import com.zspirytus.enjoymusic.utils.AnimationUtil;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 import org.simple.eventbus.EventBus;
-
-import java.util.List;
 
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
@@ -36,7 +35,7 @@ import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
  */
 
 @LayoutIdInject(R.layout.fragment_album_music_list_layout)
-public class AlbumMusicListFragment extends LazyLoadBaseFragment
+public class AlbumMusicListFragment extends BaseFragment
         implements OnItemClickListener {
 
     @ViewInject(R.id.album_music_recycler_view)
@@ -46,12 +45,14 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     @ViewInject(R.id.album_music_list_fragment_info_tv)
     private TextView mInfoTextView;
 
+    private MusicDataSharedViewModels mViewModel;
+
     private CommonRecyclerViewAdapter<Album> mAdapter;
-    private List<Album> mAlbumList;
+    private AlphaInAnimationAdapter mAnimationWrapAdapter;
 
     @Override
     public void onItemClick(View view, int position) {
-        String album = mAlbumList.get(position).getAlbumName();
+        String album = mAdapter.getList().get(position).getAlbumName();
         MusicListDetailFragment fragment = MusicListDetailFragment.getInstance();
         Bundle bundle = new Bundle();
         bundle.putString("album", album);
@@ -61,7 +62,6 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     protected void initData() {
-        mAlbumList = ForegroundMusicStateCache.getInstance().getAlbumList();
         mAdapter = new CommonRecyclerViewAdapter<Album>() {
             @Override
             public int getLayoutId() {
@@ -77,16 +77,15 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
                 holder.setOnItemClickListener(AlbumMusicListFragment.this);
             }
         };
-        mAdapter.setList(mAlbumList);
+        mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
+        mAnimationWrapAdapter.setDuration(618);
+        mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
     }
 
     @Override
     protected void initView() {
         mAlbumMusicRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManager(getParentActivity(), 2));
-        AlphaInAnimationAdapter adapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
-        adapter.setDuration(618);
-        adapter.setInterpolator(new DecelerateInterpolator());
-        mAlbumMusicRecyclerView.setAdapter(adapter);
+        mAlbumMusicRecyclerView.setAdapter(mAnimationWrapAdapter);
         mAlbumMusicRecyclerView.setHasFixedSize(true);
         mAlbumMusicRecyclerView.setNestedScrollingEnabled(false);
         mAlbumMusicRecyclerView.addItemDecoration(
@@ -100,28 +99,25 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     }
 
     @Override
-    public int getContainerId() {
-        return 0;
-    }
-
-    @Override
-    protected void onLoadState(boolean isSuccess) {
-        AnimationUtil.ofFloat(mLoadProgressBar, Constant.AnimationProperty.ALPHA, 1f, 0f);
-        mLoadProgressBar.setVisibility(View.GONE);
-        if (isSuccess) {
-            if (!mAlbumList.isEmpty()) {
-                AnimationUtil.ofFloat(mAlbumMusicRecyclerView, Constant.AnimationProperty.ALPHA, 0f, 1f).start();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel = ViewModelProviders.of(getParentActivity()).get(MusicDataSharedViewModels.class);
+        mViewModel.getAlbumList().observe(getParentActivity(), (values) -> {
+            mLoadProgressBar.setVisibility(View.GONE);
+            if (values != null && !values.isEmpty()) {
+                mAdapter.setList(values);
+                mAnimationWrapAdapter.notifyDataSetChanged();
                 mAlbumMusicRecyclerView.setVisibility(View.VISIBLE);
             } else {
-                AnimationUtil.ofFloat(mInfoTextView, Constant.AnimationProperty.ALPHA, 0f, 1f);
                 mInfoTextView.setVisibility(View.VISIBLE);
                 mInfoTextView.setText("No Album");
             }
-        } else {
-            AnimationUtil.ofFloat(mInfoTextView, Constant.AnimationProperty.ALPHA, 0f, 1f);
-            mInfoTextView.setVisibility(View.VISIBLE);
-            mInfoTextView.setText("Error");
-        }
+        });
+    }
+
+    @Override
+    public int getContainerId() {
+        return 0;
     }
 
     public static AlbumMusicListFragment getInstance() {

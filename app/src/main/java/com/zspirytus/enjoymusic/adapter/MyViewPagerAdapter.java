@@ -3,7 +3,7 @@ package com.zspirytus.enjoymusic.adapter;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
+import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 
 import java.util.List;
@@ -14,17 +14,17 @@ import java.util.List;
 
 public class MyViewPagerAdapter extends FragmentPagerAdapter {
 
-    private List<LazyLoadBaseFragment> mFragments;
+    private List<BaseFragment> mFragments;
     private int size;
 
-    public MyViewPagerAdapter(FragmentManager fm, List<LazyLoadBaseFragment> fragments) {
+    public MyViewPagerAdapter(FragmentManager fm, List<BaseFragment> fragments) {
         super(fm);
         mFragments = fragments;
         size = fragments.size();
     }
 
     @Override
-    public LazyLoadBaseFragment getItem(int position) {
+    public BaseFragment getItem(int position) {
         return mFragments.get(position);
     }
 

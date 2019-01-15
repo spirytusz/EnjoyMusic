@@ -20,7 +20,6 @@ import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.StatusBarUtil;
 import com.zspirytus.enjoymusic.view.activity.MainActivity;
 
@@ -41,7 +40,6 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
     @Override
     public void onCreate() {
         super.onCreate();
-        LogUtil.e(this.getClass().getSimpleName(), "onCreate");
         MyMediaSession.getInstance().initMediaSession(this);
         MediaPlayController.getInstance().setOnPlayListener(this);
     }
@@ -87,7 +85,6 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
     @Override
     protected void unregisterEvent() {
         unregisterReceiver(myHeadSetPlugOutReceiver);
-
         unregisterReceiver(myHeadSetButtonClickBelowLReceiver);
     }
 
@@ -95,7 +92,6 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
     public void onPlay() {
         Notification currentNotification = NotificationHelper.getInstance().getCurrentNotification();
         int notificationNotifyId = NotificationHelper.getInstance().getNotificationNotifyId();
-        // TODO: 2019/1/14 用户在任意位置（Launcher, 其他App可见时）从多任务界面杀掉本App保活方法待研究。
         /**
          * notificationNotifyId 不能为0
          * @see #startForeground(int, Notification)
@@ -115,25 +111,25 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
     private void handleStatusBarEvent(Intent intent) {
         if (intent != null) {
             String event = intent.getStringExtra(Constant.NotificationEvent.EXTRA);
-            if(event == null)
-                return;
-            switch (event) {
-                case Constant.NotificationEvent.SINGLE_CLICK:
-                    startActivity();
-                    StatusBarUtil.collapseStatusBar(this);
-                    break;
-                case Constant.NotificationEvent.PREVIOUS:
-                    BackgroundMusicController.getInstance().play(PlayHistoryCache.getInstance().getPreviousPlayedMusic());
-                    break;
-                case Constant.NotificationEvent.PLAY:
-                    BackgroundMusicController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
-                    break;
-                case Constant.NotificationEvent.PAUSE:
-                    BackgroundMusicController.getInstance().pause();
-                    break;
-                case Constant.NotificationEvent.NEXT:
-                    BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic(true));
-                    break;
+            if (event != null) {
+                switch (event) {
+                    case Constant.NotificationEvent.SINGLE_CLICK:
+                        startActivity();
+                        StatusBarUtil.collapseStatusBar(this);
+                        break;
+                    case Constant.NotificationEvent.PREVIOUS:
+                        BackgroundMusicController.getInstance().play(PlayHistoryCache.getInstance().getPreviousPlayedMusic());
+                        break;
+                    case Constant.NotificationEvent.PLAY:
+                        BackgroundMusicController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+                        break;
+                    case Constant.NotificationEvent.PAUSE:
+                        BackgroundMusicController.getInstance().pause();
+                        break;
+                    case Constant.NotificationEvent.NEXT:
+                        BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic(true));
+                        break;
+                }
             }
         }
     }
