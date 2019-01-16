@@ -50,8 +50,8 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         if (mCurrentFragment != null) {
             transaction.hide(mCurrentFragment);
         }
-        transaction.show(shouldShowFragment);
         transaction.setCustomAnimations(enter, exit);
+        transaction.show(shouldShowFragment);
         transaction.commitAllowingStateLoss();
         setCurrentFragment(shouldShowFragment);
     }

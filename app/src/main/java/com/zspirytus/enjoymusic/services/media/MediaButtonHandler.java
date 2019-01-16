@@ -2,8 +2,6 @@ package com.zspirytus.enjoymusic.services.media;
 
 import android.view.KeyEvent;
 
-import com.zspirytus.enjoymusic.utils.LogUtil;
-
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -38,7 +36,6 @@ public class MediaButtonHandler {
         }
         if (i == cache.length)
             return this;
-        LogUtil.e(this.getClass().getSimpleName(), "cache[" + i + "] == " + cache[i]);
         cache[i] = System.currentTimeMillis();
         if (state == STATE_IDLE) {
             AndroidSchedulers.mainThread().scheduleDirect(() -> {

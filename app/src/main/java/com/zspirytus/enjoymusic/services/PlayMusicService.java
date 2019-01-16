@@ -28,6 +28,7 @@ import com.zspirytus.enjoymusic.view.activity.MainActivity;
  * Created by ZSpirytus on 2018/8/2.
  */
 
+// TODO: 16/01/2019 onStartCommond接收到空intent
 public class PlayMusicService extends BaseService implements IOnRemotePlayedListener {
 
     private static final String TAG = "PlayMusicService";

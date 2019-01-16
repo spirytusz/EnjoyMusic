@@ -62,6 +62,16 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
     protected void onLoadState(boolean isSuccess) {
     }
 
+    @Override
+    public int enterAnim() {
+        return R.anim.anim_slide_from_right_show;
+    }
+
+    @Override
+    public int exitAnim() {
+        return R.anim.anim_slide_to_right_gone;
+    }
+
     public void setCurrentPosition(int currentPosition) {
         mCurrentPosition = currentPosition;
         if (mViewPager != null) {

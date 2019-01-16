@@ -137,6 +137,16 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         });
     }
 
+    @Override
+    public int enterAnim() {
+        return R.anim.anim_scale_alpha_show;
+    }
+
+    @Override
+    public int exitAnim() {
+        return R.anim.anim_scale_alpha_gone;
+    }
+
     private void notifyObserverRecyclerViewLoadFinish() {
         if (mRecyclerViewLoadStateObserver != null)
             mRecyclerViewLoadStateObserver.onHomePageLoadFinish();
