@@ -135,6 +135,7 @@
         android:layout_height="32dp"
         android:layout_marginBottom="68dp"
         android:tint="@color/music_button_color"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/previous"
         app:layout_constraintStart_toStartOf="parent"
@@ -148,6 +149,7 @@
         android:layout_marginBottom="68dp"
         android:focusable="true"
         android:tint="@color/music_button_color"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/play_pause"
         app:srcCompat="@drawable/ic_previous_pressed" />
@@ -160,6 +162,7 @@
         android:layout_marginBottom="68dp"
         android:focusable="true"
         android:tint="@color/music_button_color"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/play_pause"
         app:srcCompat="@drawable/ic_next_pressed" />

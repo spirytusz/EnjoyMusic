@@ -1,27 +1,29 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:cornerImg="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/card_view_bg"
-    android:translationZ="2dp"
-    android:elevation="6dp">
+    android:elevation="6dp"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:translationZ="2dp">
 
     <com.zspirytus.enjoymusic.view.widget.RoundCornerImageView
         android:id="@+id/item_cover"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:src="@color/grey"
         android:scaleType="fitXY"
-        cornerImg:topLeft="6dp"
-        cornerImg:topRight="6dp"
-        cornerImg:bottomLeft="0dp"
-        cornerImg:bottomRight="0dp"
+        android:src="@color/grey"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        cornerImg:bottomLeft="0dp"
+        cornerImg:bottomRight="0dp"
+        cornerImg:topLeft="6dp"
+        cornerImg:topRight="6dp" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/item_title"
