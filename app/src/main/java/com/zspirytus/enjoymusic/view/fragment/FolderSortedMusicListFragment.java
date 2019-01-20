@@ -1,8 +1,6 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,7 +12,7 @@ import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.base.BaseFragment;
+import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MusicDataSharedViewModels;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
@@ -26,7 +24,7 @@ import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
 @LayoutIdInject(R.layout.fragment_folder_sorted_music_list_layout)
-public class FolderSortedMusicListFragment extends BaseFragment
+public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
         implements OnItemClickListener {
 
     @ViewInject(R.id.file_sorted_music_fragment_progress_bar)
@@ -62,6 +60,7 @@ public class FolderSortedMusicListFragment extends BaseFragment
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
+        mViewModel = ViewModelProviders.of(getParentActivity()).get(MusicDataSharedViewModels.class);
     }
 
     @Override
@@ -73,9 +72,7 @@ public class FolderSortedMusicListFragment extends BaseFragment
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(getParentActivity()).get(MusicDataSharedViewModels.class);
+    public void lazyWrapDataInView() {
         mViewModel.getFolderList().observe(getParentActivity(), (values) -> {
             mLoadProgressBar.setVisibility(View.GONE);
             if (values != null && !values.isEmpty()) {

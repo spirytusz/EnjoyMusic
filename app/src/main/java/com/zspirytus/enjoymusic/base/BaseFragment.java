@@ -109,7 +109,7 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
 
     public abstract int getContainerId();
 
-    protected void wrapDataInView() {
+    protected void lazyWrapDataInView() {
     }
 
     public int enterAnim() {

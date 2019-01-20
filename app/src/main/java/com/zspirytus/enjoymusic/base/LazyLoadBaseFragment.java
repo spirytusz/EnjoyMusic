@@ -43,18 +43,17 @@ public abstract class LazyLoadBaseFragment extends BaseFragment {
         lazyLoad();
     }
 
-    @Override
-    public void onResume() {
-    }
-
     protected void lazyLoad() {
         if (isViewCreated && isVisibleToUser && !hasLoaded) {
             initData();
             initView();
             onLoadState(true);
+            lazyWrapDataInView();
             registerEvent();
             hasLoaded = true;
         }
     }
+
+    protected abstract void lazyWrapDataInView();
 
 }

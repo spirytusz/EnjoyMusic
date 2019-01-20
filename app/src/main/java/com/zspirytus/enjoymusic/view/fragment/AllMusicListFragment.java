@@ -1,8 +1,6 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -14,7 +12,7 @@ import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.base.BaseFragment;
+import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.cache.viewmodels.MusicDataSharedViewModels;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -36,7 +34,7 @@ import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
  */
 
 @LayoutIdInject(R.layout.fragment_all_music_list_layout)
-public class AllMusicListFragment extends BaseFragment
+public class AllMusicListFragment extends LazyLoadBaseFragment
         implements OnItemClickListener {
 
     @ViewInject(R.id.all_music_recycler_view)
@@ -79,6 +77,7 @@ public class AllMusicListFragment extends BaseFragment
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
+        mViewModel = ViewModelProviders.of(getParentActivity()).get(MusicDataSharedViewModels.class);
     }
 
     @Override
@@ -92,9 +91,7 @@ public class AllMusicListFragment extends BaseFragment
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(getParentActivity()).get(MusicDataSharedViewModels.class);
+    protected void lazyWrapDataInView() {
         mViewModel.getMusicList().observe(getParentActivity(), (values) -> {
             mMusicListLoadProgressBar.setVisibility(View.GONE);
             if (values != null && !values.isEmpty()) {
