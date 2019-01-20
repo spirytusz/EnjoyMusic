@@ -1,4 +1,4 @@
-package com.zspirytus.basesdk.recyclerview.adapter;
+package com.zspirytus.basesdk.recyclerview;
 
 import android.graphics.Rect;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,8 +16,9 @@ public class ItemSpacingDecoration extends RecyclerView.ItemDecoration {
 
     private int mHeaderViewCount;
     private int mFooterViewCount;
+    private int mMarginTop;
 
-    private ItemSpacingDecoration(int topPadding, int bottomPadding, int startPadding, int endPadding, int headerViewCount, int footerViewCount) {
+    private ItemSpacingDecoration(int topPadding, int bottomPadding, int startPadding, int endPadding, int headerViewCount, int footerViewCount, int marginTop) {
         mTopPadding = topPadding;
         mBottomPadding = bottomPadding;
         mStartPadding = startPadding;
@@ -25,6 +26,7 @@ public class ItemSpacingDecoration extends RecyclerView.ItemDecoration {
 
         mHeaderViewCount = headerViewCount;
         mFooterViewCount = footerViewCount;
+        mMarginTop = marginTop;
     }
 
     @Override
@@ -39,13 +41,16 @@ public class ItemSpacingDecoration extends RecyclerView.ItemDecoration {
         }
         if (position < mHeaderViewCount) {
             // headerView
+            if (position == 0) {
+                outRect.top = mMarginTop;
+            }
         } else if (position < totalSize - mFooterViewCount) {
             // commonView
             // 计算上下边距
             int truePosition = position - mHeaderViewCount;
             if (truePosition < span) {
                 // 第一排
-                outRect.top = mTopPadding;
+                outRect.top = mTopPadding + mHeaderViewCount == 0 ? mMarginTop : 0;
                 outRect.bottom = mBottomPadding / 2;
             } else if (truePosition > totalSize - mFooterViewCount - span) {
                 // 最后一排
@@ -84,6 +89,7 @@ public class ItemSpacingDecoration extends RecyclerView.ItemDecoration {
 
         private int mHeaderViewCount;
         private int mFooterViewCount;
+        private int mMarginTop;
 
         public Builder(int topPadding, int bottomPadding, int startPadding, int endPadding) {
             mTopPadding = topPadding;
@@ -102,8 +108,13 @@ public class ItemSpacingDecoration extends RecyclerView.ItemDecoration {
             return this;
         }
 
+        public Builder setMarginTop(int marginTop) {
+            mMarginTop = marginTop;
+            return this;
+        }
+
         public ItemSpacingDecoration build() {
-            return new ItemSpacingDecoration(mTopPadding, mBottomPadding, mStartPadding, mEndPadding, mHeaderViewCount, mFooterViewCount);
+            return new ItemSpacingDecoration(mTopPadding, mBottomPadding, mStartPadding, mEndPadding, mHeaderViewCount, mFooterViewCount, mMarginTop);
         }
     }
 }

@@ -8,8 +8,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.zspirytus.basesdk.recyclerview.ItemSpacingDecoration;
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
-import com.zspirytus.basesdk.recyclerview.adapter.ItemSpacingDecoration;
 import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;

@@ -4,15 +4,18 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseIntArray;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.zspirytus.basesdk.recyclerview.ItemSpacingDecoration;
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.adapter.HeaderFooterViewWrapAdapter;
-import com.zspirytus.basesdk.recyclerview.adapter.ItemSpacingDecoration;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
@@ -47,8 +50,12 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     private ProgressBar mListLoadProgressBar;
     @ViewInject(R.id.home_page_text_view)
     private AppCompatTextView mInfoTextView;
+    @ViewInject(R.id.bg)
+    private ImageView mHomePageDisplayImg;
 
     private HomePageRecyclerViewLoadObserver mRecyclerViewLoadStateObserver;
+    private int mTotalScrollDistance;
+    private SparseIntArray mItemHeightCache;
 
     private MusicDataSharedViewModels mViewModels;
     private volatile CommonRecyclerViewAdapter<Music> mInnerAdapter;
@@ -91,6 +98,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         mAnimationAdapter = new ScaleInAnimationAdapter(mHeaderWrapAdapter);
         mAnimationAdapter.setInterpolator(new DecelerateInterpolator());
         mAnimationAdapter.setDuration(618);
+        mItemHeightCache = new SparseIntArray();
     }
 
     @Override
@@ -102,8 +110,18 @@ public class HomePageFragment extends CommonHeaderBaseFragment
                         PixelsUtil.dp2px(getContext(), 12),
                         PixelsUtil.dp2px(getContext(), 12),
                         PixelsUtil.dp2px(getContext(), 12)
-                ).setHeaderViewCount(1).build()
+                ).setHeaderViewCount(1)
+                        .setMarginTop(PixelsUtil.dp2px(getContext(), 236))
+                        .build()
         );
+        mHomePageRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                float translationY = -computeHomeDisPlayImgTranslationY(recyclerView) / 2;
+                mHomePageDisplayImg.setTranslationY(translationY);
+            }
+        });
         notifyObserverRecyclerViewLoadFinish();
     }
 
@@ -126,10 +144,18 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         mViewModels.getMusicList().observe(getParentActivity(), (values) -> {
             mListLoadProgressBar.setVisibility(View.GONE);
             if (values != null && !values.isEmpty()) {
+                values = values.subList(0, 30);
                 mInnerAdapter.setList(values);
                 mHomePageRecyclerView.setAdapter(mAnimationAdapter);
                 mAnimationAdapter.notifyDataSetChanged();
-                mHomePageRecyclerView.setVisibility(View.VISIBLE);
+                mHomePageDisplayImg.post(() -> {
+                    mHomePageDisplayImg.setVisibility(View.VISIBLE);
+                    mHomePageDisplayImg.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
+                });
+                mHomePageRecyclerView.postDelayed(() -> {
+                    mHomePageRecyclerView.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
+                    mHomePageRecyclerView.setVisibility(View.VISIBLE);
+                }, 300);
             } else {
                 mInfoTextView.setVisibility(View.VISIBLE);
                 mInfoTextView.setText("No music in device!");
@@ -144,6 +170,27 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         if (!hidden) {
             mHomePageRecyclerView.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
         }
+    }
+
+    private int computeHomeDisPlayImgTranslationY(RecyclerView recyclerView) {
+        int firstPos = ((GridLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+        int itemType = recyclerView.getAdapter().getItemViewType(firstPos);
+        int height = mItemHeightCache.get(itemType, -1);
+        GridLayoutManager manager = (GridLayoutManager) mHomePageRecyclerView.getLayoutManager();
+        RecyclerView.Adapter adapter = recyclerView.getAdapter();
+        View item = manager.findViewByPosition(firstPos);
+        if (height == -1) {
+            height = manager.findViewByPosition(firstPos).getHeight();
+            mItemHeightCache.put(itemType, height);
+        }
+        int previousTotalHeight = 0;
+        for (int i = 0; i < firstPos; i++) {
+            if (i == 0 || (i - 1) % 2 == 0) {
+                previousTotalHeight += mItemHeightCache.get(adapter.getItemViewType(i));
+            }
+        }
+        previousTotalHeight += -item.getTop() + PixelsUtil.dp2px(getContext(), 236);
+        return previousTotalHeight;
     }
 
     private void notifyObserverRecyclerViewLoadFinish() {

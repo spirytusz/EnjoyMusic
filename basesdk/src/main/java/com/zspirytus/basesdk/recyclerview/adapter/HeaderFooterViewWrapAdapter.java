@@ -11,9 +11,9 @@ import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 
 public abstract class HeaderFooterViewWrapAdapter extends RecyclerView.Adapter<CommonViewHolder> {
 
-    private static final int HEADER_VIEW_TYPE = 2333;
-    private static final int INNER_VIEW_TYPE = 666;
-    private static final int FOOTER_VIEW_TYPE = 777;
+    public static final int HEADER_VIEW_TYPE = 2333;
+    public static final int INNER_VIEW_TYPE = 666;
+    public static final int FOOTER_VIEW_TYPE = 777;
 
     private SparseArrayCompat<Integer> mHeaderViews = new SparseArrayCompat<>();
     private SparseArrayCompat<Integer> mFooterViews = new SparseArrayCompat<>();

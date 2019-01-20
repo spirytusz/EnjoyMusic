@@ -2,7 +2,9 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="48dp">
+    android:layout_height="48dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/grey">
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/home_page_title"
@@ -13,6 +15,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="近期添加"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,6 +38,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:tint="@color/white"
             android:src="@drawable/ic_music_note_black_48dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="随机播放"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/appCompatImageView"
             app:layout_constraintTop_toTopOf="parent"
