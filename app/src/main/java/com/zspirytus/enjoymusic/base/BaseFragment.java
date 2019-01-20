@@ -47,8 +47,7 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    initView();
-                    onLoadState(true);
+
                 }
 
                 @Override
@@ -109,6 +108,9 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
     protected abstract void initView();
 
     public abstract int getContainerId();
+
+    protected void wrapDataInView() {
+    }
 
     public int enterAnim() {
         return 0;

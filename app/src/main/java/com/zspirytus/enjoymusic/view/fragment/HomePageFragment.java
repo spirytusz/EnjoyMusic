@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 
@@ -52,7 +53,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     private MusicDataSharedViewModels mViewModels;
     private volatile CommonRecyclerViewAdapter<Music> mInnerAdapter;
     private volatile HeaderFooterViewWrapAdapter mHeaderWrapAdapter;
-    private volatile ScaleInAnimationAdapter mAnimationWrapAdapter;
+    private ScaleInAnimationAdapter mAnimationAdapter;
 
     @Override
     protected void initData() {
@@ -87,9 +88,9 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             }
         };
         mHeaderWrapAdapter.addHeaderViews(R.layout.home_page_rv_header);
-        mAnimationWrapAdapter = new ScaleInAnimationAdapter(mHeaderWrapAdapter);
-        mAnimationWrapAdapter.setDuration(618);
-        mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
+        mAnimationAdapter = new ScaleInAnimationAdapter(mHeaderWrapAdapter);
+        mAnimationAdapter.setInterpolator(new DecelerateInterpolator());
+        mAnimationAdapter.setDuration(618);
     }
 
     @Override
@@ -126,8 +127,8 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             mListLoadProgressBar.setVisibility(View.GONE);
             if (values != null && !values.isEmpty()) {
                 mInnerAdapter.setList(values);
-                mAnimationWrapAdapter.notifyDataSetChanged();
-                mHomePageRecyclerView.setAdapter(mAnimationWrapAdapter);
+                mHomePageRecyclerView.setAdapter(mAnimationAdapter);
+                mAnimationAdapter.notifyDataSetChanged();
                 mHomePageRecyclerView.setVisibility(View.VISIBLE);
             } else {
                 mInfoTextView.setVisibility(View.VISIBLE);
@@ -138,13 +139,11 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     }
 
     @Override
-    public int enterAnim() {
-        return R.anim.anim_scale_alpha_show;
-    }
-
-    @Override
-    public int exitAnim() {
-        return R.anim.anim_scale_alpha_gone;
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            mHomePageRecyclerView.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
+        }
     }
 
     private void notifyObserverRecyclerViewLoadFinish() {

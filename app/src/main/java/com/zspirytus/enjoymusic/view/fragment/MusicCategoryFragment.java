@@ -2,6 +2,7 @@ package com.zspirytus.enjoymusic.view.fragment;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.view.animation.AnimationUtils;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MyViewPagerAdapter;
@@ -51,6 +52,15 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT);
         mViewPager.setCurrentItem(mCurrentPosition, true);
+        mViewPager.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            mViewPager.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
+        }
     }
 
     @Override
@@ -60,16 +70,6 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
 
     @Override
     protected void onLoadState(boolean isSuccess) {
-    }
-
-    @Override
-    public int enterAnim() {
-        return R.anim.anim_slide_from_right_show;
-    }
-
-    @Override
-    public int exitAnim() {
-        return R.anim.anim_slide_to_right_gone;
     }
 
     public void setCurrentPosition(int currentPosition) {
