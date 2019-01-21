@@ -1,10 +1,12 @@
 package com.zspirytus.enjoymusic.utils;
 
+import android.animation.ValueAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v7.graphics.Palette;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +33,17 @@ public class ColorUtils {
         }
     }
 
+    public static void colorAnimation(int fromColor, int toColor, ColorListener listener) {
+        ValueAnimator animator = ValueAnimator.ofArgb(fromColor, toColor);
+        animator.setDuration(618);
+        animator.addUpdateListener((valueAnimator) -> {
+            int color = (int) valueAnimator.getAnimatedValue();
+            listener.onColorChnage(color);
+        });
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.start();
+    }
+
     public static void setCurrentColor(int id, ImageView imageView) {
         Drawable drawable = MainApplication.getForegroundContext().getDrawable(id);
         drawable = DrawableUtil.setColor(drawable, mCurrentColor);
@@ -55,5 +68,9 @@ public class ColorUtils {
         } else {
             mCurrentColor = Color.parseColor("#FFFFFF");
         }
+    }
+
+    public static interface ColorListener {
+        void onColorChnage(int rgb);
     }
 }

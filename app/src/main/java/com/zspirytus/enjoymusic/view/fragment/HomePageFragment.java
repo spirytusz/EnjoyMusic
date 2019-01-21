@@ -1,6 +1,7 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
@@ -50,11 +51,11 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     private ProgressBar mListLoadProgressBar;
     @ViewInject(R.id.home_page_text_view)
     private AppCompatTextView mInfoTextView;
+
     @ViewInject(R.id.bg)
     private ImageView mHomePageDisplayImg;
 
     private HomePageRecyclerViewLoadObserver mRecyclerViewLoadStateObserver;
-    private int mTotalScrollDistance;
     private SparseIntArray mItemHeightCache;
 
     private MusicDataSharedViewModels mViewModels;
@@ -103,6 +104,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
 
     @Override
     protected void initView() {
+        getParentActivity().setLightStatusIconColor();
         mHomePageRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManagerWithHeader(getParentActivity(), 2, 2));
         mHomePageRecyclerView.addItemDecoration(
                 new ItemSpacingDecoration.Builder(
@@ -118,8 +120,10 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                float translationY = -computeHomeDisPlayImgTranslationY(recyclerView) / 2;
+                int scrollY = computeHomeDisPlayImgTranslationY(recyclerView);
+                float translationY = -scrollY / 2;
                 mHomePageDisplayImg.setTranslationY(translationY);
+                playScrollAnimation(scrollY);
             }
         });
         notifyObserverRecyclerViewLoadFinish();
@@ -169,6 +173,8 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         super.onHiddenChanged(hidden);
         if (!hidden) {
             mHomePageRecyclerView.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
+        } else {
+            getParentActivity().setDefaultNavBar();
         }
     }
 
@@ -191,6 +197,45 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         }
         previousTotalHeight += -item.getTop() + PixelsUtil.dp2px(getContext(), 236);
         return previousTotalHeight;
+    }
+
+    private void playScrollAnimation(int scrollY) {
+        // TODO: 22/01/2019 监听CollapsingToolbarLayout展开状态（正在展开状态）来设置动画效果，阴影效果.
+        if (scrollY < PixelsUtil.dp2px(getContext(), 56)) {
+            mStatusBarView.getBackground().setAlpha(0);
+            mToolbar.getBackground().setAlpha(0);
+            mAppBarLayout.getBackground().setAlpha(0);
+            mToolbar.setTitleTextColor(getResources().getColor(R.color.transparent));
+            Drawable drawable = mToolbar.getNavigationIcon();
+            if (drawable != null) {
+                drawable.setTint(0xFF4C4E4A);
+            }
+            mAppBarLayout.setTranslationZ(0f);
+            mAppBarLayout.setElevation(0f);
+            mStatusBarView.setTranslationZ(0f);
+            mStatusBarView.setElevation(0f);
+        } else {
+            mStatusBarView.getBackground().setAlpha(1);
+            mToolbar.getBackground().setAlpha(1);
+            mAppBarLayout.getBackground().setAlpha(1);
+            mStatusBarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            mAppBarLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            mToolbar.setTitleTextColor(0xFF4C4E4A);
+            Drawable drawable = mToolbar.getNavigationIcon();
+            if (drawable != null) {
+                drawable.setTint(0xFF000000);
+            }
+            mAppBarLayout.setTranslationZ(PixelsUtil.dp2px(getContext(), 4));
+            // CollapsingLayout未展开
+            if (mAppBarLayout.getBottom() == mStatusBarView.getHeight()) {
+                mStatusBarView.setTranslationZ(PixelsUtil.dp2px(getContext(), 5));
+            } else {
+                mStatusBarView.setTranslationZ(PixelsUtil.dp2px(getContext(), 4));
+            }
+            mAppBarLayout.setElevation(PixelsUtil.dp2px(getContext(), 6));
+            mStatusBarView.setElevation(PixelsUtil.dp2px(getContext(), 6));
+        }
     }
 
     private void notifyObserverRecyclerViewLoadFinish() {
