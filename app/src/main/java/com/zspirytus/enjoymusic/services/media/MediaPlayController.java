@@ -30,6 +30,7 @@ import io.reactivex.disposables.Disposable;
  * Created by ZSpirytus on 2018/8/10.
  */
 
+// TODO: 22/01/2019 添加暂停播放的渐变音效.
 public class MediaPlayController extends MusicStateObservable
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
         AudioManager.OnAudioFocusChangeListener {
@@ -216,7 +217,7 @@ public class MediaPlayController extends MusicStateObservable
         mPlayingTimer.start();
         NotificationHelper.getInstance().showNotification(currentPlayingMusic);
         NotificationHelper.getInstance().updateNotification(true);
-        if(mOnPlayListener != null)
+        if (mOnPlayListener != null)
             mOnPlayListener.onPlay();
         notifyAllObserverPlayStateChange(true);
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
