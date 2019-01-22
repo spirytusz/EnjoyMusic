@@ -28,7 +28,7 @@ public class CoverMaskTransformation extends BitmapTransformation {
 
     @Override
     protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
-        Drawable playIcon = mContext.getDrawable(R.drawable.ic_volume_up_black_24dp);
+        Drawable playIcon = mContext.getDrawable(R.drawable.ic_record_voice_over_black_48dp);
         playIcon.setTint(mContext.getResources().getColor(R.color.colorPrimary));
         Drawable mask = mContext.getDrawable(R.drawable.cover_mask);
         BitmapDrawable bitmapDrawable = new BitmapDrawable(mContext.getResources(), toTransform);

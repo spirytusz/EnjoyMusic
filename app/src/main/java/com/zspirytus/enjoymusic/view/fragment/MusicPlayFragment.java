@@ -105,6 +105,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
             getParentActivity().setTransparentNavBar();
         } else {
             getParentActivity().setDefaultNavBar();
+            getParentActivity().setLightStatusIconColor();
         }
     }
 
@@ -120,6 +121,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     protected void initView() {
+        getParentActivity().setDefaultStatusIconColor();
         getParentActivity().setTransparentNavBar();
         mBackBtn.setOnClickListener((view) -> {
             goBack();
