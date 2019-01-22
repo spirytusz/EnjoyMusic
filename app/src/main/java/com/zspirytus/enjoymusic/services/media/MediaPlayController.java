@@ -1,10 +1,12 @@
 package com.zspirytus.enjoymusic.services.media;
 
+import android.animation.ValueAnimator;
 import android.app.Service;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.PowerManager;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.view.animation.DecelerateInterpolator;
 
 import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
@@ -30,7 +32,6 @@ import io.reactivex.disposables.Disposable;
  * Created by ZSpirytus on 2018/8/10.
  */
 
-// TODO: 22/01/2019 添加暂停播放的渐变音效.
 public class MediaPlayController extends MusicStateObservable
         implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
         AudioManager.OnAudioFocusChangeListener {
@@ -168,12 +169,23 @@ public class MediaPlayController extends MusicStateObservable
 
     public void pause() {
         if (state == STATE_STARTED) {
-            mediaPlayer.pause();
-            setState(STATE_PAUSED);
-            mPlayingTimer.pause();
-            NotificationHelper.getInstance().updateNotification(false);
-            notifyAllObserverPlayStateChange(false);
-            MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PAUSED);
+            ValueAnimator animator = ValueAnimator.ofFloat(1.0f, 0.0f);
+            animator.addUpdateListener((valueAnimator) -> {
+                float volume = (float) valueAnimator.getAnimatedValue();
+                LogUtil.e("MediaPlayController", "volume = " + volume);
+                mediaPlayer.setVolume(volume, volume);
+                if (volume == 0.0f) {
+                    mediaPlayer.pause();
+                    setState(STATE_PAUSED);
+                    mPlayingTimer.pause();
+                    NotificationHelper.getInstance().updateNotification(false);
+                    notifyAllObserverPlayStateChange(false);
+                    MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PAUSED);
+                }
+            });
+            animator.setDuration(200);
+            animator.setInterpolator(new DecelerateInterpolator());
+            animator.start();
         }
     }
 
@@ -213,6 +225,15 @@ public class MediaPlayController extends MusicStateObservable
         audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN);
         mediaPlayer.start();
+        ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f);
+        animator.addUpdateListener((valueAnimator) -> {
+            float volume = (float) valueAnimator.getAnimatedValue();
+            mediaPlayer.setVolume(volume, volume);
+            LogUtil.e("MediaPlayController", "volume = " + volume);
+        });
+        animator.setDuration(200);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.start();
         setState(STATE_STARTED);
         mPlayingTimer.start();
         NotificationHelper.getInstance().showNotification(currentPlayingMusic);
