@@ -19,13 +19,13 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         mStatusBarView = view.findViewById(R.id.status_bar);
         mAppBarLayout = view.findViewById(R.id.appBarLayout);
         mToolbar = view.findViewById(R.id.tool_bar);
         mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         mToolbar.setTitle(R.string.app_name);
         mToolbar.setNavigationOnClickListener((v -> EventBus.getDefault().post(true, Constant.EventBusTag.OPEN_DRAWER)));
+        super.onViewCreated(view, savedInstanceState);
     }
 
 }

@@ -78,10 +78,13 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
                 break;
             case R.id.play_pause:
                 boolean isPlaying = ForegroundMusicController.getInstance().isPlaying();
+                e("isPlaying? " + isPlaying);
                 Music currentPlayingMusic = ForegroundMusicStateCache.getInstance().getCurrentPlayingMusic();
                 if (isPlaying) {
+                    e("isPlaying and to pause");
                     ForegroundMusicController.getInstance().pause();
                 } else {
+                    e("isPlaying and to play");
                     ForegroundMusicController.getInstance().play(currentPlayingMusic);
                 }
                 break;

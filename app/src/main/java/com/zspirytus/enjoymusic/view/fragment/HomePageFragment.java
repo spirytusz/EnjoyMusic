@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,7 +44,7 @@ import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 
 @LayoutIdInject(R.layout.fragment_home_page_layout)
 public class HomePageFragment extends CommonHeaderBaseFragment
-        implements OnItemClickListener {
+        implements OnItemClickListener, AppBarLayout.OnOffsetChangedListener {
 
     @ViewInject(R.id.home_page_recycler_view)
     private RecyclerView mHomePageRecyclerView;
@@ -126,6 +127,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
                 playScrollAnimation(scrollY);
             }
         });
+        mAppBarLayout.addOnOffsetChangedListener(this);
         notifyObserverRecyclerViewLoadFinish();
     }
 
@@ -148,7 +150,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         mViewModels.getMusicList().observe(getParentActivity(), (values) -> {
             mListLoadProgressBar.setVisibility(View.GONE);
             if (values != null && !values.isEmpty()) {
-                values = values.subList(0, 30);
+                values = values.subList(0, 30 > values.size() ? values.size() : 30);
                 mInnerAdapter.setList(values);
                 mHomePageRecyclerView.setAdapter(mAnimationAdapter);
                 mAnimationAdapter.notifyDataSetChanged();
@@ -178,6 +180,11 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         }
     }
 
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+    }
+
     private int computeHomeDisPlayImgTranslationY(RecyclerView recyclerView) {
         int firstPos = ((GridLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
         int itemType = recyclerView.getAdapter().getItemViewType(firstPos);
@@ -200,7 +207,6 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     }
 
     private void playScrollAnimation(int scrollY) {
-        // TODO: 22/01/2019 监听CollapsingToolbarLayout展开状态（正在展开状态）来设置动画效果，阴影效果.
         if (scrollY < PixelsUtil.dp2px(getContext(), 56)) {
             mStatusBarView.getBackground().setAlpha(0);
             mToolbar.getBackground().setAlpha(0);
@@ -210,10 +216,6 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             if (drawable != null) {
                 drawable.setTint(0xFF4C4E4A);
             }
-            mAppBarLayout.setTranslationZ(0f);
-            mAppBarLayout.setElevation(0f);
-            mStatusBarView.setTranslationZ(0f);
-            mStatusBarView.setElevation(0f);
         } else {
             mStatusBarView.getBackground().setAlpha(1);
             mToolbar.getBackground().setAlpha(1);
@@ -226,15 +228,21 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             if (drawable != null) {
                 drawable.setTint(0xFF000000);
             }
-            mAppBarLayout.setTranslationZ(PixelsUtil.dp2px(getContext(), 4));
-            // CollapsingLayout未展开
-            if (mAppBarLayout.getBottom() == mStatusBarView.getHeight()) {
-                mStatusBarView.setTranslationZ(PixelsUtil.dp2px(getContext(), 5));
-            } else {
-                mStatusBarView.setTranslationZ(PixelsUtil.dp2px(getContext(), 4));
-            }
-            mAppBarLayout.setElevation(PixelsUtil.dp2px(getContext(), 6));
+        }
+        computeAppBarShadow(scrollY);
+    }
+
+    private void computeAppBarShadow(int scrollY) {
+        if (scrollY < PixelsUtil.dp2px(getContext(), 56)) {
+            mAppBarLayout.setTranslationZ(0f);
+            mStatusBarView.setTranslationZ(0f);
+            mStatusBarView.setElevation(0f);
+            mAppBarLayout.setElevation(0f);
+        } else {
+            mAppBarLayout.setTranslationZ(PixelsUtil.dp2px(getContext(), 1));
+            mStatusBarView.setTranslationZ(PixelsUtil.dp2px(getContext(), 1));
             mStatusBarView.setElevation(PixelsUtil.dp2px(getContext(), 6));
+            mAppBarLayout.setElevation(PixelsUtil.dp2px(getContext(), 6));
         }
     }
 
