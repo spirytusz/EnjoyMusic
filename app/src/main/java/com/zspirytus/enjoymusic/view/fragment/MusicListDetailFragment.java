@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.AppCompatImageView;
@@ -7,23 +8,22 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
-import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
+import com.zspirytus.enjoymusic.cache.viewmodels.MusicDataSharedViewModels;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
-import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
-import java.io.File;
 import java.util.List;
 
 import io.reactivex.SingleObserver;
@@ -45,6 +45,8 @@ public class MusicListDetailFragment extends BaseFragment
     private FloatingActionButton mFab;
     @ViewInject(R.id.back_btn)
     private AppCompatImageView mBackBtn;
+
+    private MusicDataSharedViewModels mViewModel;
 
     private CommonRecyclerViewAdapter<Music> mAdapter;
 
@@ -75,15 +77,15 @@ public class MusicListDetailFragment extends BaseFragment
             Music firstMusic = mAdapter.getList().get(0);
             ForegroundMusicController.getInstance().play(firstMusic);
         });
+        mViewModel = ViewModelProviders.of(getParentActivity()).get(MusicDataSharedViewModels.class);
     }
 
     @Override
     protected void initView() {
-        ObservableFactory.filterMusic(filterAlbum, filterArtist)
+        ObservableFactory.filterMusic(mViewModel.getMusicList().getValue(), filterAlbum, filterArtist)
                 .subscribe(new SingleObserver<List<Music>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
                     }
 
                     @Override
@@ -129,18 +131,11 @@ public class MusicListDetailFragment extends BaseFragment
                 mToolbar.setTitle(music.getMusicArtist());
                 mCollapsing.setTitle(music.getMusicArtist());
             }
-            GlideApp.with(this)
-                    .load(R.drawable.defalut_cover)
-                    .centerCrop()
-                    .into(mCover);
+            ImageLoader.load(mCover, R.drawable.defalut_cover, new CenterCrop());
             for (Music exitCoverMusic : musicList) {
                 String path = exitCoverMusic.getMusicThumbAlbumCoverPath();
                 if (path != null && !path.isEmpty()) {
-                    File coverFile = MusicCoverFileCache.getInstance().getCoverFile(exitCoverMusic.getMusicThumbAlbumCoverPath());
-                    GlideApp.with(this)
-                            .load(coverFile)
-                            .centerCrop()
-                            .into(mCover);
+                    ImageLoader.load(mCover, path, R.drawable.defalut_cover, new CenterCrop());
                     break;
                 }
             }

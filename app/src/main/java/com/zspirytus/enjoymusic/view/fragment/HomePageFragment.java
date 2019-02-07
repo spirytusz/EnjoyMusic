@@ -207,6 +207,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     }
 
     private void playScrollAnimation(int scrollY) {
+        // TODO: 22/01/2019 监听CollapsingToolbarLayout展开状态（正在展开状态）来设置动画效果，阴影效果.
         if (scrollY < PixelsUtil.dp2px(getContext(), 56)) {
             mStatusBarView.getBackground().setAlpha(0);
             mToolbar.getBackground().setAlpha(0);
@@ -216,6 +217,10 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             if (drawable != null) {
                 drawable.setTint(0xFF4C4E4A);
             }
+            mAppBarLayout.setTranslationZ(0f);
+            mAppBarLayout.setElevation(0f);
+            mStatusBarView.setTranslationZ(0f);
+            mStatusBarView.setElevation(0f);
         } else {
             mStatusBarView.getBackground().setAlpha(1);
             mToolbar.getBackground().setAlpha(1);
@@ -228,21 +233,15 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             if (drawable != null) {
                 drawable.setTint(0xFF000000);
             }
-        }
-        computeAppBarShadow(scrollY);
-    }
-
-    private void computeAppBarShadow(int scrollY) {
-        if (scrollY < PixelsUtil.dp2px(getContext(), 56)) {
-            mAppBarLayout.setTranslationZ(0f);
-            mStatusBarView.setTranslationZ(0f);
-            mStatusBarView.setElevation(0f);
-            mAppBarLayout.setElevation(0f);
-        } else {
-            mAppBarLayout.setTranslationZ(PixelsUtil.dp2px(getContext(), 1));
-            mStatusBarView.setTranslationZ(PixelsUtil.dp2px(getContext(), 1));
-            mStatusBarView.setElevation(PixelsUtil.dp2px(getContext(), 6));
+            mAppBarLayout.setTranslationZ(PixelsUtil.dp2px(getContext(), 4));
+            // CollapsingLayout未展开
+            if (mAppBarLayout.getBottom() == mStatusBarView.getHeight()) {
+                mStatusBarView.setTranslationZ(PixelsUtil.dp2px(getContext(), 5));
+            } else {
+                mStatusBarView.setTranslationZ(PixelsUtil.dp2px(getContext(), 4));
+            }
             mAppBarLayout.setElevation(PixelsUtil.dp2px(getContext(), 6));
+            mStatusBarView.setElevation(PixelsUtil.dp2px(getContext(), 6));
         }
     }
 

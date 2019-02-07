@@ -21,7 +21,6 @@ import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseActivity;
 import com.zspirytus.enjoymusic.base.BaseFragment;
-import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.cache.viewmodels.MusicDataSharedViewModels;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
@@ -72,8 +71,6 @@ public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, PlayedMusicChangeObserver,
         MusicPlayStateObserver {
 
-    private static final String TAG = "MainActivity";
-
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
     @ViewInject(R.id.nav_view)
@@ -86,7 +83,6 @@ public class MainActivity extends BaseActivity
 
     private MusicDataSharedViewModels mViewModel;
     private ServiceConnection conn;
-    private boolean isPlaying = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -118,7 +114,7 @@ public class MainActivity extends BaseActivity
         if (action != null) {
             if (!FragmentVisibilityManager.getInstance().getCurrentFragment().getClass().getSimpleName().equals("MusicPlayingFragment")) {
                 MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
-                mViewModel.setCurrentMusic(action);
+                mViewModel.setCurrentPlayingMusic(action);
                 showCastFragment(fragment);
             }
         }
@@ -134,6 +130,7 @@ public class MainActivity extends BaseActivity
         currentFragment.goBack();
     }
 
+    @SuppressWarnings("all")
     @Override
     protected void initView() {
         mDrawerListener = new DrawerListenerImpl();
@@ -142,10 +139,10 @@ public class MainActivity extends BaseActivity
         mBottomMusicControl.setOnViewClickListener(new MusicControlPane.OnViewClickListener() {
             @Override
             public void onPlayOrPause() {
-                if (isPlaying) {
+                if (mViewModel.getMusicPlayState().getValue()) {
                     ForegroundMusicController.getInstance().pause();
                 } else {
-                    ForegroundMusicController.getInstance().play(ForegroundMusicStateCache.getInstance().getCurrentPlayingMusic());
+                    ForegroundMusicController.getInstance().play(mViewModel.getCurrentPlayingMusic().getValue());
                 }
             }
 
@@ -168,7 +165,7 @@ public class MainActivity extends BaseActivity
         mViewModel = ViewModelProviders.of(this).get(MusicDataSharedViewModels.class);
         Music music = getIntent().getParcelableExtra("music");
         if (music != null) {
-            mViewModel.setCurrentMusic(music);
+            mViewModel.setCurrentPlayingMusic(music);
             MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
             showCastFragment(fragment);
             BaseFragment homeFragment = FragmentFactory.getInstance().get(HomePageFragment.class);
@@ -202,6 +199,7 @@ public class MainActivity extends BaseActivity
     @Override
     public void onPlayedMusicChanged(final Music music) {
         AndroidSchedulers.mainThread().scheduleDirect(() -> {
+            mViewModel.setCurrentPlayingMusic(music);
             mBottomMusicControl.wrapMusic(music);
             mBottomMusicControl.setPlayState(true);
         });
@@ -210,7 +208,7 @@ public class MainActivity extends BaseActivity
     @Override
     public void onPlayingStateChanged(final boolean isPlaying) {
         AndroidSchedulers.mainThread().scheduleDirect(() -> {
-            this.isPlaying = isPlaying;
+            mViewModel.setMusicPlayState(isPlaying);
             mBottomMusicControl.setPlayState(isPlaying);
         });
     }

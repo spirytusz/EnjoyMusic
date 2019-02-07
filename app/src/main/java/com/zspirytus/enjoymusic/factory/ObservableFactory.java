@@ -1,15 +1,6 @@
 package com.zspirytus.enjoymusic.factory;
 
-import android.os.IBinder;
-import android.os.RemoteException;
-
-import com.zspirytus.enjoymusic.IGetMusicList;
-import com.zspirytus.enjoymusic.ISetPlayList;
-import com.zspirytus.enjoymusic.cache.ForegroundMusicStateCache;
-import com.zspirytus.enjoymusic.cache.constant.Constant;
-import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
 
 import java.util.List;
 
@@ -24,7 +15,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ObservableFactory {
 
-    public static Observable<Object> getMusicListInForegroundObservable() {
+    /*public static Observable<Object> getMusicListInForegroundObservable() {
         return Observable.create((emitter) -> {
             IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.GET_MUSIC_LIST);
             IGetMusicList getMusicListBinder = IGetMusicList.Stub.asInterface(binder);
@@ -43,10 +34,10 @@ public class ObservableFactory {
             emitter.onComplete();
         }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
-    }
+    }*/
 
-    public static Single<List<Music>> filterMusic(final String filterAlbum, final String filterArtist) {
-        return Observable.fromIterable(ForegroundMusicStateCache.getInstance().getAllMusicList())
+    public static Single<List<Music>> filterMusic(List<Music> musicList, final String filterAlbum, final String filterArtist) {
+        return Observable.fromIterable(musicList)
                 .filter((music -> {
                     String album = music.getMusicAlbumName();
                     String artist = music.getMusicArtist();
