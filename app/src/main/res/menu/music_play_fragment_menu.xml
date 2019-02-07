@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home_page"
+        android:title="Home Page" />
+    <item
+        android:id="@+id/nav_music_all"
+        android:title="All Music" />
+    <item
+        android:id="@+id/nav_music_album"
+        android:title="Album" />
+    <item
+        android:id="@+id/nav_music_artist"
+        android:title="Artist" />
+    <item
+        android:id="@+id/nav_music_folder"
+        android:title="Folder" />
+    <item
+        android:id="@+id/nav_play_list"
+        android:title="Play List" />
+</menu>

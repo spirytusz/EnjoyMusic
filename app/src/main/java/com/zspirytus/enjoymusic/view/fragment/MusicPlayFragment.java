@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -44,6 +45,8 @@ public class MusicPlayFragment extends BaseFragment
         implements View.OnClickListener, MusicPlayStateObserver,
         MusicPlayProgressObserver, PlayedMusicChangeObserver {
 
+    @ViewInject(R.id.tool_bar)
+    private Toolbar mToolbar;
     @ViewInject(R.id.background)
     private BlurImageView mBackground;
     @ViewInject(R.id.back_btn)
@@ -132,6 +135,7 @@ public class MusicPlayFragment extends BaseFragment
         mNextButton.setOnClickListener(this);
         mPlayMode.setOnClickListener(this);
         mPlayMode.setImageResource(mViewModel.getPlayModeResId().get(0));
+        mToolbar.inflateMenu(R.menu.music_play_fragment_menu);
     }
 
     @Override

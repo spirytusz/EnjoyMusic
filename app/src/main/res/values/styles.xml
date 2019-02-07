@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionOverflowButtonStyle">@style/MyOverflowButtonStyle</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -70,7 +71,7 @@
         <item name="android:marqueeRepeatLimit">marquee_forever</item>
     </style>
 
-    <style name="MusicPlayFragment_Title">
+    <style name="MusicPlayFragment_Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:maxEms">9</item>
@@ -79,6 +80,7 @@
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
         <item name="android:marqueeRepeatLimit">marquee_forever</item>
+        <item name="android:layout_marginLeft">20dp</item>
     </style>
 
     <style name="TextViewStyle_14sp_marquee">
@@ -141,6 +143,12 @@
     <style name="ToolbarTheme" parent="Widget.AppCompat.Toolbar">
         <item name="selectableItemBackground">?android:selectableItemBackground</item>
         <item name="selectableItemBackgroundBorderless">?android:selectableItemBackground</item>
+    </style>
+
+    <style name="MyOverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@color/white</item>
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
     </style>
 
 </resources>
