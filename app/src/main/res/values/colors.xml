@@ -10,5 +10,10 @@
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
 
+    <color name="translucent_scrim_top">#26000000</color>
+    <color name="translucent_scrim_top_center">#0C000000</color>
+    <color name="translucent_scrim_bottom">#88AAAAAA</color>
+    <color name="translucent_scrim_bottom_center">#22AAAAAA</color>
+
     <color name="translucent_grey">#88AAAAAA</color>
 </resources>

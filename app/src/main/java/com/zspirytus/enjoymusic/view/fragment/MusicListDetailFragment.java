@@ -1,6 +1,7 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.AppCompatImageView;
@@ -23,6 +24,7 @@ import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 import java.util.List;
 
@@ -45,6 +47,8 @@ public class MusicListDetailFragment extends BaseFragment
     private FloatingActionButton mFab;
     @ViewInject(R.id.back_btn)
     private AppCompatImageView mBackBtn;
+    @ViewInject(R.id.appBarLayout)
+    private AppBarLayout mAppBarLayout;
 
     private MusicDataSharedViewModels mViewModel;
 
@@ -98,6 +102,13 @@ public class MusicListDetailFragment extends BaseFragment
                         e.printStackTrace();
                     }
                 });
+        mAppBarLayout.addOnOffsetChangedListener(((appBarLayout, verticalOffset) -> {
+            if (PixelsUtil.px2dp(getContext(), verticalOffset) <= -135) {
+                mBackBtn.getDrawable().setTint(getResources().getColor(R.color.black));
+            } else {
+                mBackBtn.getDrawable().setTint(getResources().getColor(R.color.white));
+            }
+        }));
     }
 
     @Override
@@ -131,6 +142,8 @@ public class MusicListDetailFragment extends BaseFragment
                 mToolbar.setTitle(music.getMusicArtist());
                 mCollapsing.setTitle(music.getMusicArtist());
             }
+            mCollapsing.setExpandedTitleColor(getResources().getColor(R.color.white));
+            mCollapsing.setCollapsedTitleTextColor(getResources().getColor(R.color.black));
             ImageLoader.load(mCover, R.drawable.defalut_cover, new CenterCrop());
             for (Music exitCoverMusic : musicList) {
                 String path = exitCoverMusic.getMusicThumbAlbumCoverPath();
