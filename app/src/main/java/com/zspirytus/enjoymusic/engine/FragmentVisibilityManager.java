@@ -42,15 +42,16 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         notifyAllFragmentChangeObserver(fragment);
     }
 
-    public void show(BaseFragment shouldShowFragment, int fragmentContainer, int enter, int exit) {
+    public void show(BaseFragment shouldShowFragment) {
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        int exitAnim = getCurrentFragment() != null ? getCurrentFragment().exitAnim() : 0;
         if (!shouldShowFragment.isAdded()) {
-            transaction.add(fragmentContainer, shouldShowFragment);
+            transaction.add(shouldShowFragment.getContainerId(), shouldShowFragment);
         }
         if (mCurrentFragment != null) {
             transaction.hide(mCurrentFragment);
         }
-        transaction.setCustomAnimations(enter, exit);
+        transaction.setCustomAnimations(shouldShowFragment.enterAnim(), exitAnim);
         transaction.show(shouldShowFragment);
         transaction.commitAllowingStateLoss();
         setCurrentFragment(shouldShowFragment);
@@ -84,7 +85,7 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
 
     private void showBackFragment(BaseFragment invisibleFragment) {
         BaseFragment backFragment = popBackStack();
-        show(backFragment, backFragment.getContainerId(), backFragment.enterAnim(), invisibleFragment.exitAnim());
+        show(backFragment);
     }
 
 }

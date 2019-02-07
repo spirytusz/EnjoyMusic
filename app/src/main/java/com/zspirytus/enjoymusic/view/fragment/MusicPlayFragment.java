@@ -111,6 +111,7 @@ public class MusicPlayFragment extends BaseFragment
         mCover.setRotating(!hidden);
         if (!hidden) {
             getParentActivity().setTransparentNavBar();
+            getParentActivity().setDefaultStatusIconColor();
         } else {
             getParentActivity().setDefaultNavBar();
             getParentActivity().setLightStatusIconColor();
@@ -136,6 +137,10 @@ public class MusicPlayFragment extends BaseFragment
         mPlayMode.setOnClickListener(this);
         mPlayMode.setImageResource(mViewModel.getPlayModeResId().get(0));
         mToolbar.inflateMenu(R.menu.music_play_fragment_menu);
+        mToolbar.setOnMenuItemClickListener((item -> {
+            showMusicMetaDataFragment();
+            return true;
+        }));
     }
 
     @Override
@@ -276,6 +281,12 @@ public class MusicPlayFragment extends BaseFragment
         } else {
             mBackground.setImageResource(R.drawable.defalut_cover);
         }
+    }
+
+    private void showMusicMetaDataFragment() {
+        MusicMetaDataFragment fragment = MusicMetaDataFragment.getInstance(mViewModel.getCurrentPlayingMusic().getValue());
+        FragmentVisibilityManager.getInstance().addToBackStack(this);
+        FragmentVisibilityManager.getInstance().show(fragment);
     }
 
     public static MusicPlayFragment getInstance() {

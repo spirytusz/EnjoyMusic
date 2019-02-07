@@ -215,22 +215,13 @@ public class MainActivity extends BaseActivity
 
     @Subscriber(tag = Constant.EventBusTag.SHOW_CAST_FRAGMENT)
     public <T extends BaseFragment> void showCastFragment(T shouldShowFragment) {
-        int container;
-        int enterAnim = shouldShowFragment.enterAnim();
-        int exitAnim = 0;
         BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
-        if (currentFragment != null) {
-            exitAnim = currentFragment.exitAnim();
-        }
         if (shouldShowFragment instanceof MusicPlayFragment || shouldShowFragment instanceof MusicListDetailFragment) {
-            container = R.id.full_fragment_container;
             if (currentFragment != null) {
                 FragmentVisibilityManager.getInstance().addToBackStack(currentFragment);
             }
-        } else {
-            container = R.id.fragment_container;
         }
-        FragmentVisibilityManager.getInstance().show(shouldShowFragment, container, enterAnim, exitAnim);
+        FragmentVisibilityManager.getInstance().show(shouldShowFragment);
     }
 
     @Subscriber(tag = Constant.EventBusTag.OPEN_DRAWER)

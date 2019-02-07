@@ -48,4 +48,24 @@ public class MultiItemAdapter<T> extends RecyclerView.Adapter<CommonViewHolder> 
     public int getItemViewType(int position) {
         return mItemViewDelegateManager.getItemViewType(mData.get(position));
     }
+
+    public void addDelegate(ItemViewDelegate<T> delegate) {
+        mItemViewDelegateManager.addDelegate(delegate);
+    }
+
+    public void removeDelegate(ItemViewDelegate<T> delegate) {
+        mItemViewDelegateManager.removeDelegate(delegate);
+    }
+
+    public void setData(List<T> data) {
+        mData = data;
+    }
+
+    public void addData(List<T> data) {
+        mData.addAll(data);
+    }
+
+    public List<T> getData() {
+        return mData;
+    }
 }
