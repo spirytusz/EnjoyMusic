@@ -84,7 +84,7 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
                 String[] bitratePercents = {"bps", "Kbps", "Mbps", "Gbps"};
                 String bitratePercent = bitratePercents[0];
                 int i = 0;
-                while (bitrate % 1000 == 0 && i < bitratePercents.length - 1) {
+                while (bitrate > 1000 && i < bitratePercents.length - 1) {
                     bitrate /= 1000;
                     bitratePercent = bitratePercents[++i];
                 }

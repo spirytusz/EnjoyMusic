@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.MenuItem;
 
+import com.zspirytus.enjoymusic.AndroidBug5497Workaround;
 import com.zspirytus.enjoymusic.IBinderPool;
 import com.zspirytus.enjoymusic.IGetMusicList;
 import com.zspirytus.enjoymusic.ISetPlayList;
@@ -87,6 +88,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AndroidBug5497Workaround.assistActivity(this);
         if (savedInstanceState == null) {
             bindPlayMusicService();
         }
