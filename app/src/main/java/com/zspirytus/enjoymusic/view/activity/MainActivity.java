@@ -23,7 +23,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseActivity;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
-import com.zspirytus.enjoymusic.cache.viewmodels.MusicDataSharedViewModels;
+import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
@@ -56,14 +56,11 @@ import org.simple.eventbus.Subscriber;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
- * Activity: 控制显示、隐藏MusicPlayingFragment、AllMusicListFragment
+ * Activity: 控制显示、隐藏Fragment.
  * Created by ZSpirytus on 2018/8/2.
  */
 
@@ -71,6 +68,9 @@ import io.reactivex.schedulers.Schedulers;
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, PlayedMusicChangeObserver,
         MusicPlayStateObserver {
+
+    private static final String MUSIC_KEY = "music";
+    private static final String PLAY_STATE_KEY = "isPlaying";
 
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
@@ -82,31 +82,38 @@ public class MainActivity extends BaseActivity
 
     private DrawerListenerImpl mDrawerListener;
 
-    private MusicDataSharedViewModels mViewModel;
+    private MainActivityViewModel mViewModel;
     private ServiceConnection conn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidBug5497Workaround.assistActivity(this);
-        if (savedInstanceState == null) {
-            bindPlayMusicService();
+        bindPlayMusicService();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(MUSIC_KEY, mViewModel.getCurrentPlayingMusic().getValue());
+        if (mViewModel.getMusicPlayState().getValue() != null) {
+            outState.putBoolean(PLAY_STATE_KEY, mViewModel.getMusicPlayState().getValue());
+        } else {
+            outState.putBoolean(PLAY_STATE_KEY, false);
         }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mViewModel.setCurrentPlayingMusic(savedInstanceState.getParcelable(MUSIC_KEY));
+        mViewModel.setMusicPlayState(savedInstanceState.getBoolean(PLAY_STATE_KEY));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         unbindService(conn);
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // navigate to selected fragment when mDrawerLayout close completed
-        // closing state: begin closing, closing finish closing will listen by DrawerListenerImpl
-        mDrawerListener.setSelectedNavId(item.getItemId());
-        mDrawerLayout.closeDrawer(Gravity.START);
-        return true;
     }
 
     @Override
@@ -164,7 +171,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void initData() {
         FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
-        mViewModel = ViewModelProviders.of(this).get(MusicDataSharedViewModels.class);
+        mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         Music music = getIntent().getParcelableExtra("music");
         if (music != null) {
             mViewModel.setCurrentPlayingMusic(music);
@@ -194,6 +201,15 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // navigate to selected fragment when mDrawerLayout close completed
+        // closing state: begin closing, closing finish closing will listen by DrawerListenerImpl
+        mDrawerListener.setSelectedNavId(item.getItemId());
+        mDrawerLayout.closeDrawer(Gravity.START);
+        return true;
+    }
+
+    @Override
     public void onGranted() {
         loadMusicList();
     }
@@ -203,7 +219,6 @@ public class MainActivity extends BaseActivity
         AndroidSchedulers.mainThread().scheduleDirect(() -> {
             mViewModel.setCurrentPlayingMusic(music);
             mBottomMusicControl.wrapMusic(music);
-            mBottomMusicControl.setPlayState(true);
         });
     }
 
@@ -296,30 +311,11 @@ public class MainActivity extends BaseActivity
                 .add(R.id.launch_animation_container, fragment)
                 .show(fragment)
                 .commitAllowingStateLoss();
-        Observable.timer(3, TimeUnit.SECONDS).subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Long>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Long aLong) {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        getSupportFragmentManager().beginTransaction()
-                                .remove(fragment)
-                                .commitAllowingStateLoss();
-                        setFullScreenOrNot(false);
-                    }
-                });
+        AndroidSchedulers.mainThread().scheduleDirect(() -> {
+            getSupportFragmentManager().beginTransaction()
+                    .remove(fragment)
+                    .commitAllowingStateLoss();
+            setFullScreenOrNot(false);
+        }, 3, TimeUnit.SECONDS);
     }
 }

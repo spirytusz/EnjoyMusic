@@ -23,7 +23,7 @@ import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
-import com.zspirytus.enjoymusic.cache.viewmodels.MusicDataSharedViewModels;
+import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -59,7 +59,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     private HomePageRecyclerViewLoadObserver mRecyclerViewLoadStateObserver;
     private SparseIntArray mItemHeightCache;
 
-    private MusicDataSharedViewModels mViewModels;
+    private MainActivityViewModel mViewModels;
     private volatile CommonRecyclerViewAdapter<Music> mInnerAdapter;
     private volatile HeaderFooterViewWrapAdapter mHeaderWrapAdapter;
     private ScaleInAnimationAdapter mAnimationAdapter;
@@ -146,7 +146,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModels = ViewModelProviders.of(getParentActivity()).get(MusicDataSharedViewModels.class);
+        mViewModels = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
         mViewModels.getMusicList().observe(getParentActivity(), (values) -> {
             mListLoadProgressBar.setVisibility(View.GONE);
             if (values != null && !values.isEmpty()) {

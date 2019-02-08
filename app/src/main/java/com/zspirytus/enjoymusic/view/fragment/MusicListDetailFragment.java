@@ -15,7 +15,7 @@ import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
-import com.zspirytus.enjoymusic.cache.viewmodels.MusicDataSharedViewModels;
+import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
@@ -50,7 +50,7 @@ public class MusicListDetailFragment extends BaseFragment
     @ViewInject(R.id.appBarLayout)
     private AppBarLayout mAppBarLayout;
 
-    private MusicDataSharedViewModels mViewModel;
+    private MainActivityViewModel mViewModel;
 
     private CommonRecyclerViewAdapter<Music> mAdapter;
 
@@ -81,7 +81,7 @@ public class MusicListDetailFragment extends BaseFragment
             Music firstMusic = mAdapter.getList().get(0);
             ForegroundMusicController.getInstance().play(firstMusic);
         });
-        mViewModel = ViewModelProviders.of(getParentActivity()).get(MusicDataSharedViewModels.class);
+        mViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
     }
 
     @Override

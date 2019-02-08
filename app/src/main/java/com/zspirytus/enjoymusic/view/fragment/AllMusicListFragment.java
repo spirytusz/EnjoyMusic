@@ -14,7 +14,7 @@ import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
-import com.zspirytus.enjoymusic.cache.viewmodels.MusicDataSharedViewModels;
+import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -44,7 +44,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     @ViewInject(R.id.all_music_list_fragment_info_tv)
     private TextView mInfoTextView;
 
-    private MusicDataSharedViewModels mViewModel;
+    private MainActivityViewModel mViewModel;
 
     private CommonRecyclerViewAdapter<Music> mAdapter;
     private AlphaInAnimationAdapter mAnimationWrapAdapter;
@@ -77,7 +77,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
-        mViewModel = ViewModelProviders.of(getParentActivity()).get(MusicDataSharedViewModels.class);
+        mViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
     }
 
     @Override

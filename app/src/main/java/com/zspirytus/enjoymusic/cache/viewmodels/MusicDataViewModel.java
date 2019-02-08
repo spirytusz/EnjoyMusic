@@ -10,12 +10,12 @@ import com.zspirytus.enjoymusic.entity.Music;
 
 import java.util.List;
 
-public class MusicDataSharedViewModels extends ViewModel {
-
+public class MusicDataViewModel extends ViewModel {
     private MutableLiveData<List<Music>> mMusicListLiveData = new MutableLiveData<>();
     private MutableLiveData<List<Album>> mAlbumListLiveData = new MutableLiveData<>();
     private MutableLiveData<List<Artist>> mArtistListLiveData = new MutableLiveData<>();
     private MutableLiveData<List<FolderSortedMusic>> mFolderListLiveData = new MutableLiveData<>();
+
     private MutableLiveData<Music> mCurrentMusicLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> mPlayState = new MutableLiveData<>();
 

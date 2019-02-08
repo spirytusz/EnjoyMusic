@@ -13,7 +13,7 @@ import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
-import com.zspirytus.enjoymusic.cache.viewmodels.MusicDataSharedViewModels;
+import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -34,7 +34,7 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
     @ViewInject(R.id.file_sorted_music_fragment_recycler_view)
     private RecyclerView mFileSortedMusicRecyclerView;
 
-    private MusicDataSharedViewModels mViewModel;
+    private MainActivityViewModel mViewModel;
 
     private CommonRecyclerViewAdapter<FolderSortedMusic> mAdapter;
     private AlphaInAnimationAdapter mAnimationWrapAdapter;
@@ -60,7 +60,7 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
-        mViewModel = ViewModelProviders.of(getParentActivity()).get(MusicDataSharedViewModels.class);
+        mViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
     }
 
     @Override
