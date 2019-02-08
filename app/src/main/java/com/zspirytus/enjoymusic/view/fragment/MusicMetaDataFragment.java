@@ -102,16 +102,19 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
         MusicMetaDataListItem item5 = new MusicMetaDataListItem();
         item5.setSingleEditText(true);
         item5.setEditTextTitle("标题");
+        item5.setEditTextDefaultText(music.getMusicName());
         dataList.add(item5);
 
         MusicMetaDataListItem item6 = new MusicMetaDataListItem();
         item6.setSingleEditText(true);
         item6.setEditTextTitle("艺术家");
+        item6.setEditTextDefaultText(music.getMusicArtist());
         dataList.add(item6);
 
         MusicMetaDataListItem item7 = new MusicMetaDataListItem();
         item7.setSingleEditText(true);
         item7.setEditTextTitle("专辑");
+        item7.setEditTextDefaultText(music.getMusicAlbumName());
         dataList.add(item7);
 
         MusicMetaDataListItem item8 = new MusicMetaDataListItem();

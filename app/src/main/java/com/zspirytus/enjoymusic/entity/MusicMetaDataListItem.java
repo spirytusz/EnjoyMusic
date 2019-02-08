@@ -14,10 +14,13 @@ public class MusicMetaDataListItem {
 
     private boolean isSingleEditText = false;
     private String editTextTitle;
+    private String editTextDefaultText;
 
     private boolean isDuplicateEditText = false;
     private String firstEditTextTitle;
+    private String firstEditTextDefaultText;
     private String secondEditTextTitle;
+    private String secondEditTextDefaultText;
 
     public boolean isArtistArt() {
         return isArtistArt;
@@ -105,5 +108,29 @@ public class MusicMetaDataListItem {
 
     public void setSecondEditTextTitle(String secondEditTextTitle) {
         this.secondEditTextTitle = secondEditTextTitle;
+    }
+
+    public String getEditTextDefaultText() {
+        return editTextDefaultText;
+    }
+
+    public void setEditTextDefaultText(String editTextDefaultText) {
+        this.editTextDefaultText = editTextDefaultText;
+    }
+
+    public String getFirstEditTextDefaultText() {
+        return firstEditTextDefaultText;
+    }
+
+    public void setFirstEditTextDefaultText(String firstEditTextDefaultText) {
+        this.firstEditTextDefaultText = firstEditTextDefaultText;
+    }
+
+    public String getSecondEditTextDefaultText() {
+        return secondEditTextDefaultText;
+    }
+
+    public void setSecondEditTextDefaultText(String secondEditTextDefaultText) {
+        this.secondEditTextDefaultText = secondEditTextDefaultText;
     }
 }
