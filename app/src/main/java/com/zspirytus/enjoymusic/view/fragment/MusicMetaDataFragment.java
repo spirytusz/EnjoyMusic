@@ -158,7 +158,6 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
 
             @Override
             public void onNegativeBtnClick() {
-                goBack();
             }
         });
         dialog.show(getChildFragmentManager(), dialog.getClass().getSimpleName());

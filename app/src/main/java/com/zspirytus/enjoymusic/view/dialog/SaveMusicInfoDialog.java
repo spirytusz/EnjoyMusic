@@ -57,11 +57,8 @@ public class SaveMusicInfoDialog extends BaseDialogFragment {
         });
     }
 
-    // TODO: 08/02/2019 设置dialog的宽高属性.
     @Override
     protected void setDialogAttribute(Window window) {
-        //window.setGravity(Gravity.CENTER);
-
         WindowManager.LayoutParams lp = getDialog().getWindow().getAttributes();
         lp.dimAmount = 0.8f;
         lp.width = PixelsUtil.getPixelsConfig()[0] - 2 * PixelsUtil.dp2px(getContext(), 40);
