@@ -15,6 +15,7 @@ import com.zspirytus.enjoymusic.entity.MusicMetaDataListItem;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.view.dialog.SaveMusicInfoDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
     @ViewInject(R.id.save_btn)
     private TextView mSaveBtn;
 
+    private boolean hasSaved = false;
     private MusicMetaDataListAdapter mAdapter;
 
     @Override
@@ -51,8 +53,12 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
         switch (v.getId()) {
             case R.id.save_btn:
                 saveMusicMetaData();
-            case R.id.cancel_btn:
                 goBack();
+                break;
+            case R.id.cancel_btn:
+                if (!hasSaved) {
+                    showDialog();
+                }
                 break;
         }
     }
@@ -63,8 +69,13 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public int enterAnim() {
+        return R.anim.anim_fragment_translate_show_up;
+    }
+
+    @Override
+    public int exitAnim() {
+        return super.exitAnim();
     }
 
     @Override
@@ -134,6 +145,23 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
 
     private void saveMusicMetaData() {
 
+    }
+
+    private void showDialog() {
+        SaveMusicInfoDialog dialog = new SaveMusicInfoDialog();
+        dialog.setOnDialogButtonClickListener(new SaveMusicInfoDialog.OnDialogButtonClickListener() {
+            @Override
+            public void onPositiveBtnClick() {
+                saveMusicMetaData();
+                goBack();
+            }
+
+            @Override
+            public void onNegativeBtnClick() {
+                goBack();
+            }
+        });
+        dialog.show(getChildFragmentManager(), dialog.getClass().getSimpleName());
     }
 
     public static MusicMetaDataFragment getInstance(Music music) {

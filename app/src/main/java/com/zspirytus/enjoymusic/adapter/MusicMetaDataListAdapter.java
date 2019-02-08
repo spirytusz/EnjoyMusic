@@ -48,6 +48,8 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
                 String path = data.getPreview().getMusicThumbAlbumCoverPath();
                 ImageLoader.load((ImageView) holder.getItemView(), path, R.drawable.defalut_cover, new CenterCrop());
+                holder.setOnItemClickListener((view, position) -> {
+                });
             }
         };
         addDelegate(delegate);
@@ -77,24 +79,32 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
                 String album = music.getMusicAlbumName();
                 String duration = TimeUtil.convertLongToMinsSec(music.getMusicDuration());
                 String mimeType = metaData.getMime();
+                // 计算比特率及其单位
                 Integer bitrate = Integer.parseInt(metaData.getBitrate());
-                if (bitrate % 1000 == 0) {
+                String[] bitratePercents = {"bps", "Kbps", "Mbps", "Gbps"};
+                String bitratePercent = bitratePercents[0];
+                int i = 0;
+                while (bitrate % 1000 == 0 && i < bitratePercents.length - 1) {
                     bitrate /= 1000;
+                    bitratePercent = bitratePercents[++i];
                 }
                 // 限制每行长度
                 musicName = musicName.substring(0, 16 <= musicName.length() - 1 ? 16 : musicName.length() - 1);
                 artist = artist.substring(0, 16 <= artist.length() - 1 ? 16 : artist.length() - 1);
                 album = album.substring(0, 16 <= album.length() - 1 ? 16 : album.length() - 1);
                 Spanned previewText = Html.fromHtml(
-                        "<big><font color='black'>" + musicName + "</font></big><br/>"
-                                + "<font color='grey'>" + artist + "</font><br/>"
-                                + "<font color='grey'>" + album + "</font><br/>"
-                                + "<font color='grey'>时长: " + duration + "</font><br/>"
-                                + "<font color='grey'>Mime: " + mimeType + "</font><br/>"
-                                + "<font color='grey'>比特率: " + bitrate + "kbps</font><br/>"
+                        "<big><font color='black' style=\"line-height:150%;\">" + musicName + "</font></big><br/>"
+                                + "<font color='grey' style=\"line-height:150%;\">" + artist + "</font><br/>"
+                                + "<font color='grey' style=\"line-height:150%;\">" + album + "</font><br/>"
+                                + "<font color='grey' style=\"line-height:150%;\">时长: " + duration + "</font><br/>"
+                                + "<font color='grey' style=\"line-height:150%;\">Mime: " + mimeType + "</font><br/>"
+                                + "<font color='grey' style=\"line-height:150%;\">比特率: " + bitrate + bitratePercent + "</font><br/>"
                 );
                 TextView textView = holder.getView(R.id.music_preview_text);
                 textView.setText(previewText);
+
+                holder.setOnItemClickListener(R.id.music_preview_cover, view -> {
+                });
             }
         };
         addDelegate(delegate);
@@ -134,6 +144,8 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
 
             @Override
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
+                holder.setOnItemClickListener((view, position) -> {
+                });
             }
         };
         addDelegate(delegate);

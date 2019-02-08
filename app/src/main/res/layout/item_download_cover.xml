@@ -2,6 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:focusable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:background="@color/grey">
@@ -33,7 +35,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="获取专辑封面"
+        android:text="获取音乐信息"
         android:textSize="14sp"
         android:layout_marginStart="12dp"
         app:layout_constraintStart_toEndOf="@id/download_image"

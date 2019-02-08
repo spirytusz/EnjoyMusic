@@ -138,8 +138,12 @@ public class MusicPlayFragment extends BaseFragment
         mPlayMode.setImageResource(mViewModel.getPlayModeResId().get(0));
         mToolbar.inflateMenu(R.menu.music_play_fragment_menu);
         mToolbar.setOnMenuItemClickListener((item -> {
-            showMusicMetaDataFragment();
-            return true;
+            switch (item.getItemId()) {
+                case R.id.menu_edit_music_info:
+                    showMusicMetaDataFragment();
+                    return true;
+            }
+            return false;
         }));
     }
 
