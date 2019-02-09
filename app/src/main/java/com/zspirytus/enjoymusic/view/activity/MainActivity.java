@@ -69,9 +69,6 @@ public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, PlayedMusicChangeObserver,
         MusicPlayStateObserver {
 
-    private static final String MUSIC_KEY = "music";
-    private static final String PLAY_STATE_KEY = "isPlaying";
-
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
     @ViewInject(R.id.nav_view)
@@ -89,31 +86,38 @@ public class MainActivity extends BaseActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidBug5497Workaround.assistActivity(this);
+        mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         bindPlayMusicService();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(MUSIC_KEY, mViewModel.getCurrentPlayingMusic().getValue());
-        if (mViewModel.getMusicPlayState().getValue() != null) {
-            outState.putBoolean(PLAY_STATE_KEY, mViewModel.getMusicPlayState().getValue());
-        } else {
-            outState.putBoolean(PLAY_STATE_KEY, false);
-        }
+        FragmentVisibilityManager.getInstance().onSaveInstanceState(outState);
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mViewModel.setCurrentPlayingMusic(savedInstanceState.getParcelable(MUSIC_KEY));
-        mViewModel.setMusicPlayState(savedInstanceState.getBoolean(PLAY_STATE_KEY));
+    protected void onMRestoreInstanceState(Bundle savedInstanceState) {
+        e("MainActivity#onRestoreInstanceState");
+        setLightStatusIconColor();
+        FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
+        FragmentVisibilityManager.getInstance().onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         unbindService(conn);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
+            currentFragment.goBack();
+        }
     }
 
     @Override
@@ -127,16 +131,6 @@ public class MainActivity extends BaseActivity
                 showCastFragment(fragment);
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-            return;
-        }
-        BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
-        currentFragment.goBack();
     }
 
     @SuppressWarnings("all")
@@ -170,8 +164,8 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void initData() {
+        e("MainActivity#initData");
         FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
-        mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         Music music = getIntent().getParcelableExtra("music");
         if (music != null) {
             mViewModel.setCurrentPlayingMusic(music);
@@ -217,8 +211,10 @@ public class MainActivity extends BaseActivity
     @Override
     public void onPlayedMusicChanged(final Music music) {
         AndroidSchedulers.mainThread().scheduleDirect(() -> {
-            mViewModel.setCurrentPlayingMusic(music);
-            mBottomMusicControl.wrapMusic(music);
+            if (music != null) {
+                mViewModel.setCurrentPlayingMusic(music);
+                mBottomMusicControl.wrapMusic(music);
+            }
         });
     }
 
@@ -232,6 +228,7 @@ public class MainActivity extends BaseActivity
 
     @Subscriber(tag = Constant.EventBusTag.SHOW_CAST_FRAGMENT)
     public <T extends BaseFragment> void showCastFragment(T shouldShowFragment) {
+        e("MainActivity#showCastFragment");
         BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
         if (shouldShowFragment instanceof MusicPlayFragment || shouldShowFragment instanceof MusicListDetailFragment) {
             if (currentFragment != null) {

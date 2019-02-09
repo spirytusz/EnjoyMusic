@@ -6,7 +6,7 @@ import android.media.MediaPlayer;
 import android.os.PowerManager;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
+import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
@@ -169,6 +169,7 @@ public class MediaPlayController extends MusicStateObservable
         if (state == STATE_STARTED) {
             mediaPlayer.pause();
             setState(STATE_PAUSED);
+            BackgroundMusicStateCache.getInstance().setPlaying(false);
             mPlayingTimer.pause();
             NotificationHelper.getInstance().updateNotification(false);
             notifyAllObserverPlayStateChange(false);
@@ -213,6 +214,7 @@ public class MediaPlayController extends MusicStateObservable
                 AudioManager.AUDIOFOCUS_GAIN);
         mediaPlayer.start();
         setState(STATE_STARTED);
+        BackgroundMusicStateCache.getInstance().setPlaying(true);
         mPlayingTimer.start();
         NotificationHelper.getInstance().showNotification(currentPlayingMusic);
         NotificationHelper.getInstance().updateNotification(true);
@@ -220,7 +222,7 @@ public class MediaPlayController extends MusicStateObservable
             mOnPlayListener.onPlay();
         notifyAllObserverPlayStateChange(true);
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
-        CurrentPlayingMusicCache.getInstance().setCurrentPlayingMusic(currentPlayingMusic);
+        BackgroundMusicStateCache.getInstance().setCurrentPlayingMusic(currentPlayingMusic);
         PlayHistoryCache.getInstance().add(currentPlayingMusic);
     }
 

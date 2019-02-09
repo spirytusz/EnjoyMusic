@@ -24,6 +24,7 @@ public class SettingsFragment extends CommonHeaderBaseFragment {
 
     @Override
     protected void initView() {
+        getParentActivity().setLightStatusIconColor();
     }
 
     @Override

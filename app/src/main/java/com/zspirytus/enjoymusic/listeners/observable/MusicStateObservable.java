@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.listeners.observable;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 
+import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayProgressChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayStateChangeObserver;
@@ -19,6 +20,11 @@ public class MusicStateObservable {
      */
     public synchronized void registerPlayStateObserver(IPlayStateChangeObserver observer) {
         mPlayStateObservers.register(observer);
+        try {
+            observer.onPlayStateChange(BackgroundMusicStateCache.getInstance().isPlaying());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public synchronized void registerProgressChangeObserver(IPlayProgressChangeObserver observer) {
@@ -27,6 +33,11 @@ public class MusicStateObservable {
 
     public synchronized void registerMusicPlayCompleteObserver(IPlayedMusicChangeObserver observer) {
         mPlayMusicChangeObservers.register(observer);
+        try {
+            observer.onPlayMusicChange(BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

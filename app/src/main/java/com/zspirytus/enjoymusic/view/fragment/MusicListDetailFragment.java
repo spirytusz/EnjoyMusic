@@ -86,6 +86,7 @@ public class MusicListDetailFragment extends BaseFragment
 
     @Override
     protected void initView() {
+        getParentActivity().setLightStatusIconColor();
         ObservableFactory.filterMusic(mViewModel.getMusicList().getValue(), filterAlbum, filterArtist)
                 .subscribe(new SingleObserver<List<Music>>() {
                     @Override

@@ -45,6 +45,9 @@ public class MusicPlayFragment extends BaseFragment
         implements View.OnClickListener, MusicPlayStateObserver,
         MusicPlayProgressObserver, PlayedMusicChangeObserver {
 
+    private static final String MUSIC_KEY = "saveMusic";
+    private static final String PLAY_STATE_KEY = "isPlaying";
+
     @ViewInject(R.id.tool_bar)
     private Toolbar mToolbar;
     @ViewInject(R.id.background)
@@ -107,7 +110,6 @@ public class MusicPlayFragment extends BaseFragment
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
         mCover.setRotating(!hidden);
         if (!hidden) {
             getParentActivity().setTransparentNavBar();
@@ -148,6 +150,21 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Music currentMusic = mViewModel.getCurrentPlayingMusic().getValue();
+        Boolean isPlaying = mViewModel.getPlayState().getValue();
+        if (currentMusic != null) {
+            outState.putParcelable(MUSIC_KEY, currentMusic);
+        }
+        if (isPlaying != null) {
+            outState.putBoolean(PLAY_STATE_KEY, isPlaying);
+        } else {
+            outState.putBoolean(PLAY_STATE_KEY, false);
+        }
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel.getPlayProgress().observe(this, (values) -> {
@@ -167,6 +184,15 @@ public class MusicPlayFragment extends BaseFragment
                 mCover.resetRotation();
             }
         });
+        if (savedInstanceState != null) {
+            Music saveMusic = savedInstanceState.getParcelable(MUSIC_KEY);
+            Boolean isPlaying = savedInstanceState.getBoolean(PLAY_STATE_KEY);
+            if (saveMusic != null) {
+                setView(saveMusic);
+            }
+            setButtonSrc(isPlaying);
+            mCover.setRotating(isPlaying);
+        }
     }
 
     @Override

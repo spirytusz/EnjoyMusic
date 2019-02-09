@@ -1,6 +1,6 @@
 package com.zspirytus.enjoymusic.engine;
 
-import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
+import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
@@ -47,12 +47,12 @@ public class MusicPlayOrderManager {
                 // 如果是用户操作，逻辑同列表循环
                 // 否则，继续播放当前音乐
                 if (!fromUser) {
-                    nextMusic = CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic();
+                    nextMusic = BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic();
                     break;
                 }
             case Constant.PlayMode.LIST_LOOP:
                 // 列表循环
-                int currentPosition = mPlayList.indexOf(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+                int currentPosition = mPlayList.indexOf(BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic());
                 nextPosition = (currentPosition + 1) % mPlayList.size();
                 nextMusic = mPlayList.get(nextPosition);
                 break;

@@ -48,6 +48,7 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
 
     @Override
     protected void initView() {
+        getParentActivity().setLightStatusIconColor();
         initTabLayout();
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT);

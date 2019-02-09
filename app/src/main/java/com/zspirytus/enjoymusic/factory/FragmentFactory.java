@@ -1,5 +1,7 @@
 package com.zspirytus.enjoymusic.factory;
 
+import android.util.SparseArray;
+
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.view.fragment.AboutFragment;
 import com.zspirytus.enjoymusic.view.fragment.AlbumMusicListFragment;
@@ -19,6 +21,7 @@ import com.zspirytus.enjoymusic.view.fragment.SettingsFragment;
 public class FragmentFactory {
 
     private static final FragmentFactory INSTANCE = new FragmentFactory();
+    private SparseArray<Class> fragments;
 
     private HomePageFragment mHomePageFragment;
     private MusicCategoryFragment mMusicCategoryFragment;
@@ -32,13 +35,29 @@ public class FragmentFactory {
     private FolderSortedMusicListFragment mFolderSortedMusicListFragment;
 
     private FragmentFactory() {
-
+        fragments = new SparseArray<>();
+        fragments.put(HomePageFragment.class.getSimpleName().hashCode(), HomePageFragment.class);
+        fragments.put(MusicCategoryFragment.class.getSimpleName().hashCode(), MusicCategoryFragment.class);
+        fragments.put(SettingsFragment.class.getSimpleName().hashCode(), SettingsFragment.class);
+        fragments.put(AboutFragment.class.getSimpleName().hashCode(), AboutFragment.class);
+        fragments.put(MusicPlayFragment.class.getSimpleName().hashCode(), MusicPlayFragment.class);
+        fragments.put(AllMusicListFragment.class.getSimpleName().hashCode(), AllMusicListFragment.class);
+        fragments.put(AlbumMusicListFragment.class.getSimpleName().hashCode(), AlbumMusicListFragment.class);
+        fragments.put(ArtistMusicListFragment.class.getSimpleName().hashCode(), ArtistMusicListFragment.class);
+        fragments.put(PlayListFragment.class.getSimpleName().hashCode(), PlayListFragment.class);
+        fragments.put(FolderSortedMusicListFragment.class.getSimpleName().hashCode(), FolderSortedMusicListFragment.class);
     }
 
     public static FragmentFactory getInstance() {
         return INSTANCE;
     }
 
+    @SuppressWarnings("unchecked")
+    public BaseFragment get(String fragmentName) {
+        return get(fragments.get(fragmentName.hashCode()));
+    }
+
+    @SuppressWarnings("unchecked")
     public <T extends BaseFragment> T get(Class<T> tClass) {
         if (tClass == HomePageFragment.class) {
             if (mHomePageFragment == null) {

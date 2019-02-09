@@ -9,7 +9,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.KeyEvent;
 
-import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
+import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.MusicScanner;
 import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
@@ -101,7 +101,7 @@ public class MyMediaSession {
                             if (BackgroundMusicController.getInstance().isPlaying()) {
                                 BackgroundMusicController.getInstance().pause();
                             } else {
-                                Music music = CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic();
+                                Music music = BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic();
                                 BackgroundMusicController.getInstance().play(music);
                             }
                             break;

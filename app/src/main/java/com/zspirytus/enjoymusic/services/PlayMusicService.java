@@ -7,7 +7,7 @@ import android.media.AudioManager;
 import android.os.IBinder;
 
 import com.zspirytus.enjoymusic.base.BaseService;
-import com.zspirytus.enjoymusic.cache.CurrentPlayingMusicCache;
+import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
@@ -53,8 +53,9 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
 
     @Override
     public IBinder onBind(Intent intent) {
-        if (mBinderPool == null)
+        if (mBinderPool == null) {
             mBinderPool = new IBinderPoolImpl();
+        }
         return mBinderPool;
     }
 
@@ -67,7 +68,7 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
     @Override
     public void onDestroy() {
         super.onDestroy();
-        MusicSharedPreferences.saveMusic(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+        MusicSharedPreferences.saveMusic(BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic());
     }
 
     @Override
@@ -103,7 +104,7 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        NotificationHelper.getInstance().showNotification(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+        NotificationHelper.getInstance().showNotification(BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic());
         Notification currentNotification = NotificationHelper.getInstance().getCurrentNotification();
         int notificationNotifyId = NotificationHelper.getInstance().getNotificationNotifyId();
         startForeground(notificationNotifyId, currentNotification);
@@ -122,7 +123,7 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
                         BackgroundMusicController.getInstance().play(PlayHistoryCache.getInstance().getPreviousPlayedMusic());
                         break;
                     case Constant.NotificationEvent.PLAY:
-                        BackgroundMusicController.getInstance().play(CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic());
+                        BackgroundMusicController.getInstance().play(BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic());
                         break;
                     case Constant.NotificationEvent.PAUSE:
                         BackgroundMusicController.getInstance().pause();
@@ -137,7 +138,7 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
 
     private void startActivity() {
         Intent intent = new Intent(this, MainActivity.class);
-        Music music = CurrentPlayingMusicCache.getInstance().getCurrentPlayingMusic();
+        Music music = BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic();
         intent.putExtra(Constant.NotificationEvent.EXTRA, music);
         this.startActivity(intent);
     }

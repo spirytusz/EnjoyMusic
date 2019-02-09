@@ -7,17 +7,18 @@ import com.zspirytus.enjoymusic.global.MainApplication;
  * Created by ZSpirytus on 2018/9/12.
  */
 
-public class CurrentPlayingMusicCache {
+public class BackgroundMusicStateCache {
 
-    private static final CurrentPlayingMusicCache ourInstance = new CurrentPlayingMusicCache();
+    private static final BackgroundMusicStateCache ourInstance = new BackgroundMusicStateCache();
 
     private Music currentPlayingMusic;
+    private boolean isPlaying;
 
-    public static CurrentPlayingMusicCache getInstance() {
+    public static BackgroundMusicStateCache getInstance() {
         return ourInstance;
     }
 
-    private CurrentPlayingMusicCache() {
+    private BackgroundMusicStateCache() {
         currentPlayingMusic = MusicSharedPreferences.restoreMusic(MainApplication.getBackgroundContext());
     }
 
@@ -29,4 +30,11 @@ public class CurrentPlayingMusicCache {
         return currentPlayingMusic;
     }
 
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
+    public void setPlaying(boolean playing) {
+        isPlaying = playing;
+    }
 }

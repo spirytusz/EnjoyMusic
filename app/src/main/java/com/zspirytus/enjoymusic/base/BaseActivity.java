@@ -29,19 +29,29 @@ public abstract class BaseActivity extends AppCompatActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTransparentStatusBar();
-
         autoInjectLayoutId();
         autoInjectAllField();
-        registerEvent();
-        initView();
-        initData();
+        setTransparentStatusBar();
+
+        if (savedInstanceState != null) {
+            onMRestoreInstanceState(savedInstanceState);
+            registerEvent();
+            initView();
+        } else {
+            registerEvent();
+            initView();
+            initData();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         unregisterEvent();
+    }
+
+    protected void onMRestoreInstanceState(Bundle savedInstanceState) {
+
     }
 
     @Override

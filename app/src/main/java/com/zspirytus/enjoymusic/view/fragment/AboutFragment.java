@@ -18,6 +18,7 @@ public class AboutFragment extends CommonHeaderBaseFragment {
 
     @Override
     protected void initView() {
+        getParentActivity().setLightStatusIconColor();
     }
 
     @Override

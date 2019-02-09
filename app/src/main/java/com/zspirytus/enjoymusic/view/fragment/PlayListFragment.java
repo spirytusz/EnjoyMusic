@@ -62,6 +62,7 @@ public class PlayListFragment extends CommonHeaderBaseFragment
 
     @Override
     protected void initView() {
+        getParentActivity().setLightStatusIconColor();
         mPlayListRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mPlayListRecyclerView.setHasFixedSize(true);
         mPlayListRecyclerView.setNestedScrollingEnabled(false);
