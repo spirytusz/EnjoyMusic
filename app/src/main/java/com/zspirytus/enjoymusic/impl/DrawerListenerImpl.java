@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.impl;
 
+import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 
@@ -20,12 +21,12 @@ import org.simple.eventbus.EventBus;
 
 public class DrawerListenerImpl implements DrawerLayout.DrawerListener {
 
+    private static final String TAG = "DrawerListenerImpl";
+
     private int mSelectedNavId;
-    private int mLastSelectNavId = -1;
 
     @Override
     public void onDrawerSlide(View drawerView, float slideOffset) {
-
     }
 
     @Override
@@ -35,39 +36,32 @@ public class DrawerListenerImpl implements DrawerLayout.DrawerListener {
     @Override
     public void onDrawerClosed(View drawerView) {
         FragmentFactory factory = FragmentFactory.getInstance();
-        if (mSelectedNavId != mLastSelectNavId) {
-            switch (mSelectedNavId) {
-                case R.id.nav_home_page:
-                    EventBus.getDefault().post(factory.get(HomePageFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
-                    break;
-                case R.id.nav_music_all:
-                    factory.get(MusicCategoryFragment.class).setCurrentPosition(0);
-                    showMusicCategoryFragmentOrNot();
-                    break;
-                case R.id.nav_music_album:
-                    factory.get(MusicCategoryFragment.class).setCurrentPosition(1);
-                    showMusicCategoryFragmentOrNot();
-                    break;
-                case R.id.nav_music_artist:
-                    factory.get(MusicCategoryFragment.class).setCurrentPosition(2);
-                    showMusicCategoryFragmentOrNot();
-                    break;
-                case R.id.nav_music_folder:
-                    factory.get(MusicCategoryFragment.class).setCurrentPosition(3);
-                    showMusicCategoryFragmentOrNot();
-                    break;
-                case R.id.nav_play_list:
-                    EventBus.getDefault().post(factory.get(PlayListFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
-                    break;
-                case R.id.nav_settings:
-                    EventBus.getDefault().post(factory.get(SettingsFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
-                    break;
-                case R.id.nav_about:
-                    EventBus.getDefault().post(factory.get(AboutFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
-                    break;
-            }
+        switch (mSelectedNavId) {
+            case R.id.nav_home_page:
+                EventBus.getDefault().post(factory.get(HomePageFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+                break;
+            case R.id.nav_music_all:
+                showMusicCategoryFragmentOrNot(0);
+                break;
+            case R.id.nav_music_album:
+                showMusicCategoryFragmentOrNot(1);
+                break;
+            case R.id.nav_music_artist:
+                showMusicCategoryFragmentOrNot(2);
+                break;
+            case R.id.nav_music_folder:
+                showMusicCategoryFragmentOrNot(3);
+                break;
+            case R.id.nav_play_list:
+                EventBus.getDefault().post(factory.get(PlayListFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+                break;
+            case R.id.nav_settings:
+                EventBus.getDefault().post(factory.get(SettingsFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+                break;
+            case R.id.nav_about:
+                EventBus.getDefault().post(factory.get(AboutFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+                break;
         }
-        mLastSelectNavId = mSelectedNavId;
     }
 
     @Override
@@ -78,14 +72,15 @@ public class DrawerListenerImpl implements DrawerLayout.DrawerListener {
         mSelectedNavId = selectedNavId;
     }
 
-    private void showMusicCategoryFragmentOrNot() {
-        if (!isMusicCategoryFragment()) {
-            EventBus.getDefault().post(FragmentFactory.getInstance().get(MusicCategoryFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+    private void showMusicCategoryFragmentOrNot(int category) {
+        MusicCategoryFragment fragment = FragmentFactory.getInstance().get(MusicCategoryFragment.class);
+        if (fragment.getArguments() == null) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("currentPosition", category);
+            fragment.setArguments(bundle);
+        } else {
+            fragment.setCurrentPosition(category);
         }
-    }
-
-    private boolean isMusicCategoryFragment() {
-        return mLastSelectNavId == R.id.nav_music_all || mLastSelectNavId == R.id.nav_music_album
-                || mLastSelectNavId == R.id.nav_music_artist || mLastSelectNavId == R.id.nav_music_folder;
+        EventBus.getDefault().post(fragment, Constant.EventBusTag.SHOW_CAST_FRAGMENT);
     }
 }

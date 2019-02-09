@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.factory;
 
+import android.support.v4.app.FragmentManager;
 import android.util.SparseArray;
 
 import com.zspirytus.enjoymusic.base.BaseFragment;
@@ -109,5 +110,18 @@ public class FragmentFactory {
             return (T) mFolderSortedMusicListFragment;
         }
         return null;
+    }
+
+    public void onRestoreState(FragmentManager manager) {
+        mHomePageFragment = (HomePageFragment) manager.findFragmentByTag(HomePageFragment.class.getSimpleName());
+        mAllMusicListFragment = (AllMusicListFragment) manager.findFragmentByTag(AllMusicListFragment.class.getSimpleName());
+        mAlbumMusicListFragment = (AlbumMusicListFragment) manager.findFragmentByTag(AlbumMusicListFragment.class.getSimpleName());
+        mArtistMusicListFragment = (ArtistMusicListFragment) manager.findFragmentByTag(ArtistMusicListFragment.class.getSimpleName());
+        mFolderSortedMusicListFragment = (FolderSortedMusicListFragment) manager.findFragmentByTag(FolderSortedMusicListFragment.class.getSimpleName());
+        mMusicCategoryFragment = (MusicCategoryFragment) manager.findFragmentByTag(MusicCategoryFragment.class.getSimpleName());
+        mSettingsFragment = (SettingsFragment) manager.findFragmentByTag(SettingsFragment.class.getSimpleName());
+        mAboutFragment = (AboutFragment) manager.findFragmentByTag(AboutFragment.class.getSimpleName());
+        mPlayListFragment = (PlayListFragment) manager.findFragmentByTag(PlayListFragment.class.getSimpleName());
+        mMusicPlayFragment = (MusicPlayFragment) manager.findFragmentByTag(MusicPlayFragment.class.getSimpleName());
     }
 }

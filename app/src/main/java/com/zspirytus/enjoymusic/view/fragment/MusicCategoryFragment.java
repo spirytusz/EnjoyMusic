@@ -57,6 +57,7 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
         mViewPager.setOffscreenPageLimit(VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT);
         mViewPager.setCurrentItem(mCurrentPosition, true);
         mViewPager.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
+        setCurrentPosition(getArguments().getInt("currentPosition"));
     }
 
     @Override

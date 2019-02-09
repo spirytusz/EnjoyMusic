@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.zspirytus.enjoymusic.base.BaseFragment;
+import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.listeners.observable.FragmentChangeObservable;
 
 import java.util.Stack;
@@ -65,6 +66,7 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
                 show(fragment);
             }
         }
+        FragmentFactory.getInstance().onRestoreState(mFragmentManager);
     }
 
     public BaseFragment getCurrentFragment() {
