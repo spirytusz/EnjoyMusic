@@ -228,7 +228,6 @@ public class MainActivity extends BaseActivity
 
     @Subscriber(tag = Constant.EventBusTag.SHOW_CAST_FRAGMENT)
     public <T extends BaseFragment> void showCastFragment(T shouldShowFragment) {
-        e("MainActivity#showCastFragment");
         BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
         if (shouldShowFragment instanceof MusicPlayFragment || shouldShowFragment instanceof MusicListDetailFragment) {
             if (currentFragment != null) {

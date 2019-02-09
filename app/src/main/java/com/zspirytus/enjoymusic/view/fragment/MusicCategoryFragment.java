@@ -1,5 +1,7 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.animation.AnimationUtils;
@@ -26,6 +28,7 @@ import java.util.List;
 public class MusicCategoryFragment extends CommonHeaderBaseFragment {
 
     private static final int VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT = 4;
+    private static final String CURRENT_POSITION = "currentPosition";
 
     @ViewInject(R.id.music_category_tab_layout)
     private TabLayout mTabLayout;
@@ -34,7 +37,6 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
 
     private MyViewPagerAdapter mAdapter;
     private int mCurrentPosition;
-
 
     @Override
     protected void initData() {
@@ -49,11 +51,26 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
     @Override
     protected void initView() {
         getParentActivity().setLightStatusIconColor();
+        mToolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
         initTabLayout();
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT);
         mViewPager.setCurrentItem(mCurrentPosition, true);
         mViewPager.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CURRENT_POSITION, getCurrentPosition());
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            setCurrentPosition(savedInstanceState.getInt(CURRENT_POSITION));
+        }
     }
 
     @Override
@@ -67,10 +84,6 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
     @Override
     public int getContainerId() {
         return R.id.fragment_container;
-    }
-
-    @Override
-    protected void onLoadState(boolean isSuccess) {
     }
 
     public void setCurrentPosition(int currentPosition) {
@@ -98,9 +111,10 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
                  * 否则第一次tab.getPosition()只会返回0，
                  * 返回0，NavigationView中的菜单项选中态就不正确.
                  */
-                if (mViewPager.getAdapter() != null) {
+                if (mAdapter != null) {
                     mCurrentPosition = tab.getPosition();
-                    FragmentVisibilityManager.getInstance().setCurrentFragment(MusicCategoryFragment.this);
+                    e("onTabSelected#mCurrentPosition = " + mCurrentPosition);
+                    FragmentVisibilityManager.getInstance().onChildFragmentChange(MusicCategoryFragment.this, mAdapter.getItem(mCurrentPosition));
                 }
             }
 

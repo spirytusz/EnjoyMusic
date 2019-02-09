@@ -57,6 +57,7 @@ public class CustomNavigationView extends NavigationView implements FragmentChan
                 break;
             case Constant.FragmentName.folderSortedMusicListFragment:
                 setCheckedItem(R.id.nav_music_folder);
+                break;
             case Constant.FragmentName.playListFragmentName:
                 setCheckedItem(R.id.nav_play_list);
                 break;

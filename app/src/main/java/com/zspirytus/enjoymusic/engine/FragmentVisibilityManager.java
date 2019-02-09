@@ -6,8 +6,6 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.listeners.observable.FragmentChangeObservable;
-import com.zspirytus.enjoymusic.utils.LogUtil;
-import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 
 import java.util.Stack;
 
@@ -40,13 +38,37 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         backStack = new Stack<>();
     }
 
-    public BaseFragment getCurrentFragment() {
-        return mCurrentFragment;
+    public void onSaveInstanceState(Bundle outState) {
+        // 保存FragmentVisibilityManager必要的数据
+        String[] fragmentBackStack = new String[backStack.size()];
+        for (int i = 0; i < fragmentBackStack.length; i++) {
+            fragmentBackStack[i] = backStack.elementAt(i).getClass().getSimpleName();
+        }
+        outState.putStringArray(FRAGMENT_BACK_STACK, fragmentBackStack);
+        String currentFragment = getCurrentFragment().getClass().getSimpleName();
+        outState.putString(CURRENT_FRAGMENT, currentFragment);
     }
 
-    public void setCurrentFragment(BaseFragment fragment) {
-        mCurrentFragment = fragment;
-        notifyAllFragmentChangeObserver(fragment);
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        // 恢复FragmentVisibilityManager必要的数据
+        String[] fragmentBackStack = savedInstanceState.getStringArray(FRAGMENT_BACK_STACK);
+        if (fragmentBackStack != null && fragmentBackStack.length > 0) {
+            for (String fragmentName : fragmentBackStack) {
+                BaseFragment fragment = (BaseFragment) mFragmentManager.findFragmentByTag(fragmentName);
+                addToBackStack(fragment);
+            }
+        }
+        String currentFragment = savedInstanceState.getString(CURRENT_FRAGMENT);
+        if (currentFragment != null) {
+            BaseFragment fragment = (BaseFragment) mFragmentManager.findFragmentByTag(currentFragment);
+            if (fragment != null) {
+                show(fragment);
+            }
+        }
+    }
+
+    public BaseFragment getCurrentFragment() {
+        return mCurrentFragment;
     }
 
     public void show(BaseFragment shouldShowFragment) {
@@ -63,10 +85,11 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
             transaction.show(shouldShowFragment);
             transaction.commitAllowingStateLoss();
             setCurrentFragment(shouldShowFragment);
-            if (shouldShowFragment instanceof HomePageFragment) {
-                LogUtil.e(TAG, "show HomePageFragment.hashCode = " + shouldShowFragment.hashCode());
-            }
         }
+    }
+
+    public void onChildFragmentChange(BaseFragment parent, BaseFragment child) {
+        notifyAllFragmentChangeObserver(child);
     }
 
     public void remove(BaseFragment fragment) {
@@ -89,6 +112,11 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         }
     }
 
+    private void setCurrentFragment(BaseFragment fragment) {
+        mCurrentFragment = fragment;
+        notifyAllFragmentChangeObserver(fragment);
+    }
+
     private BaseFragment popBackStack() {
         if (!backStack.isEmpty())
             return backStack.pop();
@@ -98,37 +126,6 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
     private void showBackFragment() {
         BaseFragment backFragment = popBackStack();
         show(backFragment);
-    }
-
-    public void onSaveInstanceState(Bundle outState) {
-        // 保存FragmentVisibilityManager必要的数据
-        String[] fragmentBackStack = new String[backStack.size()];
-        for (int i = 0; i < fragmentBackStack.length; i++) {
-            fragmentBackStack[i] = backStack.elementAt(i).getClass().getSimpleName();
-            LogUtil.e(TAG, "save fragmentBackStack = " + fragmentBackStack[i]);
-        }
-        outState.putStringArray(FRAGMENT_BACK_STACK, fragmentBackStack);
-        String currentFragment = getCurrentFragment().getClass().getSimpleName();
-        outState.putString(CURRENT_FRAGMENT, currentFragment);
-    }
-
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        // 恢复FragmentVisibilityManager必要的数据
-        String[] fragmentBackStack = savedInstanceState.getStringArray(FRAGMENT_BACK_STACK);
-        if (fragmentBackStack != null && fragmentBackStack.length > 0) {
-            for (String fragmentName : fragmentBackStack) {
-                BaseFragment fragment = (BaseFragment) mFragmentManager.findFragmentByTag(fragmentName);
-                addToBackStack(fragment);
-                LogUtil.e(TAG, "restore fragmentBackStack = " + fragment);
-            }
-        }
-        String currentFragment = savedInstanceState.getString(CURRENT_FRAGMENT);
-        if (currentFragment != null) {
-            BaseFragment fragment = (BaseFragment) mFragmentManager.findFragmentByTag(currentFragment);
-            if (fragment != null) {
-                show(fragment);
-            }
-        }
     }
 
 }
