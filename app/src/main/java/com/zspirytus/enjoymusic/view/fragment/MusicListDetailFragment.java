@@ -1,6 +1,8 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +28,7 @@ import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.SingleObserver;
@@ -34,6 +37,8 @@ import io.reactivex.disposables.Disposable;
 @LayoutIdInject(R.layout.fragment_music_list_detail_layout)
 public class MusicListDetailFragment extends BaseFragment
         implements OnItemClickListener {
+
+    private static final String FILTER_MUSIC_LIST = "filterMusicList";
 
     @ViewInject(R.id.collapsing_toolbar)
     private CollapsingToolbarLayout mCollapsing;
@@ -50,17 +55,60 @@ public class MusicListDetailFragment extends BaseFragment
     @ViewInject(R.id.appBarLayout)
     private AppBarLayout mAppBarLayout;
 
-    private MainActivityViewModel mViewModel;
-
     private CommonRecyclerViewAdapter<Music> mAdapter;
+    private ArrayList<Music> mFilterMusicList;
 
-    private String filterAlbum;
-    private String filterArtist;
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(FILTER_MUSIC_LIST, mFilterMusicList);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            mFilterMusicList = savedInstanceState.getParcelableArrayList(FILTER_MUSIC_LIST);
+            loadDataIntoView();
+        }
+    }
 
     @Override
     protected void initData() {
-        filterAlbum = getArguments().getString("album");
-        filterArtist = getArguments().getString("artist");
+        String filterAlbum = getArguments().getString("album");
+        String filterArtist = getArguments().getString("artist");
+        MainActivityViewModel viewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
+        if (viewModel.getMusicList().getValue() == null)
+            return;
+        ObservableFactory.filterMusic(viewModel.getMusicList().getValue(), filterAlbum, filterArtist)
+                .subscribe(new SingleObserver<List<Music>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onSuccess(List<Music> musicList) {
+                        mFilterMusicList = (ArrayList<Music>) musicList;
+                        loadDataIntoView();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    @Override
+    protected void initView() {
+        getParentActivity().setLightStatusIconColor();
+        mAppBarLayout.addOnOffsetChangedListener(((appBarLayout, verticalOffset) -> {
+            if (PixelsUtil.px2dp(getContext(), verticalOffset) <= -135) {
+                mBackBtn.getDrawable().setTint(getResources().getColor(R.color.black));
+            } else {
+                mBackBtn.getDrawable().setTint(getResources().getColor(R.color.white));
+            }
+        }));
         mAdapter = new CommonRecyclerViewAdapter<Music>() {
             @Override
             public int getLayoutId() {
@@ -81,44 +129,11 @@ public class MusicListDetailFragment extends BaseFragment
             Music firstMusic = mAdapter.getList().get(0);
             ForegroundMusicController.getInstance().play(firstMusic);
         });
-        mViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
-    }
-
-    @Override
-    protected void initView() {
-        getParentActivity().setLightStatusIconColor();
-        ObservableFactory.filterMusic(mViewModel.getMusicList().getValue(), filterAlbum, filterArtist)
-                .subscribe(new SingleObserver<List<Music>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
-                    @Override
-                    public void onSuccess(List<Music> musicList) {
-                        loadDataIntoView(musicList);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-                });
-        mAppBarLayout.addOnOffsetChangedListener(((appBarLayout, verticalOffset) -> {
-            if (PixelsUtil.px2dp(getContext(), verticalOffset) <= -135) {
-                mBackBtn.getDrawable().setTint(getResources().getColor(R.color.black));
-            } else {
-                mBackBtn.getDrawable().setTint(getResources().getColor(R.color.white));
-            }
-        }));
     }
 
     @Override
     public int getContainerId() {
         return R.id.full_fragment_container;
-    }
-
-    @Override
-    protected void onLoadState(boolean isSuccess) {
     }
 
     @Override
@@ -132,11 +147,11 @@ public class MusicListDetailFragment extends BaseFragment
         FragmentVisibilityManager.getInstance().remove(this);
     }
 
-    private void loadDataIntoView(List<Music> musicList) {
-        if (musicList != null && !musicList.isEmpty()) {
-            Music music = musicList.get(0);
-            initRecyclerView(musicList);
-            if (filterAlbum != null) {
+    private void loadDataIntoView() {
+        if (mFilterMusicList != null && !mFilterMusicList.isEmpty()) {
+            Music music = mFilterMusicList.get(0);
+            initRecyclerView(mFilterMusicList);
+            if (getArguments().getString("album") != null) {
                 mToolbar.setTitle(music.getMusicAlbumName());
                 mCollapsing.setTitle(music.getMusicAlbumName());
             } else {
@@ -146,16 +161,14 @@ public class MusicListDetailFragment extends BaseFragment
             mCollapsing.setExpandedTitleColor(getResources().getColor(R.color.white));
             mCollapsing.setCollapsedTitleTextColor(getResources().getColor(R.color.black));
             ImageLoader.load(mCover, R.drawable.defalut_cover, new CenterCrop());
-            for (Music exitCoverMusic : musicList) {
+            for (Music exitCoverMusic : mFilterMusicList) {
                 String path = exitCoverMusic.getMusicThumbAlbumCoverPath();
                 if (path != null && !path.isEmpty()) {
                     ImageLoader.load(mCover, path, R.drawable.defalut_cover, new CenterCrop());
                     break;
                 }
             }
-            mBackBtn.setOnClickListener(v -> {
-                goBack();
-            });
+            mBackBtn.setOnClickListener(v -> goBack());
         }
     }
 
