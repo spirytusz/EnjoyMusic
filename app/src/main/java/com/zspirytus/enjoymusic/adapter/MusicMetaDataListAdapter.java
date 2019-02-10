@@ -15,7 +15,6 @@ import com.zspirytus.enjoymusic.engine.MusicMetaDataReader;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicMetaData;
 import com.zspirytus.enjoymusic.entity.MusicMetaDataListItem;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 
 import java.util.List;
@@ -59,7 +58,6 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
         ItemViewDelegate<MusicMetaDataListItem> delegate = new ItemViewDelegate<MusicMetaDataListItem>() {
             @Override
             public boolean isForViewType(MusicMetaDataListItem data) {
-                LogUtil.e("MusicMetaDataListAdapter", "isForViewType = " + data.isPreview());
                 return data.isPreview();
             }
 

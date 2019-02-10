@@ -16,16 +16,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.zspirytus.basesdk.recyclerview.ItemSpacingDecoration;
-import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.adapter.HeaderFooterViewWrapAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.adapter.HomePageListAdapter;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
-import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
@@ -60,27 +59,14 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     private SparseIntArray mItemHeightCache;
 
     private MainActivityViewModel mViewModels;
-    private volatile CommonRecyclerViewAdapter<Music> mInnerAdapter;
+    private volatile HomePageListAdapter mInnerAdapter;
     private volatile HeaderFooterViewWrapAdapter mHeaderWrapAdapter;
     private ScaleInAnimationAdapter mAnimationAdapter;
 
     @Override
     protected void initData() {
-        mInnerAdapter = new CommonRecyclerViewAdapter<Music>() {
-            @Override
-            public int getLayoutId() {
-                return R.layout.item_card_view_type;
-            }
-
-            @Override
-            public void convert(CommonViewHolder holder, Music music, int position) {
-                String coverPath = music.getMusicThumbAlbumCoverPath();
-                ImageLoader.load(holder.getView(R.id.item_cover), coverPath, R.drawable.defalut_cover);
-                holder.setText(R.id.item_title, music.getMusicName());
-                holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
-                holder.setOnItemClickListener(HomePageFragment.this);
-            }
-        };
+        mInnerAdapter = new HomePageListAdapter();
+        mInnerAdapter.setOnItemClickListener(this);
         mHeaderWrapAdapter = new HeaderFooterViewWrapAdapter(mInnerAdapter) {
             @Override
             public void convertHeaderView(CommonViewHolder holder, int position) {

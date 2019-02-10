@@ -7,16 +7,14 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
-import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
-import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
@@ -46,7 +44,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
 
     private MainActivityViewModel mViewModel;
 
-    private CommonRecyclerViewAdapter<Music> mAdapter;
+    private MusicListAdapter mAdapter;
     private AlphaInAnimationAdapter mAnimationWrapAdapter;
 
     @Override
@@ -59,21 +57,8 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     protected void initData() {
-        mAdapter = new CommonRecyclerViewAdapter<Music>() {
-            @Override
-            public int getLayoutId() {
-                return R.layout.item_common_view_type;
-            }
-
-            @Override
-            public void convert(CommonViewHolder holder, Music music, int position) {
-                String coverPath = music.getMusicThumbAlbumCoverPath();
-                ImageLoader.load(holder.getView(R.id.item_cover), coverPath, R.drawable.defalut_cover);
-                holder.setText(R.id.item_title, music.getMusicName());
-                holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
-                holder.setOnItemClickListener(AllMusicListFragment.this);
-            }
-        };
+        mAdapter = new MusicListAdapter();
+        mAdapter.setOnItemClickListener(this);
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());

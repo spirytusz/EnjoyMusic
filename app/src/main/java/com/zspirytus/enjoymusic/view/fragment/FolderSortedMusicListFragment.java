@@ -7,16 +7,12 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 
-import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
-import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.adapter.FolderSortedMusicListAdapter;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
-import com.zspirytus.enjoymusic.engine.ImageLoader;
-import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
-import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -36,27 +32,13 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
 
     private MainActivityViewModel mViewModel;
 
-    private CommonRecyclerViewAdapter<FolderSortedMusic> mAdapter;
+    private FolderSortedMusicListAdapter mAdapter;
     private AlphaInAnimationAdapter mAnimationWrapAdapter;
 
     @Override
     protected void initData() {
-        mAdapter = new CommonRecyclerViewAdapter<FolderSortedMusic>() {
-            @Override
-            public int getLayoutId() {
-                return R.layout.item_common_view_type;
-            }
-
-            @Override
-            public void convert(CommonViewHolder holder, FolderSortedMusic folderSortedMusic, int position) {
-                Music firstMusicInFolder = folderSortedMusic.getFolderMusicList().get(0);
-                String coverPath = firstMusicInFolder.getMusicThumbAlbumCoverPath();
-                ImageLoader.load(holder.getView(R.id.item_cover), coverPath, R.drawable.defalut_cover);
-                holder.setText(R.id.item_title, folderSortedMusic.getParentFolderDir());
-                holder.setText(R.id.item_sub_title, folderSortedMusic.getFolderName());
-                holder.setOnItemClickListener(FolderSortedMusicListFragment.this);
-            }
-        };
+        mAdapter = new FolderSortedMusicListAdapter();
+        mAdapter.setOnItemClickListener(this);
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());

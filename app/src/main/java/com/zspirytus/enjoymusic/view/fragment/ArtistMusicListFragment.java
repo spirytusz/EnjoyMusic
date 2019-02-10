@@ -8,15 +8,13 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
-import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.adapter.ArtistListAdapter;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
-import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -43,7 +41,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
 
     private MainActivityViewModel mViewModel;
 
-    private CommonRecyclerViewAdapter<Artist> mAdapter;
+    private ArtistListAdapter mAdapter;
     private AlphaInAnimationAdapter mAnimationWrapAdapter;
 
     @Override
@@ -58,20 +56,8 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     protected void initData() {
-        mAdapter = new CommonRecyclerViewAdapter<Artist>() {
-            @Override
-            public int getLayoutId() {
-                return R.layout.item_common_view_type;
-            }
-
-            @Override
-            public void convert(CommonViewHolder holder, Artist artist, int position) {
-                holder.setImageResource(R.id.item_cover, R.drawable.defalut_cover);
-                holder.setText(R.id.item_title, artist.getArtistName());
-                holder.setText(R.id.item_sub_title, artist.getNumberOfAlbums() + " 首歌曲");
-                holder.setOnItemClickListener(ArtistMusicListFragment.this);
-            }
-        };
+        mAdapter = new ArtistListAdapter();
+        mAdapter.setOnItemClickListener(this);
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());

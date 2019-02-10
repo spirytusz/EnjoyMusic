@@ -12,10 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
-import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -55,7 +54,7 @@ public class MusicListDetailFragment extends BaseFragment
     @ViewInject(R.id.appBarLayout)
     private AppBarLayout mAppBarLayout;
 
-    private CommonRecyclerViewAdapter<Music> mAdapter;
+    private MusicListAdapter mAdapter;
     private ArrayList<Music> mFilterMusicList;
 
     @Override
@@ -109,22 +108,8 @@ public class MusicListDetailFragment extends BaseFragment
                 mBackBtn.getDrawable().setTint(getResources().getColor(R.color.white));
             }
         }));
-        mAdapter = new CommonRecyclerViewAdapter<Music>() {
-            @Override
-            public int getLayoutId() {
-                return R.layout.item_common_view_type;
-            }
-
-            @Override
-            public void convert(CommonViewHolder holder, Music music, int position) {
-                String path = music.getMusicThumbAlbumCoverPath();
-                ImageLoader.load(holder.getView(R.id.item_cover), path, R.drawable.defalut_cover);
-                holder.setText(R.id.item_title, music.getMusicName());
-                holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
-                holder.setVisibility(R.id.item_more_info_button, View.GONE);
-                holder.setOnItemClickListener(MusicListDetailFragment.this);
-            }
-        };
+        mAdapter = new MusicListAdapter();
+        mAdapter.setOnItemClickListener(this);
         mFab.setOnClickListener(v -> {
             Music firstMusic = mAdapter.getList().get(0);
             ForegroundMusicController.getInstance().play(firstMusic);
