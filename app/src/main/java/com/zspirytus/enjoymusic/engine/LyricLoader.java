@@ -37,6 +37,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,14 +45,13 @@ import java.util.regex.Pattern;
 public class LyricLoader {
 
     public List<LyricRow> load(File file) {
-        StringBuilder resultBuilder = new StringBuilder();
+        List<String> rows = new ArrayList<>();
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
             String line;
             while ((line = reader.readLine()) != null) {
-                resultBuilder.append(line);
-                resultBuilder.append('\n');
+                rows.add(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -64,10 +64,10 @@ public class LyricLoader {
                 e.printStackTrace();
             }
         }
-        return load(resultBuilder.toString());
+        return load(rows);
     }
 
-    public List<LyricRow> load(String text) {
+    public List<LyricRow> load(List<String> rows) {
         List<LyricRow> lyricRows = new ArrayList<>();
         String[] tagName = new String[]{
                 "",
@@ -91,7 +91,6 @@ public class LyricLoader {
                 Pattern.compile("\\[by:(.*)]")
                 // 歌词作者
         };
-        String[] rows = text.split("\n");
         for (String row : rows) {
             for (int i = 0; i < patterns.length; i++) {
                 Matcher matcher = patterns[i].matcher(row);
@@ -120,6 +119,7 @@ public class LyricLoader {
                 }
             }
         }
+        Collections.sort(lyricRows);
         return lyricRows;
     }
 
@@ -136,45 +136,4 @@ public class LyricLoader {
         }
         row.setText(textBuilder.toString());
     }
-
-    // TODO: 10/02/2019 add url support.
-    /*@WorkerThread
-    public List<LyricRow> load(String url, int timeout) {
-        String html = getHtml(url, timeout);
-        return null;
-    }
-
-    private String getHtml(String url, int timeout) {
-        StringBuilder responseTextBuilder = new StringBuilder();
-        HttpURLConnection connection = null;
-        BufferedReader reader = null;
-        try {
-            URL parsedUrl = new URL(url);
-            connection = (HttpURLConnection) parsedUrl.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setConnectTimeout(timeout);
-            connection.setReadTimeout(timeout);
-            InputStream in = connection.getInputStream();
-            reader = new BufferedReader(new InputStreamReader(in));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                responseTextBuilder.append(line);
-                responseTextBuilder.append('\n');
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-                if (connection != null) {
-                    connection.disconnect();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return responseTextBuilder.toString();
-    }*/
 }
