@@ -112,6 +112,15 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tool_bar" />
 
+    <com.zspirytus.enjoymusic.view.widget.LyricView
+        android:id="@+id/lyricView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/include2"
+        app:layout_constraintTop_toBottomOf="@id/divider_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ImageView
         android:id="@+id/play_pause"
         android:layout_width="48dp"

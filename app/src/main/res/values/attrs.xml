@@ -10,4 +10,17 @@
     <declare-styleable name="AutoRotateCircleImage">
         <attr name="cycle_seconds" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="LyricView">
+        <attr name="lyricTextSize" format="dimension" />
+        <attr name="timeTextSize" format="dimension" />
+        <attr name="diverLineHeight" format="dimension" />
+        <attr name="rowColor" format="color" />
+        <attr name="currentRowColor" format="color" />
+        <attr name="centerRowColor" format="color" />
+        <attr name="defaultLyric" format="string" />
+        <attr name="centerLineMainColor" format="color" />
+        <attr name="scrollDuration" format="integer" />
+        <attr name="centerLineHeight" format="dimension" />
+    </declare-styleable>
 </resources>

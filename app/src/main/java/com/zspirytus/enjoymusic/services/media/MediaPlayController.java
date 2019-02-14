@@ -238,16 +238,16 @@ public class MediaPlayController extends MusicStateObservable
 
         public void start() {
             hasStart = true;
-            final int SECONDS = 1000;
+            final int T = 200;
             mTimer = new Timer();
             mTimerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    int currentPlayingSeconds = INSTANCE.getCurrentPosition() / 1000;
+                    int currentPlayingSeconds = INSTANCE.getCurrentPosition();
                     INSTANCE.notifyAllObserverMusicPlayProgressChange(currentPlayingSeconds);
                 }
             };
-            mTimer.schedule(mTimerTask, 0, SECONDS);
+            mTimer.schedule(mTimerTask, 0, T);
         }
 
         public void pause() {

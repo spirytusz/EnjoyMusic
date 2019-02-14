@@ -7,7 +7,7 @@ import java.util.TreeMap;
 public class LyricRow implements Comparable<LyricRow> {
 
     private String time;
-    private int timeIntValue;
+    private long timeIntValue;
     private String text;
     private TreeMap<Integer, String> lyricRowTime;
 
@@ -47,7 +47,7 @@ public class LyricRow implements Comparable<LyricRow> {
         }
     }
 
-    private int getTimeIntValue() {
+    public long getTimeIntValue() {
         return timeIntValue;
     }
 
@@ -64,6 +64,6 @@ public class LyricRow implements Comparable<LyricRow> {
 
     @Override
     public int compareTo(@NonNull LyricRow o) {
-        return timeIntValue - o.getTimeIntValue();
+        return (int) (timeIntValue - o.getTimeIntValue());
     }
 }

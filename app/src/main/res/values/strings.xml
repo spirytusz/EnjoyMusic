@@ -12,4 +12,6 @@
     <string name="music_artist">Music Artist</string>
     <!-- test string end -->
 
+    <string name="no_lyric">No Lyric</string>
+
 </resources>

@@ -21,4 +21,12 @@
     <dimen name="next_button_height">44dp</dimen>
     <!-- notification panel dimen end -->
 
+    <!-- LyricView start -->
+    <dimen name="lyricDefaultSize">16sp</dimen>
+    <dimen name="timeDefaultSize">12sp</dimen>
+    <dimen name="centerLineDefaultHeight">1dp</dimen>
+    <dimen name="timeTextWidth">16sp</dimen>
+    <dimen name="playIconWidth">30dp</dimen>
+    <!-- LyricView end -->
+
 </resources>

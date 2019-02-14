@@ -44,6 +44,17 @@ import java.util.regex.Pattern;
 
 public class LyricLoader {
 
+    private static class Singleton {
+        static LyricLoader INSTANCE = new LyricLoader();
+    }
+
+    private LyricLoader() {
+    }
+
+    public static LyricLoader getInstance() {
+        return Singleton.INSTANCE;
+    }
+
     public List<LyricRow> load(File file) {
         List<String> rows = new ArrayList<>();
         BufferedReader reader = null;
@@ -113,6 +124,7 @@ public class LyricLoader {
                     } else {
                         // 获取标签
                         lyricRow.setText(tagName[i] + matcher.group(1));
+                        lyricRow.setTime("00:00.00");
                     }
                     lyricRows.add(lyricRow);
                     break;

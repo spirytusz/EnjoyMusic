@@ -18,9 +18,9 @@ public class IPlayProgressChangeObserverImpl extends IPlayProgressChangeObserver
     private List<MusicPlayProgressObserver> observers = new ArrayList<>();
 
     @Override
-    public void onProgressChange(int progress) {
+    public void onProgressChange(int milliseconds) {
         for (MusicPlayProgressObserver observer : observers) {
-            observer.onProgressChanged(progress);
+            observer.onProgressChanged(milliseconds);
         }
     }
 

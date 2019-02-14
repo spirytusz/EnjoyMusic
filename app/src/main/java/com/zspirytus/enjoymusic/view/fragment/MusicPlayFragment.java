@@ -2,11 +2,13 @@ package com.zspirytus.enjoymusic.view.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -16,6 +18,8 @@ import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MusicPlayFragmentViewModels;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
+import com.zspirytus.enjoymusic.engine.LyricLoader;
+import com.zspirytus.enjoymusic.entity.LyricRow;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.impl.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.impl.binder.IPlayProgressChangeObserverImpl;
@@ -29,8 +33,10 @@ import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 import com.zspirytus.enjoymusic.view.widget.AutoRotateCircleImage;
 import com.zspirytus.enjoymusic.view.widget.BlurImageView;
+import com.zspirytus.enjoymusic.view.widget.LyricView;
 
 import java.io.File;
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
@@ -61,6 +67,8 @@ public class MusicPlayFragment extends BaseFragment
 
     @ViewInject(R.id.cover)
     private AutoRotateCircleImage mCover;
+    @ViewInject(R.id.lyricView)
+    private LyricView mLyricView;
 
     @ViewInject(R.id.now_time)
     private TextView mNowTime;
@@ -105,6 +113,16 @@ public class MusicPlayFragment extends BaseFragment
                 mPlayMode.setImageResource(mViewModel.getPlayModeResId().get(mode));
                 ForegroundMusicController.getInstance().setPlayMode(mode);
                 break;
+            case R.id.cover:
+            case R.id.lyricView:
+                if (mCover.getAlpha() == 1.0f && mLyricView.getAlpha() == 0.0f) {
+                    mCover.animate().alpha(0).setDuration(618).setInterpolator(new DecelerateInterpolator()).start();
+                    mLyricView.animate().alpha(1).setDuration(618).setInterpolator(new DecelerateInterpolator()).start();
+                } else if (mCover.getAlpha() == 0.0f && mLyricView.getAlpha() == 1.0f) {
+                    mCover.animate().alpha(1).setDuration(618).setInterpolator(new DecelerateInterpolator()).start();
+                    mLyricView.animate().alpha(0).setDuration(618).setInterpolator(new DecelerateInterpolator()).start();
+                }
+                break;
         }
     }
 
@@ -147,6 +165,9 @@ public class MusicPlayFragment extends BaseFragment
             }
             return false;
         }));
+        mCover.setOnClickListener(this);
+        mLyricView.setOnClickListener(this);
+        mLyricView.setAlpha(0);
     }
 
     @Override
@@ -169,7 +190,8 @@ public class MusicPlayFragment extends BaseFragment
         super.onActivityCreated(savedInstanceState);
         mViewModel.getPlayProgress().observe(this, (values) -> {
             if (values != null) {
-                mSeekBar.setProgress(values);
+                mSeekBar.setProgress(values / 1000);
+                mLyricView.onPlayProgressChange(values);
             }
         });
         mViewModel.getPlayState().observe(this, (values) -> {
@@ -180,6 +202,10 @@ public class MusicPlayFragment extends BaseFragment
         });
         mViewModel.getCurrentPlayingMusic().observe(this, (values) -> {
             if (values != null) {
+                if (values.getMusicName().equals("迷宫大図鑑")) {
+                    List<LyricRow> rows = LyricLoader.getInstance().load(new File(Environment.getExternalStorageDirectory(), "迷宫大図鑑"));
+                    mLyricView.setLyricRows(rows);
+                }
                 setView(values);
                 mCover.resetRotation();
             }
