@@ -23,4 +23,8 @@
         <attr name="scrollDuration" format="integer" />
         <attr name="centerLineHeight" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="LazyViewPager">
+        <attr name="init_lazy_item_offset" format="float" />
+    </declare-styleable>
 </resources>

@@ -2,6 +2,7 @@ package com.zspirytus.enjoymusic.view.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -20,6 +21,7 @@ import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
+import com.zspirytus.enjoymusic.view.widget.lazyviewpager.LazyFragmentPagerAdapter;
 
 import org.simple.eventbus.EventBus;
 
@@ -41,8 +43,6 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     @ViewInject(R.id.album_music_list_fragment_info_tv)
     private TextView mInfoTextView;
 
-    private MainActivityViewModel mViewModel;
-
     private AlbumListAdapter mAdapter;
     private AlphaInAnimationAdapter mAnimationWrapAdapter;
 
@@ -58,12 +58,12 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     protected void initData() {
+        e("initData" + Boolean.toString(this instanceof LazyFragmentPagerAdapter.Laziable));
         mAdapter = new AlbumListAdapter();
         mAdapter.setOnItemClickListener(this);
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
-        mViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
     }
 
     @Override
@@ -83,8 +83,11 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     }
 
     @Override
-    protected void lazyWrapDataInView() {
-        mViewModel.getAlbumList().observe(getParentActivity(), (values) -> {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ViewModelProviders.of(getParentActivity())
+                .get(MainActivityViewModel.class)
+                .getAlbumList().observe(getParentActivity(), (values) -> {
             mLoadProgressBar.setVisibility(View.GONE);
             if (values != null && !values.isEmpty()) {
                 mAdapter.setList(values);

@@ -1,6 +1,8 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -16,6 +18,7 @@ import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.view.widget.lazyviewpager.LazyFragmentPagerAdapter;
 
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
@@ -30,19 +33,17 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
     @ViewInject(R.id.file_sorted_music_fragment_recycler_view)
     private RecyclerView mFileSortedMusicRecyclerView;
 
-    private MainActivityViewModel mViewModel;
-
     private FolderSortedMusicListAdapter mAdapter;
     private AlphaInAnimationAdapter mAnimationWrapAdapter;
 
     @Override
     protected void initData() {
+        e("initData" + Boolean.toString(this instanceof LazyFragmentPagerAdapter.Laziable));
         mAdapter = new FolderSortedMusicListAdapter();
         mAdapter.setOnItemClickListener(this);
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
-        mViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
     }
 
     @Override
@@ -54,8 +55,11 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
     }
 
     @Override
-    public void lazyWrapDataInView() {
-        mViewModel.getFolderList().observe(getParentActivity(), (values) -> {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ViewModelProviders.of(getParentActivity())
+                .get(MainActivityViewModel.class)
+                .getFolderList().observe(getParentActivity(), (values) -> {
             mLoadProgressBar.setVisibility(View.GONE);
             if (values != null && !values.isEmpty()) {
                 mAdapter.setList(values);

@@ -1,10 +1,12 @@
 package com.zspirytus.enjoymusic.adapter;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.view.ViewGroup;
 
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.view.widget.lazyviewpager.LazyFragmentPagerAdapter;
 
 import java.util.List;
 
@@ -12,7 +14,7 @@ import java.util.List;
  * Created by ZSpirytus on 2018/9/12.
  */
 
-public class MyViewPagerAdapter extends FragmentPagerAdapter {
+public class MyViewPagerAdapter extends LazyFragmentPagerAdapter {
 
     private List<BaseFragment> mFragments;
     private int size;
@@ -24,6 +26,10 @@ public class MyViewPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
+    protected Fragment getItem(ViewGroup container, int position) {
+        return mFragments.get(position);
+    }
+
     public BaseFragment getItem(int position) {
         return mFragments.get(position);
     }

@@ -1,6 +1,8 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -42,8 +44,6 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     @ViewInject(R.id.all_music_list_fragment_info_tv)
     private TextView mInfoTextView;
 
-    private MainActivityViewModel mViewModel;
-
     private MusicListAdapter mAdapter;
     private AlphaInAnimationAdapter mAnimationWrapAdapter;
 
@@ -62,7 +62,6 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
-        mViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
     }
 
     @Override
@@ -76,8 +75,11 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     }
 
     @Override
-    protected void lazyWrapDataInView() {
-        mViewModel.getMusicList().observe(getParentActivity(), (values) -> {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ViewModelProviders.of(getParentActivity())
+                .get(MainActivityViewModel.class)
+                .getMusicList().observe(getParentActivity(), (values) -> {
             mMusicListLoadProgressBar.setVisibility(View.GONE);
             if (values != null && !values.isEmpty()) {
                 mAdapter.setList(values);
