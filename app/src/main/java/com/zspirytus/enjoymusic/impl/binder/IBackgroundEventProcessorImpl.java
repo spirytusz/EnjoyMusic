@@ -4,6 +4,8 @@ import android.os.IBinder;
 
 import com.zspirytus.enjoymusic.IBackgroundEventProcessor;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
+import com.zspirytus.enjoymusic.foregroundobserver.IPlayListChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayProgressChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayStateChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayedMusicChangeObserver;
@@ -31,6 +33,9 @@ public class IBackgroundEventProcessorImpl extends IBackgroundEventProcessor.Stu
             case Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER:
                 mediaPlayController.registerMusicPlayCompleteObserver(IPlayedMusicChangeObserver.Stub.asInterface(observer));
                 break;
+            case Constant.BinderCode.PLAY_LIST_OBSERVER:
+                MusicPlayOrderManager.getInstance().register(IPlayListChangeObserver.Stub.asInterface(observer));
+                break;
         }
     }
 
@@ -46,6 +51,9 @@ public class IBackgroundEventProcessorImpl extends IBackgroundEventProcessor.Stu
                 break;
             case Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER:
                 mediaPlayController.unregisterMusicPlayCompleteObserver(IPlayedMusicChangeObserver.Stub.asInterface(observer));
+                break;
+            case Constant.BinderCode.PLAY_LIST_OBSERVER:
+                MusicPlayOrderManager.getInstance().unregister(IPlayListChangeObserver.Stub.asInterface(observer));
                 break;
         }
     }

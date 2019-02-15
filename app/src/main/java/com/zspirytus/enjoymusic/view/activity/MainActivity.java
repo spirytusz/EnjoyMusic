@@ -34,11 +34,13 @@ import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
+import com.zspirytus.enjoymusic.impl.binder.IPlayListChangeObserverImpl;
 import com.zspirytus.enjoymusic.impl.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.impl.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
+import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
@@ -67,7 +69,7 @@ import io.reactivex.schedulers.Schedulers;
 @LayoutIdInject(R.layout.activity_main)
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, PlayedMusicChangeObserver,
-        MusicPlayStateObserver {
+        MusicPlayStateObserver, PlayListChangeObserver {
 
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
@@ -183,6 +185,7 @@ public class MainActivity extends BaseActivity
         EventBus.getDefault().register(this);
         IPlayMusicChangeObserverImpl.getInstance().register(this);
         IPlayStateChangeObserverImpl.getInstance().register(this);
+        IPlayListChangeObserverImpl.getInstance().register(this);
     }
 
     @Override
@@ -192,6 +195,7 @@ public class MainActivity extends BaseActivity
         mCustomNavigationView.unregisterFragmentChangeListener();
         IPlayMusicChangeObserverImpl.getInstance().unregister(this);
         IPlayStateChangeObserverImpl.getInstance().unregister(this);
+        IPlayListChangeObserverImpl.getInstance().unregister(this);
     }
 
     @Override
@@ -223,6 +227,13 @@ public class MainActivity extends BaseActivity
         AndroidSchedulers.mainThread().scheduleDirect(() -> {
             mViewModel.setMusicPlayState(isPlaying);
             mBottomMusicControl.setPlayState(isPlaying);
+        });
+    }
+
+    @Override
+    public void onPlayListChange(MusicFilter filter) {
+        AndroidSchedulers.mainThread().scheduleDirect(() -> {
+            mViewModel.setPlayList(filter.filter(mViewModel.getMusicList().getValue()));
         });
     }
 

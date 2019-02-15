@@ -6,6 +6,7 @@ import android.os.RemoteException;
 import com.zspirytus.enjoymusic.IBackgroundEventProcessor;
 import com.zspirytus.enjoymusic.IBinderPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.impl.binder.IPlayListChangeObserverImpl;
 import com.zspirytus.enjoymusic.impl.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.impl.binder.IPlayProgressChangeObserverImpl;
 import com.zspirytus.enjoymusic.impl.binder.IPlayStateChangeObserverImpl;
@@ -30,6 +31,7 @@ public class ForegroundBinderManager {
             backgroundEventProcessor.registerObserver(IPlayStateChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_STATE_CHANGE_OBSERVER);
             backgroundEventProcessor.registerObserver(IPlayProgressChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_PROGRESS_CHANGE_OBSERVER);
             backgroundEventProcessor.registerObserver(IPlayMusicChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER);
+            backgroundEventProcessor.registerObserver(IPlayListChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_LIST_OBSERVER);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -51,6 +53,7 @@ public class ForegroundBinderManager {
             backgroundEventProcessor.unregisterObserver(IPlayStateChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_STATE_CHANGE_OBSERVER);
             backgroundEventProcessor.unregisterObserver(IPlayProgressChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_PROGRESS_CHANGE_OBSERVER);
             backgroundEventProcessor.unregisterObserver(IPlayMusicChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER);
+            backgroundEventProcessor.unregisterObserver(IPlayListChangeObserverImpl.getInstance(), Constant.BinderCode.PLAY_LIST_OBSERVER);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

@@ -1,11 +1,14 @@
 package com.zspirytus.enjoymusic.engine;
 
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
+import com.zspirytus.enjoymusic.cache.MusicScanner;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.global.MainApplication;
+import com.zspirytus.enjoymusic.listeners.observable.PlayListChangeObservable;
 import com.zspirytus.enjoymusic.utils.RandomUtil;
 
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.List;
  * Created by ZSpirytus on 2018/9/5.
  */
 
-public class MusicPlayOrderManager {
+public class MusicPlayOrderManager extends PlayListChangeObservable {
 
     private int mPlayMode;
 
@@ -34,8 +37,9 @@ public class MusicPlayOrderManager {
         return SingletonHolder.INSTANCE;
     }
 
-    public void setPlayList(List<Music> playList) {
-        mPlayList = playList;
+    public void setPlayList(MusicFilter filter) {
+        mPlayList = filter.filter(MusicScanner.getInstance().getAllMusicList());
+        notifyAllObserverPlayListChange(filter);
     }
 
     public Music getNextMusic(boolean fromUser) {

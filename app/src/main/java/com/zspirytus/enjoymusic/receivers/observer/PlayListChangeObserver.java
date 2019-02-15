@@ -1,10 +1,8 @@
 package com.zspirytus.enjoymusic.receivers.observer;
 
-import com.zspirytus.enjoymusic.entity.Music;
-
-import java.util.List;
+import com.zspirytus.enjoymusic.entity.MusicFilter;
 
 public interface PlayListChangeObserver {
 
-    void onPlayListChange(List<Music> playList);
+    void onPlayListChange(MusicFilter filter);
 }
