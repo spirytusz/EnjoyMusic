@@ -21,6 +21,7 @@ import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.factory.ObservableFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
@@ -113,6 +114,10 @@ public class MusicListDetailFragment extends BaseFragment
         mFab.setOnClickListener(v -> {
             Music firstMusic = mAdapter.getList().get(0);
             ForegroundMusicController.getInstance().play(firstMusic);
+            String filterAlbum = getArguments().getString("album");
+            String filterArtist = getArguments().getString("artist");
+            MusicFilter filter = new MusicFilter(filterAlbum, filterArtist);
+            ForegroundMusicController.getInstance().setPlayList(filter);
         });
     }
 
@@ -123,8 +128,12 @@ public class MusicListDetailFragment extends BaseFragment
 
     @Override
     public void onItemClick(View view, int position) {
+        String filterAlbum = getArguments().getString("album");
+        String filterArtist = getArguments().getString("artist");
+        MusicFilter filter = new MusicFilter(filterAlbum, filterArtist);
         Music selectedMusic = mAdapter.getList().get(position);
         ForegroundMusicController.getInstance().play(selectedMusic);
+        ForegroundMusicController.getInstance().setPlayList(filter);
     }
 
     @Override

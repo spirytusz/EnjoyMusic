@@ -14,8 +14,16 @@ public class MusicFilter implements Parcelable {
     private String mMusicArtist;
 
     public MusicFilter(String musicAlbum, String musicArtist) {
-        mMusicAlbum = musicAlbum;
-        mMusicArtist = musicArtist;
+        if (musicAlbum != null) {
+            mMusicAlbum = musicAlbum;
+        } else {
+            mMusicAlbum = "";
+        }
+        if (musicArtist != null) {
+            mMusicArtist = musicArtist;
+        } else {
+            mMusicArtist = "";
+        }
     }
 
     private MusicFilter(Parcel source) {
@@ -28,8 +36,9 @@ public class MusicFilter implements Parcelable {
             List<Music> filterMusicList = new ArrayList<>(musicList);
             for (int i = filterMusicList.size() - 1; i >= 0; i--) {
                 Music music = filterMusicList.get(i);
-                if ((mMusicAlbum != null && !music.getMusicAlbumName().equals(mMusicAlbum))
-                        || (mMusicArtist != null && !music.getMusicArtist().equals(mMusicArtist))) {
+                boolean isMatchAlbum = mMusicAlbum != null && !mMusicAlbum.isEmpty() && !music.getMusicAlbumName().equals(mMusicAlbum);
+                boolean isMatchArtist = mMusicArtist != null && !mMusicArtist.isEmpty() && !music.getMusicArtist().equals(mMusicArtist);
+                if (isMatchAlbum || isMatchArtist) {
                     filterMusicList.remove(music);
                 }
             }
