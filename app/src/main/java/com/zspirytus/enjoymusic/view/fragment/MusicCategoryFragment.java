@@ -1,10 +1,12 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MyViewPagerAdapter;
@@ -15,6 +17,7 @@ import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +40,7 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
 
     private MyViewPagerAdapter mAdapter;
     private int mCurrentPosition;
+    private AnimatorSet mAnim;
 
     @Override
     protected void initData() {
@@ -56,8 +60,8 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT);
         mViewPager.setCurrentItem(mCurrentPosition, true);
-        mViewPager.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
         setCurrentPosition(getArguments().getInt("currentPosition"));
+        playShadowAnimator();
     }
 
     @Override
@@ -78,7 +82,15 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-            mViewPager.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
+            playShadowAnimator();
+        } else {
+            if (mAnim.isRunning()) {
+                mAnim.cancel();
+            }
+            mAppBarLayout.setElevation(PixelsUtil.dp2px(getContext(), 0));
+            mAppBarLayout.setTranslationZ(PixelsUtil.dp2px(getContext(), 0));
+            mStatusBarView.setElevation(PixelsUtil.dp2px(getContext(), 0));
+            mStatusBarView.setTranslationZ(PixelsUtil.dp2px(getContext(), 0));
         }
     }
 
@@ -114,7 +126,6 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
                  */
                 if (mAdapter != null) {
                     mCurrentPosition = tab.getPosition();
-                    e("onTabSelected#mCurrentPosition = " + mCurrentPosition);
                     FragmentVisibilityManager.getInstance().onChildFragmentChange(MusicCategoryFragment.this, mAdapter.getItem(mCurrentPosition));
                 }
             }
@@ -129,6 +140,31 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
 
             }
         });
+    }
+
+    private void playShadowAnimator() {
+        if (mAnim == null) {
+            initAnim();
+        }
+        mAnim.start();
+    }
+
+    private void initAnim() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mAppBarLayout, "elevation", 0, PixelsUtil.dp2px(getContext(), 6));
+        ObjectAnimator animator1 = ObjectAnimator.ofFloat(mAppBarLayout, "translationZ", 0, PixelsUtil.dp2px(getContext(), 4));
+        ObjectAnimator animator2 = ObjectAnimator.ofFloat(mStatusBarView, "elevation", 0, PixelsUtil.dp2px(getContext(), 6));
+        ObjectAnimator animator3 = ObjectAnimator.ofFloat(mStatusBarView, "translationZ", 0, PixelsUtil.dp2px(getContext(), 4));
+        ObjectAnimator animator4 = ObjectAnimator.ofFloat(mViewPager, "scaleX", 0.9f, 1f);
+        ObjectAnimator animator5 = ObjectAnimator.ofFloat(mViewPager, "scaleY", 0.9f, 1f);
+        ObjectAnimator animator6 = ObjectAnimator.ofFloat(mViewPager, "alpha", 0f, 1f);
+        AnimatorSet viewPagerAnim = new AnimatorSet();
+        AnimatorSet shadowAnim = new AnimatorSet();
+        viewPagerAnim.playTogether(animator4, animator5, animator6);
+        shadowAnim.playTogether(animator, animator1, animator2, animator3);
+        mAnim = new AnimatorSet();
+        mAnim.playSequentially(viewPagerAnim, shadowAnim);
+        mAnim.setInterpolator(new DecelerateInterpolator());
+        mAnim.setDuration(618);
     }
 
     public static MusicCategoryFragment getInstance() {
