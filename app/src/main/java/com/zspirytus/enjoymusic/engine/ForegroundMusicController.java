@@ -14,6 +14,9 @@ import com.zspirytus.enjoymusic.impl.binder.IMusicProgressControlImpl;
 import com.zspirytus.enjoymusic.impl.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * 前台音乐播放控制器
  * Created by ZSpirytus on 2018/9/8.
@@ -21,11 +24,13 @@ import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 
 public class ForegroundMusicController implements MusicPlayStateObserver {
 
+    private ExecutorService mThreadPool;
+
     private IMusicControl mIMusicControl;
     private IMusicProgressControl mIMusicProgressControl;
     private ISetPlayList mISetPlayList;
 
-    private static boolean isPlaying = false;
+    private boolean isPlaying = false;
 
     private static class SingletonHolder {
         private static ForegroundMusicController INSTANCE = new ForegroundMusicController();
@@ -33,6 +38,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
 
     private ForegroundMusicController() {
         IPlayStateChangeObserverImpl.getInstance().register(this);
+        mThreadPool = Executors.newFixedThreadPool(10);
     }
 
     public static ForegroundMusicController getInstance() {
@@ -41,7 +47,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
 
     public void play(final Music music) {
         if (music != null) {
-            new Thread(() -> {
+            mThreadPool.execute(() -> {
                 if (mIMusicControl == null) {
                     IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
                     mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
@@ -51,12 +57,12 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-            }).start();
+            });
         }
     }
 
     public void playPrevious() {
-        new Thread(() -> {
+        mThreadPool.execute(() -> {
             if (mIMusicControl == null) {
                 IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
                 mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
@@ -66,11 +72,11 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
     }
 
     public void playNext(boolean fromUser) {
-        new Thread(() -> {
+        mThreadPool.execute(() -> {
             if (mIMusicControl == null) {
                 IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
                 mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
@@ -80,11 +86,11 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
     }
 
     public void pause() {
-        new Thread(() -> {
+        mThreadPool.execute(() -> {
             if (mIMusicControl == null) {
                 IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
                 mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
@@ -94,11 +100,11 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
     }
 
     public void seekTo(final int milliseconds) {
-        new Thread(() -> {
+        mThreadPool.execute(() -> {
             if (mIMusicProgressControl == null) {
                 IBinder musicProgressControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_PROGRESS_CONTROL);
                 mIMusicProgressControl = IMusicProgressControlImpl.asInterface(musicProgressControlBinder);
@@ -108,12 +114,12 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
     }
 
     public void setPlayList(final MusicFilter musicFilter) {
         if (musicFilter != null) {
-            new Thread(() -> {
+            mThreadPool.execute(() -> {
                 if (mISetPlayList == null) {
                     IBinder setPlayListBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
                     mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
@@ -123,25 +129,23 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-            }).start();
-            //ForegroundMusicStateCache.getInstance().setPlayList(musicFilter.filter(ForegroundMusicStateCache.getInstance().getAllMusicList()));
+            });
         }
     }
 
     public void setPlayMode(final int playMode) {
         if (playMode >= 0 && playMode < 4) {
-            new Thread(() -> {
+            mThreadPool.execute(() -> {
                 if (mIMusicControl == null) {
                     IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
                     mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
                 }
                 try {
                     mIMusicControl.setPlayMode(playMode);
-                    //ForegroundMusicStateCache.getInstance().setPlayMode(playMode);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-            }).start();
+            });
         }
     }
 

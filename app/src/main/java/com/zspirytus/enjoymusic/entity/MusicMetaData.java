@@ -8,6 +8,7 @@ public class MusicMetaData {
     private String mime;
     private long duration;
     private String bitrate;
+    private int sampleRate;
     private String date;
 
     public String getTitle() {
@@ -64,5 +65,13 @@ public class MusicMetaData {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public int getSampleRate() {
+        return sampleRate;
+    }
+
+    public void setSampleRate(int sampleRate) {
+        this.sampleRate = sampleRate;
     }
 }

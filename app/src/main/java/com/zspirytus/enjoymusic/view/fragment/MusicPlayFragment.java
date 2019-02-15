@@ -2,7 +2,6 @@ package com.zspirytus.enjoymusic.view.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
@@ -18,8 +17,6 @@ import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MusicPlayFragmentViewModels;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
-import com.zspirytus.enjoymusic.engine.LyricLoader;
-import com.zspirytus.enjoymusic.entity.LyricRow;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.impl.binder.IPlayMusicChangeObserverImpl;
 import com.zspirytus.enjoymusic.impl.binder.IPlayProgressChangeObserverImpl;
@@ -36,7 +33,6 @@ import com.zspirytus.enjoymusic.view.widget.BlurImageView;
 import com.zspirytus.enjoymusic.view.widget.LyricView;
 
 import java.io.File;
-import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
@@ -45,7 +41,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * Created by ZSpirytus on 2018/8/2.
  */
 
-// TODO: 16/01/2019  状态保存与恢复
 @LayoutIdInject(R.layout.fragment_music_play_layout)
 public class MusicPlayFragment extends BaseFragment
         implements View.OnClickListener, MusicPlayStateObserver,
@@ -128,7 +123,6 @@ public class MusicPlayFragment extends BaseFragment
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        mCover.setRotating(!hidden);
         if (!hidden) {
             getParentActivity().setTransparentNavBar();
             getParentActivity().setDefaultStatusIconColor();
@@ -167,7 +161,7 @@ public class MusicPlayFragment extends BaseFragment
         }));
         mCover.setOnClickListener(this);
         mLyricView.setOnClickListener(this);
-        mLyricView.setAlpha(0);
+        mLyricView.setAlpha(0.0f);
     }
 
     @Override
@@ -202,10 +196,6 @@ public class MusicPlayFragment extends BaseFragment
         });
         mViewModel.getCurrentPlayingMusic().observe(this, (values) -> {
             if (values != null) {
-                if (values.getMusicName().equals("迷宫大図鑑")) {
-                    List<LyricRow> rows = LyricLoader.getInstance().load(new File(Environment.getExternalStorageDirectory(), "迷宫大図鑑"));
-                    mLyricView.setLyricRows(rows);
-                }
                 setView(values);
                 mCover.resetRotation();
             }

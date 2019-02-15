@@ -216,8 +216,9 @@ public class LyricView extends View {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (changed) {
-            // padding left
+            // margin left
             int l = dp2px(2);
+            // margin top
             int t = getHeight() / 2 - mPlayIconWidth / 2;
             int r = l + mPlayIconWidth;
             int b = t + mPlayIconWidth;
@@ -310,7 +311,6 @@ public class LyricView extends View {
             mOffset = mScroller.getCurrY();
             invalidate();
         }
-
         if (isFling && mScroller.isFinished()) {
             isFling = false;
             if (hasLyric() && !isTouching) {

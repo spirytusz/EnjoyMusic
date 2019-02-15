@@ -86,6 +86,7 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
                     bitrate /= 1000;
                     bitratePercent = bitratePercents[++i];
                 }
+                float sampleRate = (float) metaData.getSampleRate() / 1000;
                 // 限制每行长度
                 musicName = musicName.substring(0, 16 <= musicName.length() - 1 ? 16 : musicName.length() - 1);
                 artist = artist.substring(0, 16 <= artist.length() - 1 ? 16 : artist.length() - 1);
@@ -97,6 +98,7 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
                                 + "<font color='grey' style=\"line-height:150%;\">时长: " + duration + "</font><br/>"
                                 + "<font color='grey' style=\"line-height:150%;\">Mime: " + mimeType + "</font><br/>"
                                 + "<font color='grey' style=\"line-height:150%;\">比特率: " + bitrate + bitratePercent + "</font><br/>"
+                                + "<font color='grey' style=\"line-height:150%;\">采样率: " + sampleRate + "kHz</font><br/>"
                 );
                 TextView textView = holder.getView(R.id.music_preview_text);
                 textView.setText(previewText);

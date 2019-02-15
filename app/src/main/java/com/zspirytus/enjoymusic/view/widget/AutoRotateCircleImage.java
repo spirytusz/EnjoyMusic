@@ -38,6 +38,20 @@ public class AutoRotateCircleImage extends CircleImageView {
         initAnim();
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (mRotateAnim != null && mRotateAnim.isStarted()) {
+            mRotateAnim.resume();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        setRotating(false);
+    }
+
     private void initAnim() {
         mRotateAnim = ObjectAnimator.ofFloat(this, "rotation", 0f, 360f);
         mRotateAnim.setDuration(T);
