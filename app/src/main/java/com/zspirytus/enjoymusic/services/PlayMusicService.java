@@ -61,7 +61,6 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
 
     @Override
     public boolean onUnbind(Intent intent) {
-        MediaPlayController.getInstance().timingToClearNotification();
         return super.onUnbind(intent);
     }
 
