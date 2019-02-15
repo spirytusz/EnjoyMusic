@@ -1,6 +1,7 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +22,6 @@ import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
-import com.zspirytus.enjoymusic.view.widget.lazyviewpager.LazyFragmentPagerAdapter;
 
 import org.simple.eventbus.EventBus;
 
@@ -58,7 +58,6 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     protected void initData() {
-        e("initData" + Boolean.toString(this instanceof LazyFragmentPagerAdapter.Laziable));
         mAdapter = new AlbumListAdapter();
         mAdapter.setOnItemClickListener(this);
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
@@ -80,6 +79,16 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
                         PixelsUtil.dp2px(getContext(), 16)
                 ).build()
         );
+        mAlbumMusicRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                int position = parent.getChildAdapterPosition(view);
+                if (position == 0 || position == 1) {
+                    outRect.top = PixelsUtil.dp2px(getContext(), 16);
+                }
+            }
+        });
     }
 
     @Override

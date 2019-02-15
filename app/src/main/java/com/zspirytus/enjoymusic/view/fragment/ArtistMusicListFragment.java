@@ -19,7 +19,6 @@ import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-import com.zspirytus.enjoymusic.view.widget.lazyviewpager.LazyFragmentPagerAdapter;
 
 import org.simple.eventbus.EventBus;
 
@@ -56,7 +55,6 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     protected void initData() {
-        e("initData" + Boolean.toString(this instanceof LazyFragmentPagerAdapter.Laziable));
         mAdapter = new ArtistListAdapter();
         mAdapter.setOnItemClickListener(this);
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
