@@ -40,6 +40,7 @@ public class PlayListFragment extends CommonHeaderBaseFragment
 
     private MusicListAdapter mAdapter;
     private AnimatorSet mAnim;
+    private AnimatorSet mShadowAnim;
 
     @Override
     protected void initData() {
@@ -54,6 +55,8 @@ public class PlayListFragment extends CommonHeaderBaseFragment
         mPlayListRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mPlayListRecyclerView.setAdapter(mAdapter);
         setupInfoTextView(true);
+        mToolbar.setTitle(R.string.play_list_fragment_title);
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.black));
         playShadowAnimator();
     }
 
@@ -76,7 +79,7 @@ public class PlayListFragment extends CommonHeaderBaseFragment
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden && !mAdapter.getList().isEmpty()) {
+        if (!hidden) {
             playShadowAnimator();
         } else {
             if (mAnim.isRunning()) {
@@ -107,7 +110,7 @@ public class PlayListFragment extends CommonHeaderBaseFragment
             mPlayListRecyclerView.setVisibility(View.VISIBLE);
         } else {
             mInfoTextView.setVisibility(View.VISIBLE);
-            mInfoTextView.setText("No Music in PlayList");
+            mInfoTextView.setText(R.string.no_music_in_play_list_tip);
         }
     }
 
@@ -121,19 +124,23 @@ public class PlayListFragment extends CommonHeaderBaseFragment
         ObjectAnimator animator4 = ObjectAnimator.ofFloat(mAppBarLayout, "translationZ", 0, PixelsUtil.dp2px(getContext(), 4));
         ObjectAnimator animator5 = ObjectAnimator.ofFloat(mStatusBarView, "elevation", 0, PixelsUtil.dp2px(getContext(), 6));
         ObjectAnimator animator6 = ObjectAnimator.ofFloat(mStatusBarView, "translationZ", 0, PixelsUtil.dp2px(getContext(), 4));
-        AnimatorSet shadowAnim = new AnimatorSet();
-        shadowAnim.playTogether(animator3, animator4, animator5, animator6);
+        mShadowAnim = new AnimatorSet();
+        mShadowAnim.playTogether(animator3, animator4, animator5, animator6);
         mAnim = new AnimatorSet();
-        mAnim.playSequentially(recyclerViewAnim, shadowAnim);
+        mAnim.playSequentially(recyclerViewAnim, mShadowAnim);
         mAnim.setInterpolator(new DecelerateInterpolator());
         mAnim.setDuration(618);
     }
 
     private void playShadowAnimator() {
-        if (mAnim == null) {
+        if (mAnim == null || mShadowAnim == null) {
             initAnim();
         }
-        mAnim.start();
+        if (mAdapter != null && !mAdapter.getList().isEmpty()) {
+            mAnim.start();
+        } else {
+            mShadowAnim.start();
+        }
     }
 
     public static PlayListFragment getInstance() {

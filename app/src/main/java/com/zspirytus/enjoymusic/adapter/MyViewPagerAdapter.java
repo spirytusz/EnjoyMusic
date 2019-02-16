@@ -4,8 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.ViewGroup;
 
+import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
-import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.view.widget.lazyviewpager.LazyFragmentPagerAdapter;
 
 import java.util.List;
@@ -43,13 +44,13 @@ public class MyViewPagerAdapter extends LazyFragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return Constant.HomePageTabTitle.ALL;
+                return MainApplication.getForegroundContext().getResources().getText(R.string.all_music);
             case 1:
-                return Constant.HomePageTabTitle.ALBUM;
+                return MainApplication.getForegroundContext().getResources().getText(R.string.album);
             case 2:
-                return Constant.HomePageTabTitle.ARTIST;
+                return MainApplication.getForegroundContext().getResources().getText(R.string.artist);
             case 3:
-                return Constant.HomePageTabTitle.FOLDER;
+                return MainApplication.getForegroundContext().getResources().getText(R.string.folder);
         }
         return "";
     }

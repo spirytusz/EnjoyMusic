@@ -104,7 +104,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
                 mAlbumMusicRecyclerView.setVisibility(View.VISIBLE);
             } else {
                 mInfoTextView.setVisibility(View.VISIBLE);
-                mInfoTextView.setText("No Album");
+                mInfoTextView.setText(R.string.no_album_tip);
             }
         });
     }

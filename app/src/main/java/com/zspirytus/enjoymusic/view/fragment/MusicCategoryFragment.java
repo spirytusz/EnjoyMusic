@@ -11,7 +11,6 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MyViewPagerAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
-import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
@@ -111,10 +110,10 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
     }
 
     private void initTabLayout() {
-        mTabLayout.addTab(mTabLayout.newTab().setText(Constant.HomePageTabTitle.ALL));
-        mTabLayout.addTab(mTabLayout.newTab().setText(Constant.HomePageTabTitle.ALBUM));
-        mTabLayout.addTab(mTabLayout.newTab().setText(Constant.HomePageTabTitle.ARTIST));
-        mTabLayout.addTab(mTabLayout.newTab().setText(Constant.HomePageTabTitle.FOLDER));
+        mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getText(R.string.all_music)));
+        mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getText(R.string.album)));
+        mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getText(R.string.artist)));
+        mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getText(R.string.folder)));
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

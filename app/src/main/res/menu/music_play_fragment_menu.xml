@@ -2,5 +2,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_edit_music_info"
-        android:title="编辑音乐信息" />
+        android:title="@string/music_play_menu_1_text" />
 </menu>

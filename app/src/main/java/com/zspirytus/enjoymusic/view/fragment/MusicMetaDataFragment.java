@@ -108,7 +108,7 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
 
         MusicMetaDataListItem item2 = new MusicMetaDataListItem();
         item2.setTitle(true);
-        item2.setTitle("下载音乐信息");
+        item2.setTitle(getResources().getString(R.string.music_meta_data_download_music_info));
         dataList.add(item2);
 
         MusicMetaDataListItem item3 = new MusicMetaDataListItem();
@@ -117,37 +117,37 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
 
         MusicMetaDataListItem item4 = new MusicMetaDataListItem();
         item4.setTitle(true);
-        item4.setTitle("编辑信息");
+        item4.setTitle(getResources().getString(R.string.music_meta_data_edit_info));
         dataList.add(item4);
 
         MusicMetaDataListItem item5 = new MusicMetaDataListItem();
         item5.setSingleEditText(true);
-        item5.setEditTextTitle("标题");
+        item5.setEditTextTitle(getResources().getString(R.string.music_meta_data_title));
         item5.setEditTextDefaultText(music.getMusicName());
         dataList.add(item5);
 
         MusicMetaDataListItem item6 = new MusicMetaDataListItem();
         item6.setSingleEditText(true);
-        item6.setEditTextTitle("艺术家");
+        item6.setEditTextTitle(getResources().getString(R.string.music_meta_data_artist));
         item6.setEditTextDefaultText(music.getMusicArtist());
         dataList.add(item6);
 
         MusicMetaDataListItem item7 = new MusicMetaDataListItem();
         item7.setSingleEditText(true);
-        item7.setEditTextTitle("专辑");
+        item7.setEditTextTitle(getResources().getString(R.string.music_meta_data_album));
         item7.setEditTextDefaultText(music.getMusicAlbumName());
         dataList.add(item7);
 
         MusicMetaDataListItem item8 = new MusicMetaDataListItem();
         item8.setDuplicateEditText(true);
-        item8.setFirstEditTextTitle("光盘编号");
-        item8.setSecondEditTextTitle("歌曲编号");
+        item8.setFirstEditTextTitle(getResources().getString(R.string.music_meta_data_disk_number));
+        item8.setSecondEditTextTitle(getResources().getString(R.string.music_meta_data_music_number));
         dataList.add(item8);
 
         MusicMetaDataListItem item9 = new MusicMetaDataListItem();
         item9.setDuplicateEditText(true);
-        item9.setFirstEditTextTitle("年");
-        item9.setSecondEditTextTitle("流派");
+        item9.setFirstEditTextTitle(getResources().getString(R.string.music_meta_data_year));
+        item9.setSecondEditTextTitle(getResources().getString(R.string.music_meta_data_genre));
         dataList.add(item9);
 
         return dataList;

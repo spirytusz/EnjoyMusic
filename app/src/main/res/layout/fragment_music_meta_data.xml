@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 style="@style/MediumFont"
                 android:layout_height="wrap_content"
-                android:text="编辑音乐信息"
+                android:text="@string/music_meta_data_fragment_title"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:layout_marginStart="16dp" />
@@ -46,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="保存"
+                android:text="@string/music_meta_data_save"
                 android:textColor="@color/black"
                 android:layout_marginEnd="12dp" />
 

@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/MediumFont"
-        android:text="下载"
+        android:text="@string/music_meta_data_download_music_info"
         android:layout_marginStart="12dp"
         android:layout_marginBottom="0dp"
         android:textColor="@color/black"
@@ -35,7 +35,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="获取音乐信息"
+        android:text="@string/music_meta_data_obtain_music_info"
         android:textSize="14sp"
         android:layout_marginStart="12dp"
         app:layout_constraintStart_toEndOf="@id/download_image"

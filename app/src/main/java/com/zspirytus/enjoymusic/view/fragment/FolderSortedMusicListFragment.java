@@ -65,7 +65,7 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
                 mFileSortedMusicRecyclerView.setVisibility(View.VISIBLE);
             } else {
                 mInfoTextView.setVisibility(View.VISIBLE);
-                mInfoTextView.setText("No Folder to show");
+                mInfoTextView.setText(R.string.no_folder_tip);
             }
         });
     }

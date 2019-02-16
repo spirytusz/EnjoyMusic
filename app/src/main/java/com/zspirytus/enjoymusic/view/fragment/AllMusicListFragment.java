@@ -87,7 +87,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
                 mMusicRecyclerView.setVisibility(View.VISIBLE);
             } else {
                 mInfoTextView.setVisibility(View.VISIBLE);
-                mInfoTextView.setText("No music in this device");
+                mInfoTextView.setText(R.string.no_music_tip);
             }
         });
     }

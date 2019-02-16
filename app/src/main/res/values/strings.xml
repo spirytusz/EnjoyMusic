@@ -1,17 +1,74 @@
 <resources>
     <string name="app_name">EnjoyMusic</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!-- test string start -->
-
     <string name="music_name">Music Name</string>
     <string name="music_artist">Music Artist</string>
+    <string name="no_lyric">No Lyric</string>
     <!-- test string end -->
 
-    <string name="no_lyric">No Lyric</string>
+    <!-- NavigationView Text start -->
+    <string name="nav_text_home_page">首页</string>
+    <string name="nav_text_all_music">曲目</string>
+    <string name="nav_text_album">专辑</string>
+    <string name="nav_text_artist">艺术家</string>
+    <string name="nav_text_folder">文件夹</string>
+    <string name="nav_text_play_list">播放队列</string>
+    <string name="nav_text_settings">设置</string>
+    <string name="nav_text_about">关于</string>
+    <string name="nav_text_other">其他</string>
+    <!-- NavigationView Text end -->
+
+    <!-- HomePage Text start -->
+    <string name="recent_added">近期添加</string>
+    <string name="random_play">随机播放</string>
+    <!-- HomePage Text end -->
+
+    <!-- MusicCategory Text start -->
+    <string name="all_music">曲目</string>
+    <string name="album">专辑</string>
+    <string name="artist">艺术家</string>
+    <string name="folder">文件夹</string>
+    <string name="no_music_tip">该设备没有音乐…</string>
+    <string name="no_album_tip">该设备没有专辑…</string>
+    <string name="no_artist_tip">该设备没有艺术家…</string>
+    <string name="no_folder_tip">没有可供展示的项目…</string>
+    <!-- MusicCategory Text end -->
+
+    <!-- PlayList Text start -->
+    <string name="play_list_fragment_title">播放队列</string>
+    <string name="no_music_in_play_list_tip">播放队列为空…</string>
+    <!-- PlayList Text end -->
+
+    <!-- Settings Text start -->
+    <string name="settings_fragment_title">设置</string>
+    <!-- Settings Text end -->
+
+    <!-- About Text start -->
+    <string name="about_fragment_title">关于</string>
+    <!-- About Text end -->
+
+    <!-- MusicMetaData Text start -->
+    <string name="music_meta_data_fragment_title">编辑音乐信息</string>
+    <string name="music_meta_data_save">保存</string>
+    <string name="music_meta_data_download_music_info">下载音乐信息</string>
+    <string name="music_meta_data_edit_info">编辑信息</string>
+    <string name="music_meta_data_title">标题</string>
+    <string name="music_meta_data_artist">艺术家</string>
+    <string name="music_meta_data_album">专辑</string>
+    <string name="music_meta_data_disk_number">光盘编号</string>
+    <string name="music_meta_data_music_number">歌曲编号</string>
+    <string name="music_meta_data_year">年</string>
+    <string name="music_meta_data_genre">流派</string>
+    <string name="music_meta_data_download">下载</string>
+    <string name="music_meta_data_obtain_music_info">获取音乐信息</string>
+    <string name="music_meta_data_dialog_message">要放弃您所做的更改吗?</string>
+    <string name="music_meta_data_dialog_ok">确定</string>
+    <string name="music_meta_data_dialog_cancel">取消</string>
+    <!-- MusicMetaData Text end -->
+
+    <!-- MusicPlay Text start -->
+    <string name="music_play_menu_1_text">编辑音乐信息</string>
+    <!-- MusicPlay Text end -->
 
 </resources>

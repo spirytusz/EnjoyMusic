@@ -83,7 +83,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
                 mArtistMusicRecyclerView.setVisibility(View.VISIBLE);
             } else {
                 mInfoTextView.setVisibility(View.VISIBLE);
-                mInfoTextView.setText("No Artist to Show");
+                mInfoTextView.setText(R.string.no_artist_tip);
             }
         });
     }
