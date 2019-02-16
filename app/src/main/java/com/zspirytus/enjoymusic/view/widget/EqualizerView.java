@@ -16,11 +16,12 @@ import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 
 public class EqualizerView extends ConstraintLayout {
 
     private static final String TAG = "EqualizerView";
+
+    private OnBandLevelChangeListener mListener;
 
     @ColorInt
     private int mTextColor;
@@ -39,12 +40,12 @@ public class EqualizerView extends ConstraintLayout {
     public EqualizerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
-        EqualizerMetaData metaData = new EqualizerMetaData();
+        /*EqualizerMetaData metaData = new EqualizerMetaData();
         metaData.setBand((short) 5);
         metaData.setMaxRange((short) (10 * 1000));
         metaData.setMinRange((short) (-10 * 1000));
         metaData.setCenterFreq(new short[]{(short) 0, (short) 100, (short) 200, (short) 300, (short) 400});
-        setEqualizerMetaData(metaData);
+        setEqualizerMetaData(metaData);*/
     }
 
     private void init(Context context, AttributeSet attrs) {
@@ -56,18 +57,21 @@ public class EqualizerView extends ConstraintLayout {
         array.recycle();
     }
 
-    @SuppressLint("SetTextI18n")
     public void setEqualizerMetaData(EqualizerMetaData metaData) {
         short bands = metaData.getBand();
         short maxRange = metaData.getMaxRange();
         short minRange = metaData.getMinRange();
-        short[] centerFreq = metaData.getCenterFreq();
+        int[] centerFreq = metaData.getCenterFreq();
         initViews(bands, maxRange, minRange, centerFreq);
         layoutViews(bands);
     }
 
+    public void setOnBandLevelChangeListener(OnBandLevelChangeListener listener) {
+        mListener = listener;
+    }
+
     @SuppressLint("SetTextI18n")
-    private void initViews(short bands, short maxDB, short minDB, short[] centerFreq) {
+    private void initViews(short bands, short maxDB, short minDB, int[] centerFreq) {
         // generate View
         TextView maxDBTextView = new TextView(getContext());
         TextView centerDBTextView = new TextView(getContext());
@@ -97,7 +101,9 @@ public class EqualizerView extends ConstraintLayout {
 
                 @Override
                 public void onProgress(VerticalSeekBar slideView, int progress) {
-                    LogUtil.e(TAG, "band = " + band + "\tlevel = " + (progress));
+                    if (mListener != null) {
+                        mListener.onBandLevelChange(band, (short) ((progress / 100f) * (maxDB - minDB) + minDB));
+                    }
                 }
 
                 @Override
@@ -111,15 +117,15 @@ public class EqualizerView extends ConstraintLayout {
         }
 
         // set values
-        maxDBTextView.setText((maxDB / 1000) + "dB");
+        maxDBTextView.setText((maxDB / 10) + "dB");
         maxDBTextView.setTextColor(mTextColor);
-        centerDBTextView.setText(((maxDB + minDB) / 1000) + "dB");
+        centerDBTextView.setText(((maxDB + minDB)) + "dB");
         centerDBTextView.setTextColor(mTextColor);
-        minDBTextView.setText((minDB / 1000) + "dB");
+        minDBTextView.setText((minDB / 10) + "dB");
         minDBTextView.setTextColor(mTextColor);
         for (int i = 0; i < bands; i++) {
             seekBars[i].setSelectColor(mProgressColor);
-            frequencies[i].setText(centerFreq[i] + "Hz");
+            frequencies[i].setText((centerFreq[i] / 1000) + "kHz");
             frequencies[i].setTextColor(mTextColor);
         }
 
@@ -185,5 +191,9 @@ public class EqualizerView extends ConstraintLayout {
     private int dp2px(int dp) {
         final float scale = getContext().getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
+    }
+
+    public interface OnBandLevelChangeListener {
+        void onBandLevelChange(short band, short level);
     }
 }

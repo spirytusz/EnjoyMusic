@@ -20,6 +20,8 @@ public class IBinderPoolImpl extends IBinderPool.Stub {
                 return ISetPlayListImpl.getInstance();
             case Constant.BinderCode.BACKGROUND_EVENT_PROCESSOR:
                 return IBackgroundEventProcessorImpl.getInstance();
+            case Constant.BinderCode.EQUALIZER_HELPER:
+                return IEqualizerHelperImpl.getInstance();
         }
         return null;
     }

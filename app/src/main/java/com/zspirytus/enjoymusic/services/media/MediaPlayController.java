@@ -10,6 +10,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
+import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.interfaces.IOnRemotePlayedListener;
@@ -57,8 +58,10 @@ public class MediaPlayController extends MusicStateObservable
         mPlayingTimer = new PlayTimer();
         // set MediaPlayer State
         setState(STATE_IDLE);
+    }
 
-        EqualizerController.attachToMediaPlayer(mediaPlayer);
+    public EqualizerMetaData addEqualizerSupport() {
+        return EqualizerController.attachToMediaPlayer(mediaPlayer);
     }
 
     public void setOnPlayListener(IOnRemotePlayedListener listener) {
