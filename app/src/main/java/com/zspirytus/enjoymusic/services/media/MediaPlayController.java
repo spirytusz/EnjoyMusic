@@ -57,6 +57,8 @@ public class MediaPlayController extends MusicStateObservable
         mPlayingTimer = new PlayTimer();
         // set MediaPlayer State
         setState(STATE_IDLE);
+
+        EqualizerController.attachToMediaPlayer(mediaPlayer);
     }
 
     public void setOnPlayListener(IOnRemotePlayedListener listener) {
