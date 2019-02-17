@@ -3,25 +3,35 @@ package com.zspirytus.enjoymusic.view.fragment;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
+import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
+import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
+import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
+import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
+import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ZSpirytus on 2018/9/14.
  */
 
 @LayoutIdInject(R.layout.fragment_settings_layout)
-public class SettingsFragment extends CommonHeaderBaseFragment {
-
-    private AnimatorSet mShadowAnim;
+public class SettingsFragment extends CommonHeaderBaseFragment implements OnItemClickListener {
 
     @ViewInject(R.id.settings_recyclerview)
     private RecyclerView mRecyclerView;
+
+    private CommonRecyclerViewAdapter<String> mAdapter;
+    private AnimatorSet mShadowAnim;
 
     public static SettingsFragment getInstance() {
         SettingsFragment instance = new SettingsFragment();
@@ -33,11 +43,39 @@ public class SettingsFragment extends CommonHeaderBaseFragment {
         getParentActivity().setLightStatusIconColor();
         mToolbar.setTitleTextColor(getResources().getColor(R.color.black));
         mToolbar.setTitle(R.string.settings_fragment_title);
+        mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
+        mRecyclerView.setAdapter(mAdapter);
         playShadowAnimator();
     }
 
     @Override
     protected void initData() {
+        List<String> rvItem = new ArrayList<>();
+        rvItem.add("音效");
+        mAdapter = new CommonRecyclerViewAdapter<String>() {
+            @Override
+            public int getLayoutId() {
+                return R.layout.item_simple;
+            }
+
+            @Override
+            public void convert(CommonViewHolder holder, String s, int position) {
+                holder.setVisibility(R.id.item_switch, View.GONE);
+                holder.setVisibility(R.id.item_image, View.GONE);
+                holder.setText(R.id.item_text, s);
+                holder.setOnItemClickListener(SettingsFragment.this);
+            }
+        };
+        mAdapter.setList(rvItem);
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        if (position == 0) {
+            AudioEffectFragment fragment = AudioEffectFragment.getInstance();
+            FragmentVisibilityManager.getInstance().addToBackStack(this);
+            FragmentVisibilityManager.getInstance().show(fragment);
+        }
     }
 
     @Override

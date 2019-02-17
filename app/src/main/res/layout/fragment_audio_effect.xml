@@ -4,14 +4,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/common_header_layout" />
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="81dp"
+        android:translationZ="6dp"
+        app:elevation="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/tool_bar"
+            style="@style/ToolbarTheme"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="25dp"
+            android:background="@color/colorPrimary">
+
+            <ImageView
+                android:id="@+id/back_btn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_back_black_24dp" />
+
+            <View
+                android:layout_width="32dp"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                style="@style/MediumFont"
+                android:layout_height="wrap_content"
+                android:text="音效"
+                android:textColor="@color/black"
+                android:textSize="23sp"
+                android:layout_marginStart="16dp" />
+
+            <TextView
+                android:id="@+id/reset_btn"
+                android:layout_width="?actionBarSize"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="12dp"
+                android:layout_gravity="end"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:text="重置" />
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+
+    <com.zspirytus.enjoymusic.view.widget.EqualizerView
+        android:id="@+id/equalizer_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout" />
 
 </android.support.constraint.ConstraintLayout>

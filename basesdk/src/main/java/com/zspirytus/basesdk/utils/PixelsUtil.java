@@ -36,4 +36,19 @@ public class PixelsUtil {
         pixelsConfig[1] = Resources.getSystem().getDisplayMetrics().heightPixels;
         return pixelsConfig;
     }
+
+    /**
+     * Get NavBar Height.
+     *
+     * @param context context
+     * @return NavBar Height
+     */
+    public static int getNavigationBarHeight(Context context) {
+        Resources resources = context.getResources();
+        int id = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+        if (id > 0) {
+            return resources.getDimensionPixelSize(id);
+        }
+        return 0;
+    }
 }

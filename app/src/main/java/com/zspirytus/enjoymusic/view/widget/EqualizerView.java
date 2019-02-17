@@ -22,6 +22,7 @@ public class EqualizerView extends ConstraintLayout {
 
     private static final String TAG = "EqualizerView";
 
+    private EqualizerMetaData mMetaData;
     private OnBandLevelChangeListener mListener;
 
     @ColorInt
@@ -63,6 +64,16 @@ public class EqualizerView extends ConstraintLayout {
 
     public void setOnBandLevelChangeListener(OnBandLevelChangeListener listener) {
         mListener = listener;
+    }
+
+    public void reset() {
+        int childCount = getChildCount();
+        int i = 0;
+        while (3 + 2 * i < childCount) {
+            VerticalSeekBar seekBar = (VerticalSeekBar) getChildAt(3 + 2 * i);
+            seekBar.setProgress(seekBar.getMaxProgress() / 2);
+            i++;
+        }
     }
 
     @SuppressLint("SetTextI18n")

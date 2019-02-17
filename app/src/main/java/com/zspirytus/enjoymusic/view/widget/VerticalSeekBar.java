@@ -267,6 +267,9 @@ public class VerticalSeekBar extends View {
             height = getMeasuredHeight();
         }
         this.progress = progress;
+        if (listener != null) {
+            listener.onProgress(this, progress);
+        }
         invalidate();
     }
 

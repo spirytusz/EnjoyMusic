@@ -6,6 +6,7 @@ import android.os.RemoteException;
 import com.zspirytus.enjoymusic.IAudioEffectHelper;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class AudioEffectController {
         });
     }
 
-    public void isAcousticEchoCancelerAvailable(OnResultListener l) {
+    public void isAcousticEchoCancelerAvailable(OnResultListener l, int callbackId) {
         ThreadPool.execute(() -> {
             initBinder();
             boolean available = false;
@@ -57,13 +58,13 @@ public class AudioEffectController {
             final boolean result = available;
             AndroidSchedulers.mainThread().scheduleDirect(() -> {
                 if (l != null) {
-                    l.onResult(result);
+                    l.onResult(result, callbackId);
                 }
             });
         });
     }
 
-    public void isAutomaticGainControlAvailable(OnResultListener l) {
+    public void isAutomaticGainControlAvailable(OnResultListener l, int callbackId) {
         ThreadPool.execute(() -> {
             initBinder();
             boolean available = false;
@@ -75,13 +76,13 @@ public class AudioEffectController {
             final boolean result = available;
             AndroidSchedulers.mainThread().scheduleDirect(() -> {
                 if (l != null) {
-                    l.onResult(result);
+                    l.onResult(result, callbackId);
                 }
             });
         });
     }
 
-    public void isNoiseSuppressorAvailable(OnResultListener l) {
+    public void isNoiseSuppressorAvailable(OnResultListener l, int callbackId) {
         ThreadPool.execute(() -> {
             initBinder();
             boolean available = false;
@@ -93,13 +94,13 @@ public class AudioEffectController {
             final boolean result = available;
             AndroidSchedulers.mainThread().scheduleDirect(() -> {
                 if (l != null) {
-                    l.onResult(result);
+                    l.onResult(result, callbackId);
                 }
             });
         });
     }
 
-    public void getPresetReverbNameList(OnResultListener l) {
+    public void getPresetReverbNameList(OnResultListener l, int callbackId) {
         ThreadPool.execute(() -> {
             initBinder();
             List<String> nameList = new ArrayList<>();
@@ -111,7 +112,7 @@ public class AudioEffectController {
             final List<String> result = nameList;
             AndroidSchedulers.mainThread().scheduleDirect(() -> {
                 if (l != null) {
-                    l.onResult(result);
+                    l.onResult(result, callbackId);
                 }
             });
         });
@@ -161,7 +162,7 @@ public class AudioEffectController {
         });
     }
 
-    public void usePresetReverb(OnResultListener l, int position) {
+    public void usePresetReverb(OnResultListener l, int position, int callbackId) {
         ThreadPool.execute(() -> {
             initBinder();
             int[] bandLevel = new int[0];
@@ -172,13 +173,29 @@ public class AudioEffectController {
             }
             final int[] result = bandLevel;
             AndroidSchedulers.mainThread().scheduleDirect(() -> {
-                l.onResult(result);
+                l.onResult(result, callbackId);
+            });
+        });
+    }
+
+    public void attachEqualizer(OnResultListener l) {
+        ThreadPool.execute(() -> {
+            initBinder();
+            EqualizerMetaData metaData = null;
+            try {
+                metaData = mAudioEffectHelper.addEqualizerSupport();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            final EqualizerMetaData result = metaData;
+            AndroidSchedulers.mainThread().scheduleDirect(() -> {
+                l.onResult(result, 0);
             });
         });
     }
 
     public interface OnResultListener {
-        void onResult(Object result);
+        void onResult(Object result, int callbackId);
     }
 
 }

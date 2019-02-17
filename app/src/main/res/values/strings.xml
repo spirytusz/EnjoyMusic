@@ -25,6 +25,7 @@
     <!-- HomePage Text end -->
 
     <!-- MusicCategory Text start -->
+    <string name="music_category_fragment_title">媒体库</string>
     <string name="all_music">曲目</string>
     <string name="album">专辑</string>
     <string name="artist">艺术家</string>

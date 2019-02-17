@@ -29,7 +29,7 @@
             android:layout_height="match_parent"
             android:background="@color/colorPrimary"
             app:navigationIcon="@drawable/ic_menu_white_24dp"
-            app:title="@string/app_name"
+            app:title="@string/music_category_fragment_title"
             app:titleTextColor="@color/black" />
 
         <android.support.design.widget.TabLayout
