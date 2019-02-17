@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="cornerImg">
+    <declare-styleable name="RoundCornerImageView">
         <attr name="topLeft" format="dimension" />
         <attr name="topRight" format="dimension" />
         <attr name="bottomLeft" format="dimension" />
         <attr name="bottomRight" format="dimension" />
     </declare-styleable>
 
+    <!-- AutoRotateCircleImage start -->
     <declare-styleable name="AutoRotateCircleImage">
         <attr name="cycle_seconds" format="integer" />
     </declare-styleable>
+    <!-- AutoRotateCircleImage end -->
 
+    <!-- LyricView start -->
     <declare-styleable name="LyricView">
         <attr name="lyricTextSize" format="dimension" />
         <attr name="timeTextSize" format="dimension" />
@@ -23,14 +26,30 @@
         <attr name="scrollDuration" format="integer" />
         <attr name="centerLineHeight" format="dimension" />
     </declare-styleable>
+    <!-- LyricView end -->
 
+    <!-- LazyViewPager start -->
     <declare-styleable name="LazyViewPager">
         <attr name="init_lazy_item_offset" format="float" />
     </declare-styleable>
+    <!-- LazyViewPager end -->
 
-    <declare-styleable name="EqualizerView">
+    <!-- EqualizerView start -->
+    <attr name="progressColor" format="color" />
+    <attr name="seekBarThumb" format="reference" />
+
+    <declare-styleable name="EqualizerView" parent="VerticalSeekBar">
         <attr name="textColor" format="color" />
-        <attr name="progressColor" format="color" />
-        <attr name="seekBarThumb" format="reference" />
+        <attr name="progressColor" />
+        <attr name="seekBarThumb" />
     </declare-styleable>
+
+    <declare-styleable name="VerticalSeekBar">
+        <attr name="seekBarThumb" />
+        <attr name="seekBarThumbWidth" format="dimension" />
+        <attr name="seekBarThumbHeight" format="dimension" />
+        <attr name="progressColor" />
+        <attr name="unProgressColor" format="color" />
+    </declare-styleable>
+    <!-- EqualizerView end -->
 </resources>

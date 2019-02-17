@@ -11,6 +11,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
+import com.zspirytus.enjoymusic.engine.ForegroundEqualizer;
 import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -39,13 +40,7 @@ public class AboutFragment extends CommonHeaderBaseFragment {
         mToolbar.setTitleTextColor(getResources().getColor(R.color.black));
         mToolbar.setTitle(R.string.about_fragment_title);
         mEqualizerView.setOnBandLevelChangeListener((band, level) -> {
-            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.EQUALIZER_HELPER);
-            IEqualizerHelper equalizerHelper = IEqualizerHelper.Stub.asInterface(binder);
-            try {
-                equalizerHelper.setBandLevel(band, level);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            ForegroundEqualizer.getInstance().setBandLevel(band, level);
         });
         playShadowAnimator();
     }

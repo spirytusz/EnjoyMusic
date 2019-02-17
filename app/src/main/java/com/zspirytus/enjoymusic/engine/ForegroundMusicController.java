@@ -6,6 +6,7 @@ import android.os.RemoteException;
 import com.zspirytus.enjoymusic.IMusicControl;
 import com.zspirytus.enjoymusic.IMusicProgressControl;
 import com.zspirytus.enjoymusic.ISetPlayList;
+import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
@@ -14,17 +15,12 @@ import com.zspirytus.enjoymusic.impl.binder.IMusicProgressControlImpl;
 import com.zspirytus.enjoymusic.impl.binder.IPlayStateChangeObserverImpl;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 /**
  * 前台音乐播放控制器
  * Created by ZSpirytus on 2018/9/8.
  */
 
 public class ForegroundMusicController implements MusicPlayStateObserver {
-
-    private ExecutorService mThreadPool;
 
     private IMusicControl mIMusicControl;
     private IMusicProgressControl mIMusicProgressControl;
@@ -38,7 +34,6 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
 
     private ForegroundMusicController() {
         IPlayStateChangeObserverImpl.getInstance().register(this);
-        mThreadPool = Executors.newFixedThreadPool(10);
     }
 
     public static ForegroundMusicController getInstance() {
@@ -47,7 +42,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
 
     public void play(final Music music) {
         if (music != null) {
-            mThreadPool.execute(() -> {
+            ThreadPool.execute(() -> {
                 if (mIMusicControl == null) {
                     IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
                     mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
@@ -62,7 +57,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
     }
 
     public void playPrevious() {
-        mThreadPool.execute(() -> {
+        ThreadPool.execute(() -> {
             if (mIMusicControl == null) {
                 IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
                 mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
@@ -76,7 +71,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
     }
 
     public void playNext(boolean fromUser) {
-        mThreadPool.execute(() -> {
+        ThreadPool.execute(() -> {
             if (mIMusicControl == null) {
                 IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
                 mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
@@ -90,7 +85,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
     }
 
     public void pause() {
-        mThreadPool.execute(() -> {
+        ThreadPool.execute(() -> {
             if (mIMusicControl == null) {
                 IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
                 mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
@@ -104,7 +99,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
     }
 
     public void seekTo(final int milliseconds) {
-        mThreadPool.execute(() -> {
+        ThreadPool.execute(() -> {
             if (mIMusicProgressControl == null) {
                 IBinder musicProgressControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_PROGRESS_CONTROL);
                 mIMusicProgressControl = IMusicProgressControlImpl.asInterface(musicProgressControlBinder);
@@ -119,7 +114,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
 
     public void setPlayList(final MusicFilter musicFilter) {
         if (musicFilter != null) {
-            mThreadPool.execute(() -> {
+            ThreadPool.execute(() -> {
                 if (mISetPlayList == null) {
                     IBinder setPlayListBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
                     mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
@@ -135,7 +130,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
 
     public void setPlayMode(final int playMode) {
         if (playMode >= 0 && playMode < 4) {
-            mThreadPool.execute(() -> {
+            ThreadPool.execute(() -> {
                 if (mIMusicControl == null) {
                     IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
                     mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);

@@ -1,10 +1,10 @@
 package com.zspirytus.enjoymusic.view.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
@@ -13,7 +13,6 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 
 /**
@@ -22,7 +21,6 @@ import com.zspirytus.enjoymusic.utils.PixelsUtil;
  */
 
 public class VerticalSeekBar extends View {
-    private Context context;
     private int height;
     private int width;
     private Paint paint;
@@ -42,7 +40,7 @@ public class VerticalSeekBar extends View {
     private int mInnerProgressWidth = 4;
     private int mInnerProgressWidthPx;
 
-    private int unSelectColor = 0xcc888888;
+    private int unSelectColor;
     private RectF mDestRect;
     /**
      * 滑动方向，
@@ -72,7 +70,7 @@ public class VerticalSeekBar extends View {
         invalidate();
     }
 
-    private int selectColor = 0xaa0980ED;
+    private int selectColor;
 
     /**
      * 设置选中线条的颜色
@@ -84,26 +82,6 @@ public class VerticalSeekBar extends View {
     }
 
     /**
-     * 设置进度条的宽度 单位是px
-     *
-     * @param mInnerProgressWidthPx
-     */
-    public void setmInnerProgressWidthPx(int mInnerProgressWidthPx) {
-        this.mInnerProgressWidthPx = mInnerProgressWidthPx;
-    }
-
-    /**
-     * 设置进度条的宽度 ，单位是dp;默认是4db
-     *
-     * @param mInnerProgressWidth
-     */
-    public void setmInnerProgressWidth(int mInnerProgressWidth) {
-        this.mInnerProgressWidth = mInnerProgressWidth;
-        mInnerProgressWidthPx = dip2px(context, mInnerProgressWidth);
-    }
-
-
-    /**
      * 设置图片
      *
      * @param id
@@ -113,30 +91,6 @@ public class VerticalSeekBar extends View {
         intrinsicHeight = mThumb.getHeight();
         intrinsicWidth = mThumb.getWidth();
         mDestRect.set(0, 0, intrinsicWidth, intrinsicHeight);
-        invalidate();
-    }
-
-    /**
-     * 设置滑动图片的大小 单位是dp
-     *
-     * @param width
-     * @param height
-     */
-    public void setThumbSize(int width, int height) {
-        setThumbSizePx(dip2px(context, width), dip2px(context, height));
-    }
-
-    /**
-     * 设置滑动图片的大小 单位是px
-     *
-     * @param width
-     * @param height
-     */
-    public void setThumbSizePx(int width, int height) {
-        intrinsicHeight = width;
-        intrinsicWidth = height;
-        mDestRect.set(0, 0, width, height);
-//        locationY = (int) (intrinsicHeight * 0.5f + (100 - progress) * 0.01 * (height - intrinsicHeight));
         invalidate();
     }
 
@@ -201,14 +155,19 @@ public class VerticalSeekBar extends View {
      * @param defStyleAttr
      */
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
-        this.context = context;
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.VerticalSeekBar);
+        int thumbId = array.getResourceId(R.styleable.VerticalSeekBar_seekBarThumb, R.drawable.seekbar_thumb);
+        selectColor = array.getColor(R.styleable.VerticalSeekBar_progressColor, 0xaa0980ED);
+        unSelectColor = array.getColor(R.styleable.VerticalSeekBar_unProgressColor, 0xcc888888);
+        float thumbWidth = array.getDimension(R.styleable.VerticalSeekBar_seekBarThumbWidth, dp2px(24));
+        float thumbHeight = array.getDimension(R.styleable.VerticalSeekBar_seekBarThumbHeight, dp2px(24));
+        array.recycle();
         paint = new Paint();
-        mThumb = BitmapFactory.decodeResource(getResources(), R.drawable.seekbar_thumb);
-        mThumb = scaleBitmap(mThumb, PixelsUtil.dp2px(getContext(), 24), PixelsUtil.dp2px(getContext(), 24));
-        intrinsicWidth = mThumb.getWidth();
-        intrinsicHeight = mThumb.getHeight();
+        mThumb = BitmapFactory.decodeResource(getResources(), thumbId);
+        intrinsicWidth = (int) thumbWidth;
+        intrinsicHeight = (int) thumbHeight;
         mDestRect = new RectF(0, 0, intrinsicWidth, intrinsicHeight);
-        mInnerProgressWidthPx = dip2px(context, mInnerProgressWidth);
+        mInnerProgressWidthPx = dip2px(mInnerProgressWidth);
     }
 
 
@@ -323,7 +282,6 @@ public class VerticalSeekBar extends View {
         super.onDetachedFromWindow();
     }
 
-
     public void setMaxProgress(int maxProgress) {
         this.maxProgress = maxProgress;
     }
@@ -341,43 +299,18 @@ public class VerticalSeekBar extends View {
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
      */
-    public int dp2px(Context context, float dp) {
-        float scale = context.getResources().getDisplayMetrics().density;
+    public int dp2px(float dp) {
+        float scale = getContext().getResources().getDisplayMetrics().density;
         return (int) ((dp * scale) + 0.5f);
     }
 
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
      */
-    public int dip2px(final Context context, final float dpValue) {
-        final DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+    public int dip2px(final float dpValue) {
+        final DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
         final float scale = metrics.density;
         return (int) ((dpValue * scale) + 0.5f);
-    }
-
-    /**
-     * 根据给定的宽和高进行拉伸
-     *
-     * @param origin    原图
-     * @param newWidth  新图的宽
-     * @param newHeight 新图的高
-     * @return new Bitmap
-     */
-    private Bitmap scaleBitmap(Bitmap origin, int newWidth, int newHeight) {
-        if (origin == null) {
-            return null;
-        }
-        int height = origin.getHeight();
-        int width = origin.getWidth();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        Matrix matrix = new Matrix();
-        matrix.postScale(scaleWidth, scaleHeight);// 使用后乘
-        Bitmap newBM = Bitmap.createBitmap(origin, 0, 0, width, height, matrix, false);
-        if (!origin.isRecycled()) {
-            origin.recycle();
-        }
-        return newBM;
     }
 
     //添加监听接口

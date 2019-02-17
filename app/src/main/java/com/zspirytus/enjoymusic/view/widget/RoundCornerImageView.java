@@ -45,11 +45,11 @@ public class RoundCornerImageView extends AppCompatImageView {
     private void init(Context context, AttributeSet attrs) {
         path = new Path();
         DEFAULT_DP = PixelsUtil.dp2px(context, 8);
-        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.cornerImg);
-        topLeft = array.getDimensionPixelSize(R.styleable.cornerImg_topLeft, DEFAULT_DP);
-        topRight = array.getDimensionPixelSize(R.styleable.cornerImg_topRight, DEFAULT_DP);
-        bottomLeft = array.getDimensionPixelSize(R.styleable.cornerImg_bottomLeft, DEFAULT_DP);
-        bottomRight = array.getDimensionPixelSize(R.styleable.cornerImg_bottomRight, DEFAULT_DP);
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.RoundCornerImageView);
+        topLeft = array.getDimensionPixelSize(R.styleable.RoundCornerImageView_topLeft, DEFAULT_DP);
+        topRight = array.getDimensionPixelSize(R.styleable.RoundCornerImageView_topRight, DEFAULT_DP);
+        bottomLeft = array.getDimensionPixelSize(R.styleable.RoundCornerImageView_bottomLeft, DEFAULT_DP);
+        bottomRight = array.getDimensionPixelSize(R.styleable.RoundCornerImageView_bottomRight, DEFAULT_DP);
         array.recycle();
     }
 

@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -40,12 +41,6 @@ public class EqualizerView extends ConstraintLayout {
     public EqualizerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
-        /*EqualizerMetaData metaData = new EqualizerMetaData();
-        metaData.setBand((short) 5);
-        metaData.setMaxRange((short) (10 * 1000));
-        metaData.setMinRange((short) (-10 * 1000));
-        metaData.setCenterFreq(new short[]{(short) 0, (short) 100, (short) 200, (short) 300, (short) 400});
-        setEqualizerMetaData(metaData);*/
     }
 
     private void init(Context context, AttributeSet attrs) {
@@ -57,7 +52,7 @@ public class EqualizerView extends ConstraintLayout {
         array.recycle();
     }
 
-    public void setEqualizerMetaData(EqualizerMetaData metaData) {
+    public void setEqualizerMetaData(@NonNull EqualizerMetaData metaData) {
         short bands = metaData.getBand();
         short maxRange = metaData.getMaxRange();
         short minRange = metaData.getMinRange();
@@ -101,8 +96,9 @@ public class EqualizerView extends ConstraintLayout {
 
                 @Override
                 public void onProgress(VerticalSeekBar slideView, int progress) {
-                    if (mListener != null) {
-                        mListener.onBandLevelChange(band, (short) ((progress / 100f) * (maxDB - minDB) + minDB));
+                    short newLevel = (short) ((progress / 100f) * (maxDB - minDB) + minDB);
+                    if (mListener != null && newLevel % 100 == 0) {
+                        mListener.onBandLevelChange(band, newLevel);
                     }
                 }
 
