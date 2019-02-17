@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.adapter;
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Artist;
 
 public class ArtistListAdapter extends CommonRecyclerViewAdapter<Artist> {
@@ -16,6 +17,7 @@ public class ArtistListAdapter extends CommonRecyclerViewAdapter<Artist> {
     public void convert(CommonViewHolder holder, Artist artist, int position) {
         holder.setImageResource(R.id.item_cover, R.drawable.defalut_cover);
         holder.setText(R.id.item_title, artist.getArtistName());
+        ImageLoader.load(holder.getView(R.id.item_cover), null, artist.getArtistName());
         holder.setText(R.id.item_sub_title, artist.getNumberOfAlbums() + " 首歌曲");
         if (mListener != null) {
             holder.setOnItemClickListener(mListener);

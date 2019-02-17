@@ -16,7 +16,7 @@ public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album> {
     @Override
     public void convert(CommonViewHolder holder, Album album, int position) {
         String coverPath = album.getAlbumCoverPath();
-        ImageLoader.load(holder.getView(R.id.item_cover), coverPath, R.drawable.defalut_cover);
+        ImageLoader.load(holder.getView(R.id.item_cover), coverPath, album.getAlbumName());
         holder.setText(R.id.item_title, album.getAlbumName());
         holder.setText(R.id.item_sub_title, album.getArtist());
         if (mListener != null) {

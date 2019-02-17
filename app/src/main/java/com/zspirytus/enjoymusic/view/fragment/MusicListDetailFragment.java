@@ -158,7 +158,7 @@ public class MusicListDetailFragment extends BaseFragment
             for (Music exitCoverMusic : mFilterMusicList) {
                 String path = exitCoverMusic.getMusicThumbAlbumCoverPath();
                 if (path != null && !path.isEmpty()) {
-                    ImageLoader.load(mCover, path, R.drawable.defalut_cover, new CenterCrop());
+                    ImageLoader.load(mCover, path, exitCoverMusic.getMusicName(), new CenterCrop());
                     break;
                 }
             }

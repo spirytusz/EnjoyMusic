@@ -16,7 +16,7 @@ public class HomePageListAdapter extends CommonRecyclerViewAdapter<Music> {
     @Override
     public void convert(CommonViewHolder holder, Music music, int position) {
         String coverPath = music.getMusicThumbAlbumCoverPath();
-        ImageLoader.load(holder.getView(R.id.item_cover), coverPath, R.drawable.defalut_cover);
+        ImageLoader.load(holder.getView(R.id.item_cover), coverPath, music.getMusicName());
         holder.setText(R.id.item_title, music.getMusicName());
         holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
         if (mListener != null) {

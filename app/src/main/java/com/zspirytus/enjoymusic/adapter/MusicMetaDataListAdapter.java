@@ -46,7 +46,7 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
             @Override
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
                 String path = data.getPreview().getMusicThumbAlbumCoverPath();
-                ImageLoader.load((ImageView) holder.getItemView(), path, R.drawable.defalut_cover, new CenterCrop());
+                ImageLoader.load((ImageView) holder.getItemView(), path, data.getPreview().getMusicName(), new CenterCrop());
                 holder.setOnItemClickListener((view, position) -> {
                 });
             }
@@ -70,7 +70,7 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
                 Music music = data.getPreview();
                 String path = music.getMusicThumbAlbumCoverPath();
-                ImageLoader.load(holder.getView(R.id.music_preview_cover), path, R.drawable.defalut_cover);
+                ImageLoader.load(holder.getView(R.id.music_preview_cover), path, music.getMusicName());
                 MusicMetaData metaData = MusicMetaDataReader.getInstance().readMetaData(music);
                 String musicName = music.getMusicName();
                 String artist = music.getMusicArtist();
