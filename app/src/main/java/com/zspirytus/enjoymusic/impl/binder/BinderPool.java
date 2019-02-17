@@ -20,8 +20,8 @@ public class BinderPool extends IBinderPool.Stub {
                 return PlayListSetter.getInstance();
             case Constant.BinderCode.BACKGROUND_EVENT_PROCESSOR:
                 return BackgroundEventProcessor.getInstance();
-            case Constant.BinderCode.EQUALIZER_HELPER:
-                return EqualizerHelper.getInstance();
+            case Constant.BinderCode.AUDIO_EFFECT:
+                return AudioEffectHelper.getInstance();
         }
         return null;
     }

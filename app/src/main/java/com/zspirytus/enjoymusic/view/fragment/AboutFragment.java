@@ -2,21 +2,12 @@ package com.zspirytus.enjoymusic.view.fragment;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.view.animation.DecelerateInterpolator;
 
-import com.zspirytus.enjoymusic.IEqualizerHelper;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
-import com.zspirytus.enjoymusic.cache.constant.Constant;
-import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
-import com.zspirytus.enjoymusic.engine.ForegroundEqualizer;
-import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
-import com.zspirytus.enjoymusic.view.widget.EqualizerView;
 
 /**
  * Created by ZSpirytus on 2018/9/14.
@@ -25,8 +16,6 @@ import com.zspirytus.enjoymusic.view.widget.EqualizerView;
 @LayoutIdInject(R.layout.fragment_about_layout)
 public class AboutFragment extends CommonHeaderBaseFragment {
 
-    @ViewInject(R.id.equalizer_view)
-    private EqualizerView mEqualizerView;
     private AnimatorSet mShadowAnim;
 
     public static AboutFragment getInstance() {
@@ -39,22 +28,11 @@ public class AboutFragment extends CommonHeaderBaseFragment {
         getParentActivity().setLightStatusIconColor();
         mToolbar.setTitleTextColor(getResources().getColor(R.color.black));
         mToolbar.setTitle(R.string.about_fragment_title);
-        mEqualizerView.setOnBandLevelChangeListener((band, level) -> {
-            ForegroundEqualizer.getInstance().setBandLevel(band, level);
-        });
         playShadowAnimator();
     }
 
     @Override
     protected void initData() {
-        IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.EQUALIZER_HELPER);
-        IEqualizerHelper equalizerHelper = IEqualizerHelper.Stub.asInterface(binder);
-        try {
-            EqualizerMetaData metaData = equalizerHelper.addEqualizerSupport();
-            mEqualizerView.setEqualizerMetaData(metaData);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
