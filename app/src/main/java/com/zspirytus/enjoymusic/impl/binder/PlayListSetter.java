@@ -4,16 +4,16 @@ import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
 
-public class ISetPlayListImpl extends ISetPlayList.Stub {
+public class PlayListSetter extends ISetPlayList.Stub {
 
     private static class SingletonHolder {
-        static ISetPlayListImpl INSTANCE = new ISetPlayListImpl();
+        static PlayListSetter INSTANCE = new PlayListSetter();
     }
 
-    private ISetPlayListImpl() {
+    private PlayListSetter() {
     }
 
-    public static ISetPlayListImpl getInstance() {
+    public static PlayListSetter getInstance() {
         return SingletonHolder.INSTANCE;
     }
 

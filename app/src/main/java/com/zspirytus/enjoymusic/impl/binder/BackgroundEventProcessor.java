@@ -11,12 +11,12 @@ import com.zspirytus.enjoymusic.foregroundobserver.IPlayStateChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
-public class IBackgroundEventProcessorImpl extends IBackgroundEventProcessor.Stub {
+public class BackgroundEventProcessor extends IBackgroundEventProcessor.Stub {
 
-    private static IBackgroundEventProcessorImpl INSTANCE
-            = new IBackgroundEventProcessorImpl();
+    private static BackgroundEventProcessor INSTANCE
+            = new BackgroundEventProcessor();
 
-    public static IBackgroundEventProcessorImpl getInstance() {
+    public static BackgroundEventProcessor getInstance() {
         return INSTANCE;
     }
 

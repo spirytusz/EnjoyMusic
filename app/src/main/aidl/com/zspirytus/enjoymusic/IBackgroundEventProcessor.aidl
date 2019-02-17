@@ -1,4 +1,4 @@
-// IBackgroundEventProcessorImpl.aidl
+// IBackgroundEventProcessor.aidl
 package com.zspirytus.enjoymusic;
 
 interface IBackgroundEventProcessor {

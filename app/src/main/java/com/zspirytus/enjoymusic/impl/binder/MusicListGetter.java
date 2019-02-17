@@ -9,16 +9,16 @@ import com.zspirytus.enjoymusic.entity.Music;
 
 import java.util.List;
 
-public class IGetMusicListImpl extends IGetMusicList.Stub {
+public class MusicListGetter extends IGetMusicList.Stub {
 
     private static class SingletonHolder {
-        static IGetMusicListImpl INSTANCE = new IGetMusicListImpl();
+        static MusicListGetter INSTANCE = new MusicListGetter();
     }
 
-    private IGetMusicListImpl() {
+    private MusicListGetter() {
     }
 
-    public static IGetMusicListImpl getInstance() {
+    public static MusicListGetter getInstance() {
         return SingletonHolder.INSTANCE;
     }
 

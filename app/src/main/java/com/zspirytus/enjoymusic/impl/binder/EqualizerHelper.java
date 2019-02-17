@@ -7,16 +7,16 @@ import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
 import com.zspirytus.enjoymusic.services.media.EqualizerController;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
-public class IEqualizerHelperImpl extends IEqualizerHelper.Stub {
+public class EqualizerHelper extends IEqualizerHelper.Stub {
 
     private static class Singleton {
-        static IEqualizerHelperImpl INSTANCE = new IEqualizerHelperImpl();
+        static EqualizerHelper INSTANCE = new EqualizerHelper();
     }
 
-    private IEqualizerHelperImpl() {
+    private EqualizerHelper() {
     }
 
-    public static IEqualizerHelperImpl getInstance() {
+    public static EqualizerHelper getInstance() {
         return Singleton.INSTANCE;
     }
 

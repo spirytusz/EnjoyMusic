@@ -14,7 +14,7 @@ import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.impl.binder.IBinderPoolImpl;
+import com.zspirytus.enjoymusic.impl.binder.BinderPool;
 import com.zspirytus.enjoymusic.interfaces.IOnRemotePlayedListener;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
@@ -33,7 +33,7 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
 
     private static final String TAG = "PlayMusicService";
 
-    private IBinderPoolImpl mBinderPool;
+    private BinderPool mBinderPool;
 
     private MyHeadSetPlugOutReceiver myHeadSetPlugOutReceiver;
     private MyHeadSetButtonClickBelowLReceiver myHeadSetButtonClickBelowLReceiver;
@@ -54,7 +54,7 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
     @Override
     public IBinder onBind(Intent intent) {
         if (mBinderPool == null) {
-            mBinderPool = new IBinderPoolImpl();
+            mBinderPool = new BinderPool();
         }
         return mBinderPool;
     }

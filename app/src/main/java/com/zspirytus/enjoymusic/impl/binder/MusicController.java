@@ -5,16 +5,16 @@ import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
-public class IMusicControlImpl extends IMusicControl.Stub {
+public class MusicController extends IMusicControl.Stub {
 
     private static class SingletonHolder {
-        static IMusicControlImpl INSTANCE = new IMusicControlImpl();
+        static MusicController INSTANCE = new MusicController();
     }
 
-    private IMusicControlImpl() {
+    private MusicController() {
     }
 
-    public static IMusicControlImpl getInstance() {
+    public static MusicController getInstance() {
         return SingletonHolder.INSTANCE;
     }
 

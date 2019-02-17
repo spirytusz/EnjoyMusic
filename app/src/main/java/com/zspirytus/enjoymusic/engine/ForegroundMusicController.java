@@ -10,9 +10,9 @@ import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
-import com.zspirytus.enjoymusic.impl.binder.IMusicControlImpl;
-import com.zspirytus.enjoymusic.impl.binder.IMusicProgressControlImpl;
-import com.zspirytus.enjoymusic.impl.binder.IPlayStateChangeObserverImpl;
+import com.zspirytus.enjoymusic.impl.binder.MusicController;
+import com.zspirytus.enjoymusic.impl.binder.MusicProgressControl;
+import com.zspirytus.enjoymusic.impl.binder.PlayStateChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 
 /**
@@ -33,7 +33,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
     }
 
     private ForegroundMusicController() {
-        IPlayStateChangeObserverImpl.getInstance().register(this);
+        PlayStateChangeObserver.getInstance().register(this);
     }
 
     public static ForegroundMusicController getInstance() {
@@ -45,7 +45,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
             ThreadPool.execute(() -> {
                 if (mIMusicControl == null) {
                     IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                    mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
+                    mIMusicControl = MusicController.asInterface(musicControlBinder);
                 }
                 try {
                     mIMusicControl.play(music);
@@ -60,7 +60,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
         ThreadPool.execute(() -> {
             if (mIMusicControl == null) {
                 IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
+                mIMusicControl = MusicController.asInterface(musicControlBinder);
             }
             try {
                 mIMusicControl.playPrevious();
@@ -74,7 +74,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
         ThreadPool.execute(() -> {
             if (mIMusicControl == null) {
                 IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
+                mIMusicControl = MusicController.asInterface(musicControlBinder);
             }
             try {
                 mIMusicControl.playNext(fromUser);
@@ -88,7 +88,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
         ThreadPool.execute(() -> {
             if (mIMusicControl == null) {
                 IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
+                mIMusicControl = MusicController.asInterface(musicControlBinder);
             }
             try {
                 mIMusicControl.pause();
@@ -102,7 +102,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
         ThreadPool.execute(() -> {
             if (mIMusicProgressControl == null) {
                 IBinder musicProgressControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_PROGRESS_CONTROL);
-                mIMusicProgressControl = IMusicProgressControlImpl.asInterface(musicProgressControlBinder);
+                mIMusicProgressControl = MusicProgressControl.asInterface(musicProgressControlBinder);
             }
             try {
                 mIMusicProgressControl.seekTo(milliseconds);
@@ -133,7 +133,7 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
             ThreadPool.execute(() -> {
                 if (mIMusicControl == null) {
                     IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                    mIMusicControl = IMusicControlImpl.asInterface(musicControlBinder);
+                    mIMusicControl = MusicController.asInterface(musicControlBinder);
                 }
                 try {
                     mIMusicControl.setPlayMode(playMode);

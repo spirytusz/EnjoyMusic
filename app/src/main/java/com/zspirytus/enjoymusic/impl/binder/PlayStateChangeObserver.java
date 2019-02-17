@@ -6,17 +6,17 @@ import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IPlayStateChangeObserverImpl extends IPlayStateChangeObserver.Stub {
+public class PlayStateChangeObserver extends IPlayStateChangeObserver.Stub {
 
     private Boolean mEvent;
 
     private static class SingletonHolder {
-        static IPlayStateChangeObserverImpl INSTANCE = new IPlayStateChangeObserverImpl();
+        static PlayStateChangeObserver INSTANCE = new PlayStateChangeObserver();
     }
 
     private List<MusicPlayStateObserver> observers = new ArrayList<>();
 
-    private IPlayStateChangeObserverImpl() {
+    private PlayStateChangeObserver() {
     }
 
     @Override
@@ -40,7 +40,7 @@ public class IPlayStateChangeObserverImpl extends IPlayStateChangeObserver.Stub 
         observers.remove(observer);
     }
 
-    public static IPlayStateChangeObserverImpl getInstance() {
+    public static PlayStateChangeObserver getInstance() {
         return SingletonHolder.INSTANCE;
     }
 }

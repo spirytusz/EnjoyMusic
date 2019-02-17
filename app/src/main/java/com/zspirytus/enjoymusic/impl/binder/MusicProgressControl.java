@@ -3,16 +3,16 @@ package com.zspirytus.enjoymusic.impl.binder;
 import com.zspirytus.enjoymusic.IMusicProgressControl;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
-public class IMusicProgressControlImpl extends IMusicProgressControl.Stub {
+public class MusicProgressControl extends IMusicProgressControl.Stub {
 
     private static class SingletonHolder {
-        static IMusicProgressControlImpl INSTANCE = new IMusicProgressControlImpl();
+        static MusicProgressControl INSTANCE = new MusicProgressControl();
     }
 
-    private IMusicProgressControlImpl() {
+    private MusicProgressControl() {
     }
 
-    public static IMusicProgressControlImpl getInstance() {
+    public static MusicProgressControl getInstance() {
         return SingletonHolder.INSTANCE;
     }
 

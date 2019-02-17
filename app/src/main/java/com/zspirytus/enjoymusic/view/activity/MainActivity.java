@@ -34,13 +34,12 @@ import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
-import com.zspirytus.enjoymusic.impl.binder.IPlayListChangeObserverImpl;
-import com.zspirytus.enjoymusic.impl.binder.IPlayMusicChangeObserverImpl;
-import com.zspirytus.enjoymusic.impl.binder.IPlayStateChangeObserverImpl;
+import com.zspirytus.enjoymusic.impl.binder.PlayListChangeObserver;
+import com.zspirytus.enjoymusic.impl.binder.PlayMusicChangeObserver;
+import com.zspirytus.enjoymusic.impl.binder.PlayStateChangeObserver;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
-import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
@@ -69,7 +68,7 @@ import io.reactivex.schedulers.Schedulers;
 @LayoutIdInject(R.layout.activity_main)
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, PlayedMusicChangeObserver,
-        MusicPlayStateObserver, PlayListChangeObserver {
+        MusicPlayStateObserver, com.zspirytus.enjoymusic.receivers.observer.PlayListChangeObserver {
 
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
@@ -183,9 +182,9 @@ public class MainActivity extends BaseActivity
     @Override
     protected void registerEvent() {
         EventBus.getDefault().register(this);
-        IPlayMusicChangeObserverImpl.getInstance().register(this);
-        IPlayStateChangeObserverImpl.getInstance().register(this);
-        IPlayListChangeObserverImpl.getInstance().register(this);
+        PlayMusicChangeObserver.getInstance().register(this);
+        PlayStateChangeObserver.getInstance().register(this);
+        PlayListChangeObserver.getInstance().register(this);
     }
 
     @Override
@@ -193,9 +192,9 @@ public class MainActivity extends BaseActivity
         EventBus.getDefault().unregister(this);
         ForegroundMusicController.getInstance().release();
         mCustomNavigationView.unregisterFragmentChangeListener();
-        IPlayMusicChangeObserverImpl.getInstance().unregister(this);
-        IPlayStateChangeObserverImpl.getInstance().unregister(this);
-        IPlayListChangeObserverImpl.getInstance().unregister(this);
+        PlayMusicChangeObserver.getInstance().unregister(this);
+        PlayStateChangeObserver.getInstance().unregister(this);
+        PlayListChangeObserver.getInstance().unregister(this);
     }
 
     @Override

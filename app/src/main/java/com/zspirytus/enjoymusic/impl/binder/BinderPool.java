@@ -5,23 +5,23 @@ import android.os.IBinder;
 import com.zspirytus.enjoymusic.IBinderPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 
-public class IBinderPoolImpl extends IBinderPool.Stub {
+public class BinderPool extends IBinderPool.Stub {
 
     @Override
     public IBinder queryBinder(int binderCode) {
         switch (binderCode) {
             case Constant.BinderCode.MUSIC_CONTROL:
-                return IMusicControlImpl.getInstance();
+                return MusicController.getInstance();
             case Constant.BinderCode.MUSIC_PROGRESS_CONTROL:
-                return IMusicProgressControlImpl.getInstance();
+                return MusicProgressControl.getInstance();
             case Constant.BinderCode.GET_MUSIC_LIST:
-                return IGetMusicListImpl.getInstance();
+                return MusicListGetter.getInstance();
             case Constant.BinderCode.SET_PLAY_LIST:
-                return ISetPlayListImpl.getInstance();
+                return PlayListSetter.getInstance();
             case Constant.BinderCode.BACKGROUND_EVENT_PROCESSOR:
-                return IBackgroundEventProcessorImpl.getInstance();
+                return BackgroundEventProcessor.getInstance();
             case Constant.BinderCode.EQUALIZER_HELPER:
-                return IEqualizerHelperImpl.getInstance();
+                return EqualizerHelper.getInstance();
         }
         return null;
     }
