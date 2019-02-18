@@ -73,4 +73,11 @@
     <string name="music_play_menu_audio_effect">音效设定</string>
     <!-- MusicPlay Text end -->
 
+    <!-- AudioEffect Text start -->
+    <string name="audio_effect_fragment_main_title">音效</string>
+    <string name="audio_effect_fragment_second_title">音场</string>
+    <string name="audio_effect_fragment_third_title">均衡器</string>
+    <string name="audio_effect_reset">重置</string>
+    <!-- AudioEffect Text end -->
+
 </resources>

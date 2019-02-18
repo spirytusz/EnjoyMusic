@@ -153,6 +153,7 @@ public class AudioEffectFragment extends BaseFragment
             hideEqualizer();
         } else if (mRecyclerView.getAdapter() == mPresetReverbAdapter) {
             mRecyclerView.setAdapter(mAdapter);
+            mTitle.setText(R.string.audio_effect_fragment_main_title);
         } else {
             FragmentVisibilityManager.getInstance().remove(this);
         }
@@ -160,7 +161,7 @@ public class AudioEffectFragment extends BaseFragment
 
     @Override
     public int getContainerId() {
-        return R.id.fragment_container;
+        return R.id.full_fragment_container;
     }
 
     private void showEqualizer() {
@@ -169,14 +170,14 @@ public class AudioEffectFragment extends BaseFragment
         }
         mRecyclerView.setVisibility(View.GONE);
         mEqualizer.setVisibility(View.VISIBLE);
-        mTitle.setText("均衡器");
+        mTitle.setText(R.string.audio_effect_fragment_second_title);
         mResetBtn.setVisibility(View.VISIBLE);
     }
 
     private void hideEqualizer() {
         mRecyclerView.setVisibility(View.VISIBLE);
         mEqualizer.setVisibility(View.GONE);
-        mTitle.setText("音场");
+        mTitle.setText(R.string.audio_effect_fragment_second_title);
         mResetBtn.setVisibility(View.GONE);
     }
 

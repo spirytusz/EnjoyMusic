@@ -141,6 +141,7 @@ public class MainActivity extends BaseActivity
             }
         });
         mCustomNavigationView.setNavigationItemSelectedListener(this);
+        fixNavBarHeight(mBottomMusicControl);
         mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         mViewModel.init();
     }
@@ -158,6 +159,7 @@ public class MainActivity extends BaseActivity
         } else {
             showCastFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
         }
+        mViewModel.obtainMusicDataFromPref(this);
     }
 
     @Override

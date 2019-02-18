@@ -119,6 +119,7 @@ public class MusicListDetailFragment extends BaseFragment
             MusicFilter filter = new MusicFilter(filterAlbum, filterArtist);
             ForegroundMusicController.getInstance().setPlayList(filter);
         });
+        fixNavBarHeight(mRecyclerView);
     }
 
     @Override

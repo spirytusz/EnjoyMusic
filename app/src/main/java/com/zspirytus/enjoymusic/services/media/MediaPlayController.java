@@ -8,6 +8,7 @@ import android.support.annotation.BinderThread;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
+import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -66,6 +67,7 @@ public class MediaPlayController extends MusicStateObservable
             return 0;
         }
     }
+
     public void setOnPlayListener(IOnRemotePlayedListener listener) {
         mOnPlayListener = listener;
     }
@@ -191,8 +193,9 @@ public class MediaPlayController extends MusicStateObservable
         }
         notifyAllObserverPlayStateChange(true);
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
-        BackgroundMusicStateCache.getInstance().setCurrentPlayingMusic(currentPlayingMusic);
         PlayHistoryCache.getInstance().add(currentPlayingMusic);
+        // 每次播放都持久化music，保证Service端被完全杀死时持久化的music是最后一次播放的music.
+        MusicSharedPreferences.saveMusic(music);
     }
 
     /**

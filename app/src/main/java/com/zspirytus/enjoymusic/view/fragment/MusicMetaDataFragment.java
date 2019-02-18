@@ -1,6 +1,5 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -16,7 +15,6 @@ import com.zspirytus.enjoymusic.entity.MusicMetaDataListItem;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-import com.zspirytus.enjoymusic.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.view.dialog.SaveMusicInfoDialog;
 
 import java.util.ArrayList;
@@ -47,16 +45,7 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
         mCancelBtn.setOnClickListener(this);
         mSaveBtn.setOnClickListener(this);
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
-        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-                int position = parent.getChildAdapterPosition(view);
-                if (position == parent.getAdapter().getItemCount() - 1) {
-                    outRect.bottom = PixelsUtil.getVirtualBarHeight(getContext());
-                }
-            }
-        });
+        fixNavBarHeight(mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
     }
 

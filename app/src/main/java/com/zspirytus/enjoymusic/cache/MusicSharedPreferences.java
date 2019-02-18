@@ -39,8 +39,7 @@ public class MusicSharedPreferences {
         if (DEFAULT_MUSIC.equals(json)) {
             return null;
         } else {
-            Music music = gson.fromJson(json, Music.class);
-            return music;
+            return gson.fromJson(json, Music.class);
         }
     }
 

@@ -1,10 +1,12 @@
 package com.zspirytus.enjoymusic.cache.viewmodels;
 
+import android.content.Context;
 import android.os.IBinder;
 import android.os.RemoteException;
 
 import com.zspirytus.enjoymusic.IGetMusicList;
 import com.zspirytus.enjoymusic.ISetPlayList;
+import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
@@ -90,6 +92,13 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
                 e.printStackTrace();
             }
         });
+    }
+
+    public void obtainMusicDataFromPref(Context context) {
+        Music savedMusic = MusicSharedPreferences.restoreMusic(context);
+        if (savedMusic != null) {
+            setCurrentPlayingMusic(savedMusic);
+        }
     }
 
 }

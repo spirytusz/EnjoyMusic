@@ -43,6 +43,10 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
         super.onCreate();
         MyMediaSession.getInstance().initMediaSession(this);
         MediaPlayController.getInstance().setOnPlayListener(this);
+        Music savedMusic = MusicSharedPreferences.restoreMusic(this);
+        if (savedMusic != null) {
+            BackgroundMusicStateCache.getInstance().setCurrentPlayingMusic(savedMusic);
+        }
     }
 
     @Override

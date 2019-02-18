@@ -14,6 +14,7 @@ import com.zspirytus.enjoymusic.interfaces.IBackPressed;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.LogUtil;
+import com.zspirytus.enjoymusic.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 import java.lang.reflect.Field;
@@ -156,6 +157,14 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
             return inflater.inflate(layoutId, container, false);
         } else {
             return null;
+        }
+    }
+
+    protected void fixNavBarHeight(View... views) {
+        int navBarHeight = PixelsUtil.getNavigationBarHeight(getContext());
+        for (View view : views) {
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            lp.bottomMargin = navBarHeight;
         }
     }
 

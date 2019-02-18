@@ -7,12 +7,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.LogUtil;
+import com.zspirytus.enjoymusic.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.zspermission.ZSPermission;
 
@@ -163,6 +165,14 @@ public abstract class BaseActivity extends AppCompatActivity
     }
 
     protected void unregisterEvent() {
+    }
+
+    protected void fixNavBarHeight(View... views) {
+        int navBarHeight = PixelsUtil.getNavigationBarHeight(this);
+        for (View view : views) {
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            lp.bottomMargin = navBarHeight;
+        }
     }
 
     /**
