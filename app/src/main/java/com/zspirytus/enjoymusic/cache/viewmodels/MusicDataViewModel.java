@@ -2,6 +2,7 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.support.annotation.CallSuper;
 
 import com.zspirytus.enjoymusic.entity.Album;
 import com.zspirytus.enjoymusic.entity.Artist;
@@ -11,14 +12,25 @@ import com.zspirytus.enjoymusic.entity.Music;
 import java.util.List;
 
 public class MusicDataViewModel extends ViewModel {
-    private MutableLiveData<List<Music>> mMusicListLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<Album>> mAlbumListLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<Artist>> mArtistListLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<FolderSortedMusic>> mFolderListLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<Music>> mPlayListLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<Music>> mMusicListLiveData;
+    private MutableLiveData<List<Album>> mAlbumListLiveData;
+    private MutableLiveData<List<Artist>> mArtistListLiveData;
+    private MutableLiveData<List<FolderSortedMusic>> mFolderListLiveData;
+    private MutableLiveData<List<Music>> mPlayListLiveData;
 
-    private MutableLiveData<Music> mCurrentMusicLiveData = new MutableLiveData<>();
-    private MutableLiveData<Boolean> mPlayState = new MutableLiveData<>();
+    private MutableLiveData<Music> mCurrentMusicLiveData;
+    private MutableLiveData<Boolean> mPlayState;
+
+    @CallSuper
+    public void init() {
+        mMusicListLiveData = new MutableLiveData<>();
+        mAlbumListLiveData = new MutableLiveData<>();
+        mArtistListLiveData = new MutableLiveData<>();
+        mFolderListLiveData = new MutableLiveData<>();
+        mPlayListLiveData = new MutableLiveData<>();
+        mCurrentMusicLiveData = new MutableLiveData<>();
+        mPlayState = new MutableLiveData<>();
+    }
 
     public MutableLiveData<List<Music>> getMusicList() {
         return mMusicListLiveData;

@@ -13,18 +13,17 @@ import android.view.animation.DecelerateInterpolator;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
+import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
-import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
+import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
-
-import org.simple.eventbus.EventBus;
 
 /**
  * Created by ZSpirytus on 2018/9/17.
@@ -101,7 +100,9 @@ public class PlayListFragment extends CommonHeaderBaseFragment
     public void onItemClick(View view, int position) {
         Music music = mAdapter.getList().get(position);
         ForegroundMusicController.getInstance().play(music);
-        EventBus.getDefault().post(FragmentFactory.getInstance().get(MusicPlayFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+        BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
+        FragmentVisibilityManager.getInstance().addToBackStack(currentFragment);
+        FragmentVisibilityManager.getInstance().show(FragmentFactory.getInstance().get(MusicPlayFragment.class));
     }
 
     private void setupInfoTextView(boolean isPlayListEmpty) {

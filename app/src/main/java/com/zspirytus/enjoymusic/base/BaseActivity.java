@@ -35,12 +35,12 @@ public abstract class BaseActivity extends AppCompatActivity
 
         if (savedInstanceState != null) {
             onMRestoreInstanceState(savedInstanceState);
-            registerEvent();
             initView();
-        } else {
             registerEvent();
+        } else {
             initView();
             initData();
+            registerEvent();
         }
     }
 

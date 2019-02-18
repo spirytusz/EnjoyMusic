@@ -7,9 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.cache.constant.Constant;
-
-import org.simple.eventbus.EventBus;
+import com.zspirytus.enjoymusic.view.activity.MainActivity;
 
 public abstract class CommonHeaderBaseFragment extends BaseFragment {
 
@@ -24,7 +22,7 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment {
         mToolbar = view.findViewById(R.id.tool_bar);
         mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         mToolbar.setTitle(R.string.app_name);
-        mToolbar.setNavigationOnClickListener((v -> EventBus.getDefault().post(true, Constant.EventBusTag.OPEN_DRAWER)));
+        mToolbar.setNavigationOnClickListener((v -> ((MainActivity) getParentActivity()).closeNavigationView()));
         super.onViewCreated(view, savedInstanceState);
     }
 

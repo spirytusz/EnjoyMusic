@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -17,8 +16,6 @@ import android.view.MenuItem;
 
 import com.zspirytus.enjoymusic.AndroidBug5497Workaround;
 import com.zspirytus.enjoymusic.IBinderPool;
-import com.zspirytus.enjoymusic.IGetMusicList;
-import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseActivity;
 import com.zspirytus.enjoymusic.base.BaseFragment;
@@ -27,20 +24,11 @@ import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
-import com.zspirytus.enjoymusic.entity.Album;
-import com.zspirytus.enjoymusic.entity.Artist;
-import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
-import com.zspirytus.enjoymusic.impl.binder.PlayListChangeObserver;
-import com.zspirytus.enjoymusic.impl.binder.PlayMusicChangeObserver;
-import com.zspirytus.enjoymusic.impl.binder.PlayStateChangeObserver;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
-import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 import com.zspirytus.enjoymusic.view.fragment.LaunchAnimationFragment;
@@ -51,14 +39,9 @@ import com.zspirytus.enjoymusic.view.widget.MusicControlPane;
 import com.zspirytus.zspermission.PermissionGroup;
 import com.zspirytus.zspermission.ZSPermission;
 
-import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
-
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Activity: 控制显示、隐藏Fragment.
@@ -67,8 +50,7 @@ import io.reactivex.schedulers.Schedulers;
 
 @LayoutIdInject(R.layout.activity_main)
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, PlayedMusicChangeObserver,
-        MusicPlayStateObserver, com.zspirytus.enjoymusic.receivers.observer.PlayListChangeObserver {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     @ViewInject(R.id.main_drawer)
     private DrawerLayout mDrawerLayout;
@@ -87,7 +69,6 @@ public class MainActivity extends BaseActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidBug5497Workaround.assistActivity(this);
-        mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         bindPlayMusicService();
     }
 
@@ -99,7 +80,6 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onMRestoreInstanceState(Bundle savedInstanceState) {
-        e("MainActivity#onRestoreInstanceState");
         setLightStatusIconColor();
         FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
         FragmentVisibilityManager.getInstance().onRestoreInstanceState(savedInstanceState);
@@ -165,7 +145,8 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void initData() {
-        e("MainActivity#initData");
+        mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        mViewModel.init();
         FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
         Music music = getIntent().getParcelableExtra("music");
         if (music != null) {
@@ -181,20 +162,18 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void registerEvent() {
-        EventBus.getDefault().register(this);
-        PlayMusicChangeObserver.getInstance().register(this);
-        PlayStateChangeObserver.getInstance().register(this);
-        PlayListChangeObserver.getInstance().register(this);
+        mViewModel.getCurrentPlayingMusic().observe(this, values -> {
+            mBottomMusicControl.wrapMusic(values);
+        });
+        mViewModel.getMusicPlayState().observe(this, values -> {
+            mBottomMusicControl.setPlayState(values);
+        });
     }
 
     @Override
     protected void unregisterEvent() {
-        EventBus.getDefault().unregister(this);
         ForegroundMusicController.getInstance().release();
         mCustomNavigationView.unregisterFragmentChangeListener();
-        PlayMusicChangeObserver.getInstance().unregister(this);
-        PlayStateChangeObserver.getInstance().unregister(this);
-        PlayListChangeObserver.getInstance().unregister(this);
     }
 
     @Override
@@ -208,36 +187,10 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onGranted() {
-        loadMusicList();
+        mViewModel.obtainMusicList();
     }
 
-    @Override
-    public void onPlayedMusicChanged(final Music music) {
-        AndroidSchedulers.mainThread().scheduleDirect(() -> {
-            if (music != null) {
-                mViewModel.setCurrentPlayingMusic(music);
-                mBottomMusicControl.wrapMusic(music);
-            }
-        });
-    }
-
-    @Override
-    public void onPlayingStateChanged(final boolean isPlaying) {
-        AndroidSchedulers.mainThread().scheduleDirect(() -> {
-            mViewModel.setMusicPlayState(isPlaying);
-            mBottomMusicControl.setPlayState(isPlaying);
-        });
-    }
-
-    @Override
-    public void onPlayListChange(MusicFilter filter) {
-        AndroidSchedulers.mainThread().scheduleDirect(() -> {
-            mViewModel.setPlayList(filter.filter(mViewModel.getMusicList().getValue()));
-        });
-    }
-
-    @Subscriber(tag = Constant.EventBusTag.SHOW_CAST_FRAGMENT)
-    public <T extends BaseFragment> void showCastFragment(T shouldShowFragment) {
+    public void showCastFragment(BaseFragment shouldShowFragment) {
         BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
         if (shouldShowFragment instanceof MusicPlayFragment || shouldShowFragment instanceof MusicListDetailFragment) {
             if (currentFragment != null) {
@@ -247,34 +200,8 @@ public class MainActivity extends BaseActivity
         FragmentVisibilityManager.getInstance().show(shouldShowFragment);
     }
 
-    @Subscriber(tag = Constant.EventBusTag.OPEN_DRAWER)
-    public void setDrawerOpenOrNot(boolean isOpen) {
-        if (isOpen)
-            mDrawerLayout.openDrawer(Gravity.START);
-    }
-
-    private void loadMusicList() {
-        Schedulers.io().scheduleDirect(() -> {
-            try {
-                IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.GET_MUSIC_LIST);
-                IGetMusicList getMusicListBinder = IGetMusicList.Stub.asInterface(binder);
-                final List<Music> musicList = getMusicListBinder.getMusicList();
-                final List<Album> albumList = getMusicListBinder.getAlbumList();
-                final List<Artist> artistList = getMusicListBinder.getArtistList();
-                final List<FolderSortedMusic> folderSortedMusicList = getMusicListBinder.getFolderSortedMusic();
-                IBinder iBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
-                ISetPlayList setPlayList = ISetPlayList.Stub.asInterface(iBinder);
-                setPlayList.setPlayList(MusicFilter.NO_FILTER);
-                AndroidSchedulers.mainThread().scheduleDirect(() -> {
-                    mViewModel.setMusicList(musicList);
-                    mViewModel.setAlbumList(albumList);
-                    mViewModel.setArtistList(artistList);
-                    mViewModel.setFolderList(folderSortedMusicList);
-                });
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        });
+    public void closeNavigationView() {
+        mDrawerLayout.openDrawer(Gravity.START);
     }
 
     private void requestPermission() {

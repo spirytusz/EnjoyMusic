@@ -13,18 +13,16 @@ import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
+import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
-import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
+import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-
-import org.simple.eventbus.EventBus;
 
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
@@ -51,8 +49,9 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     public void onItemClick(View view, int position) {
         Music music = mAdapter.getList().get(position);
         ForegroundMusicController.getInstance().play(music);
-        ForegroundMusicController.getInstance().setPlayList(MusicFilter.NO_FILTER);
-        EventBus.getDefault().post(FragmentFactory.getInstance().get(MusicPlayFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+        BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
+        FragmentVisibilityManager.getInstance().addToBackStack(currentFragment);
+        FragmentVisibilityManager.getInstance().show(FragmentFactory.getInstance().get(MusicPlayFragment.class));
     }
 
     @Override

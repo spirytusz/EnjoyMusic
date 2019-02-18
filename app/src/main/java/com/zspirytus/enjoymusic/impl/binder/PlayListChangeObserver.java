@@ -26,7 +26,7 @@ public class PlayListChangeObserver extends IPlayListChangeObserver.Stub {
     @Override
     public void onPlayListChange(MusicFilter filter) throws RemoteException {
         for (com.zspirytus.enjoymusic.receivers.observer.PlayListChangeObserver observer : observers) {
-            observer.onPlayListChange(filter);
+            observer.onPlayListChanged(filter);
         }
     }
 

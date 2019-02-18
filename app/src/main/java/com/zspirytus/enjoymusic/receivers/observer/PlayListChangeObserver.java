@@ -4,5 +4,5 @@ import com.zspirytus.enjoymusic.entity.MusicFilter;
 
 public interface PlayListChangeObserver {
 
-    void onPlayListChange(MusicFilter filter);
+    void onPlayListChanged(MusicFilter filter);
 }

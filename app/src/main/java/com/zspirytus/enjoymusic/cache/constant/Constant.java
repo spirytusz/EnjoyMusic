@@ -19,11 +19,6 @@ public interface Constant {
         int AUDIO_EFFECT = 0x81;
     }
 
-    interface EventBusTag {
-        String SHOW_CAST_FRAGMENT = "show cast fragment";
-        String OPEN_DRAWER = "openDrawer";
-    }
-
     interface AnimationProperty {
         String ALPHA = "alpha";
         String TRANSLATE_Y = "translationY";

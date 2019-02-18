@@ -5,15 +5,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.view.fragment.AboutFragment;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicCategoryFragment;
 import com.zspirytus.enjoymusic.view.fragment.PlayListFragment;
 import com.zspirytus.enjoymusic.view.fragment.SettingsFragment;
-
-import org.simple.eventbus.EventBus;
 
 /**
  * Created by ZSpirytus on 2018/9/15.
@@ -38,7 +36,7 @@ public class DrawerListenerImpl implements DrawerLayout.DrawerListener {
         FragmentFactory factory = FragmentFactory.getInstance();
         switch (mSelectedNavId) {
             case R.id.nav_home_page:
-                EventBus.getDefault().post(factory.get(HomePageFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+                FragmentVisibilityManager.getInstance().show(factory.get(HomePageFragment.class));
                 break;
             case R.id.nav_music_all:
                 showMusicCategoryFragmentOrNot(0);
@@ -53,13 +51,13 @@ public class DrawerListenerImpl implements DrawerLayout.DrawerListener {
                 showMusicCategoryFragmentOrNot(3);
                 break;
             case R.id.nav_play_list:
-                EventBus.getDefault().post(factory.get(PlayListFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+                FragmentVisibilityManager.getInstance().show(factory.get(PlayListFragment.class));
                 break;
             case R.id.nav_settings:
-                EventBus.getDefault().post(factory.get(SettingsFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+                FragmentVisibilityManager.getInstance().show(factory.get(SettingsFragment.class));
                 break;
             case R.id.nav_about:
-                EventBus.getDefault().post(factory.get(AboutFragment.class), Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+                FragmentVisibilityManager.getInstance().show(factory.get(AboutFragment.class));
                 break;
         }
     }
@@ -81,6 +79,6 @@ public class DrawerListenerImpl implements DrawerLayout.DrawerListener {
         } else {
             fragment.setCurrentPosition(category);
         }
-        EventBus.getDefault().post(fragment, Constant.EventBusTag.SHOW_CAST_FRAGMENT);
+        FragmentVisibilityManager.getInstance().show(fragment);
     }
 }
