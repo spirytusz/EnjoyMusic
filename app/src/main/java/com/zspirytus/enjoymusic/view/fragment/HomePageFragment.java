@@ -100,7 +100,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
                         PixelsUtil.dp2px(getContext(), 12),
                         PixelsUtil.dp2px(getContext(), 12)
                 ).setHeaderViewCount(1)
-                        .setMarginTop(PixelsUtil.dp2px(getContext(), 236))
+                        .setMarginTop(PixelsUtil.dp2px(getContext(), 200))
                         .build()
         );
         mHomePageRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -115,6 +115,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         });
         mAppBarLayout.addOnOffsetChangedListener(this);
         notifyObserverRecyclerViewLoadFinish();
+        getParentActivity().setDefaultStatusIconColor();
     }
 
     @Override
@@ -207,6 +208,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             mAppBarLayout.setElevation(0f);
             mStatusBarView.setTranslationZ(0f);
             mStatusBarView.setElevation(0f);
+            getParentActivity().setDefaultStatusIconColor();
         } else {
             mStatusBarView.getBackground().setAlpha(1);
             mToolbar.getBackground().setAlpha(1);
@@ -228,6 +230,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             }
             mAppBarLayout.setElevation(PixelsUtil.dp2px(getContext(), 6));
             mStatusBarView.setElevation(PixelsUtil.dp2px(getContext(), 6));
+            getParentActivity().setLightStatusIconColor();
         }
     }
 

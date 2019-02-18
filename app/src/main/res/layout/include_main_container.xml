@@ -17,11 +17,17 @@
         android:id="@+id/bottom_music_control"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:translationZ="6dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@drawable/up_shadow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_music_control" />
 
 </android.support.constraint.ConstraintLayout>

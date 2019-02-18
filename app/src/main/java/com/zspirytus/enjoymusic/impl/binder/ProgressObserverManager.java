@@ -8,6 +8,8 @@ import java.util.List;
 
 public class ProgressObserverManager extends IPlayProgressChangeObserver.Stub {
 
+    private int mEvent = -1;
+
     private static class SingletonHolder {
         static ProgressObserverManager INSTANCE = new ProgressObserverManager();
     }
@@ -19,14 +21,19 @@ public class ProgressObserverManager extends IPlayProgressChangeObserver.Stub {
 
     @Override
     public void onProgressChange(int milliseconds) {
+        mEvent = milliseconds;
         for (MusicPlayProgressObserver observer : observers) {
             observer.onProgressChanged(milliseconds);
         }
     }
 
     public void register(MusicPlayProgressObserver observer) {
-        if (!observers.contains(observer))
+        if (!observers.contains(observer)) {
             observers.add(observer);
+            if (mEvent != -1) {
+                observer.onProgressChanged(mEvent);
+            }
+        }
     }
 
     public void unregister(MusicPlayProgressObserver observer) {

@@ -115,7 +115,7 @@ public class SettingsFragment extends CommonHeaderBaseFragment implements OnItem
 
     @Override
     public int getContainerId() {
-        return R.id.fragment_container;
+        return R.id.full_fragment_container;
     }
 
     @Override
