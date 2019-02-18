@@ -109,7 +109,7 @@ public class AudioEffectFragment extends BaseFragment
     public void onItemClick(View view, int position) {
         if (mRecyclerView.getAdapter() == mAdapter) {
             if (position == mAdapter.getItemCount() - 1) {
-                mTitle.setText("音场");
+                mTitle.setText(R.string.audio_effect_fragment_second_title);
                 mRecyclerView.setAdapter(mPresetReverbAdapter);
             } else {
                 boolean isChecked = mAdapter.getList().get(position).isChecked();
@@ -170,7 +170,7 @@ public class AudioEffectFragment extends BaseFragment
         }
         mRecyclerView.setVisibility(View.GONE);
         mEqualizer.setVisibility(View.VISIBLE);
-        mTitle.setText(R.string.audio_effect_fragment_second_title);
+        mTitle.setText(R.string.audio_effect_fragment_third_title);
         mResetBtn.setVisibility(View.VISIBLE);
     }
 
