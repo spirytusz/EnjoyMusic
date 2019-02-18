@@ -141,12 +141,12 @@ public class MainActivity extends BaseActivity
             }
         });
         mCustomNavigationView.setNavigationItemSelectedListener(this);
+        mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        mViewModel.init();
     }
 
     @Override
     protected void initData() {
-        mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
-        mViewModel.init();
         FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
         Music music = getIntent().getParcelableExtra("music");
         if (music != null) {

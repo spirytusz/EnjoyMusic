@@ -2,6 +2,7 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.os.Bundle;
 import android.util.SparseIntArray;
 
 import com.zspirytus.enjoymusic.R;
@@ -9,6 +10,9 @@ import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
 
 public class MusicPlayFragmentViewModels extends ViewModel {
+
+    private static final String MUSIC_KEY = "saveMusic";
+    private static final String PLAY_STATE_KEY = "isPlaying";
 
     private MutableLiveData<Boolean> mPlayState = new MutableLiveData<>();
     private MutableLiveData<Integer> mPlayProgress = new MutableLiveData<>();
@@ -21,6 +25,30 @@ public class MusicPlayFragmentViewModels extends ViewModel {
         mPlayModeResId.put(Constant.PlayMode.LIST_LOOP, R.drawable.ic_list_loop_pressed);
         mPlayModeResId.put(Constant.PlayMode.RANDOM, R.drawable.ic_random_pressed);
         mPlayModeResId.put(Constant.PlayMode.SINGLE_LOOP, R.drawable.ic_single_loop_pressed);
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        Music currentMusic = getCurrentPlayingMusic().getValue();
+        Boolean isPlaying = getPlayState().getValue();
+        if (currentMusic != null) {
+            outState.putParcelable(MUSIC_KEY, currentMusic);
+        }
+        if (isPlaying != null) {
+            outState.putBoolean(PLAY_STATE_KEY, isPlaying);
+        } else {
+            outState.putBoolean(PLAY_STATE_KEY, false);
+        }
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            Music saveMusic = savedInstanceState.getParcelable(MUSIC_KEY);
+            boolean isPlaying = savedInstanceState.getBoolean(PLAY_STATE_KEY);
+            if (saveMusic != null) {
+                setCurrentPlayingMusic(saveMusic);
+            }
+            setPlayState(isPlaying);
+        }
     }
 
     @Override

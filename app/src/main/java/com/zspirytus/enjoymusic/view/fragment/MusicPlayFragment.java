@@ -46,9 +46,6 @@ public class MusicPlayFragment extends BaseFragment
         implements View.OnClickListener, MusicPlayStateObserver,
         MusicPlayProgressObserver, PlayedMusicChangeObserver {
 
-    private static final String MUSIC_KEY = "saveMusic";
-    private static final String PLAY_STATE_KEY = "isPlaying";
-
     @ViewInject(R.id.tool_bar)
     private Toolbar mToolbar;
     @ViewInject(R.id.background)
@@ -156,6 +153,9 @@ public class MusicPlayFragment extends BaseFragment
                 case R.id.menu_edit_music_info:
                     showMusicMetaDataFragment();
                     return true;
+                case R.id.menu_audio_effect:
+                    showAudioEffectFragment();
+                    break;
             }
             return false;
         }));
@@ -167,16 +167,7 @@ public class MusicPlayFragment extends BaseFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Music currentMusic = mViewModel.getCurrentPlayingMusic().getValue();
-        Boolean isPlaying = mViewModel.getPlayState().getValue();
-        if (currentMusic != null) {
-            outState.putParcelable(MUSIC_KEY, currentMusic);
-        }
-        if (isPlaying != null) {
-            outState.putBoolean(PLAY_STATE_KEY, isPlaying);
-        } else {
-            outState.putBoolean(PLAY_STATE_KEY, false);
-        }
+        mViewModel.onSaveInstanceState(outState);
     }
 
     @Override
@@ -200,15 +191,7 @@ public class MusicPlayFragment extends BaseFragment
                 mCover.resetRotation();
             }
         });
-        if (savedInstanceState != null) {
-            Music saveMusic = savedInstanceState.getParcelable(MUSIC_KEY);
-            Boolean isPlaying = savedInstanceState.getBoolean(PLAY_STATE_KEY);
-            if (saveMusic != null) {
-                setView(saveMusic);
-            }
-            setButtonSrc(isPlaying);
-            mCover.setRotating(isPlaying);
-        }
+        mViewModel.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -331,6 +314,12 @@ public class MusicPlayFragment extends BaseFragment
 
     private void showMusicMetaDataFragment() {
         MusicMetaDataFragment fragment = MusicMetaDataFragment.getInstance(mViewModel.getCurrentPlayingMusic().getValue());
+        FragmentVisibilityManager.getInstance().addToBackStack(this);
+        FragmentVisibilityManager.getInstance().show(fragment);
+    }
+
+    private void showAudioEffectFragment() {
+        AudioEffectFragment fragment = AudioEffectFragment.getInstance();
         FragmentVisibilityManager.getInstance().addToBackStack(this);
         FragmentVisibilityManager.getInstance().show(fragment);
     }
