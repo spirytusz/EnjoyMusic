@@ -100,10 +100,9 @@ public class MusicPlayFragment extends BaseFragment
                 ForegroundMusicController.getInstance().playNext(true);
                 break;
             case R.id.play_mode:
-                int mode = 1;
+                int mode = mViewModel.getPlayMode().getValue() + 1;
                 mode %= mViewModel.getPlayModeResId().size();
-                mPlayMode.setImageResource(mViewModel.getPlayModeResId().get(mode));
-                ForegroundMusicController.getInstance().setPlayMode(mode);
+                mViewModel.setPlayMode(mode);
                 break;
             case R.id.cover:
             case R.id.lyricView:
@@ -133,6 +132,7 @@ public class MusicPlayFragment extends BaseFragment
     protected void initData() {
         mViewModel = ViewModelProviders.of(this).get(MusicPlayFragmentViewModels.class);
         mViewModel.init();
+        mViewModel.obtainPlayMode(getContext());
     }
 
     @Override
@@ -146,7 +146,6 @@ public class MusicPlayFragment extends BaseFragment
         mPlayOrPauseButton.setOnClickListener(this);
         mNextButton.setOnClickListener(this);
         mPlayMode.setOnClickListener(this);
-        mPlayMode.setImageResource(mViewModel.getPlayModeResId().get(0));
         mToolbar.inflateMenu(R.menu.music_play_fragment_menu);
         mToolbar.setOnMenuItemClickListener((item -> {
             switch (item.getItemId()) {
@@ -190,6 +189,10 @@ public class MusicPlayFragment extends BaseFragment
                 setView(values);
                 mCover.resetRotation();
             }
+        });
+        mViewModel.getPlayMode().observe(this, (values) -> {
+            mPlayMode.setImageResource(mViewModel.getPlayModeResId().get(values));
+            ForegroundMusicController.getInstance().setPlayMode(values);
         });
         mViewModel.onRestoreInstanceState(savedInstanceState);
     }

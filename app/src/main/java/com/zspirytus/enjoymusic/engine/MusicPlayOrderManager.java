@@ -75,6 +75,7 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
 
     public void setPlayMode(int playMode) {
         mPlayMode = playMode;
+        MusicSharedPreferences.savePlayMode(playMode);
     }
 
 }

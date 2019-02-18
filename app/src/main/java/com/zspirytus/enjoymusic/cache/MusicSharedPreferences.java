@@ -15,7 +15,7 @@ public class MusicSharedPreferences {
     private static final String PLAY_MODE_KEY = "playModeKey";
 
     private static final String DEFAULT_MUSIC = "default result";
-    private static final int DEFAULT_PLAY_MODE = -1;
+    private static final int DEFAULT_PLAY_MODE = 0;
 
     private MusicSharedPreferences() {
     }
@@ -47,5 +47,11 @@ public class MusicSharedPreferences {
     public static int restorePlayMode(Context context) {
         SharedPreferences pref = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);
         return pref.getInt(PLAY_MODE_KEY, DEFAULT_PLAY_MODE);
+    }
+
+    public static void savePlayMode(int playMode) {
+        SharedPreferences.Editor editor = MainApplication.getBackgroundContext().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
+        editor.putInt(PLAY_MODE_KEY, playMode);
+        editor.apply();
     }
 }

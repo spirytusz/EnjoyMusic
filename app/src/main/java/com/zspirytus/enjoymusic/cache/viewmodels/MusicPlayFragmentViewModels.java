@@ -2,10 +2,12 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.SparseIntArray;
 
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.Music;
 
@@ -17,6 +19,7 @@ public class MusicPlayFragmentViewModels extends ViewModel {
     private MutableLiveData<Boolean> mPlayState = new MutableLiveData<>();
     private MutableLiveData<Integer> mPlayProgress = new MutableLiveData<>();
     private MutableLiveData<Music> mCurrentPlayingMusic = new MutableLiveData<>();
+    private MutableLiveData<Integer> mPlayMode = new MutableLiveData<>();
 
     private SparseIntArray mPlayModeResId;
 
@@ -84,7 +87,19 @@ public class MusicPlayFragmentViewModels extends ViewModel {
         mCurrentPlayingMusic.setValue(currentPlayingMusic);
     }
 
+    public MutableLiveData<Integer> getPlayMode() {
+        return mPlayMode;
+    }
+
+    public void setPlayMode(int playMode) {
+        mPlayMode.setValue(playMode);
+    }
+
     public SparseIntArray getPlayModeResId() {
         return mPlayModeResId;
+    }
+
+    public void obtainPlayMode(Context context) {
+        setPlayMode(MusicSharedPreferences.restorePlayMode(context));
     }
 }
