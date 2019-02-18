@@ -7,20 +7,20 @@ import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayMusicChangeObserver extends IPlayedMusicChangeObserver.Stub {
+public class PlayMusicObserverManager extends IPlayedMusicChangeObserver.Stub {
 
     private Music mEvent;
 
     private static class SingletonHolder {
-        static PlayMusicChangeObserver INSTANCE = new PlayMusicChangeObserver();
+        static PlayMusicObserverManager INSTANCE = new PlayMusicObserverManager();
     }
 
     private List<PlayedMusicChangeObserver> observers = new ArrayList<>();
 
-    private PlayMusicChangeObserver() {
+    private PlayMusicObserverManager() {
     }
 
-    public static PlayMusicChangeObserver getInstance() {
+    public static PlayMusicObserverManager getInstance() {
         return SingletonHolder.INSTANCE;
     }
 

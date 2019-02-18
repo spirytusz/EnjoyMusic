@@ -1,7 +1,6 @@
 package com.zspirytus.enjoymusic.engine;
 
 import android.graphics.Typeface;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.bumptech.glide.load.MultiTransformation;
@@ -13,6 +12,8 @@ import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 import com.zspirytus.enjoymusic.view.widget.TextDrawable;
 
 import java.io.File;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ImageLoader {
 
@@ -70,28 +71,25 @@ public class ImageLoader {
                 .into(imageView);
     }
 
-    private static void loadTextDrawable(ImageView imageView, String alternativeText) {
-        if (alternativeText == null || alternativeText.length() < 2) {
-            alternativeText = "未知";
+    private static void loadTextDrawable(ImageView imageView, String text) {
+        String s = text;
+        if (s == null || s.length() < 2) {
+            s = "未知";
         } else {
-            alternativeText = alternativeText.replaceAll(" ", "");
-            alternativeText = alternativeText.substring(0, 2);
+            s = s.replaceAll(" ", "");
+            s = s.substring(0, 2);
         }
-        final String text = alternativeText;
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                TextDrawable drawable = TextDrawable.builder()
-                        .beginConfig()
-                        .textColor(0x88FFFFFF)
-                        .useFont(Typeface.DEFAULT)
-                        .fontSize((int) (imageView.getWidth() * 0.618f))
-                        .bold()
-                        .endConfig()
-                        .buildRect(text);
-                imageView.setImageDrawable(drawable);
-            }
-        });
+        TextDrawable.IConfigBuilder builder = TextDrawable.builder()
+                .beginConfig()
+                .textColor(0x88FFFFFF)
+                .useFont(Typeface.DEFAULT)
+                .bold();
+        if (imageView instanceof CircleImageView) {
+            int width = imageView.getWidth();
+            int height = imageView.getHeight();
+            builder.width(width).height(height);
+        }
+        TextDrawable drawable = builder.endConfig().buildRect(s);
+        imageView.setImageDrawable(drawable);
     }
 }

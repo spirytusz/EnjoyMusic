@@ -12,8 +12,6 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.RectShape;
 import android.graphics.drawable.shapes.RoundRectShape;
 
-import com.zspirytus.enjoymusic.utils.LogUtil;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -34,7 +32,6 @@ public class TextDrawable extends ShapeDrawable {
     private final String text;
     private final int height;
     private final int width;
-    private final int fontSize;
     private final float radius;
 
     private TextDrawable(Builder builder) {
@@ -49,7 +46,6 @@ public class TextDrawable extends ShapeDrawable {
         text = builder.text;
 
         // text paint settings
-        fontSize = builder.fontSize;
         textPaint = new Paint();
         textPaint.setColor(builder.textColor);
         textPaint.setAntiAlias(true);
@@ -75,7 +71,7 @@ public class TextDrawable extends ShapeDrawable {
         // draw text
         int width = this.width < 0 ? r.width() : this.width;
         int height = this.height < 0 ? r.height() : this.height;
-        int fontSize = this.fontSize < 0 ? (Math.min(width, height) / 2) : this.fontSize;
+        int fontSize = (int) (width * 0.618f);
         textPaint.setTextSize(fontSize);
         canvas.drawText(text, width / 2, height / 2 - ((textPaint.descent() + textPaint.ascent()) / 2), textPaint);
 
@@ -126,8 +122,6 @@ public class TextDrawable extends ShapeDrawable {
 
         public int textColor;
 
-        private int fontSize;
-
         private boolean isBold;
 
         public float radius;
@@ -139,7 +133,6 @@ public class TextDrawable extends ShapeDrawable {
             height = -1;
             shape = new RectShape();
             font = Typeface.create("sans-serif-light", Typeface.NORMAL);
-            fontSize = -1;
             isBold = false;
         }
 
@@ -160,11 +153,6 @@ public class TextDrawable extends ShapeDrawable {
 
         public IConfigBuilder useFont(Typeface font) {
             this.font = font;
-            return this;
-        }
-
-        public IConfigBuilder fontSize(int size) {
-            this.fontSize = size;
             return this;
         }
 
@@ -225,8 +213,6 @@ public class TextDrawable extends ShapeDrawable {
 
         IConfigBuilder useFont(Typeface font);
 
-        IConfigBuilder fontSize(int size);
-
         IConfigBuilder bold();
 
         IShapeBuilder endConfig();
@@ -265,7 +251,6 @@ public class TextDrawable extends ShapeDrawable {
         }
 
         public static int getColor(Object key) {
-            LogUtil.e("TextDrawable", mColors.get(Math.abs(key.hashCode()) % mColors.size()) + "");
             return mColors.get(Math.abs(key.hashCode()) % mColors.size());
         }
     }

@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.animation.LinearInterpolator;
 
 import com.zspirytus.enjoymusic.R;
@@ -53,7 +54,7 @@ public class AutoRotateCircleImage extends CircleImageView {
     }
 
     private void initAnim() {
-        mRotateAnim = ObjectAnimator.ofFloat(this, "rotation", 0f, 360f);
+        mRotateAnim = ObjectAnimator.ofFloat(this, View.ROTATION, 0f, 360f);
         mRotateAnim.setDuration(T);
         mRotateAnim.setInterpolator(new LinearInterpolator());
         mRotateAnim.setRepeatCount(ObjectAnimator.INFINITE);
@@ -61,6 +62,9 @@ public class AutoRotateCircleImage extends CircleImageView {
     }
 
     public void setRotating(boolean isRotating) {
+        if (mRotateAnim == null) {
+            initAnim();
+        }
         if (isRotating) {
             if (mRotateAnim.isStarted()) {
                 mRotateAnim.resume();

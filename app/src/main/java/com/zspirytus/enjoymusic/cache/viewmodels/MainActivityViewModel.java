@@ -14,8 +14,9 @@ import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
-import com.zspirytus.enjoymusic.impl.binder.PlayMusicChangeObserver;
-import com.zspirytus.enjoymusic.impl.binder.PlayStateChangeObserver;
+import com.zspirytus.enjoymusic.impl.binder.PlayListObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.PlayMusicObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.PlayStateObserverManager;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
@@ -29,9 +30,9 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
 
     public void init() {
         super.init();
-        PlayMusicChangeObserver.getInstance().register(this);
-        PlayStateChangeObserver.getInstance().register(this);
-        com.zspirytus.enjoymusic.impl.binder.PlayListChangeObserver.getInstance().register(this);
+        PlayMusicObserverManager.getInstance().register(this);
+        PlayStateObserverManager.getInstance().register(this);
+        PlayListObserverManager.getInstance().register(this);
     }
 
     @Override
@@ -62,9 +63,9 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
     protected void onCleared() {
         super.onCleared();
         ForegroundMusicController.getInstance().release();
-        PlayMusicChangeObserver.getInstance().unregister(this);
-        PlayStateChangeObserver.getInstance().unregister(this);
-        com.zspirytus.enjoymusic.impl.binder.PlayListChangeObserver.getInstance().unregister(this);
+        PlayMusicObserverManager.getInstance().unregister(this);
+        PlayStateObserverManager.getInstance().unregister(this);
+        PlayListObserverManager.getInstance().unregister(this);
     }
 
     public void obtainMusicList() {

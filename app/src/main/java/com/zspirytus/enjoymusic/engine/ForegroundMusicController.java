@@ -12,15 +12,13 @@ import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.impl.binder.MusicController;
 import com.zspirytus.enjoymusic.impl.binder.MusicProgressControl;
-import com.zspirytus.enjoymusic.impl.binder.PlayStateChangeObserver;
-import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 
 /**
  * 前台音乐播放控制器
  * Created by ZSpirytus on 2018/9/8.
  */
 
-public class ForegroundMusicController implements MusicPlayStateObserver {
+public class ForegroundMusicController {
 
     private IMusicControl mIMusicControl;
     private IMusicProgressControl mIMusicProgressControl;
@@ -33,7 +31,6 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
     }
 
     private ForegroundMusicController() {
-        PlayStateChangeObserver.getInstance().register(this);
     }
 
     public static ForegroundMusicController getInstance() {
@@ -147,15 +144,6 @@ public class ForegroundMusicController implements MusicPlayStateObserver {
     public void release() {
         mIMusicControl = null;
         mIMusicProgressControl = null;
-    }
-
-    public boolean isPlaying() {
-        return isPlaying;
-    }
-
-    @Override
-    public void onPlayingStateChanged(boolean isPlaying) {
-        this.isPlaying = isPlaying;
     }
 
 }

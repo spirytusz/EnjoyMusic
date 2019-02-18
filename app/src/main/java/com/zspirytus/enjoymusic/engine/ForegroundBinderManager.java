@@ -7,10 +7,10 @@ import com.zspirytus.enjoymusic.IBackgroundEventProcessor;
 import com.zspirytus.enjoymusic.IBinderPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.global.AudioEffectConfig;
-import com.zspirytus.enjoymusic.impl.binder.PlayListChangeObserver;
-import com.zspirytus.enjoymusic.impl.binder.PlayMusicChangeObserver;
-import com.zspirytus.enjoymusic.impl.binder.PlayProgressChangeObserver;
-import com.zspirytus.enjoymusic.impl.binder.PlayStateChangeObserver;
+import com.zspirytus.enjoymusic.impl.binder.PlayListObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.PlayMusicObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.PlayStateObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.ProgressObserverManager;
 
 import java.util.List;
 
@@ -31,10 +31,10 @@ public class ForegroundBinderManager implements AudioEffectController.OnResultLi
         try {
             IBinder iBinder = mBinderPool.queryBinder(Constant.BinderCode.BACKGROUND_EVENT_PROCESSOR);
             IBackgroundEventProcessor backgroundEventProcessor = IBackgroundEventProcessor.Stub.asInterface(iBinder);
-            backgroundEventProcessor.registerObserver(PlayStateChangeObserver.getInstance(), Constant.BinderCode.PLAY_STATE_CHANGE_OBSERVER);
-            backgroundEventProcessor.registerObserver(PlayProgressChangeObserver.getInstance(), Constant.BinderCode.PLAY_PROGRESS_CHANGE_OBSERVER);
-            backgroundEventProcessor.registerObserver(PlayMusicChangeObserver.getInstance(), Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER);
-            backgroundEventProcessor.registerObserver(PlayListChangeObserver.getInstance(), Constant.BinderCode.PLAY_LIST_OBSERVER);
+            backgroundEventProcessor.registerObserver(PlayStateObserverManager.getInstance(), Constant.BinderCode.PLAY_STATE_CHANGE_OBSERVER);
+            backgroundEventProcessor.registerObserver(ProgressObserverManager.getInstance(), Constant.BinderCode.PLAY_PROGRESS_CHANGE_OBSERVER);
+            backgroundEventProcessor.registerObserver(PlayMusicObserverManager.getInstance(), Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER);
+            backgroundEventProcessor.registerObserver(PlayListObserverManager.getInstance(), Constant.BinderCode.PLAY_LIST_OBSERVER);
             initGlobalData();
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -81,10 +81,10 @@ public class ForegroundBinderManager implements AudioEffectController.OnResultLi
         try {
             IBinder iBinder = mBinderPool.queryBinder(Constant.BinderCode.BACKGROUND_EVENT_PROCESSOR);
             IBackgroundEventProcessor backgroundEventProcessor = IBackgroundEventProcessor.Stub.asInterface(iBinder);
-            backgroundEventProcessor.unregisterObserver(PlayStateChangeObserver.getInstance(), Constant.BinderCode.PLAY_STATE_CHANGE_OBSERVER);
-            backgroundEventProcessor.unregisterObserver(PlayProgressChangeObserver.getInstance(), Constant.BinderCode.PLAY_PROGRESS_CHANGE_OBSERVER);
-            backgroundEventProcessor.unregisterObserver(PlayMusicChangeObserver.getInstance(), Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER);
-            backgroundEventProcessor.unregisterObserver(PlayListChangeObserver.getInstance(), Constant.BinderCode.PLAY_LIST_OBSERVER);
+            backgroundEventProcessor.unregisterObserver(PlayStateObserverManager.getInstance(), Constant.BinderCode.PLAY_STATE_CHANGE_OBSERVER);
+            backgroundEventProcessor.unregisterObserver(ProgressObserverManager.getInstance(), Constant.BinderCode.PLAY_PROGRESS_CHANGE_OBSERVER);
+            backgroundEventProcessor.unregisterObserver(PlayMusicObserverManager.getInstance(), Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER);
+            backgroundEventProcessor.unregisterObserver(PlayListObserverManager.getInstance(), Constant.BinderCode.PLAY_LIST_OBSERVER);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

@@ -8,18 +8,18 @@ import com.zspirytus.enjoymusic.foregroundobserver.IPlayListChangeObserver;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayListChangeObserver extends IPlayListChangeObserver.Stub {
+public class PlayListObserverManager extends IPlayListChangeObserver.Stub {
 
     private static class Singleton {
-        static PlayListChangeObserver INSTANCE = new PlayListChangeObserver();
+        static PlayListObserverManager INSTANCE = new PlayListObserverManager();
     }
 
     private List<com.zspirytus.enjoymusic.receivers.observer.PlayListChangeObserver> observers = new ArrayList<>();
 
-    private PlayListChangeObserver() {
+    private PlayListObserverManager() {
     }
 
-    public static PlayListChangeObserver getInstance() {
+    public static PlayListObserverManager getInstance() {
         return Singleton.INSTANCE;
     }
 

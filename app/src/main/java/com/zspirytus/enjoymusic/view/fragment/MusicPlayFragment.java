@@ -18,9 +18,9 @@ import com.zspirytus.enjoymusic.cache.viewmodels.MusicPlayFragmentViewModels;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.impl.binder.PlayMusicChangeObserver;
-import com.zspirytus.enjoymusic.impl.binder.PlayProgressChangeObserver;
-import com.zspirytus.enjoymusic.impl.binder.PlayStateChangeObserver;
+import com.zspirytus.enjoymusic.impl.binder.PlayMusicObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.PlayStateObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.ProgressObserverManager;
 import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -91,7 +91,7 @@ public class MusicPlayFragment extends BaseFragment
                 ForegroundMusicController.getInstance().playPrevious();
                 break;
             case R.id.play_pause:
-                boolean isPlaying = ForegroundMusicController.getInstance().isPlaying();
+                boolean isPlaying = mViewModel.getPlayState().getValue();
                 Music currentPlayingMusic = mViewModel.getCurrentPlayingMusic().getValue();
                 if (isPlaying) {
                     pause();
@@ -143,7 +143,7 @@ public class MusicPlayFragment extends BaseFragment
         getParentActivity().setDefaultStatusIconColor();
         getParentActivity().setTransparentNavBar();
         mBackBtn.setOnClickListener((view) -> goBack());
-        setButtonSrc(ForegroundMusicController.getInstance().isPlaying());
+        setButtonSrc(false);
         mCover.setOnClickListener(this);
         mPreviousButton.setOnClickListener(this);
         mPlayOrPauseButton.setOnClickListener(this);
@@ -233,16 +233,16 @@ public class MusicPlayFragment extends BaseFragment
 
     @Override
     protected void registerEvent() {
-        PlayMusicChangeObserver.getInstance().register(this);
-        PlayProgressChangeObserver.getInstance().register(this);
-        PlayStateChangeObserver.getInstance().register(this);
+        PlayMusicObserverManager.getInstance().register(this);
+        ProgressObserverManager.getInstance().register(this);
+        PlayStateObserverManager.getInstance().register(this);
     }
 
     @Override
     protected void unregisterEvent() {
-        PlayMusicChangeObserver.getInstance().unregister(this);
-        PlayProgressChangeObserver.getInstance().unregister(this);
-        PlayStateChangeObserver.getInstance().unregister(this);
+        PlayMusicObserverManager.getInstance().unregister(this);
+        ProgressObserverManager.getInstance().unregister(this);
+        PlayStateObserverManager.getInstance().unregister(this);
     }
 
     @Override

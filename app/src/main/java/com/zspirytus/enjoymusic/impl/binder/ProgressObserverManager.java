@@ -6,13 +6,13 @@ import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayProgressChangeObserver extends IPlayProgressChangeObserver.Stub {
+public class ProgressObserverManager extends IPlayProgressChangeObserver.Stub {
 
     private static class SingletonHolder {
-        static PlayProgressChangeObserver INSTANCE = new PlayProgressChangeObserver();
+        static ProgressObserverManager INSTANCE = new ProgressObserverManager();
     }
 
-    private PlayProgressChangeObserver() {
+    private ProgressObserverManager() {
     }
 
     private List<MusicPlayProgressObserver> observers = new ArrayList<>();
@@ -33,7 +33,7 @@ public class PlayProgressChangeObserver extends IPlayProgressChangeObserver.Stub
         observers.remove(observer);
     }
 
-    public static PlayProgressChangeObserver getInstance() {
+    public static ProgressObserverManager getInstance() {
         return SingletonHolder.INSTANCE;
     }
 
