@@ -6,7 +6,7 @@
         android:id="@+id/status_bar"
         android:layout_width="match_parent"
         android:layout_height="25dp"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -25,10 +25,9 @@
             style="@style/ToolbarTheme"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
+            android:background="@color/white"
             android:elevation="6dp"
             app:navigationIcon="@drawable/ic_menu_white_24dp"
-            app:title="@string/app_name"
             app:titleTextColor="@color/white" />
 
     </android.support.design.widget.AppBarLayout>

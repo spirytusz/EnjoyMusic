@@ -213,9 +213,9 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             mStatusBarView.getBackground().setAlpha(1);
             mToolbar.getBackground().setAlpha(1);
             mAppBarLayout.getBackground().setAlpha(1);
-            mStatusBarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            mAppBarLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            mStatusBarView.setBackgroundColor(getResources().getColor(R.color.white));
+            mToolbar.setBackgroundColor(getResources().getColor(R.color.white));
+            mAppBarLayout.setBackgroundColor(getResources().getColor(R.color.white));
             mToolbar.setTitleTextColor(0xFF4C4E4A);
             Drawable drawable = mToolbar.getNavigationIcon();
             if (drawable != null) {
