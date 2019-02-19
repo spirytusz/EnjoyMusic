@@ -15,7 +15,6 @@ import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.AlbumListAdapter;
-import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
@@ -52,8 +51,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
         Bundle bundle = new Bundle();
         bundle.putString("album", album);
         fragment.setArguments(bundle);
-        BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
-        FragmentVisibilityManager.getInstance().addToBackStack(currentFragment);
+        FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
         FragmentVisibilityManager.getInstance().show(fragment);
     }
 

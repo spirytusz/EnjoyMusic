@@ -114,6 +114,12 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         }
     }
 
+    public void addCurrentFragmentToBackStack() {
+        if (mCurrentFragment != null && !backStack.contains(mCurrentFragment)) {
+            backStack.push(mCurrentFragment);
+        }
+    }
+
     private void setCurrentFragment(BaseFragment fragment) {
         mCurrentFragment = fragment;
         notifyAllFragmentChangeObserver(fragment);

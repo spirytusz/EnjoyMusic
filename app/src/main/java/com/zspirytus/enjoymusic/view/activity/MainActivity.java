@@ -33,7 +33,6 @@ import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 import com.zspirytus.enjoymusic.view.fragment.LaunchAnimationFragment;
-import com.zspirytus.enjoymusic.view.fragment.MusicListDetailFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.enjoymusic.view.widget.CustomNavigationView;
 import com.zspirytus.enjoymusic.view.widget.MusicControlPane;
@@ -112,7 +111,7 @@ public class MainActivity extends BaseActivity
             if (!FragmentVisibilityManager.getInstance().getCurrentFragment().getClass().getSimpleName().equals("MusicPlayingFragment")) {
                 MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
                 mViewModel.setCurrentPlayingMusic(action);
-                showCastFragment(fragment);
+                showFragment(fragment);
             }
         }
     }
@@ -140,7 +139,7 @@ public class MainActivity extends BaseActivity
 
             @Override
             public void onClick() {
-                showCastFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
+                showFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
             }
         });
         mCustomNavigationView.setNavigationItemSelectedListener(this);
@@ -156,11 +155,11 @@ public class MainActivity extends BaseActivity
         if (music != null) {
             mViewModel.setCurrentPlayingMusic(music);
             MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
-            showCastFragment(fragment);
+            showFragment(fragment);
             BaseFragment homeFragment = FragmentFactory.getInstance().get(HomePageFragment.class);
             FragmentVisibilityManager.getInstance().addToBackStack(homeFragment);
         } else {
-            showCastFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
+            showFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
         }
         mViewModel.obtainMusicDataFromPref(this);
     }
@@ -195,18 +194,11 @@ public class MainActivity extends BaseActivity
         mViewModel.obtainMusicList();
     }
 
-    public void showCastFragment(BaseFragment shouldShowFragment) {
-        BaseFragment currentFragment = FragmentVisibilityManager.getInstance().getCurrentFragment();
-        if (shouldShowFragment instanceof MusicPlayFragment || shouldShowFragment instanceof MusicListDetailFragment) {
-            if (currentFragment != null) {
-                FragmentVisibilityManager.getInstance().addToBackStack(currentFragment);
-            }
+    private void showFragment(BaseFragment fragment) {
+        if (fragment instanceof MusicPlayFragment) {
+            FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
         }
-        FragmentVisibilityManager.getInstance().show(shouldShowFragment);
-    }
-
-    public void closeNavigationView() {
-        mDrawerLayout.openDrawer(Gravity.START);
+        FragmentVisibilityManager.getInstance().show(fragment);
     }
 
     private void requestPermission() {
