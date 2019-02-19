@@ -26,6 +26,7 @@ import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
+import com.zspirytus.enjoymusic.global.AudioEffectConfig;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -76,6 +77,7 @@ public class MainActivity extends BaseActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         FragmentVisibilityManager.getInstance().onSaveInstanceState(outState);
+        AudioEffectConfig.onSaveInstanceState(outState);
     }
 
     @Override
@@ -83,6 +85,7 @@ public class MainActivity extends BaseActivity
         setLightStatusIconColor();
         FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
         FragmentVisibilityManager.getInstance().onRestoreInstanceState(savedInstanceState);
+        AudioEffectConfig.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override

@@ -1,9 +1,17 @@
 package com.zspirytus.enjoymusic.global;
 
+import android.os.Bundle;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
 public class AudioEffectConfig {
+
+    private static final String ACOUSTIC_ECHO_CANCELER_AVAILABLE = "AcousticEchoCancelerAvailable";
+    private static final String AUTOMATIC_GAIN_CONTROL_AVAILABLE = "AutomaticGainControlAvailable";
+    private static final String NOISE_SUPPRESSOR_AVAILABLE = "NoiseSuppressorAvailable";
+    private static final String PRESET_REVERB_NAME_LIST = "PresetReverbNameList";
 
     private AudioEffectConfig() {
     }
@@ -43,5 +51,21 @@ public class AudioEffectConfig {
 
     public static void setPresetReverbNameList(List<String> presetReverbNameList) {
         AudioEffectConfig.presetReverbNameList = presetReverbNameList;
+    }
+
+    public static void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(ACOUSTIC_ECHO_CANCELER_AVAILABLE, isAcousticEchoCancelerAvailable);
+        outState.putBoolean(AUTOMATIC_GAIN_CONTROL_AVAILABLE, isAutomaticGainControlAvailable);
+        outState.putBoolean(NOISE_SUPPRESSOR_AVAILABLE, isNoiseSuppressorAvailable);
+        outState.putStringArrayList(PRESET_REVERB_NAME_LIST, (ArrayList<String>) presetReverbNameList);
+    }
+
+    public static void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            isAcousticEchoCancelerAvailable = savedInstanceState.getBoolean(ACOUSTIC_ECHO_CANCELER_AVAILABLE);
+            isAutomaticGainControlAvailable = savedInstanceState.getBoolean(AUTOMATIC_GAIN_CONTROL_AVAILABLE);
+            isNoiseSuppressorAvailable = savedInstanceState.getBoolean(NOISE_SUPPRESSOR_AVAILABLE);
+            presetReverbNameList = savedInstanceState.getStringArrayList(PRESET_REVERB_NAME_LIST);
+        }
     }
 }
