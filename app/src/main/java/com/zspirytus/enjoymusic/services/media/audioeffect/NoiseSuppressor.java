@@ -8,7 +8,9 @@ public class NoiseSuppressor {
     private static android.media.audiofx.NoiseSuppressor mNoiseSuppressor;
 
     public static boolean isNoiseSuppressorAvailable() {
-        return android.media.audiofx.NoiseSuppressor.isAvailable();
+        int audioSessionId = MediaPlayController.getInstance().getAudioSessionId();
+        return android.media.audiofx.NoiseSuppressor.isAvailable()
+                && android.media.audiofx.NoiseSuppressor.create(audioSessionId) != null;
     }
 
     public static void setNoiseSuppressorEnable(boolean enable) {
