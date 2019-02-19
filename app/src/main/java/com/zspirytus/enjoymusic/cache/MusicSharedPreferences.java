@@ -4,8 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.global.MainApplication;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MusicSharedPreferences {
 
@@ -13,6 +17,7 @@ public class MusicSharedPreferences {
 
     private static final String CURRENT_PLAYING_MUSIC_KEY = "currentPlayingMusic Key";
     private static final String PLAY_MODE_KEY = "playModeKey";
+    private static final String PLAY_LIST_KEY = "playListKey";
 
     private static final String DEFAULT_MUSIC = "default result";
     private static final int DEFAULT_PLAY_MODE = 0;
@@ -49,9 +54,30 @@ public class MusicSharedPreferences {
         return pref.getInt(PLAY_MODE_KEY, DEFAULT_PLAY_MODE);
     }
 
+    // save playMode
     public static void savePlayMode(int playMode) {
         SharedPreferences.Editor editor = MainApplication.getBackgroundContext().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
         editor.putInt(PLAY_MODE_KEY, playMode);
         editor.apply();
+    }
+
+    public static void savePlayList(List<Music> playList) {
+        Gson gson = new Gson();
+        String json = gson.toJson(playList);
+        SharedPreferences.Editor editor = MainApplication.getBackgroundContext().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
+        editor.putString(PLAY_LIST_KEY, json);
+        editor.apply();
+    }
+
+    public static List<Music> restorePlayList(Context context) {
+        Gson gson = new Gson();
+        SharedPreferences pref = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);
+        String json = pref.getString(PLAY_LIST_KEY, "");
+        if (json.length() > 0) {
+            return gson.fromJson(json, new TypeToken<List<Music>>() {
+            }.getType());
+        } else {
+            return new ArrayList<>();
+        }
     }
 }

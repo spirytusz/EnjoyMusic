@@ -19,18 +19,19 @@ import java.util.List;
 
 public class MusicPlayOrderManager extends PlayListChangeObservable {
 
-    private int mPlayMode;
-
     private static class SingletonHolder {
         static final MusicPlayOrderManager INSTANCE = new MusicPlayOrderManager();
     }
 
+    private int mPlayMode;
     private List<Music> mPlayList;
 
     private MusicPlayOrderManager() {
         int restorePlayMode = MusicSharedPreferences.restorePlayMode(MainApplication.getBackgroundContext());
-        if (restorePlayMode != -1)
+        if (restorePlayMode != -1) {
             setPlayMode(restorePlayMode);
+        }
+        mPlayList = MusicSharedPreferences.restorePlayList(MainApplication.getBackgroundContext());
     }
 
     public static MusicPlayOrderManager getInstance() {
@@ -40,6 +41,7 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
     public void setPlayList(MusicFilter filter) {
         mPlayList = filter.filter(MusicScanner.getInstance().getAllMusicList());
         notifyAllObserverPlayListChange(filter);
+        MusicSharedPreferences.savePlayList(mPlayList);
     }
 
     public Music getNextMusic(boolean fromUser) {

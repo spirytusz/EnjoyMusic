@@ -16,6 +16,7 @@ import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
+import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.impl.binder.PlayListObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.PlayMusicObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.PlayStateObserverManager;
@@ -35,6 +36,7 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
         PlayMusicObserverManager.getInstance().register(this);
         PlayStateObserverManager.getInstance().register(this);
         PlayListObserverManager.getInstance().register(this);
+        setPlayList(MusicSharedPreferences.restorePlayList(MainApplication.getForegroundContext()));
     }
 
     @Override
@@ -55,10 +57,13 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
 
     @Override
     public void onPlayListChanged(MusicFilter filter) {
-        final List<Music> fiterMusicList = filter.filter(getMusicList().getValue());
-        AndroidSchedulers.mainThread().scheduleDirect(() -> {
-            setPlayList(fiterMusicList);
-        });
+        List<Music> musicList = getMusicList().getValue();
+        if (musicList != null) {
+            final List<Music> fiterMusicList = filter.filter(getMusicList().getValue());
+            AndroidSchedulers.mainThread().scheduleDirect(() -> {
+                setPlayList(fiterMusicList);
+            });
+        }
     }
 
     @Override
@@ -81,7 +86,6 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
                 final List<FolderSortedMusic> folderSortedMusicList = getMusicListBinder.getFolderSortedMusic();
                 IBinder iBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
                 ISetPlayList setPlayList = ISetPlayList.Stub.asInterface(iBinder);
-                setPlayList.setPlayList(MusicFilter.NO_FILTER);
                 AndroidSchedulers.mainThread().scheduleDirect(() -> {
                     setMusicList(musicList);
                     setAlbumList(albumList);

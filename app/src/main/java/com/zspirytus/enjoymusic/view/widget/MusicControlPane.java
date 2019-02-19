@@ -10,9 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
+import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 
 public class MusicControlPane extends LinearLayout implements View.OnClickListener {
 
@@ -60,15 +59,7 @@ public class MusicControlPane extends LinearLayout implements View.OnClickListen
 
     public void wrapMusic(Music music) {
         String path = music.getMusicThumbAlbumCoverPath();
-        if (path != null && !path.isEmpty()) {
-            GlideApp.with(this)
-                    .load(MusicCoverFileCache.getInstance().getCoverFile(path))
-                    .into((ImageView) findViewById(R.id.bottom_music_cover));
-        } else {
-            GlideApp.with(this)
-                    .load(R.drawable.defalut_cover)
-                    .into((ImageView) findViewById(R.id.bottom_music_cover));
-        }
+        ImageLoader.load((ImageView) findViewById(R.id.bottom_music_cover), path, music.getMusicName());
         ((TextView) findViewById(R.id.bottom_music_name)).setText(music.getMusicName());
         ((TextView) findViewById(R.id.bottom_music_album)).setText(music.getMusicAlbumName());
     }
