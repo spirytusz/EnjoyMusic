@@ -51,6 +51,8 @@ public class MyViewPagerAdapter extends LazyFragmentPagerAdapter {
                 return MainApplication.getForegroundContext().getResources().getText(R.string.artist);
             case 3:
                 return MainApplication.getForegroundContext().getResources().getText(R.string.folder);
+            case 4:
+                return "歌单";
         }
         return "";
     }

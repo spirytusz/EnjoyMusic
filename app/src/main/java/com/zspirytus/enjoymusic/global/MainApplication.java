@@ -4,6 +4,8 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 
+import org.litepal.LitePal;
+
 /**
  * Created by ZSpirytus on 2018/9/10.
  */
@@ -19,6 +21,7 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
         if (MAIN_PROCESS_NAME.equals(getProcessNameByPid(this, android.os.Process.myPid()))) {
+            LitePal.initialize(this);
             mForegroundContext = getApplicationContext();
         } else {
             mBackgroundContext = getApplicationContext();

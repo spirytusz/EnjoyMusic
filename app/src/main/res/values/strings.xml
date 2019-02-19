@@ -14,6 +14,7 @@
     <string name="nav_text_artist">艺术家</string>
     <string name="nav_text_folder">文件夹</string>
     <string name="nav_text_play_list">播放队列</string>
+    <string name="nav_text_song_list">歌单</string>
     <string name="nav_text_settings">设置</string>
     <string name="nav_text_about">关于</string>
     <string name="nav_text_other">其他</string>

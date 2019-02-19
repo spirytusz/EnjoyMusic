@@ -31,13 +31,15 @@ import com.zspirytus.enjoymusic.utils.PixelsUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.SingleObserver;
+import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
 @LayoutIdInject(R.layout.fragment_music_list_detail_layout)
 public class MusicListDetailFragment extends BaseFragment
         implements OnItemClickListener {
 
+    private static final String MUSIC_LIST_KEY = "musicList";
+    private static final String MUSIC_FILTER = "musicFilter";
     private static final String FILTER_MUSIC_LIST = "filterMusicList";
 
     @ViewInject(R.id.collapsing_toolbar)
@@ -56,12 +58,12 @@ public class MusicListDetailFragment extends BaseFragment
     private AppBarLayout mAppBarLayout;
 
     private MusicListAdapter mAdapter;
-    private ArrayList<Music> mFilterMusicList;
+    private List<Music> mFilterMusicList;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(FILTER_MUSIC_LIST, mFilterMusicList);
+        outState.putParcelableArrayList(FILTER_MUSIC_LIST, (ArrayList<Music>) mFilterMusicList);
     }
 
     @Override
@@ -75,28 +77,33 @@ public class MusicListDetailFragment extends BaseFragment
 
     @Override
     protected void initData() {
-        String filterAlbum = getArguments().getString("album");
-        String filterArtist = getArguments().getString("artist");
-        MainActivityViewModel viewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
-        if (viewModel.getMusicList().getValue() == null)
-            return;
-        ObservableFactory.filterMusic(viewModel.getMusicList().getValue(), filterAlbum, filterArtist)
-                .subscribe(new SingleObserver<List<Music>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
+        mFilterMusicList = getArguments().getParcelableArrayList(MUSIC_LIST_KEY);
+        if (mFilterMusicList == null) {
+            MusicFilter filter = getArguments().getParcelable(MUSIC_FILTER);
+            List<Music> musicList = ViewModelProviders.of(getParentActivity())
+                    .get(MainActivityViewModel.class)
+                    .getMusicList().getValue();
+            ObservableFactory.filterMusic(musicList, filter)
+                    .subscribe(new Observer<List<Music>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
 
-                    @Override
-                    public void onSuccess(List<Music> musicList) {
-                        mFilterMusicList = (ArrayList<Music>) musicList;
-                        loadDataIntoView();
-                    }
+                        @Override
+                        public void onNext(List<Music> musicList) {
+                            mFilterMusicList = musicList;
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-                });
+                        @Override
+                        public void onError(Throwable e) {
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            loadDataIntoView();
+                        }
+                    });
+        }
     }
 
     @Override
@@ -120,6 +127,7 @@ public class MusicListDetailFragment extends BaseFragment
             ForegroundMusicController.getInstance().setPlayList(filter);
         });
         fixNavBarHeight(mRecyclerView);
+        loadDataIntoView();
     }
 
     @Override
@@ -129,12 +137,12 @@ public class MusicListDetailFragment extends BaseFragment
 
     @Override
     public void onItemClick(View view, int position) {
-        String filterAlbum = getArguments().getString("album");
-        String filterArtist = getArguments().getString("artist");
-        MusicFilter filter = new MusicFilter(filterAlbum, filterArtist);
+        MusicFilter filter = getArguments().getParcelable(MUSIC_FILTER);
         Music selectedMusic = mAdapter.getList().get(position);
         ForegroundMusicController.getInstance().play(selectedMusic);
-        ForegroundMusicController.getInstance().setPlayList(filter);
+        if (filter != null) {
+            ForegroundMusicController.getInstance().setPlayList(filter);
+        }
     }
 
     @Override
@@ -175,7 +183,20 @@ public class MusicListDetailFragment extends BaseFragment
         mRecyclerView.setNestedScrollingEnabled(false);
     }
 
-    public static MusicListDetailFragment getInstance() {
-        return new MusicListDetailFragment();
+    public static MusicListDetailFragment getInstance(String album, String artist) {
+        MusicFilter filter = new MusicFilter(album, artist);
+        MusicListDetailFragment fragment = new MusicListDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(MUSIC_FILTER, filter);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static MusicListDetailFragment getInstance(List<Music> musicList) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(MUSIC_LIST_KEY, (ArrayList<Music>) musicList);
+        MusicListDetailFragment fragment = new MusicListDetailFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 }

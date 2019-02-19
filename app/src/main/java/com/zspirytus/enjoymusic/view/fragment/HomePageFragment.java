@@ -51,6 +51,8 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     private ProgressBar mListLoadProgressBar;
     @ViewInject(R.id.home_page_text_view)
     private AppCompatTextView mInfoTextView;
+    @ViewInject(R.id.search_btn)
+    private ImageView mSearchBtn;
 
     @ViewInject(R.id.bg)
     private ImageView mHomePageDisplayImg;
@@ -202,12 +204,13 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             mToolbar.setTitleTextColor(getResources().getColor(R.color.transparent));
             Drawable drawable = mToolbar.getNavigationIcon();
             if (drawable != null) {
-                drawable.setTint(0xFF4C4E4A);
+                drawable.setTint(0xFFFFFFFF);
             }
             mAppBarLayout.setTranslationZ(0f);
             mAppBarLayout.setElevation(0f);
             mStatusBarView.setTranslationZ(0f);
             mStatusBarView.setElevation(0f);
+            mSearchBtn.getDrawable().setTint(0xFFFFFF);
             getParentActivity().setDefaultStatusIconColor();
         } else {
             mStatusBarView.getBackground().setAlpha(1);
@@ -230,6 +233,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             }
             mAppBarLayout.setElevation(PixelsUtil.dp2px(getContext(), 6));
             mStatusBarView.setElevation(PixelsUtil.dp2px(getContext(), 6));
+            mSearchBtn.getDrawable().setTint(0x00000000);
             getParentActivity().setLightStatusIconColor();
         }
     }

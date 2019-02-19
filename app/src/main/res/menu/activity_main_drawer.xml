@@ -25,6 +25,10 @@
             android:title="@string/nav_text_folder"
             android:icon="@drawable/ic_folder_open_black_48dp" />
         <item
+            android:id="@+id/nav_song_list"
+            android:title="@string/nav_text_song_list"
+            android:icon="@drawable/ic_library_music_black_48dp" />
+        <item
             android:id="@+id/nav_play_list"
             android:title="@string/nav_text_play_list"
             android:icon="@drawable/ic_playlist_play_black_48dp" />

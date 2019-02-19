@@ -13,6 +13,7 @@ import com.zspirytus.enjoymusic.view.fragment.MusicCategoryFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.enjoymusic.view.fragment.PlayListFragment;
 import com.zspirytus.enjoymusic.view.fragment.SettingsFragment;
+import com.zspirytus.enjoymusic.view.fragment.SongListFragment;
 
 /**
  * Created by ZSpirytus on 2018/9/14.
@@ -32,6 +33,7 @@ public class FragmentFactory {
     private ArtistMusicListFragment mArtistMusicListFragment;
     private PlayListFragment mPlayListFragment;
     private FolderSortedMusicListFragment mFolderSortedMusicListFragment;
+    private SongListFragment mSongListFragment;
 
     private FragmentFactory() {
     }
@@ -90,6 +92,10 @@ public class FragmentFactory {
             if (mFolderSortedMusicListFragment == null)
                 mFolderSortedMusicListFragment = FolderSortedMusicListFragment.getInstance();
             return (T) mFolderSortedMusicListFragment;
+        } else if (tClass == SongListFragment.class) {
+            if (mSongListFragment == null)
+                mSongListFragment = SongListFragment.getIntance();
+            return (T) mSongListFragment;
         }
         return null;
     }
@@ -105,5 +111,6 @@ public class FragmentFactory {
         mAboutFragment = (AboutFragment) manager.findFragmentByTag(AboutFragment.class.getSimpleName());
         mPlayListFragment = (PlayListFragment) manager.findFragmentByTag(PlayListFragment.class.getSimpleName());
         mMusicPlayFragment = (MusicPlayFragment) manager.findFragmentByTag(MusicPlayFragment.class.getSimpleName());
+        mSongListFragment = (SongListFragment) manager.findFragmentByTag(SongListFragment.class.getSimpleName());
     }
 }

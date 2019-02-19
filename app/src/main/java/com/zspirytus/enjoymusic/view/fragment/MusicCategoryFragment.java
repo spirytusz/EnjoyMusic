@@ -29,7 +29,7 @@ import java.util.List;
 @LayoutIdInject(R.layout.fragment_music_category_layout)
 public class MusicCategoryFragment extends CommonHeaderBaseFragment {
 
-    private static final int VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT = 4;
+    private static final int VIEW_PAGER_MAX_HOLD_FRAGMENT_COUNT = 5;
     private static final String CURRENT_POSITION = "currentPosition";
 
     @ViewInject(R.id.music_category_tab_layout)
@@ -48,6 +48,7 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
         fragments.add(FragmentFactory.getInstance().get(AlbumMusicListFragment.class));
         fragments.add(FragmentFactory.getInstance().get(ArtistMusicListFragment.class));
         fragments.add(FragmentFactory.getInstance().get(FolderSortedMusicListFragment.class));
+        fragments.add(FragmentFactory.getInstance().get(SongListFragment.class));
         mAdapter = new MyViewPagerAdapter(getChildFragmentManager(), fragments);
     }
 
@@ -114,6 +115,7 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
         mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getText(R.string.album)));
         mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getText(R.string.artist)));
         mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getText(R.string.folder)));
+        mTabLayout.addTab(mTabLayout.newTab().setText("歌单"));
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

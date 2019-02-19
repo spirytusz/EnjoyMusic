@@ -3,20 +3,31 @@ package com.zspirytus.enjoymusic.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.litepal.annotation.Column;
+import org.litepal.crud.LitePalSupport;
+
 /**
  * Music实体类
  * Created by ZSpirytus on 2018/8/4.
  */
 
-public class Music implements Parcelable {
+public class Music extends LitePalSupport implements Parcelable {
 
+    @Column
     private String musicFilePath;
+    @Column
     private String musicName;
+    @Column
     private String musicAlbumName;
+    @Column
     private String musicThumbAlbumCoverPath;
+    @Column
     private String musicArtist;
+    @Column
     private long musicDuration;
+    @Column
     private String musicFileSize;
+    @Column
     private long musicAddDate;
 
     public Music(String musicFilePath, String musicName, String musicArtist, String musicAlbumName, String musicThumbAlbumCoverPath, long musicDuration, String musicFileSize, long musicAddDate) {

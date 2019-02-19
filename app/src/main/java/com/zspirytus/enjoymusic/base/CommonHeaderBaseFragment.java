@@ -22,7 +22,6 @@ public abstract class CommonHeaderBaseFragment extends BaseFragment {
         mAppBarLayout = view.findViewById(R.id.appBarLayout);
         mToolbar = view.findViewById(R.id.tool_bar);
         mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
-        mToolbar.setTitle(R.string.app_name);
         mToolbar.setNavigationOnClickListener(v -> {
             ((DrawerLayout) getParentActivity().findViewById(R.id.main_drawer)).openDrawer(Gravity.START);
         });

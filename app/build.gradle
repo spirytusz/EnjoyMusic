@@ -53,6 +53,7 @@ dependencies {
     implementation ("jp.wasabeef:recyclerview-animators:$item_animator_version") {
         exclude group: "com.android.support"
     }
+    implementation "org.litepal.android:java:$litepal_version"
 
     // unit test
     testImplementation 'junit:junit:4.12'

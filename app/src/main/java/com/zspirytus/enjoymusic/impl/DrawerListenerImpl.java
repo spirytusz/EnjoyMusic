@@ -50,6 +50,9 @@ public class DrawerListenerImpl implements DrawerLayout.DrawerListener {
             case R.id.nav_music_folder:
                 showMusicCategoryFragmentOrNot(3);
                 break;
+            case R.id.nav_song_list:
+                showMusicCategoryFragmentOrNot(4);
+                break;
             case R.id.nav_play_list:
                 FragmentVisibilityManager.getInstance().show(factory.get(PlayListFragment.class));
                 break;

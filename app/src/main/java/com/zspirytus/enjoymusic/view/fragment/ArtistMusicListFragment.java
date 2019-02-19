@@ -44,10 +44,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
     @Override
     public void onItemClick(View view, int position) {
         String artist = mAdapter.getList().get(position).getArtistName();
-        MusicListDetailFragment fragment = MusicListDetailFragment.getInstance();
-        Bundle bundle = new Bundle();
-        bundle.putString("artist", artist);
-        fragment.setArguments(bundle);
+        MusicListDetailFragment fragment = MusicListDetailFragment.getInstance(null, artist);
         FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
         FragmentVisibilityManager.getInstance().show(fragment);
     }
