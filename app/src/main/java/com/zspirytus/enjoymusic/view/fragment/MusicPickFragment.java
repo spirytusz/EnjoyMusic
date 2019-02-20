@@ -40,6 +40,8 @@ public class MusicPickFragment extends BaseFragment
     @ViewInject(R.id.save_btn)
     private TextView mSaveBtn;
 
+    private int mSaveMusicCount;
+
     private MainActivityViewModel mViewModel;
     private CommonRecyclerViewAdapter<MusicPickItem> mAdapter;
 
@@ -78,6 +80,11 @@ public class MusicPickFragment extends BaseFragment
         CheckBox checkBox = view.findViewById(R.id.item_checkbox);
         mAdapter.getList().get(position).setSelected(!mAdapter.getList().get(position).isSelected());
         checkBox.setChecked(mAdapter.getList().get(position).isSelected());
+        if (mAdapter.getList().get(position).isSelected()) {
+            mSaveMusicCount++;
+        } else {
+            mSaveMusicCount--;
+        }
     }
 
     @Override
@@ -121,11 +128,14 @@ public class MusicPickFragment extends BaseFragment
     private void saveSongList() {
         SaveSongListDialog dialog = new SaveSongListDialog();
         dialog.setOnDialogButtonClickListener(content -> {
-            if (mListener != null) {
+            if (mListener != null && content != null && mSaveMusicCount > 0) {
                 SongList songList = saveSongListToDB(content);
                 mListener.onNewSongList(songList);
+                dialog.dismiss();
+                goBack();
+            } else {
+                toast("emmm...");
             }
-            goBack();
         });
         dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
     }
