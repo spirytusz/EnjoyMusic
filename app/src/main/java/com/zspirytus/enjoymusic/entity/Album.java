@@ -9,6 +9,8 @@ import android.os.Parcelable;
 
 public class Album implements Parcelable {
 
+    private long _id;
+
     private String mAlbumName;
     private String mAlbumCoverPath;
     private String mArtist;
@@ -16,7 +18,8 @@ public class Album implements Parcelable {
     private String mLastYear;
     private int mAlbumSongCount;
 
-    public Album(String albumName, String albumCoverPath, String artist, String firstYear, String lastYear, int albumSongCount) {
+    public Album(long id, String albumName, String albumCoverPath, String artist, String firstYear, String lastYear, int albumSongCount) {
+        _id = id;
         mAlbumName = albumName;
         mAlbumCoverPath = albumCoverPath;
         mArtist = artist;
@@ -26,6 +29,7 @@ public class Album implements Parcelable {
     }
 
     private Album(Parcel source) {
+        _id = source.readLong();
         mAlbumName = source.readString();
         mAlbumCoverPath = source.readString();
         mArtist = source.readString();
@@ -58,6 +62,10 @@ public class Album implements Parcelable {
         return mLastYear;
     }
 
+    public long get_id() {
+        return _id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -65,6 +73,7 @@ public class Album implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(_id);
         dest.writeString(mAlbumName);
         dest.writeString(mAlbumCoverPath);
         dest.writeString(mArtist);

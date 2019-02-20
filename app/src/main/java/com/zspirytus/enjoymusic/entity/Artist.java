@@ -9,17 +9,21 @@ import android.os.Parcelable;
 
 public class Artist implements Parcelable {
 
+    private long _id;
+
     private String mArtistName;
     private int mNumberOfAlbums;
     private int mNumberOfTracks;
 
-    public Artist(String artistName, int numberOfAlbums, int numberOfTracks) {
+    public Artist(long id, String artistName, int numberOfAlbums, int numberOfTracks) {
+        _id = id;
         mArtistName = artistName;
         mNumberOfAlbums = numberOfAlbums;
         mNumberOfTracks = numberOfTracks;
     }
 
     private Artist(Parcel source) {
+        _id = source.readLong();
         mArtistName = source.readString();
         mNumberOfAlbums = source.readInt();
         mNumberOfTracks = source.readInt();
@@ -45,6 +49,7 @@ public class Artist implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(_id);
         dest.writeString(mArtistName);
         dest.writeInt(mNumberOfAlbums);
         dest.writeInt(mNumberOfTracks);

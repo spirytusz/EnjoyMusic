@@ -27,6 +27,10 @@ public abstract class HeaderFooterViewWrapAdapter extends RecyclerView.Adapter<C
         mInnerAdapter = adapter;
     }
 
+    public void wrap(RecyclerView.Adapter<CommonViewHolder> adapter) {
+        mInnerAdapter = adapter;
+    }
+
     @Override
 
     public CommonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

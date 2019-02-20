@@ -158,7 +158,7 @@ public class MusicScanner {
             String firstYear = values.getAsString(MediaStore.Audio.Albums.FIRST_YEAR);
             String lastYear = values.getAsString(MediaStore.Audio.Albums.LAST_YEAR);
             int numberOfSongs = values.getAsInteger(MediaStore.Audio.Artists.Albums.NUMBER_OF_SONGS);
-            Album item = new Album(albumName, albumArt, artist, firstYear, lastYear, numberOfSongs);
+            Album item = new Album(Long.valueOf(albumId), albumName, albumArt, artist, firstYear, lastYear, numberOfSongs);
             mAlbumList.add(item);
         }
         try {
@@ -181,7 +181,8 @@ public class MusicScanner {
                 projection,
                 null,
                 null,
-                null);
+                null
+        );
         ContentQueryMap queryMap = new ContentQueryMap(
                 cursor,
                 MediaStore.Audio.Artists._ID,
@@ -194,7 +195,7 @@ public class MusicScanner {
             String artist = values.getAsString(MediaStore.Audio.Artists.ARTIST);
             int numberOfAlbums = values.getAsInteger(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS);
             int numberOfTracks = values.getAsInteger(MediaStore.Audio.Artists.NUMBER_OF_TRACKS);
-            Artist item = new Artist(artist, numberOfAlbums, numberOfTracks);
+            Artist item = new Artist(Long.valueOf(artistId), artist, numberOfAlbums, numberOfTracks);
             mArtistList.add(item);
         }
         try {

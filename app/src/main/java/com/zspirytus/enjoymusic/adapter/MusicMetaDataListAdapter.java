@@ -3,7 +3,6 @@ package com.zspirytus.enjoymusic.adapter;
 import android.text.Html;
 import android.text.Spanned;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.zspirytus.basesdk.recyclerview.ItemViewDelegate;
@@ -100,8 +99,7 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
                                 + "<font color='grey' style=\"line-height:150%;\">比特率: " + bitrate + bitratePercent + "</font><br/>"
                                 + "<font color='grey' style=\"line-height:150%;\">采样率: " + sampleRate + "kHz</font><br/>"
                 );
-                TextView textView = holder.getView(R.id.music_preview_text);
-                textView.setText(previewText);
+                holder.setText(R.id.music_preview_text, previewText);
 
                 holder.setOnItemClickListener(R.id.music_preview_cover, view -> {
                 });

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spanned;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ImageView;
@@ -69,6 +70,11 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setText(@IdRes int id, String text) {
+        TextView textView = getView(id);
+        textView.setText(text);
+    }
+
+    public void setText(@IdRes int id, Spanned text) {
         TextView textView = getView(id);
         textView.setText(text);
     }
