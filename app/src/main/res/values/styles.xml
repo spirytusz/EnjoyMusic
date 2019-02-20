@@ -12,6 +12,7 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -85,6 +86,13 @@
 
     <style name="TextViewStyle_14sp_marquee">
         <item name="android:textSize">14sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxEms">9</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <style name="TextViewStyle_12sp_marquee">
+        <item name="android:textSize">12sp</item>
         <item name="android:singleLine">true</item>
         <item name="android:maxEms">9</item>
         <item name="android:ellipsize">marquee</item>

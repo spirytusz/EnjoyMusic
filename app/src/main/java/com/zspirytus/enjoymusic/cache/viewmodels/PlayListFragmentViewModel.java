@@ -21,6 +21,7 @@ public class PlayListFragmentViewModel extends ViewModel
 
     public void init(List<Music> musicList) {
         mPlayList = new MutableLiveData<>();
+        mAllMusicList = musicList;
         PlayListObserverManager.getInstance().register((PlayListChangeDirectlyObserver) this);
         PlayListObserverManager.getInstance().register((PlayListChangeObserver) this);
     }

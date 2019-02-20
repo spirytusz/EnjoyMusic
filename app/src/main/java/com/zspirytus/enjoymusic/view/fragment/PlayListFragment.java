@@ -71,7 +71,10 @@ public class PlayListFragment extends CommonHeaderBaseFragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel.getPlayList().observe(this, values -> {
-            mAdapter.setList(values);
+            if (values != null && !values.isEmpty()) {
+                mInfoTextView.setVisibility(View.GONE);
+                mAdapter.setList(values);
+            }
         });
     }
 

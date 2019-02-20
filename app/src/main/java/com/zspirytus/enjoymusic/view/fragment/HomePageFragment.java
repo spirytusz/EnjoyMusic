@@ -23,16 +23,17 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.HomePageListAdapter;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.cache.viewmodels.HomePageFragmentViewModel;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-import com.zspirytus.enjoymusic.receivers.observer.HomePageRecyclerViewLoadObserver;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.utils.RandomUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
@@ -57,10 +58,8 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     @ViewInject(R.id.bg)
     private ImageView mHomePageDisplayImg;
 
-    private HomePageRecyclerViewLoadObserver mRecyclerViewLoadStateObserver;
     private SparseIntArray mItemHeightCache;
 
-    private MainActivityViewModel mViewModels;
     private volatile HomePageListAdapter mInnerAdapter;
     private volatile HeaderFooterViewWrapAdapter mHeaderWrapAdapter;
     private ScaleInAnimationAdapter mAnimationAdapter;
@@ -116,7 +115,6 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             }
         });
         mAppBarLayout.addOnOffsetChangedListener(this);
-        notifyObserverRecyclerViewLoadFinish();
         getParentActivity().setDefaultStatusIconColor();
     }
 
@@ -128,35 +126,26 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     @Override
     public void onItemClick(View view, int position) {
         List<Music> musicList = mInnerAdapter.getList();
-        Music selectMusic = musicList.get(position - mHeaderWrapAdapter.getHeaderViewCount());
+        int realPos = position - mHeaderWrapAdapter.getHeaderViewCount();
+        Music selectMusic = musicList.get(realPos);
+        List<Music> playQueue = new ArrayList<>();
+        playQueue.addAll(musicList.subList(realPos, musicList.size()));
+        playQueue.addAll(musicList.subList(0, realPos));
         ForegroundMusicController.getInstance().play(selectMusic);
+        ForegroundMusicController.getInstance().setPlayList(playQueue);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModels = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
-        mViewModels.getMusicList().observe(getParentActivity(), (values) -> {
-            mListLoadProgressBar.setVisibility(View.GONE);
-            if (values != null && !values.isEmpty()) {
-                values = values.subList(0, 30 > values.size() ? values.size() : 30);
-                mInnerAdapter.setList(values);
-                mHomePageRecyclerView.setAdapter(mAnimationAdapter);
-                mAnimationAdapter.notifyDataSetChanged();
-                mHomePageDisplayImg.post(() -> {
-                    mHomePageDisplayImg.setVisibility(View.VISIBLE);
-                    mHomePageDisplayImg.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
-                });
-                mHomePageRecyclerView.postDelayed(() -> {
-                    mHomePageRecyclerView.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
-                    mHomePageRecyclerView.setVisibility(View.VISIBLE);
-                }, 300);
-            } else {
-                mInfoTextView.setVisibility(View.VISIBLE);
-                mInfoTextView.setText("No music in device!");
-                mHomePageRecyclerView.setVisibility(View.GONE);
-            }
+        ViewModelProviders.of(getParentActivity())
+                .get(MainActivityViewModel.class)
+                .getMusicList().observe(getParentActivity(), (values) -> {
+            ViewModelProviders.of(this).get(HomePageFragmentViewModel.class)
+                    .applyMusicList();
         });
+        ViewModelProviders.of(this).get(HomePageFragmentViewModel.class)
+                .getMusicList().observe(this, this::loadDataToView);
     }
 
     @Override
@@ -172,6 +161,28 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 
+    }
+
+    private void loadDataToView(List<Music> values) {
+        mListLoadProgressBar.setVisibility(View.GONE);
+        if (values != null && !values.isEmpty()) {
+            values = values.subList(0, 30 > values.size() ? values.size() : 30);
+            mInnerAdapter.setList(values);
+            mHomePageRecyclerView.setAdapter(mAnimationAdapter);
+            mAnimationAdapter.notifyDataSetChanged();
+            mHomePageDisplayImg.post(() -> {
+                mHomePageDisplayImg.setVisibility(View.VISIBLE);
+                mHomePageDisplayImg.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
+            });
+            mHomePageRecyclerView.postDelayed(() -> {
+                mHomePageRecyclerView.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
+                mHomePageRecyclerView.setVisibility(View.VISIBLE);
+            }, 300);
+        } else {
+            mInfoTextView.setVisibility(View.VISIBLE);
+            mInfoTextView.setText("No music in device!");
+            mHomePageRecyclerView.setVisibility(View.GONE);
+        }
     }
 
     private int computeHomeDisPlayImgTranslationY(RecyclerView recyclerView) {
@@ -236,15 +247,6 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             mSearchBtn.getDrawable().setTint(0x00000000);
             getParentActivity().setLightStatusIconColor();
         }
-    }
-
-    private void notifyObserverRecyclerViewLoadFinish() {
-        if (mRecyclerViewLoadStateObserver != null)
-            mRecyclerViewLoadStateObserver.onHomePageLoadFinish();
-    }
-
-    public void setRecyclerViewLoadStateObserver(HomePageRecyclerViewLoadObserver observer) {
-        mRecyclerViewLoadStateObserver = observer;
     }
 
     public static HomePageFragment getInstance() {

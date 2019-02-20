@@ -15,9 +15,13 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.FolderSortedMusicListAdapter;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
+import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
+import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+
+import java.util.List;
 
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
@@ -77,7 +81,11 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     public void onItemClick(View view, int position) {
-
+        String title = mAdapter.getList().get(position).getParentFolderDir();
+        List<Music> musicList = mAdapter.getList().get(position).getFolderMusicList();
+        FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(title, musicList);
+        FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
+        FragmentVisibilityManager.getInstance().show(fragment);
     }
 
     public static FolderSortedMusicListFragment getInstance() {
