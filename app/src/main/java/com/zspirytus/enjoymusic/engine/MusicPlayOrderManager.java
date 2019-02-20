@@ -50,6 +50,22 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
         notifyAllObserverPlayListChange(playList);
     }
 
+    public void addMusicToPlayList(Music music) {
+        mPlayList.add(music);
+        MusicSharedPreferences.savePlayList(mPlayList);
+        notifyAllObserverPlayListChange(mPlayList);
+    }
+
+    public void addMusicListToPlayList(List<Music> musicList) {
+        mPlayList.addAll(musicList);
+        MusicSharedPreferences.savePlayList(mPlayList);
+        notifyAllObserverPlayListChange(mPlayList);
+    }
+
+    public void addMusicToPlayList(MusicFilter filter) {
+        addMusicListToPlayList(filter.filter(MusicScanner.getInstance().getAllMusicList()));
+    }
+
     public Music getNextMusic(boolean fromUser) {
         Music nextMusic = null;
         int nextPosition;
