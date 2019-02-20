@@ -15,23 +15,21 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/bottom_music_name"
-        style="@style/TextViewStyle_14sp_black_marquee"
+        style="@style/TextViewStyle_16sp_black_marquee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintStart_toEndOf="@+id/bottom_music_cover"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/guideline"
         android:text="@string/music_name" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/bottom_music_album"
-        style="@style/TextViewStyle_10sp_marquee"
+        style="@style/TextViewStyle_14sp_marquee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
         app:layout_constraintStart_toEndOf="@+id/bottom_music_cover"
         android:text="@string/music_artist" />
 
@@ -60,5 +58,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
 
 </android.support.constraint.ConstraintLayout>
