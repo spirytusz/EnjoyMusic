@@ -4,10 +4,10 @@ import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
-import com.zspirytus.enjoymusic.entity.table.SongListItem;
 
-public class SongListAdapter extends CommonRecyclerViewAdapter<SongListItem> {
+public class SongListAdapter extends CommonRecyclerViewAdapter<SongList> {
 
     private OnItemClickListener mListener;
 
@@ -17,10 +17,10 @@ public class SongListAdapter extends CommonRecyclerViewAdapter<SongListItem> {
     }
 
     @Override
-    public void convert(CommonViewHolder holder, SongListItem songListItem, int position) {
-        ImageLoader.load(holder.getView(R.id.item_cover), null, songListItem.getSongListName());
-        holder.setText(R.id.item_title, songListItem.getSongListName());
-        holder.setText(R.id.item_sub_title, songListItem.getMusicCount() + "首曲目");
+    public void convert(CommonViewHolder holder, SongList songList, int position) {
+        ImageLoader.load(holder.getView(R.id.item_cover), null, songList.getSongListName());
+        holder.setText(R.id.item_title, songList.getSongListName());
+        holder.setText(R.id.item_sub_title, songList.getMusicCount() + "首曲目");
         if (mListener != null) {
             holder.setOnItemClickListener(mListener);
         }

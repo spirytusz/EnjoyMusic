@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 26
@@ -24,6 +25,11 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    greendao{
+        schemaVersion 1
+        targetGenDir 'src/main/java'
+        daoPackage"com.zspirytus.enjoymusic.db.greendao"
     }
 }
 
@@ -53,7 +59,7 @@ dependencies {
     implementation ("jp.wasabeef:recyclerview-animators:$item_animator_version") {
         exclude group: "com.android.support"
     }
-    implementation "org.litepal.android:java:$litepal_version"
+    implementation "org.greenrobot:greendao:$greendao_version"
 
     // unit test
     testImplementation 'junit:junit:4.12'

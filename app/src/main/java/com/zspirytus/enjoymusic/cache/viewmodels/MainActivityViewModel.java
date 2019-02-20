@@ -5,10 +5,11 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 import com.zspirytus.enjoymusic.IGetMusicList;
-import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.table.Song;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Album;
@@ -24,6 +25,7 @@ import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -84,14 +86,18 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
                 final List<Album> albumList = getMusicListBinder.getAlbumList();
                 final List<Artist> artistList = getMusicListBinder.getArtistList();
                 final List<FolderSortedMusic> folderSortedMusicList = getMusicListBinder.getFolderSortedMusic();
-                IBinder iBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
-                ISetPlayList setPlayList = ISetPlayList.Stub.asInterface(iBinder);
                 AndroidSchedulers.mainThread().scheduleDirect(() -> {
                     setMusicList(musicList);
                     setAlbumList(albumList);
                     setArtistList(artistList);
                     setFolderList(folderSortedMusicList);
                 });
+                List<Song> songs = new ArrayList<>();
+                for (Music music : musicList) {
+                    songs.add(Song.create(music));
+                }
+                // 直接从系统数据库复制Music数据到db_enjoymusic中
+                DBManager.getInstance().getDaoSession().getSongDao().insertOrReplaceInTx(songs);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

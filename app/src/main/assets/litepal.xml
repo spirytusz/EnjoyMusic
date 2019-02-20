@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<litepal>
-    <dbname value="db_enjoymusic" />
-    <version value="1" />
-    <list>
-        <mapping class="com.zspirytus.enjoymusic.entity.table.SongListItem" />
-        <mapping class="com.zspirytus.enjoymusic.entity.Music" />
-    </list>
-</litepal>

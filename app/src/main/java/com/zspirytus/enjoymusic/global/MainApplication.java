@@ -4,7 +4,7 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 
-import org.litepal.LitePal;
+import com.zspirytus.enjoymusic.db.DBManager;
 
 /**
  * Created by ZSpirytus on 2018/9/10.
@@ -21,11 +21,11 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
         if (MAIN_PROCESS_NAME.equals(getProcessNameByPid(this, android.os.Process.myPid()))) {
-            LitePal.initialize(this);
             mForegroundContext = getApplicationContext();
         } else {
             mBackgroundContext = getApplicationContext();
         }
+        DBManager.getInstance().init(this);
     }
 
     private String getProcessNameByPid(Context context, int pid) {

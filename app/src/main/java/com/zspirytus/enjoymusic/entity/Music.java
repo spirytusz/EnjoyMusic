@@ -3,34 +3,26 @@ package com.zspirytus.enjoymusic.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.litepal.annotation.Column;
-import org.litepal.crud.LitePalSupport;
-
 /**
  * Music实体类
  * Created by ZSpirytus on 2018/8/4.
  */
 
-public class Music extends LitePalSupport implements Parcelable {
+public class Music implements Parcelable {
 
-    @Column
+    private long _id;
+
     private String musicFilePath;
-    @Column
     private String musicName;
-    @Column
     private String musicAlbumName;
-    @Column
     private String musicThumbAlbumCoverPath;
-    @Column
     private String musicArtist;
-    @Column
     private long musicDuration;
-    @Column
     private String musicFileSize;
-    @Column
     private long musicAddDate;
 
-    public Music(String musicFilePath, String musicName, String musicArtist, String musicAlbumName, String musicThumbAlbumCoverPath, long musicDuration, String musicFileSize, long musicAddDate) {
+    public Music(long id, String musicFilePath, String musicName, String musicArtist, String musicAlbumName, String musicThumbAlbumCoverPath, long musicDuration, String musicFileSize, long musicAddDate) {
+        this._id = id;
         this.musicFilePath = musicFilePath;
         this.musicName = musicName;
         this.musicAlbumName = musicAlbumName;
@@ -42,6 +34,7 @@ public class Music extends LitePalSupport implements Parcelable {
     }
 
     private Music(Parcel source) {
+        this._id = source.readLong();
         this.musicFilePath = source.readString();
         this.musicName = source.readString();
         this.musicAlbumName = source.readString();
@@ -52,10 +45,17 @@ public class Music extends LitePalSupport implements Parcelable {
         this.musicAddDate = source.readLong();
     }
 
+    public long getId() {
+        return _id;
+    }
+
+    public void setId(long _id) {
+        this._id = _id;
+    }
+
     public String getMusicFilePath() {
         return musicFilePath;
     }
-
 
     public String getMusicName() {
         return musicName;
@@ -146,6 +146,7 @@ public class Music extends LitePalSupport implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(_id);
         dest.writeString(musicFilePath);
         dest.writeString(musicName);
         dest.writeString(musicAlbumName);

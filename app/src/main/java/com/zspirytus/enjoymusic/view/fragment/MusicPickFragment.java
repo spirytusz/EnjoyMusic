@@ -15,10 +15,12 @@ import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
+import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.table.JoinSongListToSong;
+import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicPickItem;
-import com.zspirytus.enjoymusic.entity.table.SongListItem;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -119,24 +121,36 @@ public class MusicPickFragment extends BaseFragment
     private void saveSongList() {
         SaveSongListDialog dialog = new SaveSongListDialog();
         dialog.setOnDialogButtonClickListener(content -> {
-            List<Music> musicList = new ArrayList<>();
-            for (MusicPickItem item : mAdapter.getList()) {
-                if (item.isSelected()) {
-                    musicList.add(item.getMusic());
-                }
-            }
-            SongListItem item = new SongListItem();
-            item.setMusicCount(musicList.size());
-            item.setSongListName(content);
-            item.setMusicList(musicList);
-            item.save();
-            // TODO: 20/02/2019 Save MusicList.
             if (mListener != null) {
-                mListener.onNewSongList(item);
+                SongList songList = saveSongListToDB(content);
+                mListener.onNewSongList(songList);
             }
             goBack();
         });
         dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
+    }
+
+    public SongList saveSongListToDB(String songListName) {
+        List<Music> musicList = new ArrayList<>();
+        for (MusicPickItem item : mAdapter.getList()) {
+            if (item.isSelected()) {
+                musicList.add(item.getMusic());
+            }
+        }
+        SongList songList = new SongList();
+        songList.setMusicCount(musicList.size());
+        songList.setSongListName(songListName);
+        songList.setSongListId(System.currentTimeMillis());
+        List<JoinSongListToSong> joinSongListToSongs = new ArrayList<>();
+        for (Music music : musicList) {
+            JoinSongListToSong joinSongListToSong = new JoinSongListToSong();
+            joinSongListToSong.setSongId(music.getId());
+            joinSongListToSong.setSongListId(songList.getSongListId());
+            joinSongListToSongs.add(joinSongListToSong);
+        }
+        DBManager.getInstance().getDaoSession().getSongListDao().insert(songList);
+        DBManager.getInstance().getDaoSession().getJoinSongListToSongDao().insertInTx(joinSongListToSongs);
+        return songList;
     }
 
     public static MusicPickFragment getInstance() {
@@ -144,6 +158,6 @@ public class MusicPickFragment extends BaseFragment
     }
 
     public interface OnSaveSongListListener {
-        void onNewSongList(SongListItem item);
+        void onNewSongList(SongList item);
     }
 }

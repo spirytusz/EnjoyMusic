@@ -31,13 +31,21 @@ public class MusicFilter implements Parcelable {
         mMusicArtist = source.readString();
     }
 
+    public String getAlbum() {
+        return mMusicAlbum;
+    }
+
+    public String getArtist() {
+        return mMusicArtist;
+    }
+
     public List<Music> filter(List<Music> musicList) {
         if (!mMusicAlbum.equals("*") && !mMusicArtist.equals("*")) {
             List<Music> filterMusicList = new ArrayList<>(musicList);
             for (int i = filterMusicList.size() - 1; i >= 0; i--) {
                 Music music = filterMusicList.get(i);
-                boolean isMatchAlbum = mMusicAlbum != null && !mMusicAlbum.isEmpty() && !music.getMusicAlbumName().equals(mMusicAlbum);
-                boolean isMatchArtist = mMusicArtist != null && !mMusicArtist.isEmpty() && !music.getMusicArtist().equals(mMusicArtist);
+                boolean isMatchAlbum = !mMusicAlbum.isEmpty() && !music.getMusicAlbumName().equals(mMusicAlbum);
+                boolean isMatchArtist = !mMusicArtist.isEmpty() && !music.getMusicArtist().equals(mMusicArtist);
                 if (isMatchAlbum || isMatchArtist) {
                     filterMusicList.remove(music);
                 }

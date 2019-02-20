@@ -3,30 +3,26 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.zspirytus.enjoymusic.entity.table.SongListItem;
-
-import org.litepal.LitePal;
+import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.table.SongList;
 
 import java.util.List;
 
 // TODO: 19/02/2019 implements get song list
 public class SongListFragmentViewModel extends ViewModel {
 
-    private MutableLiveData<List<SongListItem>> mSongLists;
+    private MutableLiveData<List<SongList>> mSongLists;
 
     public void init() {
         mSongLists = new MutableLiveData<>();
     }
 
-    public MutableLiveData<List<SongListItem>> getSongList() {
+    public MutableLiveData<List<SongList>> getSongList() {
         return mSongLists;
     }
 
     public void applySongList() {
-        List<SongListItem> songListItems = LitePal.findAll(SongListItem.class);
-        mSongLists.setValue(songListItems);
-    }
-
-    public void applySongListMusic() {
+        List<SongList> songLists = DBManager.getInstance().getDaoSession().loadAll(SongList.class);
+        mSongLists.setValue(songLists);
     }
 }

@@ -71,6 +71,7 @@ public class MusicScanner {
         Map<String, ContentValues> albumQueryMap = prepareAlbums();
         Map<String, ContentValues> artistQueryMap = prepareArtist();
         final String[] musicProjection = {
+                MediaStore.Audio.AudioColumns._ID,
                 MediaStore.Audio.AudioColumns.DATA,
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ARTIST,
@@ -93,16 +94,17 @@ public class MusicScanner {
         if (musicCursor != null) {
             while (musicCursor.moveToNext()) {
                 // scan item music
-                String musicFilePath = musicCursor.getString(0);
-                String musicName = musicCursor.getString(1);
-                String musicArtist = musicCursor.getString(2);
-                String musicAlbumName = musicCursor.getString(3);
-                String albumId = musicCursor.getString(4);
+                long id = musicCursor.getLong(0);
+                String musicFilePath = musicCursor.getString(1);
+                String musicName = musicCursor.getString(2);
+                String musicArtist = musicCursor.getString(3);
+                String musicAlbumName = musicCursor.getString(4);
+                String albumId = musicCursor.getString(5);
                 String coverPath = albumQueryMap.get(albumId).getAsString(MediaStore.Audio.Albums.ALBUM_ART);
-                String musicFileSize = Formatter.formatFileSize(MainApplication.getBackgroundContext(), musicCursor.getLong(5));
-                long musicDuration = musicCursor.getLong(6);
-                long musicAddDate = musicCursor.getLong(7);
-                Music itemMusic = new Music(musicFilePath, musicName, musicArtist, musicAlbumName, coverPath, musicDuration, musicFileSize, musicAddDate);
+                String musicFileSize = Formatter.formatFileSize(MainApplication.getBackgroundContext(), musicCursor.getLong(6));
+                long musicDuration = musicCursor.getLong(7);
+                long musicAddDate = musicCursor.getLong(8);
+                Music itemMusic = new Music(id, musicFilePath, musicName, musicArtist, musicAlbumName, coverPath, musicDuration, musicFileSize, musicAddDate);
                 mAllMusicList.add(itemMusic);
 
                 // add to folder sorted music list

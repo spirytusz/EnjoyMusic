@@ -16,6 +16,7 @@ import com.zspirytus.enjoymusic.adapter.ArtistListAdapter;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
+import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -44,7 +45,8 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
     @Override
     public void onItemClick(View view, int position) {
         String artist = mAdapter.getList().get(position).getArtistName();
-        MusicListDetailFragment fragment = MusicListDetailFragment.getInstance(null, artist);
+        MusicFilter filter = new MusicFilter(null, artist);
+        FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(filter);
         FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
         FragmentVisibilityManager.getInstance().show(fragment);
     }

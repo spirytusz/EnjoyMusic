@@ -13,11 +13,16 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.SongListAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.SongListFragmentViewModel;
+import com.zspirytus.enjoymusic.db.table.Song;
+import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
-import com.zspirytus.enjoymusic.entity.table.SongListItem;
+import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @LayoutIdInject(R.layout.fragment_song_list_layout)
 public class SongListFragment extends BaseFragment implements OnItemClickListener {
@@ -76,8 +81,12 @@ public class SongListFragment extends BaseFragment implements OnItemClickListene
             FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
             FragmentVisibilityManager.getInstance().show(fragment);
         } else {
-            SongListItem item = mInnerAdapter.getList().get(position - 1);
-            MusicListDetailFragment fragment = MusicListDetailFragment.getInstance(item.getMusicList());
+            SongList item = mInnerAdapter.getList().get(position - 1);
+            List<Music> musicList = new ArrayList<>();
+            for (Song song : item.getSongsOfThisSongList()) {
+                musicList.add(song.create());
+            }
+            FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(item.getSongListName(), musicList);
             FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
             FragmentVisibilityManager.getInstance().show(fragment);
         }
