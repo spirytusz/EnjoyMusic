@@ -137,6 +137,7 @@ public class FilterMusicListFragment extends BaseFragment
     @Override
     public void onItemClick(View view, int position) {
         ForegroundMusicController.getInstance().play(mInnerAdapter.getList().get(position - 1));
+        ForegroundMusicController.getInstance().setPlayList(mInnerAdapter.getList());
     }
 
     @Override

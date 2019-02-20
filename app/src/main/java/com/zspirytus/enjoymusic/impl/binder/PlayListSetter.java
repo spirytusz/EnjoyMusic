@@ -1,8 +1,13 @@
 package com.zspirytus.enjoymusic.impl.binder;
 
+import android.os.RemoteException;
+
 import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
+import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
+
+import java.util.List;
 
 public class PlayListSetter extends ISetPlayList.Stub {
 
@@ -20,5 +25,10 @@ public class PlayListSetter extends ISetPlayList.Stub {
     @Override
     public void setPlayList(MusicFilter musicFilter) {
         MusicPlayOrderManager.getInstance().setPlayList(musicFilter);
+    }
+
+    @Override
+    public void setPlayListDirectly(List<Music> playList) throws RemoteException {
+        MusicPlayOrderManager.getInstance().setPlayList(playList);
     }
 }

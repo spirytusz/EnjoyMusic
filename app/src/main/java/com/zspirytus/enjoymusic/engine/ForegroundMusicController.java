@@ -13,6 +13,8 @@ import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.impl.binder.MusicController;
 import com.zspirytus.enjoymusic.impl.binder.MusicProgressControl;
 
+import java.util.List;
+
 /**
  * 前台音乐播放控制器
  * Created by ZSpirytus on 2018/9/8.
@@ -118,6 +120,22 @@ public class ForegroundMusicController {
                 }
                 try {
                     mISetPlayList.setPlayList(musicFilter);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+    public void setPlayList(final List<Music> musicList) {
+        if (musicList != null) {
+            ThreadPool.execute(() -> {
+                if (mISetPlayList == null) {
+                    IBinder setPlayListBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
+                    mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
+                }
+                try {
+                    mISetPlayList.setPlayListDirectly(musicList);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

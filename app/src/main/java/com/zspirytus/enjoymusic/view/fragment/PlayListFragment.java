@@ -15,6 +15,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
+import com.zspirytus.enjoymusic.cache.viewmodels.PlayListFragmentViewModel;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.Music;
@@ -23,6 +24,8 @@ import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
+
+import java.util.List;
 
 /**
  * Created by ZSpirytus on 2018/9/17.
@@ -36,6 +39,7 @@ public class PlayListFragment extends CommonHeaderBaseFragment
     @ViewInject(R.id.play_list_info_tv)
     private AppCompatTextView mInfoTextView;
 
+    private PlayListFragmentViewModel mViewModel;
     private MusicListAdapter mAdapter;
     private AnimatorSet mAnim;
     private AnimatorSet mShadowAnim;
@@ -44,6 +48,11 @@ public class PlayListFragment extends CommonHeaderBaseFragment
     protected void initData() {
         mAdapter = new MusicListAdapter();
         mAdapter.setOnItemClickListener(this);
+        List<Music> allMusicList = ViewModelProviders.of(getParentActivity())
+                .get(MainActivityViewModel.class)
+                .getMusicList().getValue();
+        mViewModel = ViewModelProviders.of(this).get(PlayListFragmentViewModel.class);
+        mViewModel.init(allMusicList);
     }
 
     @Override
@@ -61,17 +70,9 @@ public class PlayListFragment extends CommonHeaderBaseFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ViewModelProviders.of(getParentActivity())
-                .get(MainActivityViewModel.class)
-                .getPlayList()
-                .observe(getParentActivity(), values -> {
-                    if (values != null && !values.isEmpty()) {
-                        setupInfoTextView(false);
-                        mAdapter.setList(values);
-                    } else {
-                        setupInfoTextView(true);
-                    }
-                });
+        mViewModel.getPlayList().observe(this, values -> {
+            mAdapter.setList(values);
+        });
     }
 
     @Override
