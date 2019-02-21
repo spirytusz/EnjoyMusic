@@ -8,6 +8,9 @@ import com.zspirytus.basesdk.recyclerview.listeners.OnItemLongClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.greendao.SongDao;
+import com.zspirytus.enjoymusic.db.table.Song;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
@@ -18,6 +21,9 @@ import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.dialog.PlainTextMenuDialog;
 import com.zspirytus.enjoymusic.view.dialog.SaveSongListDialog;
 import com.zspirytus.enjoymusic.view.fragment.FilterMusicListFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
         implements OnItemLongClickListener {
@@ -72,9 +78,11 @@ public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
                 ToastUtil.showToast(MainApplication.getForegroundContext(), "成功");
                 break;
             case 1:
-                MusicFilter filterArtist = new MusicFilter(null, targetAlbum.getArtist());
+                List<Song> songs = DBManager.getInstance().getDaoSession().queryBuilder(Song.class)
+                        .where(SongDao.Properties.MusicArtist.eq(targetAlbum.getArtist()))
+                        .list();
                 FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
-                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(filterArtist));
+                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(targetAlbum.getAlbumName(), (ArrayList<Song>) songs, 1));
                 break;
             case 2:
                 SaveSongListDialog dialog = new SaveSongListDialog();

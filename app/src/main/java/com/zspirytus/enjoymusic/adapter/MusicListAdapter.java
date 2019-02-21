@@ -8,16 +8,21 @@ import com.zspirytus.basesdk.recyclerview.listeners.OnItemLongClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.greendao.SongDao;
+import com.zspirytus.enjoymusic.db.table.Song;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.dialog.PlainTextMenuDialog;
 import com.zspirytus.enjoymusic.view.fragment.FilterMusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicMetaDataFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MusicListAdapter extends CommonRecyclerViewAdapter<Music>
         implements OnItemLongClickListener {
@@ -78,14 +83,20 @@ public class MusicListAdapter extends CommonRecyclerViewAdapter<Music>
                 ToastUtil.showToast(MainApplication.getForegroundContext(), "delete it.");
                 break;
             case 2:
-                MusicFilter filterForAlbum = new MusicFilter(targetMusic.getMusicAlbumName(), null);
+                long albumId = targetMusic.getAlbumId();
+                List<Song> songs = DBManager.getInstance().getDaoSession().queryBuilder(Song.class)
+                        .where(SongDao.Properties.AlbumId.eq(albumId))
+                        .list();
                 FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
-                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(filterForAlbum));
+                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(targetMusic.getMusicAlbumName(), (ArrayList<Song>) songs, 1));
                 break;
             case 3:
-                MusicFilter filterForArtist = new MusicFilter(null, targetMusic.getMusicArtist());
+                long artistId = targetMusic.getArtistId();
+                List<Song> songs1 = DBManager.getInstance().getDaoSession().queryBuilder(Song.class)
+                        .where(SongDao.Properties.ArtistId.eq(artistId))
+                        .list();
                 FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
-                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(filterForArtist));
+                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(targetMusic.getMusicArtist(), (ArrayList<Song>) songs1, 2));
                 break;
             case 4:
                 FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();

@@ -6,9 +6,6 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 public class Song {
 
@@ -60,52 +57,6 @@ public class Song {
                 music.getMusicDuration(),
                 music.getMusicFileSize(),
                 music.getMusicAddDate()
-        );
-    }
-
-    public static List<Song> create(List<Music> musicList) {
-        List<Song> songs = new ArrayList<>();
-        for (Music music : musicList) {
-            songs.add(Song.create(music));
-        }
-        return songs;
-    }
-
-    public static List<JoinAlbumToSong> createJoinAlbumToSongs(List<Music> musicList) {
-        List<JoinAlbumToSong> joinAlbumToSongs = new ArrayList<>();
-        for (Music music : musicList) {
-            JoinAlbumToSong joinAlbumToSong = new JoinAlbumToSong();
-            joinAlbumToSong.setSongId(music.getId());
-            joinAlbumToSong.setAlbumId(music.getAlbumId());
-            joinAlbumToSongs.add(joinAlbumToSong);
-        }
-        return joinAlbumToSongs;
-    }
-
-    public static List<JoinArtistToSong> createJoinArtistToSongs(List<Music> musicList) {
-        List<JoinArtistToSong> joinArtistToSongs = new ArrayList<>();
-        for (Music music : musicList) {
-            JoinArtistToSong joinArtistToSong = new JoinArtistToSong();
-            joinArtistToSong.setSongId(music.getId());
-            joinArtistToSong.setArtistId(music.getArtistId());
-            joinArtistToSongs.add(joinArtistToSong);
-        }
-        return joinArtistToSongs;
-    }
-
-    public Music create() {
-        return new Music(
-                songId,
-                albumId,
-                artistId,
-                musicFilePath,
-                musicName,
-                musicArtist,
-                musicAlbumName,
-                musicThumbAlbumCoverPath,
-                musicDuration,
-                musicFileSize,
-                musicAddDate
         );
     }
 

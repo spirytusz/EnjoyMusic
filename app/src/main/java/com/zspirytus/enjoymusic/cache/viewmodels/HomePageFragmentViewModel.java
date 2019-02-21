@@ -8,6 +8,7 @@ import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.greendao.SongDao;
 import com.zspirytus.enjoymusic.db.table.Song;
 import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.entity.convert.Convertor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class HomePageFragmentViewModel extends ViewModel {
                     .limit(LIMIT_SIZE).list();
             List<Music> musicList = new ArrayList<>();
             for (Song song : songs) {
-                musicList.add(song.create());
+                musicList.add(Convertor.createMusic(song));
             }
             AndroidSchedulers.mainThread().scheduleDirect(() -> mMusicList.setValue(musicList));
         });

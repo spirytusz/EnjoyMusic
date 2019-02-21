@@ -83,7 +83,7 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
     public void onItemClick(View view, int position) {
         String title = mAdapter.getList().get(position).getParentFolderDir();
         List<Music> musicList = mAdapter.getList().get(position).getFolderMusicList();
-        FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(title, musicList);
+        FilterMusicListFragment fragment = FilterMusicListFragment.getInstance("文件夹", musicList, 3);
         FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
         FragmentVisibilityManager.getInstance().show(fragment);
     }

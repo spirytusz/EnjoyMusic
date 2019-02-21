@@ -15,11 +15,16 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.ArtistListAdapter;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
+import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.greendao.SongDao;
+import com.zspirytus.enjoymusic.db.table.Song;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
@@ -45,8 +50,11 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
     @Override
     public void onItemClick(View view, int position) {
         String artist = mAdapter.getList().get(position).getArtistName();
-        MusicFilter filter = new MusicFilter(null, artist);
-        FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(filter);
+        long artistId = mAdapter.getList().get(position).get_id();
+        List<Song> songs = DBManager.getInstance().getDaoSession().queryBuilder(Song.class)
+                .where(SongDao.Properties.ArtistId.eq(artistId))
+                .list();
+        FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(artist, (ArrayList<Song>) songs, 2);
         FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
         FragmentVisibilityManager.getInstance().show(fragment);
     }

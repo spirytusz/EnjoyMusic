@@ -80,7 +80,7 @@ public class SongListFragment extends BaseFragment implements OnItemClickListene
             FragmentVisibilityManager.getInstance().show(fragment);
         } else {
             SongList item = mInnerAdapter.getList().get(position - 1);
-            FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(item.getSongListName(), (ArrayList<Song>) item.getSongsOfThisSongList());
+            FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(item.getSongListName(), (ArrayList<Song>) item.getSongsOfThisSongList(), 4);
             FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
             FragmentVisibilityManager.getInstance().show(fragment);
         }

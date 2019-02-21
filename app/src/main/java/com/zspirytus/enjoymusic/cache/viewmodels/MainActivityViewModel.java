@@ -9,9 +9,6 @@ import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.DBManager;
-import com.zspirytus.enjoymusic.db.table.AlbumTable;
-import com.zspirytus.enjoymusic.db.table.ArtistTable;
-import com.zspirytus.enjoymusic.db.table.Song;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -20,6 +17,7 @@ import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
+import com.zspirytus.enjoymusic.entity.convert.Convertor;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.impl.binder.PlayListObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.PlayMusicObserverManager;
@@ -95,11 +93,7 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
                     setFolderList(folderSortedMusicList);
                 });
                 // 直接从系统数据库复制Music数据到db_enjoymusic中
-                DBManager.getInstance().getDaoSession().getSongDao().insertOrReplaceInTx(Song.create(musicList));
-                DBManager.getInstance().getDaoSession().getAlbumTableDao().insertOrReplaceInTx(AlbumTable.create(albumList));
-                DBManager.getInstance().getDaoSession().getArtistTableDao().insertOrReplaceInTx(ArtistTable.create(artistList));
-                DBManager.getInstance().getDaoSession().getJoinAlbumToSongDao().insertOrReplaceInTx(Song.createJoinAlbumToSongs(musicList));
-                DBManager.getInstance().getDaoSession().getJoinArtistToSongDao().insertOrReplaceInTx(Song.createJoinArtistToSongs(musicList));
+                DBManager.getInstance().getDaoSession().getSongDao().insertOrReplaceInTx(Convertor.createSongs(musicList));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
