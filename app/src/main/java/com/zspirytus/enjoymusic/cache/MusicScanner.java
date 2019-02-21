@@ -79,7 +79,8 @@ public class MusicScanner {
                 MediaStore.Audio.Media.ALBUM_ID,
                 MediaStore.Audio.Media.SIZE,
                 MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.DATE_ADDED
+                MediaStore.Audio.Media.DATE_ADDED,
+                MediaStore.Audio.Media.ARTIST_ID
         };
         final String selection = MediaStore.Audio.AudioColumns.IS_MUSIC + " != ? And "
                 + MediaStore.Audio.AudioColumns.DURATION + " >= ?";
@@ -104,7 +105,8 @@ public class MusicScanner {
                 String musicFileSize = Formatter.formatFileSize(MainApplication.getBackgroundContext(), musicCursor.getLong(6));
                 long musicDuration = musicCursor.getLong(7);
                 long musicAddDate = musicCursor.getLong(8);
-                Music itemMusic = new Music(id, musicFilePath, musicName, musicArtist, musicAlbumName, coverPath, musicDuration, musicFileSize, musicAddDate);
+                long artistId = musicCursor.getLong(9);
+                Music itemMusic = new Music(id, Long.valueOf(albumId), artistId, musicFilePath, musicName, musicArtist, musicAlbumName, coverPath, musicDuration, musicFileSize, musicAddDate);
                 mAllMusicList.add(itemMusic);
 
                 // add to folder sorted music list

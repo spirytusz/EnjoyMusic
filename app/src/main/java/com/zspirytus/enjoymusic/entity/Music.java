@@ -11,6 +11,8 @@ import android.os.Parcelable;
 public class Music implements Parcelable {
 
     private long _id;
+    private long albumId;
+    private long artistId;
 
     private String musicFilePath;
     private String musicName;
@@ -21,8 +23,10 @@ public class Music implements Parcelable {
     private String musicFileSize;
     private long musicAddDate;
 
-    public Music(long id, String musicFilePath, String musicName, String musicArtist, String musicAlbumName, String musicThumbAlbumCoverPath, long musicDuration, String musicFileSize, long musicAddDate) {
+    public Music(long id, long albumId, long artistId, String musicFilePath, String musicName, String musicArtist, String musicAlbumName, String musicThumbAlbumCoverPath, long musicDuration, String musicFileSize, long musicAddDate) {
         this._id = id;
+        this.albumId = albumId;
+        this.artistId = artistId;
         this.musicFilePath = musicFilePath;
         this.musicName = musicName;
         this.musicAlbumName = musicAlbumName;
@@ -35,6 +39,8 @@ public class Music implements Parcelable {
 
     private Music(Parcel source) {
         this._id = source.readLong();
+        this.albumId = source.readLong();
+        this.artistId = source.readLong();
         this.musicFilePath = source.readString();
         this.musicName = source.readString();
         this.musicAlbumName = source.readString();
@@ -49,8 +55,12 @@ public class Music implements Parcelable {
         return _id;
     }
 
-    public void setId(long _id) {
-        this._id = _id;
+    public long getAlbumId() {
+        return albumId;
+    }
+
+    public long getArtistId() {
+        return artistId;
     }
 
     public String getMusicFilePath() {
@@ -147,6 +157,8 @@ public class Music implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(_id);
+        dest.writeLong(albumId);
+        dest.writeLong(artistId);
         dest.writeString(musicFilePath);
         dest.writeString(musicName);
         dest.writeString(musicAlbumName);

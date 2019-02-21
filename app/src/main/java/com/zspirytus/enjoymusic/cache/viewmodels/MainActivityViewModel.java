@@ -9,6 +9,8 @@ import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.table.AlbumTable;
+import com.zspirytus.enjoymusic.db.table.ArtistTable;
 import com.zspirytus.enjoymusic.db.table.Song;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
@@ -26,7 +28,6 @@ import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -93,12 +94,12 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
                     setArtistList(artistList);
                     setFolderList(folderSortedMusicList);
                 });
-                List<Song> songs = new ArrayList<>();
-                for (Music music : musicList) {
-                    songs.add(Song.create(music));
-                }
                 // 直接从系统数据库复制Music数据到db_enjoymusic中
-                DBManager.getInstance().getDaoSession().getSongDao().insertOrReplaceInTx(songs);
+                DBManager.getInstance().getDaoSession().getSongDao().insertOrReplaceInTx(Song.create(musicList));
+                DBManager.getInstance().getDaoSession().getAlbumTableDao().insertOrReplaceInTx(AlbumTable.create(albumList));
+                DBManager.getInstance().getDaoSession().getArtistTableDao().insertOrReplaceInTx(ArtistTable.create(artistList));
+                DBManager.getInstance().getDaoSession().getJoinAlbumToSongDao().insertOrReplaceInTx(Song.createJoinAlbumToSongs(musicList));
+                DBManager.getInstance().getDaoSession().getJoinArtistToSongDao().insertOrReplaceInTx(Song.createJoinArtistToSongs(musicList));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

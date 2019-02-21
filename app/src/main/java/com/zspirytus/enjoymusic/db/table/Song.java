@@ -6,11 +6,16 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Song {
 
     @Id
     private long songId;
+    private long albumId;
+    private long artistId;
     private String musicFilePath;
     private String musicName;
     private String musicAlbumName;
@@ -20,12 +25,14 @@ public class Song {
     private String musicFileSize;
     private long musicAddDate;
 
-    @Generated(hash = 207801051)
-    public Song(long songId, String musicFilePath, String musicName,
-                String musicAlbumName, String musicThumbAlbumCoverPath,
-                String musicArtist, long musicDuration, String musicFileSize,
-                long musicAddDate) {
+    @Generated(hash = 1287573145)
+    public Song(long songId, long albumId, long artistId, String musicFilePath,
+                String musicName, String musicAlbumName,
+                String musicThumbAlbumCoverPath, String musicArtist, long musicDuration,
+                String musicFileSize, long musicAddDate) {
         this.songId = songId;
+        this.albumId = albumId;
+        this.artistId = artistId;
         this.musicFilePath = musicFilePath;
         this.musicName = musicName;
         this.musicAlbumName = musicAlbumName;
@@ -41,22 +48,56 @@ public class Song {
     }
 
     public static Song create(Music music) {
-        Song song = new Song();
-        song.songId = music.getId();
-        song.musicName = music.getMusicName();
-        song.musicAlbumName = music.getMusicAlbumName();
-        song.musicArtist = music.getMusicArtist();
-        song.musicAddDate = music.getMusicAddDate();
-        song.musicDuration = music.getMusicDuration();
-        song.musicFilePath = music.getMusicFilePath();
-        song.musicThumbAlbumCoverPath = music.getMusicThumbAlbumCoverPath();
-        song.musicFileSize = music.getMusicFileSize();
-        return song;
+        return new Song(
+                music.getId(),
+                music.getAlbumId(),
+                music.getArtistId(),
+                music.getMusicFilePath(),
+                music.getMusicName(),
+                music.getMusicAlbumName(),
+                music.getMusicThumbAlbumCoverPath(),
+                music.getMusicArtist(),
+                music.getMusicDuration(),
+                music.getMusicFileSize(),
+                music.getMusicAddDate()
+        );
+    }
+
+    public static List<Song> create(List<Music> musicList) {
+        List<Song> songs = new ArrayList<>();
+        for (Music music : musicList) {
+            songs.add(Song.create(music));
+        }
+        return songs;
+    }
+
+    public static List<JoinAlbumToSong> createJoinAlbumToSongs(List<Music> musicList) {
+        List<JoinAlbumToSong> joinAlbumToSongs = new ArrayList<>();
+        for (Music music : musicList) {
+            JoinAlbumToSong joinAlbumToSong = new JoinAlbumToSong();
+            joinAlbumToSong.setSongId(music.getId());
+            joinAlbumToSong.setAlbumId(music.getAlbumId());
+            joinAlbumToSongs.add(joinAlbumToSong);
+        }
+        return joinAlbumToSongs;
+    }
+
+    public static List<JoinArtistToSong> createJoinArtistToSongs(List<Music> musicList) {
+        List<JoinArtistToSong> joinArtistToSongs = new ArrayList<>();
+        for (Music music : musicList) {
+            JoinArtistToSong joinArtistToSong = new JoinArtistToSong();
+            joinArtistToSong.setSongId(music.getId());
+            joinArtistToSong.setArtistId(music.getArtistId());
+            joinArtistToSongs.add(joinArtistToSong);
+        }
+        return joinArtistToSongs;
     }
 
     public Music create() {
         return new Music(
                 songId,
+                albumId,
+                artistId,
                 musicFilePath,
                 musicName,
                 musicArtist,
@@ -74,6 +115,22 @@ public class Song {
 
     public void setSongId(long songId) {
         this.songId = songId;
+    }
+
+    public long getAlbumId() {
+        return this.albumId;
+    }
+
+    public void setAlbumId(long albumId) {
+        this.albumId = albumId;
+    }
+
+    public long getArtistId() {
+        return this.artistId;
+    }
+
+    public void setArtistId(long artistId) {
+        this.artistId = artistId;
     }
 
     public String getMusicFilePath() {
@@ -139,5 +196,4 @@ public class Song {
     public void setMusicAddDate(long musicAddDate) {
         this.musicAddDate = musicAddDate;
     }
-
 }

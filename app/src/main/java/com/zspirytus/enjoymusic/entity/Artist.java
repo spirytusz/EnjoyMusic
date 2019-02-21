@@ -29,6 +29,9 @@ public class Artist implements Parcelable {
         mNumberOfTracks = source.readInt();
     }
 
+    public long get_id() {
+        return _id;
+    }
 
     public String getArtistName() {
         return mArtistName;
