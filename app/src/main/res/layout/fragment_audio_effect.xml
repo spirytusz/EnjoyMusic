@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="81dp"
         android:translationZ="6dp"
+        android:background="@color/white"
         app:elevation="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="25dp"
-            android:background="@color/colorPrimary">
+            android:background="@color/white">
 
             <ImageView
                 android:id="@+id/back_btn"
