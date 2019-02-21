@@ -70,7 +70,7 @@ public class FilterMusicListFragmentViewModel extends ViewModel {
 
     private void applyMusicListByFilter(Bundle bundle, List<Music> musicList) {
         MusicFilter filter = bundle.getParcelable(FILTER_EXTRA_KEY);
-        mExtra.setValue(!filter.getAlbum().isEmpty() ? filter.getAlbum() : filter.getArtist());
+        mExtra.setValue(!filter.getAlbum().isEmpty() ? "专辑" : "艺术家");
         ThreadPool.execute(() -> {
             List<Music> musics = filter.filter(musicList);
             AndroidSchedulers.mainThread().scheduleDirect(() -> {

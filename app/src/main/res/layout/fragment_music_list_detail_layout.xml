@@ -39,6 +39,9 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="23sp"
+                android:singleLine="true"
+                android:maxEms="11"
+                android:ellipsize="end"
                 android:layout_marginStart="16dp" />
 
         </android.support.v7.widget.Toolbar>

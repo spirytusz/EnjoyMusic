@@ -53,7 +53,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     protected void initData() {
-        mAdapter = new ArtistListAdapter();
+        mAdapter = new ArtistListAdapter(getFragmentManager());
         mAdapter.setOnItemClickListener(this);
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);

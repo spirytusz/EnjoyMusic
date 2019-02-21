@@ -162,7 +162,8 @@ public class ForegroundMusicController {
 
     public void addToPlayList(final Music music) {
         if (music != null) {
-            List<Music> musicList = new ArrayList<>(1);
+            List<Music> musicList = new ArrayList<>();
+            musicList.add(music);
             addToPlayList(musicList);
         }
     }

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
+import com.zspirytus.basesdk.recyclerview.listeners.OnItemLongClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public abstract class CommonRecyclerViewAdapter<T> extends RecyclerView.Adapter<
 
     protected List<T> mList = new ArrayList<>();
     protected OnItemClickListener mListener;
+    protected OnItemLongClickListener mLongClickListener;
 
     @Override
     public CommonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -47,6 +49,10 @@ public abstract class CommonRecyclerViewAdapter<T> extends RecyclerView.Adapter<
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
+    }
+
+    public void setOnItemLongClickLisener(OnItemLongClickListener lisener) {
+        mLongClickListener = lisener;
     }
 
     public List<T> getList() {

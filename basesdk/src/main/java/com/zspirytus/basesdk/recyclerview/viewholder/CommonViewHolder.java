@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
+import com.zspirytus.basesdk.recyclerview.listeners.OnItemLongClickListener;
 
 @SuppressWarnings("unchecked")
 public class CommonViewHolder extends RecyclerView.ViewHolder {
@@ -90,6 +91,18 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    public void setOnItemLongClickListener(final OnItemLongClickListener listener) {
+        if (listener != null) {
+            mItemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.onLongClick(mItemView, getAdapterPosition());
+                    return true;
+                }
+            });
+        }
+    }
+
     public void setImageResource(@IdRes int id, @DrawableRes int resId) {
         ImageView imageView = getView(id);
         imageView.setImageResource(resId);
@@ -97,6 +110,10 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
 
     public void setOnItemClickListener(@IdRes int id, View.OnClickListener listener) {
         getView(id).setOnClickListener(listener);
+    }
+
+    public void setOnItemLongClickListener(@IdRes int id, View.OnLongClickListener listener) {
+        getView(id).setOnLongClickListener(listener);
     }
 
     public void setVisibility(@IdRes int id, int visibility) {

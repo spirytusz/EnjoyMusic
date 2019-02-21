@@ -1,5 +1,8 @@
 package com.zspirytus.enjoymusic.cache.constant;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by ZSpirytus on 2018/9/7.
  */
@@ -57,5 +60,29 @@ public interface Constant {
         int RANDOM = 0;
         int SINGLE_LOOP = 1;
         int LIST_LOOP = 2;
+    }
+
+    class MenuTexts {
+        public static List<String> menuTexts;
+        public static List<String> albumMenuTexts;
+        public static List<String> artistMenuTexts;
+
+        static {
+            menuTexts = new ArrayList<>();
+            menuTexts.add("添加到播放队列");
+            menuTexts.add("从本机中删除");
+            menuTexts.add("专辑");
+            menuTexts.add("艺术家");
+            menuTexts.add("编辑音乐信息");
+
+            albumMenuTexts = new ArrayList<>();
+            albumMenuTexts.add("添加到播放队列");
+            albumMenuTexts.add("艺术家");
+            albumMenuTexts.add("新建歌单");
+
+            artistMenuTexts = new ArrayList<>();
+            artistMenuTexts.add("添加到播放队列");
+            artistMenuTexts.add("新建歌单");
+        }
     }
 }

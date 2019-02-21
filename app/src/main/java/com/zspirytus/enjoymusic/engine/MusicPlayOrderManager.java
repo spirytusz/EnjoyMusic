@@ -1,5 +1,7 @@
 package com.zspirytus.enjoymusic.engine;
 
+import android.util.SparseBooleanArray;
+
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.MusicScanner;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
@@ -12,9 +14,7 @@ import com.zspirytus.enjoymusic.listeners.observable.PlayListChangeObservable;
 import com.zspirytus.enjoymusic.utils.RandomUtil;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by ZSpirytus on 2018/9/5.
@@ -55,10 +55,15 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
 
     public void addMusicListToPlayList(List<Music> musicList) {
         if (mPlayList != null) {
-            Set<Music> set = new HashSet<>();
-            set.addAll(mPlayList);
-            set.addAll(musicList);
-            mPlayList = new ArrayList<>(set);
+            SparseBooleanArray array = new SparseBooleanArray();
+            for (int i = 0; i < mPlayList.size(); i++) {
+                array.append(mPlayList.get(i).hashCode(), true);
+            }
+            for (Music music : musicList) {
+                if (!array.get(music.hashCode())) {
+                    mPlayList.add(music);
+                }
+            }
         } else {
             mPlayList = new ArrayList<>();
             mPlayList.addAll(musicList);
@@ -69,6 +74,7 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
 
     public void addMusicToPlayList(MusicFilter filter) {
         addMusicListToPlayList(filter.filter(MusicScanner.getInstance().getAllMusicList()));
+        notifyAllObserverPlayListChange(mPlayList);
     }
 
     public Music getNextMusic(boolean fromUser) {
