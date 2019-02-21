@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.zspirytus.enjoymusic.base.BaseDialogFragment;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.listeners.observable.FragmentChangeObservable;
@@ -88,6 +89,10 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
             transaction.commitAllowingStateLoss();
             setCurrentFragment(shouldShowFragment);
         }
+    }
+
+    public void showDialogFragment(BaseDialogFragment dialogFragment) {
+        dialogFragment.show(mFragmentManager, dialogFragment.getClass().getSimpleName());
     }
 
     public void onChildFragmentChange(BaseFragment parent, BaseFragment child) {

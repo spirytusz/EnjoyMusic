@@ -1,6 +1,5 @@
 package com.zspirytus.enjoymusic.adapter;
 
-import android.support.v4.app.FragmentManager;
 import android.view.View;
 
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
@@ -27,16 +26,6 @@ import java.util.List;
 public class MusicListAdapter extends CommonRecyclerViewAdapter<Music>
         implements OnItemLongClickListener {
 
-    private FragmentManager mManager;
-
-    public MusicListAdapter(FragmentManager manager) {
-        super();
-        mManager = manager;
-    }
-
-    public MusicListAdapter() {
-    }
-
     @Override
     public int getLayoutId() {
         return R.layout.item_common_view_type;
@@ -51,12 +40,10 @@ public class MusicListAdapter extends CommonRecyclerViewAdapter<Music>
         if (mListener != null) {
             holder.setOnItemClickListener(mListener);
         }
-        if (mManager != null) {
-            holder.setOnItemLongClickListener(this);
-            holder.setOnItemClickListener(R.id.item_more_info_button, v -> {
-                showDialog(position);
-            });
-        }
+        holder.setOnItemLongClickListener(this);
+        holder.setOnItemClickListener(R.id.item_more_info_button, v -> {
+            showDialog(position);
+        });
     }
 
     @Override
@@ -68,7 +55,7 @@ public class MusicListAdapter extends CommonRecyclerViewAdapter<Music>
         targetMusic = getList().get(position);
         PlainTextMenuDialog dialog = PlainTextMenuDialog.create(targetMusic.getMusicName(), Constant.MenuTexts.menuTexts);
         dialog.setOnMenuItemClickListener(listener);
-        dialog.show(mManager);
+        FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
     }
 
     private Music targetMusic;

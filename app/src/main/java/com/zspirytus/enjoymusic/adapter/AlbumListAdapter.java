@@ -1,6 +1,5 @@
 package com.zspirytus.enjoymusic.adapter;
 
-import android.support.v4.app.FragmentManager;
 import android.view.View;
 
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
@@ -28,13 +27,6 @@ import java.util.List;
 public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
         implements OnItemLongClickListener {
 
-    private FragmentManager mManager;
-
-    public AlbumListAdapter(FragmentManager manager) {
-        super();
-        mManager = manager;
-    }
-
     @Override
     public int getLayoutId() {
         return R.layout.item_card_view_type;
@@ -50,10 +42,7 @@ public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
             holder.setOnItemClickListener(mListener);
         }
         holder.setOnItemLongClickListener(this);
-        holder.getView(R.id.item_more_info_button).setOnLongClickListener(v -> {
-            showDialog(position);
-            return true;
-        });
+        holder.getView(R.id.item_more_info_button).setOnClickListener(v -> showDialog(position));
     }
 
     @Override
@@ -65,7 +54,7 @@ public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
         targetAlbum = getList().get(position);
         PlainTextMenuDialog dialog = PlainTextMenuDialog.create(targetAlbum.getAlbumName(), Constant.MenuTexts.albumMenuTexts);
         dialog.setOnMenuItemClickListener(listener);
-        dialog.show(mManager);
+        FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
     }
 
     private Album targetAlbum;
@@ -78,13 +67,6 @@ public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
                 ToastUtil.showToast(MainApplication.getForegroundContext(), "成功");
                 break;
             case 1:
-                List<Song> songs = DBManager.getInstance().getDaoSession().queryBuilder(Song.class)
-                        .where(SongDao.Properties.MusicArtist.eq(targetAlbum.getArtist()))
-                        .list();
-                FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
-                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(targetAlbum.getAlbumName(), (ArrayList<Song>) songs, 1));
-                break;
-            case 2:
                 SaveSongListDialog dialog = new SaveSongListDialog();
                 dialog.setOnDialogButtonClickListener(content -> {
                     if (content != null) {
@@ -93,6 +75,14 @@ public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
                         ToastUtil.showToast(MainApplication.getForegroundContext(), "emmm...");
                     }
                 });
+                FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
+                break;
+            case 2:
+                List<Song> songs = DBManager.getInstance().getDaoSession().queryBuilder(Song.class)
+                        .where(SongDao.Properties.MusicArtist.eq(targetAlbum.getArtist()))
+                        .list();
+                FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
+                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(targetAlbum.getAlbumName(), (ArrayList<Song>) songs, 1));
                 break;
         }
     };

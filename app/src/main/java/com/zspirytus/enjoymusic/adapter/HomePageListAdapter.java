@@ -1,6 +1,5 @@
 package com.zspirytus.enjoymusic.adapter;
 
-import android.support.v4.app.FragmentManager;
 import android.view.View;
 
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
@@ -25,13 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomePageListAdapter extends CommonRecyclerViewAdapter<Music> implements OnItemLongClickListener {
-
-    private FragmentManager mManager;
-
-    public HomePageListAdapter(FragmentManager manager) {
-        super();
-        mManager = manager;
-    }
 
     @Override
     public int getLayoutId() {
@@ -62,7 +54,7 @@ public class HomePageListAdapter extends CommonRecyclerViewAdapter<Music> implem
         targetMusic = getList().get(position);
         PlainTextMenuDialog dialog = PlainTextMenuDialog.create(targetMusic.getMusicName(), Constant.MenuTexts.menuTexts);
         dialog.setOnMenuItemClickListener(listener);
-        dialog.show(mManager);
+        FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
     }
 
     private Music targetMusic;

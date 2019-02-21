@@ -66,7 +66,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
 
     @Override
     protected void initData() {
-        mInnerAdapter = new HomePageListAdapter(getFragmentManager());
+        mInnerAdapter = new HomePageListAdapter();
         mInnerAdapter.setOnItemClickListener(this);
         mHeaderWrapAdapter = new HeaderFooterViewWrapAdapter(mInnerAdapter) {
             @Override

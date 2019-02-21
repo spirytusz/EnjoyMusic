@@ -66,6 +66,7 @@ public interface Constant {
         public static List<String> menuTexts;
         public static List<String> albumMenuTexts;
         public static List<String> artistMenuTexts;
+        public static List<String> folderMenuTexts;
 
         static {
             menuTexts = new ArrayList<>();
@@ -77,12 +78,17 @@ public interface Constant {
 
             albumMenuTexts = new ArrayList<>();
             albumMenuTexts.add("添加到播放队列");
-            albumMenuTexts.add("艺术家");
             albumMenuTexts.add("新建歌单");
+            albumMenuTexts.add("艺术家");
 
             artistMenuTexts = new ArrayList<>();
             artistMenuTexts.add("添加到播放队列");
             artistMenuTexts.add("新建歌单");
+            artistMenuTexts.add("专辑");
+
+            folderMenuTexts = new ArrayList<>();
+            folderMenuTexts.add("添加到播放队列");
+            folderMenuTexts.add("新建歌单");
         }
     }
 }

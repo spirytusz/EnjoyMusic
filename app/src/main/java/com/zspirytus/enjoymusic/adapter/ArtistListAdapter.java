@@ -1,6 +1,5 @@
 package com.zspirytus.enjoymusic.adapter;
 
-import android.support.v4.app.FragmentManager;
 import android.view.View;
 
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
@@ -8,7 +7,10 @@ import com.zspirytus.basesdk.recyclerview.listeners.OnItemLongClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.table.ArtistTable;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
+import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
@@ -16,15 +18,9 @@ import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.dialog.PlainTextMenuDialog;
 import com.zspirytus.enjoymusic.view.dialog.SaveSongListDialog;
+import com.zspirytus.enjoymusic.view.fragment.FilterAlbumListFragment;
 
 public class ArtistListAdapter extends CommonRecyclerViewAdapter<Artist> implements OnItemLongClickListener {
-
-    private FragmentManager mManager;
-
-    public ArtistListAdapter(FragmentManager manager) {
-        super();
-        mManager = manager;
-    }
 
     @Override
     public int getLayoutId() {
@@ -41,10 +37,7 @@ public class ArtistListAdapter extends CommonRecyclerViewAdapter<Artist> impleme
             holder.setOnItemClickListener(mListener);
         }
         holder.setOnItemLongClickListener(this);
-        holder.getView(R.id.item_more_info_button).setOnLongClickListener(v -> {
-            showDialog(position);
-            return true;
-        });
+        holder.getView(R.id.item_more_info_button).setOnClickListener(v -> showDialog(position));
     }
 
     @Override
@@ -56,7 +49,7 @@ public class ArtistListAdapter extends CommonRecyclerViewAdapter<Artist> impleme
         targetArtist = getList().get(position);
         PlainTextMenuDialog dialog = PlainTextMenuDialog.create(targetArtist.getArtistName(), Constant.MenuTexts.artistMenuTexts);
         dialog.setOnMenuItemClickListener(listener);
-        dialog.show(mManager);
+        FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
     }
 
     private Artist targetArtist;
@@ -77,6 +70,12 @@ public class ArtistListAdapter extends CommonRecyclerViewAdapter<Artist> impleme
                         ToastUtil.showToast(MainApplication.getForegroundContext(), "emmm...");
                     }
                 });
+                FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
+                break;
+            case 2:
+                ArtistTable artistTable = DBManager.getInstance().getDaoSession().load(ArtistTable.class, targetArtist.get_id());
+                FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
+                FragmentVisibilityManager.getInstance().show(FilterAlbumListFragment.getInstance(artistTable, artistTable.getAlbumTables()));
                 break;
         }
     };

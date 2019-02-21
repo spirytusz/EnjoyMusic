@@ -1,9 +1,8 @@
 package com.zspirytus.enjoymusic.db.table;
 
+import com.zspirytus.enjoymusic.db.greendao.AlbumTableDao;
 import com.zspirytus.enjoymusic.db.greendao.ArtistTableDao;
 import com.zspirytus.enjoymusic.db.greendao.DaoSession;
-import com.zspirytus.enjoymusic.db.greendao.SongDao;
-import com.zspirytus.enjoymusic.entity.Artist;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
@@ -12,7 +11,6 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinEntity;
 import org.greenrobot.greendao.annotation.ToMany;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,29 +23,11 @@ public class ArtistTable {
     private int mNumberOfTracks;
     @ToMany
     @JoinEntity(
-            entity = JoinArtistToSong.class,
+            entity = JoinArtistToAlbum.class,
             sourceProperty = "artistId",
-            targetProperty = "songId"
+            targetProperty = "albumId"
     )
-    private List<Song> songs;
-
-    public static List<ArtistTable> create(List<Artist> artists) {
-        List<ArtistTable> artistTables = new ArrayList<>();
-        for (Artist artist : artists) {
-            artistTables.add(ArtistTable.create(artist));
-        }
-        return artistTables;
-    }
-
-    public static ArtistTable create(Artist artist) {
-        return new ArtistTable(
-                artist.get_id(),
-                artist.getArtistName(),
-                artist.getNumberOfAlbums(),
-                artist.getNumberOfTracks()
-        );
-    }
-
+    private List<AlbumTable> albumTables;
     /**
      * Used to resolve relations
      */
@@ -108,30 +88,31 @@ public class ArtistTable {
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 1188528715)
-    public List<Song> getSongs() {
-        if (songs == null) {
+    @Generated(hash = 485269457)
+    public List<AlbumTable> getAlbumTables() {
+        if (albumTables == null) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
-            SongDao targetDao = daoSession.getSongDao();
-            List<Song> songsNew = targetDao._queryArtistTable_Songs(artistId);
+            AlbumTableDao targetDao = daoSession.getAlbumTableDao();
+            List<AlbumTable> albumTablesNew = targetDao
+                    ._queryArtistTable_AlbumTables(artistId);
             synchronized (this) {
-                if (songs == null) {
-                    songs = songsNew;
+                if (albumTables == null) {
+                    albumTables = albumTablesNew;
                 }
             }
         }
-        return songs;
+        return albumTables;
     }
 
     /**
      * Resets a to-many relationship, making the next get call to query for a fresh result.
      */
-    @Generated(hash = 432021166)
-    public synchronized void resetSongs() {
-        songs = null;
+    @Generated(hash = 1134068986)
+    public synchronized void resetAlbumTables() {
+        albumTables = null;
     }
 
     /**

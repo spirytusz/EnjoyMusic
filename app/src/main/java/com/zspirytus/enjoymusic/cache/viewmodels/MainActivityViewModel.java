@@ -94,6 +94,9 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
                 });
                 // 直接从系统数据库复制Music数据到db_enjoymusic中
                 DBManager.getInstance().getDaoSession().getSongDao().insertOrReplaceInTx(Convertor.createSongs(musicList));
+                DBManager.getInstance().getDaoSession().getAlbumTableDao().insertOrReplaceInTx(Convertor.createAlbumTables(albumList));
+                DBManager.getInstance().getDaoSession().getArtistTableDao().insertOrReplaceInTx(Convertor.createAristTables(artistList));
+                DBManager.getInstance().getDaoSession().getJoinArtistToAlbumDao().insertOrReplaceInTx(Convertor.createJoinArtistToAlbums(musicList));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

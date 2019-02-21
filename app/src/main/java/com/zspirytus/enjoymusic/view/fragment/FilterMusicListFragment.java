@@ -32,7 +32,7 @@ import com.zspirytus.enjoymusic.view.dialog.SaveSongListDialog;
 import java.util.ArrayList;
 import java.util.List;
 
-@LayoutIdInject(R.layout.fragment_music_list_detail_layout)
+@LayoutIdInject(R.layout.fragment_filter_music_list_layout)
 public class FilterMusicListFragment extends BaseFragment
         implements OnItemClickListener {
 
