@@ -12,17 +12,15 @@ import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.SongListAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
-import com.zspirytus.enjoymusic.cache.viewmodels.SongListFragmentViewModel;
+import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.db.table.Song;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
-import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @LayoutIdInject(R.layout.fragment_song_list_layout)
 public class SongListFragment extends BaseFragment implements OnItemClickListener {
@@ -30,15 +28,12 @@ public class SongListFragment extends BaseFragment implements OnItemClickListene
     @ViewInject(R.id.recyclerview)
     private RecyclerView mRecyclerView;
 
-    private SongListFragmentViewModel mViewModel;
+    private MainActivityViewModel mViewModel;
     private HeaderFooterViewWrapAdapter mAdapter;
     private SongListAdapter mInnerAdapter;
 
     @Override
     protected void initData() {
-        mViewModel = ViewModelProviders.of(this).get(SongListFragmentViewModel.class);
-        mViewModel.init();
-        mViewModel.applySongList();
         mInnerAdapter = new SongListAdapter();
         mInnerAdapter.setOnItemClickListener(this);
         mAdapter = new HeaderFooterViewWrapAdapter(mInnerAdapter) {
@@ -55,6 +50,9 @@ public class SongListFragment extends BaseFragment implements OnItemClickListene
             }
         };
         mAdapter.addHeaderViews(R.layout.item_song_list);
+        mViewModel = ViewModelProviders.of(FragmentVisibilityManager.getInstance().getCurrentFragment().getParentActivity())
+                .get(MainActivityViewModel.class);
+        mViewModel.applySongLists();
     }
 
     @Override
@@ -82,11 +80,7 @@ public class SongListFragment extends BaseFragment implements OnItemClickListene
             FragmentVisibilityManager.getInstance().show(fragment);
         } else {
             SongList item = mInnerAdapter.getList().get(position - 1);
-            List<Music> musicList = new ArrayList<>();
-            for (Song song : item.getSongsOfThisSongList()) {
-                musicList.add(song.create());
-            }
-            FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(item.getSongListName(), musicList);
+            FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(item.getSongListName(), (ArrayList<Song>) item.getSongsOfThisSongList());
             FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
             FragmentVisibilityManager.getInstance().show(fragment);
         }

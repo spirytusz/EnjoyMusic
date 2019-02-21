@@ -5,9 +5,13 @@ import android.arch.lifecycle.ViewModel;
 import android.os.Bundle;
 
 import com.zspirytus.enjoymusic.cache.ThreadPool;
+import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.table.JoinSongListToSong;
+import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -32,6 +36,23 @@ public class FilterMusicListFragmentViewModel extends ViewModel {
 
     public MutableLiveData<List<Music>> getMusicList() {
         return mMusicListExtra;
+    }
+
+    public SongList createNewSongList(String songListName, List<Music> musicList) {
+        SongList songList = new SongList();
+        songList.setMusicCount(musicList.size());
+        songList.setSongListName(songListName);
+        songList.setSongListId(System.currentTimeMillis());
+        List<JoinSongListToSong> joinSongListToSongs = new ArrayList<>();
+        for (Music music : musicList) {
+            JoinSongListToSong joinSongListToSong = new JoinSongListToSong();
+            joinSongListToSong.setSongId(music.getId());
+            joinSongListToSong.setSongListId(songList.getSongListId());
+            joinSongListToSongs.add(joinSongListToSong);
+        }
+        DBManager.getInstance().getDaoSession().getSongListDao().insert(songList);
+        DBManager.getInstance().getDaoSession().getJoinSongListToSongDao().insertInTx(joinSongListToSongs);
+        return songList;
     }
 
     public void obtainExtra(Bundle bundle, List<Music> musics) {

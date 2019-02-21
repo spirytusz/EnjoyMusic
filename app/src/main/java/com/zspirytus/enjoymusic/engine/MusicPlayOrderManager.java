@@ -11,7 +11,10 @@ import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.listeners.observable.PlayListChangeObservable;
 import com.zspirytus.enjoymusic.utils.RandomUtil;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by ZSpirytus on 2018/9/5.
@@ -50,14 +53,16 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
         notifyAllObserverPlayListChange(playList);
     }
 
-    public void addMusicToPlayList(Music music) {
-        mPlayList.add(music);
-        MusicSharedPreferences.savePlayList(mPlayList);
-        notifyAllObserverPlayListChange(mPlayList);
-    }
-
     public void addMusicListToPlayList(List<Music> musicList) {
-        mPlayList.addAll(musicList);
+        if (mPlayList != null) {
+            Set<Music> set = new HashSet<>();
+            set.addAll(mPlayList);
+            set.addAll(musicList);
+            mPlayList = new ArrayList<>(set);
+        } else {
+            mPlayList = new ArrayList<>();
+            mPlayList.addAll(musicList);
+        }
         MusicSharedPreferences.savePlayList(mPlayList);
         notifyAllObserverPlayListChange(mPlayList);
     }

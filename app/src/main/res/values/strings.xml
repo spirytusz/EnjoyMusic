@@ -81,4 +81,9 @@
     <string name="audio_effect_reset">重置</string>
     <!-- AudioEffect Text end -->
 
+    <!-- FilterMusicFragment Menu Text start -->
+    <string name="add_to_play_queue">添加到播放队列</string>
+    <string name="new_song_list">新建歌单</string>
+    <!-- FilterMusicFragment Menu Text end -->
+
 </resources>

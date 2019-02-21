@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
@@ -20,6 +21,8 @@ import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.FilterMusicListFragmentViewModel;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
+import com.zspirytus.enjoymusic.db.table.Song;
+import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
@@ -28,6 +31,7 @@ import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.view.dialog.SaveSongListDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +40,7 @@ import java.util.List;
 public class FilterMusicListFragment extends BaseFragment
         implements OnItemClickListener {
 
+    private static final String SHOULD_SHOW_MENU_ICON = "shouldShowMenuIcon";
     private static final String EXTRA_KEY = "extra";
     private static final String FILTER_EXTRA_KEY = "filterExtra";
     private static final String MUSIC_LIST_EXTRA_KEY = "MusicListExtra";
@@ -47,6 +52,8 @@ public class FilterMusicListFragment extends BaseFragment
     private AppCompatImageView mBackBtn;
     @ViewInject(R.id.title)
     private TextView mTitle;
+    @ViewInject(R.id.music_detail_toolbar)
+    private Toolbar mToolbar;
 
     private FilterMusicListFragmentViewModel mViewModel;
     private HeaderFooterViewWrapAdapter mAdapter;
@@ -77,6 +84,10 @@ public class FilterMusicListFragment extends BaseFragment
         mBackBtn.setOnClickListener(v -> {
             goBack();
         });
+        if (getArguments().getBoolean(SHOULD_SHOW_MENU_ICON)) {
+            mToolbar.inflateMenu(R.menu.filter_music_fragment_menu);
+            mToolbar.getOverflowIcon().setTint(getResources().getColor(R.color.black));
+        }
         fixNavBarHeight(mRecyclerView);
     }
 
@@ -123,6 +134,31 @@ public class FilterMusicListFragment extends BaseFragment
             mInnerAdapter.setList(valuse);
             mAdapter.wrap(mInnerAdapter);
             mRecyclerView.setAdapter(mAdapter);
+            if (getArguments().getBoolean(SHOULD_SHOW_MENU_ICON)) {
+                mToolbar.setOnMenuItemClickListener(item -> {
+                    switch (item.getItemId()) {
+                        case R.id.menu_add_to_play_queue:
+                            List<Music> musicList = mInnerAdapter.getList();
+                            ForegroundMusicController.getInstance().addToPlayList(musicList);
+                            return true;
+                        case R.id.menu_new_song_list:
+                            SaveSongListDialog dialog = new SaveSongListDialog();
+                            dialog.setOnDialogButtonClickListener(content -> {
+                                if (content != null) {
+                                    SongList songList = mViewModel.createNewSongList(content, mInnerAdapter.getList());
+                                    ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class)
+                                            .getSongList().getValue().add(songList);
+                                    dialog.dismiss();
+                                } else {
+                                    toast("emmm...");
+                                }
+                            });
+                            dialog.show(getChildFragmentManager(), dialog.getClass().getSimpleName());
+                            return true;
+                    }
+                    return false;
+                });
+            }
         });
         if (savedInstanceState != null) {
             mInnerAdapter.setList(savedInstanceState.getParcelableArrayList(FILTER_MUSIC_LIST));
@@ -150,6 +186,7 @@ public class FilterMusicListFragment extends BaseFragment
         FilterMusicListFragment fragment = new FilterMusicListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(FILTER_EXTRA_KEY, filter);
+        bundle.putBoolean(SHOULD_SHOW_MENU_ICON, true);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -159,6 +196,21 @@ public class FilterMusicListFragment extends BaseFragment
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(MUSIC_LIST_EXTRA_KEY, (ArrayList<Music>) musicList);
         bundle.putString(EXTRA_KEY, title);
+        bundle.putBoolean(SHOULD_SHOW_MENU_ICON, true);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static FilterMusicListFragment getInstance(String title, ArrayList<Song> songList) {
+        FilterMusicListFragment fragment = new FilterMusicListFragment();
+        List<Music> musicList = new ArrayList<>();
+        for (Song song : songList) {
+            musicList.add(song.create());
+        }
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(MUSIC_LIST_EXTRA_KEY, (ArrayList<Music>) musicList);
+        bundle.putString(EXTRA_KEY, title);
+        bundle.putBoolean(SHOULD_SHOW_MENU_ICON, true);
         fragment.setArguments(bundle);
         return fragment;
     }

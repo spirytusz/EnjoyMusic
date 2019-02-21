@@ -10,6 +10,7 @@ import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Song;
+import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.entity.Album;
@@ -109,6 +110,11 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
         if (savedMusic != null) {
             setCurrentPlayingMusic(savedMusic);
         }
+    }
+
+    public void applySongLists() {
+        List<SongList> songLists = DBManager.getInstance().getDaoSession().getSongListDao().loadAll();
+        setSongList(songLists);
     }
 
 }

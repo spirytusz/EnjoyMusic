@@ -13,6 +13,7 @@ import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.impl.binder.MusicController;
 import com.zspirytus.enjoymusic.impl.binder.MusicProgressControl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -136,6 +137,45 @@ public class ForegroundMusicController {
                 }
                 try {
                     mISetPlayList.setPlayListDirectly(musicList);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+    public void addToPlayList(final List<Music> musicList) {
+        if (musicList != null) {
+            ThreadPool.execute(() -> {
+                if (mISetPlayList == null) {
+                    IBinder setPlayListBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
+                    mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
+                }
+                try {
+                    mISetPlayList.appendMusicListDirectly(musicList);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+    public void addToPlayList(final Music music) {
+        if (music != null) {
+            List<Music> musicList = new ArrayList<>(1);
+            addToPlayList(musicList);
+        }
+    }
+
+    public void addToPlayList(final MusicFilter filter) {
+        if (filter != null) {
+            ThreadPool.execute(() -> {
+                if (mISetPlayList == null) {
+                    IBinder setPlayListBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
+                    mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
+                }
+                try {
+                    mISetPlayList.appendMusic(filter);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

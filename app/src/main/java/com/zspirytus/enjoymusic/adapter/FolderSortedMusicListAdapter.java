@@ -18,7 +18,7 @@ public class FolderSortedMusicListAdapter extends CommonRecyclerViewAdapter<Fold
     public void convert(CommonViewHolder holder, FolderSortedMusic folderSortedMusic, int position) {
         Music firstMusicInFolder = folderSortedMusic.getFolderMusicList().get(0);
         String coverPath = firstMusicInFolder.getMusicThumbAlbumCoverPath();
-        ImageLoader.load(holder.getView(R.id.item_cover), coverPath, folderSortedMusic.getFolderName());
+        ImageLoader.load(holder.getView(R.id.item_cover), coverPath, folderSortedMusic.getParentFolderDir());
         holder.setText(R.id.item_title, folderSortedMusic.getParentFolderDir());
         holder.setText(R.id.item_sub_title, folderSortedMusic.getFolderName());
         if (mListener != null) {

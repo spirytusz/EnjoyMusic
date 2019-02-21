@@ -30,16 +30,15 @@
                 android:tint="@color/black" />
 
             <View
-                android:layout_width="20dp"
+                android:layout_width="32dp"
                 android:layout_height="match_parent" />
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
-                style="@style/MediumFont"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="23sp"
                 android:layout_marginStart="16dp" />
 
         </android.support.v7.widget.Toolbar>

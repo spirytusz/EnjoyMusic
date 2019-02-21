@@ -33,11 +33,6 @@ public class PlayListSetter extends ISetPlayList.Stub {
     }
 
     @Override
-    public void appendMusicDirectly(Music music) throws RemoteException {
-        MusicPlayOrderManager.getInstance().addMusicToPlayList(music);
-    }
-
-    @Override
     public void appendMusicListDirectly(List<Music> musicList) throws RemoteException {
         MusicPlayOrderManager.getInstance().addMusicListToPlayList(musicList);
     }
