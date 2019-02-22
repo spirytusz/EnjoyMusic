@@ -12,7 +12,7 @@ import android.view.animation.DecelerateInterpolator;
 
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
+import com.zspirytus.enjoymusic.adapter.PlayListAdapter;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.cache.viewmodels.PlayListFragmentViewModel;
@@ -25,6 +25,7 @@ import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,13 +41,13 @@ public class PlayListFragment extends CommonHeaderBaseFragment
     private AppCompatTextView mInfoTextView;
 
     private PlayListFragmentViewModel mViewModel;
-    private MusicListAdapter mAdapter;
+    private PlayListAdapter mAdapter;
     private AnimatorSet mAnim;
     private AnimatorSet mShadowAnim;
 
     @Override
     protected void initData() {
-        mAdapter = new MusicListAdapter();
+        mAdapter = new PlayListAdapter();
         mAdapter.setOnItemClickListener(this);
         List<Music> allMusicList = ViewModelProviders.of(getParentActivity())
                 .get(MainActivityViewModel.class)
@@ -64,6 +65,24 @@ public class PlayListFragment extends CommonHeaderBaseFragment
         setupInfoTextView(true);
         mToolbar.setTitle(R.string.play_list_fragment_title);
         mToolbar.setTitleTextColor(getResources().getColor(R.color.black));
+        mToolbar.inflateMenu(R.menu.play_list_menu);
+        mToolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.begin_to_play:
+                    if (!mAdapter.getList().isEmpty()) {
+                        Music firstMusic = mAdapter.getList().get(0);
+                        ForegroundMusicController.getInstance().play(firstMusic);
+                    } else {
+                        toast("播放列表为空...");
+                    }
+                    break;
+                case R.id.clear_play_list:
+                    ForegroundMusicController.getInstance().setPlayList(new ArrayList<>());
+                    break;
+            }
+            return false;
+        });
+        mToolbar.getOverflowIcon().setTint(getResources().getColor(R.color.black));
         playShadowAnimator();
     }
 
@@ -71,9 +90,11 @@ public class PlayListFragment extends CommonHeaderBaseFragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel.getPlayList().observe(this, values -> {
+            mAdapter.setList(values);
             if (values != null && !values.isEmpty()) {
                 mInfoTextView.setVisibility(View.GONE);
-                mAdapter.setList(values);
+            } else {
+                mInfoTextView.setVisibility(View.VISIBLE);
             }
         });
     }
