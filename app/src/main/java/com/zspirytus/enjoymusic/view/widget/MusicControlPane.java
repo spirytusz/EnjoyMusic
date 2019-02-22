@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -66,7 +66,7 @@ public class MusicControlPane extends LinearLayout implements View.OnClickListen
 
     public void setPlayState(boolean isPlaying) {
         int resId = isPlaying ? R.drawable.ic_pause_black_48dp : R.drawable.ic_play_arrow_black_48dp;
-        ((ImageButton) findViewById(R.id.bottom_music_play_pause)).setImageResource(resId);
+        ((ImageView) findViewById(R.id.bottom_music_play_pause)).setImageResource(resId);
     }
 
     public interface OnViewClickListener {

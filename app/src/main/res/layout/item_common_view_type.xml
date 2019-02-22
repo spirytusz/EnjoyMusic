@@ -23,15 +23,15 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/item_more_info_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:foreground="?android:selectableItemBackground"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_more_vert_grey_400_24dp"
         android:focusable="true"
-        android:layout_marginEnd="16dp"
+        android:padding="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/guideline"
-        app:layout_constraintBottom_toBottomOf="@id/guideline"
-        app:srcCompat="@drawable/ic_more_vert_grey_400_24dp" />
+        app:layout_constraintBottom_toBottomOf="@id/guideline" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/item_title"

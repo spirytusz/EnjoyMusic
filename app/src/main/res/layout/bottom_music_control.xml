@@ -33,28 +33,26 @@
         app:layout_constraintStart_toEndOf="@+id/bottom_music_cover"
         android:text="@string/music_artist" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/bottom_music_play_pause"
         android:layout_width="72dp"
         android:layout_height="match_parent"
         android:padding="12dp"
         android:src="@drawable/ic_play_arrow_black_48dp"
         android:focusable="true"
-        android:foreground="?selectableItemBackgroundBorderless"
-        android:background="@color/transparent"
+        android:background="?selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/bottom_music_next"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/bottom_music_next"
         android:layout_width="72dp"
         android:layout_height="match_parent"
         android:padding="16dp"
         android:src="@drawable/ic_skip_next_black_48dp"
         android:focusable="true"
-        android:foreground="?selectableItemBackgroundBorderless"
-        android:background="@color/transparent"
+        android:background="?selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
