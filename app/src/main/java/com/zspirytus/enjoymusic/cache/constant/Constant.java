@@ -67,6 +67,7 @@ public interface Constant {
         public static List<String> albumMenuTexts;
         public static List<String> artistMenuTexts;
         public static List<String> folderMenuTexts;
+        public static List<String> songListMenuTexts;
 
         static {
             menuTexts = new ArrayList<>();
@@ -89,6 +90,9 @@ public interface Constant {
             folderMenuTexts = new ArrayList<>();
             folderMenuTexts.add("添加到播放队列");
             folderMenuTexts.add("新建歌单");
+
+            songListMenuTexts = new ArrayList<>();
+            songListMenuTexts.add("添加到播放队列");
         }
     }
 }
