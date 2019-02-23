@@ -26,6 +26,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
     greendao{
         schemaVersion 1
         targetGenDir 'src/main/java'
@@ -56,6 +63,9 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_gson_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_gson_version"
+    implementation('com.github.dkorobtsov:LoggingInterceptor:4.5') {
+        exclude group: 'org.json', module: 'json'
+    }
     implementation "com.google.code.gson:gson:$gson_version"
     implementation "com.android.support:palette-v7:$android_support_version"
     implementation "de.hdodenhof:circleimageview:$circle_image_version"
