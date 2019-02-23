@@ -9,6 +9,8 @@ buildscript {
     ext.glide_version = '4.8.0'
     ext.rxjava_version = '2.2.0'
     ext.rxandroid_version = '2.0.2'
+    ext.retrofit_version = '2.4.0'
+    ext.retrofit_gson_version = '2.3.0'
     ext.gson_version = '2.8.5'
     ext.circle_image_version = '2.2.0'
     ext.item_animator_version = '2.3.0'

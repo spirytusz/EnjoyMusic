@@ -19,6 +19,13 @@ import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.online.RetrofitManager;
+import com.zspirytus.enjoymusic.online.entity.SearchResultMusic;
+
+import java.util.List;
+
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 @LayoutIdInject(R.layout.fragment_search_layout)
 public class SearchFragment extends BaseFragment {
@@ -42,6 +49,30 @@ public class SearchFragment extends BaseFragment {
         mViewModel = ViewModelProviders.of(this).get(SearchFragmentViewModel.class);
         mViewModel.init(getParentActivity());
         mAdapter = new SearchResultListAdapter();
+        RetrofitManager.searchMusic("夜曲", new Observer<List<SearchResultMusic>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(List<SearchResultMusic> searchResultMusics) {
+                toast("Thread:" + Thread.currentThread().getName());
+                for (SearchResultMusic music : searchResultMusics) {
+                    e("musicName = " + music.getName() + "\turl = " + music.getUrl());
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
     @Override
