@@ -28,7 +28,7 @@
                 android:id="@+id/cancel_btn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_clear_black_48dp" />
+                android:src="@drawable/ic_clear_black_24dp" />
 
             <View
                 android:layout_width="20dp"

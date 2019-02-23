@@ -59,10 +59,18 @@ public class MultiItemAdapter<T> extends RecyclerView.Adapter<CommonViewHolder> 
 
     public void setData(List<T> data) {
         mData = data;
+        notifyDataSetChanged();
     }
 
     public void addData(List<T> data) {
         mData.addAll(data);
+    }
+
+    public void clearData() {
+        if (mData != null) {
+            mData.clear();
+            notifyDataSetChanged();
+        }
     }
 
     public List<T> getData() {

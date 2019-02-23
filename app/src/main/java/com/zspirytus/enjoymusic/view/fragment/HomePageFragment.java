@@ -26,6 +26,7 @@ import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.cache.viewmodels.HomePageFragmentViewModel;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
+import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
@@ -115,6 +116,10 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             }
         });
         mAppBarLayout.addOnOffsetChangedListener(this);
+        mSearchBtn.setOnClickListener(v -> {
+            FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
+            FragmentVisibilityManager.getInstance().show(new SearchFragment());
+        });
         getParentActivity().setDefaultStatusIconColor();
     }
 
@@ -217,11 +222,11 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             if (drawable != null) {
                 drawable.setTint(0xFFFFFFFF);
             }
+            mSearchBtn.getDrawable().setTint(0xFFFFFFFF);
             mAppBarLayout.setTranslationZ(0f);
             mAppBarLayout.setElevation(0f);
             mStatusBarView.setTranslationZ(0f);
             mStatusBarView.setElevation(0f);
-            mSearchBtn.getDrawable().setTint(0xFFFFFF);
             getParentActivity().setDefaultStatusIconColor();
         } else {
             mStatusBarView.getBackground().setAlpha(1);
@@ -235,6 +240,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             if (drawable != null) {
                 drawable.setTint(0xFF000000);
             }
+            mSearchBtn.getDrawable().setTint(0xFF000000);
             mAppBarLayout.setTranslationZ(PixelsUtil.dp2px(getContext(), 4));
             // CollapsingLayout未展开
             if (mAppBarLayout.getBottom() == mStatusBarView.getHeight()) {
@@ -244,7 +250,6 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             }
             mAppBarLayout.setElevation(PixelsUtil.dp2px(getContext(), 6));
             mStatusBarView.setElevation(PixelsUtil.dp2px(getContext(), 6));
-            mSearchBtn.getDrawable().setTint(0x00000000);
             getParentActivity().setLightStatusIconColor();
         }
     }
