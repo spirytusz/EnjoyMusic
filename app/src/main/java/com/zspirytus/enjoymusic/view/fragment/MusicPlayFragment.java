@@ -12,11 +12,13 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MusicPlayFragmentViewModels;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
+import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.impl.binder.PlayMusicObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.PlayStateObserverManager;
@@ -187,7 +189,6 @@ public class MusicPlayFragment extends BaseFragment
         mViewModel.getCurrentPlayingMusic().observe(this, (values) -> {
             if (values != null) {
                 setView(values);
-                mCover.resetRotation();
             }
         });
         mViewModel.getPlayMode().observe(this, (values) -> {
@@ -277,22 +278,7 @@ public class MusicPlayFragment extends BaseFragment
 
     private void setView(Music music) {
         String musicThumbAlbumCoverPath = music.getMusicThumbAlbumCoverPath();
-        if (musicThumbAlbumCoverPath != null) {
-            File coverFile = new File(musicThumbAlbumCoverPath);
-            if (coverFile.exists()) {
-                GlideApp.with(this)
-                        .load(coverFile)
-                        .into(mCover);
-            } else {
-                GlideApp.with(this)
-                        .load(R.drawable.defalut_cover)
-                        .into(mCover);
-            }
-        } else {
-            GlideApp.with(this)
-                    .load(R.drawable.defalut_cover)
-                    .into(mCover);
-        }
+        ImageLoader.load(mCover, musicThumbAlbumCoverPath, music.getMusicName(), new CenterCrop());
         mTitle.setText(music.getMusicName());
         mSubTitle.setText(music.getMusicArtist());
         mNowTime.setText("00:00");
@@ -317,6 +303,7 @@ public class MusicPlayFragment extends BaseFragment
 
     private void showMusicMetaDataFragment() {
         MusicMetaDataFragment fragment = MusicMetaDataFragment.getInstance(mViewModel.getCurrentPlayingMusic().getValue());
+        fragment.setOnMusicMetaDataChangeListener(music -> mViewModel.setCurrentPlayingMusic(music));
         FragmentVisibilityManager.getInstance().addToBackStack(this);
         FragmentVisibilityManager.getInstance().show(fragment);
     }

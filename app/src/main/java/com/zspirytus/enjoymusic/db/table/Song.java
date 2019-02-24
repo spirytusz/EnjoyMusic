@@ -1,7 +1,5 @@
 package com.zspirytus.enjoymusic.db.table;
 
-import com.zspirytus.enjoymusic.entity.Music;
-
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
@@ -17,16 +15,17 @@ public class Song {
     private String musicName;
     private String musicAlbumName;
     private String musicThumbAlbumCoverPath;
+    private String artistArt;
     private String musicArtist;
     private long musicDuration;
     private String musicFileSize;
     private long musicAddDate;
 
-    @Generated(hash = 1287573145)
+    @Generated(hash = 1560294498)
     public Song(long songId, long albumId, long artistId, String musicFilePath,
-                String musicName, String musicAlbumName,
-                String musicThumbAlbumCoverPath, String musicArtist, long musicDuration,
-                String musicFileSize, long musicAddDate) {
+                String musicName, String musicAlbumName, String musicThumbAlbumCoverPath,
+                String artistArt, String musicArtist, long musicDuration, String musicFileSize,
+                long musicAddDate) {
         this.songId = songId;
         this.albumId = albumId;
         this.artistId = artistId;
@@ -34,6 +33,7 @@ public class Song {
         this.musicName = musicName;
         this.musicAlbumName = musicAlbumName;
         this.musicThumbAlbumCoverPath = musicThumbAlbumCoverPath;
+        this.artistArt = artistArt;
         this.musicArtist = musicArtist;
         this.musicDuration = musicDuration;
         this.musicFileSize = musicFileSize;
@@ -42,22 +42,6 @@ public class Song {
 
     @Generated(hash = 87031450)
     public Song() {
-    }
-
-    public static Song create(Music music) {
-        return new Song(
-                music.getId(),
-                music.getAlbumId(),
-                music.getArtistId(),
-                music.getMusicFilePath(),
-                music.getMusicName(),
-                music.getMusicAlbumName(),
-                music.getMusicThumbAlbumCoverPath(),
-                music.getMusicArtist(),
-                music.getMusicDuration(),
-                music.getMusicFileSize(),
-                music.getMusicAddDate()
-        );
     }
 
     public long getSongId() {
@@ -146,5 +130,13 @@ public class Song {
 
     public void setMusicAddDate(long musicAddDate) {
         this.musicAddDate = musicAddDate;
+    }
+
+    public String getArtistArt() {
+        return this.artistArt;
+    }
+
+    public void setArtistArt(String artistArt) {
+        this.artistArt = artistArt;
     }
 }

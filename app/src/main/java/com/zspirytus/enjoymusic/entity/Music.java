@@ -18,6 +18,8 @@ public class Music implements Parcelable {
     private String musicName;
     private String musicAlbumName;
     private String musicThumbAlbumCoverPath;
+    // 艺术家封面，不会被序列化.
+    private String artistArt;
     private String musicArtist;
     private long musicDuration;
     private String musicFileSize;
@@ -49,6 +51,18 @@ public class Music implements Parcelable {
         this.musicDuration = source.readLong();
         this.musicFileSize = source.readString();
         this.musicAddDate = source.readLong();
+    }
+
+    public void setMusicThumbAlbumCoverPath(String musicThumbAlbumCoverPath) {
+        this.musicThumbAlbumCoverPath = musicThumbAlbumCoverPath;
+    }
+
+    public String getArtistArt() {
+        return artistArt;
+    }
+
+    public void setArtistArt(String artistArt) {
+        this.artistArt = artistArt;
     }
 
     public long getId() {
@@ -102,7 +116,7 @@ public class Music implements Parcelable {
 
     @Override
     public int hashCode() {
-        return this.toString().hashCode();
+        return (_id + "" + albumId + "" + artistId).hashCode();
     }
 
     @Override
@@ -125,6 +139,11 @@ public class Music implements Parcelable {
             stringBuilder.append("musicAlbumName:" + musicAlbumName + ", ");
         } else {
             stringBuilder.append("musicAlbumName:null, ");
+        }
+        if (artistArt != null) {
+            stringBuilder.append("artistArt:" + artistArt + ", ");
+        } else {
+            stringBuilder.append("artistArt:null, ");
         }
         if (musicArtist != null) {
             stringBuilder.append("musicArtist:" + musicArtist + ", ");

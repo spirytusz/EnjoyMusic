@@ -53,7 +53,7 @@
     <!-- MusicMetaData Text start -->
     <string name="music_meta_data_fragment_title">编辑音乐信息</string>
     <string name="music_meta_data_save">保存</string>
-    <string name="music_meta_data_download_music_info">下载音乐信息</string>
+    <string name="music_meta_data_download_music_info">下载音乐封面</string>
     <string name="music_meta_data_edit_info">编辑信息</string>
     <string name="music_meta_data_title">标题</string>
     <string name="music_meta_data_artist">艺术家</string>
@@ -63,7 +63,7 @@
     <string name="music_meta_data_year">年</string>
     <string name="music_meta_data_genre">流派</string>
     <string name="music_meta_data_download">下载</string>
-    <string name="music_meta_data_obtain_music_info">获取音乐信息</string>
+    <string name="music_meta_data_obtain_music_info">获取音乐封面</string>
     <string name="music_meta_data_dialog_message">要放弃您所做的更改吗?</string>
     <string name="music_meta_data_dialog_ok">确定</string>
     <string name="music_meta_data_dialog_cancel">取消</string>

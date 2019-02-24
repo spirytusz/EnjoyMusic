@@ -52,6 +52,7 @@ public class Convertor {
                 music.getMusicName(),
                 music.getMusicAlbumName(),
                 music.getMusicThumbAlbumCoverPath(),
+                music.getArtistArt(),
                 music.getMusicArtist(),
                 music.getMusicDuration(),
                 music.getMusicFileSize(),

@@ -16,14 +16,11 @@ import com.zspirytus.enjoymusic.entity.MusicMetaData;
 import com.zspirytus.enjoymusic.entity.MusicMetaDataListItem;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 
-import java.util.List;
-
 public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataListItem> {
 
     private OnDownLoadBtnClickListener mListener;
 
-    public MusicMetaDataListAdapter(List<MusicMetaDataListItem> data) {
-        super(data);
+    public MusicMetaDataListAdapter() {
         addArtistArtItemDelegate();
         addPreviewItemDelegate();
         addTitleItemDelegate();
@@ -46,8 +43,8 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
 
             @Override
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
-                String path = data.getPreview().getMusicThumbAlbumCoverPath();
-                ImageLoader.load((ImageView) holder.getItemView(), path, data.getPreview().getMusicName(), new CenterCrop());
+                String path = data.getPreview().getArtistArt();
+                ImageLoader.load((ImageView) holder.getItemView(), path, data.getPreview().getMusicArtist(), new CenterCrop());
                 holder.setOnItemClickListener((view, position) -> {
                 });
             }
@@ -71,7 +68,7 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
                 Music music = data.getPreview();
                 String path = music.getMusicThumbAlbumCoverPath();
-                ImageLoader.load(holder.getView(R.id.music_preview_cover), path, music.getMusicName());
+                ImageLoader.load(holder.getView(R.id.music_preview_cover), path, music.getMusicAlbumName(), new CenterCrop());
                 MusicMetaData metaData = MusicMetaDataReader.getInstance().readMetaData(music);
                 String musicName = music.getMusicName();
                 String artist = music.getMusicArtist();

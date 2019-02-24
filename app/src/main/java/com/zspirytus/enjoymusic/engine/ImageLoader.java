@@ -21,30 +21,23 @@ public class ImageLoader {
         throw new AssertionError();
     }
 
-    public static void load(ImageView imageView, String path, String alternativeText) {
-        if (path != null) {
-            File file = MusicCoverFileCache.getInstance().getCoverFile(path);
-            if (file != null) {
-                GlideApp.with(MainApplication.getForegroundContext())
-                        .load(file)
-                        .into(imageView);
-            } else {
-                loadTextDrawable(imageView, alternativeText);
-            }
-        } else {
-            loadTextDrawable(imageView, alternativeText);
-        }
-    }
-
     @SuppressWarnings("unchecked")
     public static void load(ImageView imageView, String path, String alternativeText, BitmapTransformation... transformations) {
-        MultiTransformation multiTransformation = new MultiTransformation(transformations);
-        RequestOptions options = new RequestOptions().transform(multiTransformation);
+        RequestOptions options = new RequestOptions();
+        if (transformations != null && transformations.length > 0) {
+            MultiTransformation multiTransformation = new MultiTransformation(transformations);
+            options = options.transform(multiTransformation);
+        }
         if (path != null) {
             File file = MusicCoverFileCache.getInstance().getCoverFile(path);
             if (file != null) {
                 GlideApp.with(MainApplication.getForegroundContext())
                         .load(file)
+                        .apply(options)
+                        .into(imageView);
+            } else if (path.contains("http") || path.contains("https")) {
+                GlideApp.with(MainApplication.getForegroundContext())
+                        .load(path)
                         .apply(options)
                         .into(imageView);
             } else {

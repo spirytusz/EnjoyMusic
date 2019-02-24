@@ -19,8 +19,6 @@ public class MusicMetaDataReader {
     }
 
     private MusicMetaDataReader() {
-        mRetriever = new MediaMetadataRetriever();
-        mMediaExtractor = new MediaExtractor();
     }
 
     public static MusicMetaDataReader getInstance() {
@@ -28,6 +26,8 @@ public class MusicMetaDataReader {
     }
 
     public MusicMetaData readMetaData(Music music) {
+        mRetriever = new MediaMetadataRetriever();
+        mMediaExtractor = new MediaExtractor();
         mRetriever.setDataSource(music.getMusicFilePath());
         try {
             mMediaExtractor.setDataSource(music.getMusicFilePath());
