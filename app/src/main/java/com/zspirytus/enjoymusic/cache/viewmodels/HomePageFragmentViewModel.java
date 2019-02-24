@@ -5,14 +5,10 @@ import android.arch.lifecycle.ViewModel;
 
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.db.DBManager;
-import com.zspirytus.enjoymusic.db.greendao.SongDao;
+import com.zspirytus.enjoymusic.db.greendao.MusicDao;
 import com.zspirytus.enjoymusic.db.table.Music;
-import com.zspirytus.enjoymusic.entity.convert.Convertor;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class HomePageFragmentViewModel extends ViewModel {
 
@@ -25,16 +21,12 @@ public class HomePageFragmentViewModel extends ViewModel {
 
     public void applyMusicList() {
         ThreadPool.execute(() -> {
-            List<Song> songs = DBManager.getInstance()
+            List<Music> musicList = DBManager.getInstance()
                     .getDaoSession()
-                    .queryBuilder(Song.class)
-                    .orderDesc(SongDao.Properties.MusicAddDate)
+                    .queryBuilder(Music.class)
+                    .orderDesc(MusicDao.Properties.MusicAddDate)
                     .limit(LIMIT_SIZE).list();
-            List<Music> musicList = new ArrayList<>();
-            for (Song song : songs) {
-                musicList.add(Convertor.createMusic(song));
-            }
-            AndroidSchedulers.mainThread().scheduleDirect(() -> mMusicList.setValue(musicList));
+            mMusicList.postValue(musicList);
         });
     }
 }

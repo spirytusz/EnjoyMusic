@@ -9,7 +9,6 @@ import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.table.Music;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.impl.binder.MusicController;
 import com.zspirytus.enjoymusic.impl.binder.MusicProgressControl;
 
@@ -112,22 +111,6 @@ public class ForegroundMusicController {
         });
     }
 
-    public void setPlayList(final MusicFilter musicFilter) {
-        if (musicFilter != null) {
-            ThreadPool.execute(() -> {
-                if (mISetPlayList == null) {
-                    IBinder setPlayListBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
-                    mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
-                }
-                try {
-                    mISetPlayList.setPlayList(musicFilter);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
-    }
-
     public void setPlayList(final List<Music> musicList) {
         if (musicList != null) {
             ThreadPool.execute(() -> {
@@ -136,7 +119,7 @@ public class ForegroundMusicController {
                     mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
                 }
                 try {
-                    mISetPlayList.setPlayListDirectly(musicList);
+                    mISetPlayList.setPlayList(musicList);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -152,7 +135,7 @@ public class ForegroundMusicController {
                     mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
                 }
                 try {
-                    mISetPlayList.appendMusicListDirectly(musicList);
+                    mISetPlayList.appendMusicList(musicList);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -165,22 +148,6 @@ public class ForegroundMusicController {
             List<Music> musicList = new ArrayList<>();
             musicList.add(music);
             addToPlayList(musicList);
-        }
-    }
-
-    public void addToPlayList(final MusicFilter filter) {
-        if (filter != null) {
-            ThreadPool.execute(() -> {
-                if (mISetPlayList == null) {
-                    IBinder setPlayListBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
-                    mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
-                }
-                try {
-                    mISetPlayList.appendMusic(filter);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            });
         }
     }
 

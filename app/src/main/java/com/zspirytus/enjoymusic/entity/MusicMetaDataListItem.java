@@ -1,13 +1,16 @@
 package com.zspirytus.enjoymusic.entity;
 
+import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 
 public class MusicMetaDataListItem {
 
     private boolean isArtistArt = false;
+    private Artist artist;
 
-    private boolean isPreview = false;
-    private Music preview;
+    private boolean isMusic = false;
+    private Music music;
 
     private boolean isTitle;
     private String title;
@@ -24,6 +27,8 @@ public class MusicMetaDataListItem {
     private String secondEditTextTitle;
     private String secondEditTextDefaultText;
 
+    private Album album;
+
     public boolean isArtistArt() {
         return isArtistArt;
     }
@@ -32,20 +37,28 @@ public class MusicMetaDataListItem {
         isArtistArt = artistArt;
     }
 
-    public boolean isPreview() {
-        return isPreview;
+    public Artist getArtist() {
+        return artist;
     }
 
-    public void setPreview(boolean preview) {
-        isPreview = preview;
+    public void setArtist(Artist artist) {
+        this.artist = artist;
     }
 
-    public Music getPreview() {
-        return preview;
+    public boolean isMusic() {
+        return isMusic;
     }
 
-    public void setPreview(Music preview) {
-        this.preview = preview;
+    public void setMusic(boolean music) {
+        isMusic = music;
+    }
+
+    public Music getMusic() {
+        return music;
+    }
+
+    public void setMusic(Music music) {
+        this.music = music;
     }
 
     public boolean isTitle() {
@@ -88,6 +101,14 @@ public class MusicMetaDataListItem {
         this.editTextTitle = editTextTitle;
     }
 
+    public String getEditTextDefaultText() {
+        return editTextDefaultText;
+    }
+
+    public void setEditTextDefaultText(String editTextDefaultText) {
+        this.editTextDefaultText = editTextDefaultText;
+    }
+
     public boolean isDuplicateEditText() {
         return isDuplicateEditText;
     }
@@ -104,22 +125,6 @@ public class MusicMetaDataListItem {
         this.firstEditTextTitle = firstEditTextTitle;
     }
 
-    public String getSecondEditTextTitle() {
-        return secondEditTextTitle;
-    }
-
-    public void setSecondEditTextTitle(String secondEditTextTitle) {
-        this.secondEditTextTitle = secondEditTextTitle;
-    }
-
-    public String getEditTextDefaultText() {
-        return editTextDefaultText;
-    }
-
-    public void setEditTextDefaultText(String editTextDefaultText) {
-        this.editTextDefaultText = editTextDefaultText;
-    }
-
     public String getFirstEditTextDefaultText() {
         return firstEditTextDefaultText;
     }
@@ -128,11 +133,27 @@ public class MusicMetaDataListItem {
         this.firstEditTextDefaultText = firstEditTextDefaultText;
     }
 
+    public String getSecondEditTextTitle() {
+        return secondEditTextTitle;
+    }
+
+    public void setSecondEditTextTitle(String secondEditTextTitle) {
+        this.secondEditTextTitle = secondEditTextTitle;
+    }
+
     public String getSecondEditTextDefaultText() {
         return secondEditTextDefaultText;
     }
 
     public void setSecondEditTextDefaultText(String secondEditTextDefaultText) {
         this.secondEditTextDefaultText = secondEditTextDefaultText;
+    }
+
+    public Album getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(Album album) {
+        this.album = album;
     }
 }

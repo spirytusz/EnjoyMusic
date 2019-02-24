@@ -16,7 +16,6 @@ import com.zspirytus.enjoymusic.cache.viewmodels.MusicMetaDataFragmentViewModel;
 import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
-import com.zspirytus.enjoymusic.entity.convert.Convertor;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -105,16 +104,15 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
     }
 
     private void saveMusicMetaData() {
-        Music music = mAdapter.getData().get(0).getPreview();
-        Song song = Convertor.createSong(music);
+        Music music = mAdapter.getData().get(0).getMusic();
         if (mListener != null) {
             mListener.onMusicMetaDataChange(music);
         }
-        DBManager.getInstance().getDaoSession().insertOrReplace(song);
+        DBManager.getInstance().getDaoSession().insertOrReplace(music);
         MainActivityViewModel viewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
         List<Music> shareMusicList = viewModel.getMusicList().getValue();
         for (int i = 0; i < shareMusicList.size(); i++) {
-            if (music.getId() == shareMusicList.get(i).getId()) {
+            if (music.getMusicId() == shareMusicList.get(i).getMusicId()) {
                 shareMusicList.set(i, music);
                 break;
             }

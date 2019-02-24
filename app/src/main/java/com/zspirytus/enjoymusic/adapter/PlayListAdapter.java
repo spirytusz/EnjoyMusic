@@ -17,10 +17,10 @@ public class PlayListAdapter extends CommonRecyclerViewAdapter<Music> {
 
     @Override
     public void convert(CommonViewHolder holder, Music music, int position) {
-        String coverPath = music.getMusicThumbAlbumCoverPath();
+        String coverPath = music.getAlbum().getAlbumArt();
         ImageLoader.load(holder.getView(R.id.item_cover), coverPath, music.getMusicName());
         holder.setText(R.id.item_title, music.getMusicName());
-        holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
+        holder.setText(R.id.item_sub_title, music.getAlbum().getAlbumName());
         holder.setVisibility(R.id.item_more_info_button, View.GONE);
         if (mListener != null) {
             holder.setOnItemClickListener(mListener);

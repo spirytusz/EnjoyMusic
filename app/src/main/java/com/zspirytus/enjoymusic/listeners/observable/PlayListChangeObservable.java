@@ -4,7 +4,6 @@ import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 
 import com.zspirytus.enjoymusic.db.table.Music;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayListChangeObserver;
 
 import java.util.List;
@@ -21,23 +20,11 @@ public class PlayListChangeObservable {
         mObservers.unregister(observer);
     }
 
-    public void notifyAllObserverPlayListChange(MusicFilter filter) {
-        int size = mObservers.beginBroadcast();
-        for (int i = 0; i < size; i++) {
-            try {
-                mObservers.getBroadcastItem(i).onPlayListChange(filter);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-        mObservers.finishBroadcast();
-    }
-
     public void notifyAllObserverPlayListChange(List<Music> playList) {
         int size = mObservers.beginBroadcast();
         for (int i = 0; i < size; i++) {
             try {
-                mObservers.getBroadcastItem(i).onPlayListChangeDirectly(playList);
+                mObservers.getBroadcastItem(i).onPlayListChange(playList);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

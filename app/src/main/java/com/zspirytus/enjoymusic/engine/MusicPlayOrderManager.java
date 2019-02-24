@@ -3,12 +3,10 @@ package com.zspirytus.enjoymusic.engine;
 import android.util.SparseBooleanArray;
 
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
-import com.zspirytus.enjoymusic.cache.MusicScanner;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.table.Music;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.listeners.observable.PlayListChangeObservable;
 import com.zspirytus.enjoymusic.utils.RandomUtil;
@@ -41,12 +39,6 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
         return SingletonHolder.INSTANCE;
     }
 
-    public void setPlayList(MusicFilter filter) {
-        mPlayList = filter.filter(MusicScanner.getInstance().getAllMusicList());
-        notifyAllObserverPlayListChange(filter);
-        MusicSharedPreferences.savePlayList(mPlayList);
-    }
-
     public void setPlayList(List<Music> playList) {
         mPlayList = playList;
         MusicSharedPreferences.savePlayList(playList);
@@ -69,11 +61,6 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
             mPlayList.addAll(musicList);
         }
         MusicSharedPreferences.savePlayList(mPlayList);
-        notifyAllObserverPlayListChange(mPlayList);
-    }
-
-    public void addMusicToPlayList(MusicFilter filter) {
-        addMusicListToPlayList(filter.filter(MusicScanner.getInstance().getAllMusicList()));
         notifyAllObserverPlayListChange(mPlayList);
     }
 

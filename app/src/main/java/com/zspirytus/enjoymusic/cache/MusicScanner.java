@@ -254,7 +254,7 @@ public class MusicScanner {
             String artistName = values.getAsString(MediaStore.Audio.Artists.ARTIST);
             int numberOfAlbum = values.getAsInteger(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS);
             int numberOfTrack = values.getAsInteger(MediaStore.Audio.Artists.NUMBER_OF_TRACKS);
-            Artist artist = new Artist(Long.valueOf(artistId), artistName, numberOfAlbum, numberOfTrack);
+            Artist artist = new Artist(Long.valueOf(artistId), artistName, "", numberOfAlbum, numberOfTrack);
             mArtistList.add(artist);
         }
         try {

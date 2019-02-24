@@ -16,8 +16,10 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
+import com.zspirytus.enjoymusic.db.table.jointable.JoinMusicToSongList;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.MusicPickItem;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
@@ -57,8 +59,9 @@ public class MusicPickFragment extends BaseFragment
 
             @Override
             public void convert(CommonViewHolder holder, MusicPickItem musicPickItem, int position) {
+                Album album = musicPickItem.getMusic().getAlbum();
                 holder.setText(R.id.item_title, musicPickItem.getMusic().getMusicName());
-                holder.setText(R.id.item_sub_title, musicPickItem.getMusic().getMusicAlbumName());
+                holder.setText(R.id.item_sub_title, album.getAlbumName());
                 CheckBox checkBox = holder.getView(R.id.item_checkbox);
                 checkBox.setChecked(musicPickItem.isSelected());
                 holder.setOnItemClickListener(MusicPickFragment.this);
@@ -150,15 +153,15 @@ public class MusicPickFragment extends BaseFragment
         songList.setMusicCount(musicList.size());
         songList.setSongListName(songListName);
         songList.setSongListId(System.currentTimeMillis());
-        List<JoinSongListToSong> joinSongListToSongs = new ArrayList<>();
+        List<JoinMusicToSongList> joinSongListToSongs = new ArrayList<>();
         for (Music music : musicList) {
-            JoinSongListToSong joinSongListToSong = new JoinSongListToSong();
-            joinSongListToSong.setSongId(music.getId());
-            joinSongListToSong.setSongListId(songList.getSongListId());
-            joinSongListToSongs.add(joinSongListToSong);
+            JoinMusicToSongList joinMusicToSongList = new JoinMusicToSongList();
+            joinMusicToSongList.setMusicId(music.getMusicId());
+            joinMusicToSongList.setSongListId(songList.getSongListId());
+            joinSongListToSongs.add(joinMusicToSongList);
         }
         DBManager.getInstance().getDaoSession().getSongListDao().insert(songList);
-        DBManager.getInstance().getDaoSession().getJoinSongListToSongDao().insertInTx(joinSongListToSongs);
+        DBManager.getInstance().getDaoSession().getJoinMusicToSongListDao().insertOrReplaceInTx(joinSongListToSongs);
         return songList;
     }
 

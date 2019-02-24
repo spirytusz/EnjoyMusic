@@ -8,16 +8,19 @@ import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.greendao.MusicDao;
 import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.dialog.PlainTextMenuDialog;
 import com.zspirytus.enjoymusic.view.dialog.SaveSongListDialog;
 import com.zspirytus.enjoymusic.view.fragment.FilterAlbumListFragment;
+
+import java.util.List;
 
 public class ArtistListAdapter extends CommonRecyclerViewAdapter<Artist> implements OnItemLongClickListener {
 
@@ -56,8 +59,11 @@ public class ArtistListAdapter extends CommonRecyclerViewAdapter<Artist> impleme
     private PlainTextMenuDialog.OnMenuItemClickListener listener = (menuText, pos) -> {
         switch (pos) {
             case 0:
-                MusicFilter filterForAlbum = new MusicFilter(null, targetArtist.getArtistName());
-                ForegroundMusicController.getInstance().addToPlayList(filterForAlbum);
+                long artistId = targetArtist.getArtistId();
+                List<Music> artistFilterMusicList = DBManager.getInstance().getDaoSession()
+                        .queryBuilder(Music.class).where(MusicDao.Properties.ArtistId.eq(artistId))
+                        .list();
+                ForegroundMusicController.getInstance().addToPlayList(artistFilterMusicList);
                 ToastUtil.showToast(MainApplication.getForegroundContext(), "成功");
                 break;
             case 1:
@@ -72,9 +78,8 @@ public class ArtistListAdapter extends CommonRecyclerViewAdapter<Artist> impleme
                 FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
                 break;
             case 2:
-                ArtistTable artistTable = DBManager.getInstance().getDaoSession().load(ArtistTable.class, targetArtist.get_id());
                 FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
-                FragmentVisibilityManager.getInstance().show(FilterAlbumListFragment.getInstance(artistTable, artistTable.getAlbumTables()));
+                FragmentVisibilityManager.getInstance().show(FilterAlbumListFragment.getInstance(targetArtist));
                 break;
         }
     };

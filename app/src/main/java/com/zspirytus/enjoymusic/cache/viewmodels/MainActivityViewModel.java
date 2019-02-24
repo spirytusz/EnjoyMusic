@@ -15,14 +15,11 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
-import com.zspirytus.enjoymusic.entity.convert.Convertor;
+import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.global.MainApplication;
-import com.zspirytus.enjoymusic.impl.binder.PlayListObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.PlayMusicObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.PlayStateObserverManager;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
-import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 
 import java.util.List;
@@ -30,13 +27,12 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class MainActivityViewModel extends MusicDataViewModel implements PlayedMusicChangeObserver,
-        MusicPlayStateObserver, PlayListChangeObserver {
+        MusicPlayStateObserver {
 
     public void init() {
         super.init();
         PlayMusicObserverManager.getInstance().register(this);
         PlayStateObserverManager.getInstance().register(this);
-        PlayListObserverManager.getInstance().register(this);
         setPlayList(MusicSharedPreferences.restorePlayList(MainApplication.getForegroundContext()));
     }
 
@@ -57,23 +53,11 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
     }
 
     @Override
-    public void onPlayListChanged(MusicFilter filter) {
-        List<Music> musicList = getMusicList().getValue();
-        if (musicList != null) {
-            final List<Music> fiterMusicList = filter.filter(getMusicList().getValue());
-            AndroidSchedulers.mainThread().scheduleDirect(() -> {
-                setPlayList(fiterMusicList);
-            });
-        }
-    }
-
-    @Override
     protected void onCleared() {
         super.onCleared();
         ForegroundMusicController.getInstance().release();
         PlayMusicObserverManager.getInstance().unregister(this);
         PlayStateObserverManager.getInstance().unregister(this);
-        PlayListObserverManager.getInstance().unregister(this);
     }
 
     public void obtainMusicList() {
@@ -81,21 +65,16 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
             try {
                 IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.GET_MUSIC_LIST);
                 IGetMusicList getMusicListBinder = IGetMusicList.Stub.asInterface(binder);
-                final List<Music> musicList = getMusicListBinder.getMusicList();
-                final List<Album> albumList = getMusicListBinder.getAlbumList();
-                final List<Artist> artistList = getMusicListBinder.getArtistList();
                 final List<FolderSortedMusic> folderSortedMusicList = getMusicListBinder.getFolderSortedMusic();
-                AndroidSchedulers.mainThread().scheduleDirect(() -> {
-                    setMusicList(musicList);
-                    setAlbumList(albumList);
-                    setArtistList(artistList);
-                    setFolderList(folderSortedMusicList);
-                });
-                // 直接从系统数据库复制Music数据到db_enjoymusic中
-                DBManager.getInstance().getDaoSession().getSongDao().insertOrReplaceInTx(Convertor.createSongs(musicList));
-                DBManager.getInstance().getDaoSession().getAlbumTableDao().insertOrReplaceInTx(Convertor.createAlbumTables(albumList));
-                DBManager.getInstance().getDaoSession().getArtistTableDao().insertOrReplaceInTx(Convertor.createAristTables(artistList));
-                DBManager.getInstance().getDaoSession().getJoinArtistToAlbumDao().insertOrReplaceInTx(Convertor.createJoinArtistToAlbums(musicList));
+
+                List<Music> allMusicList = DBManager.getInstance().getDaoSession().loadAll(Music.class);
+                List<Album> albumList = DBManager.getInstance().getDaoSession().loadAll(Album.class);
+                List<Artist> artistList = DBManager.getInstance().getDaoSession().loadAll(Artist.class);
+
+                getMusicList().postValue(allMusicList);
+                getAlbumList().postValue(albumList);
+                getArtistList().postValue(artistList);
+                getFolderList().postValue(folderSortedMusicList);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

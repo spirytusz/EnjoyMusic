@@ -36,8 +36,8 @@ public class MusicMetaDataReader {
         }
         MusicMetaData metaData = new MusicMetaData();
         metaData.setTitle(music.getMusicName());
-        metaData.setAlbum(music.getMusicAlbumName());
-        metaData.setArtist(music.getMusicArtist());
+        metaData.setAlbum(music.getAlbum().getAlbumName());
+        metaData.setArtist(music.getArtist().getArtistName());
         metaData.setDuration(music.getMusicDuration());
         String mime = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
         String date = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);

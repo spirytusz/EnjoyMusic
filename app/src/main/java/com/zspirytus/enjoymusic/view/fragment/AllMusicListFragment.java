@@ -18,7 +18,6 @@ import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
@@ -49,7 +48,6 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     public void onItemClick(View view, int position) {
         Music music = mAdapter.getList().get(position);
         ForegroundMusicController.getInstance().play(music);
-        ForegroundMusicController.getInstance().setPlayList(MusicFilter.NO_FILTER);
         FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
         FragmentVisibilityManager.getInstance().show(FragmentFactory.getInstance().get(MusicPlayFragment.class));
     }

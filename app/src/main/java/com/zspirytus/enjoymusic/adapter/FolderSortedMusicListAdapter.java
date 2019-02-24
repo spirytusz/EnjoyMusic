@@ -7,10 +7,12 @@ import com.zspirytus.basesdk.recyclerview.listeners.OnItemLongClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
+import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.dialog.PlainTextMenuDialog;
@@ -26,7 +28,8 @@ public class FolderSortedMusicListAdapter extends CommonRecyclerViewAdapter<Fold
     @Override
     public void convert(CommonViewHolder holder, FolderSortedMusic folderSortedMusic, int position) {
         Music firstMusicInFolder = folderSortedMusic.getFolderMusicList().get(0);
-        String coverPath = firstMusicInFolder.getMusicThumbAlbumCoverPath();
+        Album album = firstMusicInFolder.getAlbum();
+        String coverPath = album.getAlbumArt();
         ImageLoader.load(holder.getView(R.id.item_cover), coverPath, folderSortedMusic.getParentFolderDir());
         holder.setText(R.id.item_title, folderSortedMusic.getParentFolderDir());
         holder.setText(R.id.item_sub_title, folderSortedMusic.getFolderName());

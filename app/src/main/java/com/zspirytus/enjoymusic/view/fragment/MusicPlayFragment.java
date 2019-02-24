@@ -16,6 +16,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MusicPlayFragmentViewModels;
+import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
@@ -277,10 +279,12 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     private void setView(Music music) {
-        String musicThumbAlbumCoverPath = music.getMusicThumbAlbumCoverPath();
+        Album album = music.getAlbum();
+        Artist artist = music.getArtist();
+        String musicThumbAlbumCoverPath = album.getAlbumArt();
         ImageLoader.load(mCover, musicThumbAlbumCoverPath, music.getMusicName(), new CenterCrop());
         mTitle.setText(music.getMusicName());
-        mSubTitle.setText(music.getMusicArtist());
+        mSubTitle.setText(artist.getArtistName());
         mNowTime.setText("00:00");
         mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
         setupSeekBar(music);
@@ -288,7 +292,8 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     private void setBackgroundBlur(Music music) {
-        String imagePath = music.getMusicThumbAlbumCoverPath();
+        Album album = music.getAlbum();
+        String imagePath = album.getAlbumArt();
         if (imagePath != null && !imagePath.isEmpty()) {
             File file = new File(imagePath);
             if (file.exists()) {

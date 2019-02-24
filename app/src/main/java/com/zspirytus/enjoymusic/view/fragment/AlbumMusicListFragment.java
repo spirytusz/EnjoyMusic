@@ -18,14 +18,14 @@ import com.zspirytus.enjoymusic.adapter.AlbumListAdapter;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.db.DBManager;
-import com.zspirytus.enjoymusic.db.greendao.SongDao;
+import com.zspirytus.enjoymusic.db.greendao.MusicDao;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
@@ -52,11 +52,11 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     @Override
     public void onItemClick(View view, int position) {
         String album = mAdapter.getList().get(position).getAlbumName();
-        long albumId = mAdapter.getList().get(position).get_id();
-        List<Song> songs = DBManager.getInstance().getDaoSession().queryBuilder(Song.class)
-                .where(SongDao.Properties.AlbumId.eq(albumId))
+        long albumId = mAdapter.getList().get(position).getAlbumId();
+        List<Music> musicList = DBManager.getInstance().getDaoSession().queryBuilder(Music.class)
+                .where(MusicDao.Properties.AlbumId.eq(albumId))
                 .list();
-        FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(album, (ArrayList<Song>) songs, 1);
+        FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(album, musicList, 1);
         FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
         FragmentVisibilityManager.getInstance().show(fragment);
     }
@@ -120,8 +120,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     }
 
     public static AlbumMusicListFragment getInstance() {
-        AlbumMusicListFragment instance = new AlbumMusicListFragment();
-        return instance;
+        return new AlbumMusicListFragment();
     }
 
 }

@@ -19,13 +19,11 @@ import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
-import com.zspirytus.enjoymusic.entity.convert.Convertor;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @LayoutIdInject(R.layout.fragment_filter_album_list_layout)
 public class FilterAlbumListFragment extends BaseFragment {
@@ -56,9 +54,9 @@ public class FilterAlbumListFragment extends BaseFragment {
 
             @Override
             public void convert(CommonViewHolder holder, Album album, int position) {
-                ImageLoader.load(holder.getView(R.id.item_cover), album.getAlbumCoverPath(), album.getAlbumName());
+                ImageLoader.load(holder.getView(R.id.item_cover), album.getAlbumArt(), album.getAlbumName());
                 holder.setText(R.id.item_title, album.getAlbumName());
-                holder.setText(R.id.item_sub_title, album.getArtist());
+                holder.setText(R.id.item_sub_title, album.getArtist().getArtistName());
             }
         };
         mInnerAdapter.setList(getArguments().getParcelableArrayList(ALBUM_LIST_KEY));
@@ -115,11 +113,11 @@ public class FilterAlbumListFragment extends BaseFragment {
         return spannableString;
     }
 
-    public static FilterAlbumListFragment getInstance(ArtistTable artistTable, List<AlbumTable> albumTableList) {
+    public static FilterAlbumListFragment getInstance(Artist artist) {
         FilterAlbumListFragment fragment = new FilterAlbumListFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ARTIST_KEY, Convertor.createArtist(artistTable));
-        bundle.putParcelableArrayList(ALBUM_LIST_KEY, (ArrayList<Album>) Convertor.createAlbums(albumTableList));
+        bundle.putParcelable(ARTIST_KEY, artist);
+        bundle.putParcelableArrayList(ALBUM_LIST_KEY, (ArrayList<Album>) artist.getAlbums());
         fragment.setArguments(bundle);
         return fragment;
     }

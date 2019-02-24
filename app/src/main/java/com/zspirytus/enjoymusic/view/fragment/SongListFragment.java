@@ -19,8 +19,6 @@ import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
-import java.util.ArrayList;
-
 @LayoutIdInject(R.layout.fragment_song_list_layout)
 public class SongListFragment extends BaseFragment implements OnItemClickListener {
 
@@ -79,7 +77,7 @@ public class SongListFragment extends BaseFragment implements OnItemClickListene
             FragmentVisibilityManager.getInstance().show(fragment);
         } else {
             SongList item = mInnerAdapter.getList().get(position - 1);
-            FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(item.getSongListName(), (ArrayList<Song>) item.getSongsOfThisSongList(), 4);
+            FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(item.getSongListName(), item.getSongsOfThisSongList(), 4);
             FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
             FragmentVisibilityManager.getInstance().show(fragment);
         }

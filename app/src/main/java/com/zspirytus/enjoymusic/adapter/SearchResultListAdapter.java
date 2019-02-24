@@ -50,7 +50,7 @@ public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
 
             @Override
             public void convert(CommonViewHolder holder, SearchResult data) {
-                ImageLoader.load(holder.getView(R.id.item_cover), data.getMusic().getMusicThumbAlbumCoverPath(), data.getMusic().getMusicName());
+                ImageLoader.load(holder.getView(R.id.item_cover), data.getMusic().getAlbum().getAlbumArt(), data.getMusic().getMusicName());
                 holder.setText(R.id.item_title, data.getMusic().getMusicName());
 
             }
@@ -72,7 +72,7 @@ public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
 
             @Override
             public void convert(CommonViewHolder holder, SearchResult data) {
-                ImageLoader.load(holder.getView(R.id.item_cover), data.getAlbum().getAlbumCoverPath(), data.getAlbum().getAlbumName());
+                ImageLoader.load(holder.getView(R.id.item_cover), data.getAlbum().getAlbumArt(), data.getAlbum().getAlbumName());
                 holder.setText(R.id.item_title, data.getAlbum().getAlbumName());
             }
         };

@@ -8,7 +8,7 @@ import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.DBManager;
-import com.zspirytus.enjoymusic.db.greendao.SongDao;
+import com.zspirytus.enjoymusic.db.greendao.MusicDao;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
@@ -19,7 +19,6 @@ import com.zspirytus.enjoymusic.view.dialog.PlainTextMenuDialog;
 import com.zspirytus.enjoymusic.view.fragment.FilterMusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicMetaDataFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HomePageListAdapter extends CommonRecyclerViewAdapter<Music> implements OnItemLongClickListener {
@@ -31,10 +30,10 @@ public class HomePageListAdapter extends CommonRecyclerViewAdapter<Music> implem
 
     @Override
     public void convert(CommonViewHolder holder, Music music, int position) {
-        String coverPath = music.getMusicThumbAlbumCoverPath();
+        String coverPath = music.getAlbum().getAlbumArt();
         ImageLoader.load(holder.getView(R.id.item_cover), coverPath, music.getMusicName());
         holder.setText(R.id.item_title, music.getMusicName());
-        holder.setText(R.id.item_sub_title, music.getMusicAlbumName());
+        holder.setText(R.id.item_sub_title, music.getAlbum().getAlbumName());
         if (mListener != null) {
             holder.setOnItemClickListener(mListener);
         }
@@ -69,19 +68,19 @@ public class HomePageListAdapter extends CommonRecyclerViewAdapter<Music> implem
                 break;
             case 2:
                 long albumId = targetMusic.getAlbumId();
-                List<Song> songs = DBManager.getInstance().getDaoSession().queryBuilder(Song.class)
-                        .where(SongDao.Properties.AlbumId.eq(albumId))
+                List<Music> songs = DBManager.getInstance().getDaoSession().queryBuilder(Music.class)
+                        .where(MusicDao.Properties.AlbumId.eq(albumId))
                         .list();
                 FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
-                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(targetMusic.getMusicAlbumName(), (ArrayList<Song>) songs, 1));
+                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(targetMusic.getAlbum().getAlbumName(), songs, 1));
                 break;
             case 3:
                 long artistId = targetMusic.getArtistId();
-                List<Song> songs1 = DBManager.getInstance().getDaoSession().queryBuilder(Song.class)
-                        .where(SongDao.Properties.ArtistId.eq(artistId))
+                List<Music> songs1 = DBManager.getInstance().getDaoSession().queryBuilder(Music.class)
+                        .where(MusicDao.Properties.ArtistId.eq(artistId))
                         .list();
                 FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
-                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(targetMusic.getMusicArtist(), (ArrayList<Song>) songs1, 2));
+                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(targetMusic.getArtist().getArtistName(), songs1, 2));
                 break;
             case 4:
                 FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();

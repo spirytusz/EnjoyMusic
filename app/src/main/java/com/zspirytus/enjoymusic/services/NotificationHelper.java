@@ -132,9 +132,9 @@ public class NotificationHelper {
         PendingIntent startActivity = createPendingIntentByExtra(intent, SINGLE_CLICK, Constant.NotificationEvent.SINGLE_CLICK);
         return new NotificationCompat.Builder(MainApplication.getBackgroundContext(), mChannelId)
                 .setSmallIcon(R.drawable.ic_music_note_white_24dp)
-                .setLargeIcon(MusicCoverFileCache.getInstance().getCover(music.getMusicThumbAlbumCoverPath()))
+                .setLargeIcon(MusicCoverFileCache.getInstance().getCover(music.getAlbum().getAlbumArt()))
                 .setContentTitle(music.getMusicName())
-                .setContentText(music.getMusicArtist())
+                .setContentText(music.getArtist().getArtistName())
                 .setChannelId(mChannelId)
                 .setAutoCancel(false)
                 .setOngoing(true)

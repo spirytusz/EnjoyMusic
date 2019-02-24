@@ -9,6 +9,8 @@ import com.zspirytus.basesdk.recyclerview.ItemViewDelegate;
 import com.zspirytus.basesdk.recyclerview.adapter.MultiItemAdapter;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.engine.MusicMetaDataReader;
@@ -43,8 +45,8 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
 
             @Override
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
-                String path = data.getPreview().getArtistArt();
-                ImageLoader.load((ImageView) holder.getItemView(), path, data.getPreview().getMusicArtist(), new CenterCrop());
+                String path = data.getArtist().getArtistArt();
+                ImageLoader.load((ImageView) holder.getItemView(), path, data.getArtist().getArtistName(), new CenterCrop());
                 holder.setOnItemClickListener((view, position) -> {
                 });
             }
@@ -56,7 +58,7 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
         ItemViewDelegate<MusicMetaDataListItem> delegate = new ItemViewDelegate<MusicMetaDataListItem>() {
             @Override
             public boolean isForViewType(MusicMetaDataListItem data) {
-                return data.isPreview();
+                return data.isMusic();
             }
 
             @Override
@@ -66,13 +68,15 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
 
             @Override
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
-                Music music = data.getPreview();
-                String path = music.getMusicThumbAlbumCoverPath();
-                ImageLoader.load(holder.getView(R.id.music_preview_cover), path, music.getMusicAlbumName(), new CenterCrop());
+                Music music = data.getMusic();
+                Album album = music.getAlbum();
+                Artist artist = music.getArtist();
+                String path = album.getAlbumArt();
+                ImageLoader.load(holder.getView(R.id.music_preview_cover), path, album.getAlbumName(), new CenterCrop());
                 MusicMetaData metaData = MusicMetaDataReader.getInstance().readMetaData(music);
                 String musicName = music.getMusicName();
-                String artist = music.getMusicArtist();
-                String album = music.getMusicAlbumName();
+                String artistName = artist.getArtistName();
+                String albumName = album.getAlbumName();
                 String duration = TimeUtil.convertLongToMinsSec(music.getMusicDuration());
                 String mimeType = metaData.getMime();
                 // 计算比特率及其单位
@@ -87,12 +91,12 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
                 float sampleRate = (float) metaData.getSampleRate() / 1000;
                 // 限制每行长度
                 musicName = musicName.substring(0, 16 <= musicName.length() - 1 ? 16 : musicName.length() - 1);
-                artist = artist.substring(0, 16 <= artist.length() - 1 ? 16 : artist.length() - 1);
-                album = album.substring(0, 16 <= album.length() - 1 ? 16 : album.length() - 1);
+                artistName = artistName.substring(0, 16 <= artistName.length() - 1 ? 16 : artistName.length() - 1);
+                albumName = albumName.substring(0, 16 <= albumName.length() - 1 ? 16 : albumName.length() - 1);
                 Spanned previewText = Html.fromHtml(
                         "<big><font color='black' style=\"line-height:150%;\">" + musicName + "</font></big><br/>"
-                                + "<font color='grey' style=\"line-height:150%;\">" + artist + "</font><br/>"
-                                + "<font color='grey' style=\"line-height:150%;\">" + album + "</font><br/>"
+                                + "<font color='grey' style=\"line-height:150%;\">" + artistName + "</font><br/>"
+                                + "<font color='grey' style=\"line-height:150%;\">" + albumName + "</font><br/>"
                                 + "<font color='grey' style=\"line-height:150%;\">时长: " + duration + "</font><br/>"
                                 + "<font color='grey' style=\"line-height:150%;\">Mime: " + mimeType + "</font><br/>"
                                 + "<font color='grey' style=\"line-height:150%;\">比特率: " + bitrate + bitratePercent + "</font><br/>"

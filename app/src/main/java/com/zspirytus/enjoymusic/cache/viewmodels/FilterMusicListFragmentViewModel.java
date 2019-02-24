@@ -9,6 +9,7 @@ import android.text.style.RelativeSizeSpan;
 import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
+import com.zspirytus.enjoymusic.db.table.jointable.JoinMusicToSongList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +28,15 @@ public class FilterMusicListFragmentViewModel extends ViewModel {
         songList.setMusicCount(musicList.size());
         songList.setSongListName(songListName);
         songList.setSongListId(System.currentTimeMillis());
-        List<JoinSongListToSong> joinSongListToSongs = new ArrayList<>();
+        List<JoinMusicToSongList> joinSongListToSongs = new ArrayList<>();
         for (Music music : musicList) {
-            JoinSongListToSong joinSongListToSong = new JoinSongListToSong();
-            joinSongListToSong.setSongId(music.getId());
-            joinSongListToSong.setSongListId(songList.getSongListId());
-            joinSongListToSongs.add(joinSongListToSong);
+            JoinMusicToSongList joinMusicToSongList = new JoinMusicToSongList();
+            joinMusicToSongList.setMusicId(music.getMusicId());
+            joinMusicToSongList.setSongListId(songList.getSongListId());
+            joinSongListToSongs.add(joinMusicToSongList);
         }
         DBManager.getInstance().getDaoSession().getSongListDao().insert(songList);
-        DBManager.getInstance().getDaoSession().getJoinSongListToSongDao().insertInTx(joinSongListToSongs);
+        DBManager.getInstance().getDaoSession().getJoinMusicToSongListDao().insertInTx(joinSongListToSongs);
         return songList;
     }
 

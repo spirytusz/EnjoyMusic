@@ -5,7 +5,6 @@ import android.os.RemoteException;
 import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
 
 import java.util.List;
 
@@ -23,22 +22,12 @@ public class PlayListSetter extends ISetPlayList.Stub {
     }
 
     @Override
-    public void setPlayList(MusicFilter musicFilter) {
-        MusicPlayOrderManager.getInstance().setPlayList(musicFilter);
-    }
-
-    @Override
-    public void setPlayListDirectly(List<Music> playList) throws RemoteException {
+    public void setPlayList(List<Music> playList) throws RemoteException {
         MusicPlayOrderManager.getInstance().setPlayList(playList);
     }
 
     @Override
-    public void appendMusicListDirectly(List<Music> musicList) throws RemoteException {
+    public void appendMusicList(List<Music> musicList) throws RemoteException {
         MusicPlayOrderManager.getInstance().addMusicListToPlayList(musicList);
-    }
-
-    @Override
-    public void appendMusic(MusicFilter musicFilter) throws RemoteException {
-        MusicPlayOrderManager.getInstance().addMusicToPlayList(musicFilter);
     }
 }

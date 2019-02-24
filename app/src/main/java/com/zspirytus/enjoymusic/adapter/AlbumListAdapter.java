@@ -8,19 +8,19 @@ import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.DBManager;
-import com.zspirytus.enjoymusic.db.greendao.SongDao;
+import com.zspirytus.enjoymusic.db.greendao.MusicDao;
 import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
-import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.dialog.PlainTextMenuDialog;
 import com.zspirytus.enjoymusic.view.dialog.SaveSongListDialog;
 import com.zspirytus.enjoymusic.view.fragment.FilterMusicListFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
@@ -33,10 +33,10 @@ public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
 
     @Override
     public void convert(CommonViewHolder holder, Album album, int position) {
-        String coverPath = album.getAlbumCoverPath();
+        String coverPath = album.getAlbumArt();
         ImageLoader.load(holder.getView(R.id.item_cover), coverPath, album.getAlbumName());
         holder.setText(R.id.item_title, album.getAlbumName());
-        holder.setText(R.id.item_sub_title, album.getArtist());
+        holder.setText(R.id.item_sub_title, "artist");
         if (mListener != null) {
             holder.setOnItemClickListener(mListener);
         }
@@ -61,8 +61,11 @@ public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
     private PlainTextMenuDialog.OnMenuItemClickListener listener = (menuText, pos) -> {
         switch (pos) {
             case 0:
-                MusicFilter filterForAlbum = new MusicFilter(targetAlbum.getAlbumName(), null);
-                ForegroundMusicController.getInstance().addToPlayList(filterForAlbum);
+                long albumId = targetAlbum.getAlbumId();
+                List<Music> albumFilterMusicList = DBManager.getInstance().getDaoSession().queryBuilder(Music.class)
+                        .where(MusicDao.Properties.AlbumId.eq(albumId))
+                        .list();
+                ForegroundMusicController.getInstance().addToPlayList(albumFilterMusicList);
                 ToastUtil.showToast(MainApplication.getForegroundContext(), "成功");
                 break;
             case 1:
@@ -77,11 +80,12 @@ public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
                 FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
                 break;
             case 2:
-                List<Song> songs = DBManager.getInstance().getDaoSession().queryBuilder(Song.class)
-                        .where(SongDao.Properties.MusicArtist.eq(targetAlbum.getArtist()))
+                Artist artist = targetAlbum.getArtist();
+                List<Music> artistFilterMusicList = DBManager.getInstance().getDaoSession().queryBuilder(Music.class)
+                        .where(MusicDao.Properties.ArtistId.eq(artist.getArtistId()))
                         .list();
                 FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
-                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(targetAlbum.getAlbumName(), (ArrayList<Song>) songs, 1));
+                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(targetAlbum.getAlbumName(), artistFilterMusicList, 1));
                 break;
         }
     };

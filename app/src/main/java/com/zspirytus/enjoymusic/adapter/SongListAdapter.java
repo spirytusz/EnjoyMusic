@@ -7,14 +7,16 @@ import com.zspirytus.basesdk.recyclerview.listeners.OnItemLongClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
-import com.zspirytus.enjoymusic.entity.convert.Convertor;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.dialog.PlainTextMenuDialog;
+
+import java.util.List;
 
 public class SongListAdapter extends CommonRecyclerViewAdapter<SongList> implements OnItemLongClickListener {
 
@@ -52,7 +54,8 @@ public class SongListAdapter extends CommonRecyclerViewAdapter<SongList> impleme
     private PlainTextMenuDialog.OnMenuItemClickListener listener = (menuText, pos) -> {
         switch (pos) {
             case 0:
-                ForegroundMusicController.getInstance().addToPlayList(Convertor.createMusicList(targetSongList.getSongsOfThisSongList()));
+                List<Music> musicList = targetSongList.getSongsOfThisSongList();
+                ForegroundMusicController.getInstance().addToPlayList(musicList);
                 ToastUtil.showToast(MainApplication.getForegroundContext(), "成功");
                 break;
         }

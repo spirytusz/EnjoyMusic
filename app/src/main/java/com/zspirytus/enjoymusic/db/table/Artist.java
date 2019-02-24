@@ -28,6 +28,7 @@ public class Artist implements Parcelable {
     private long artistId;
 
     private String artistName;
+    private String artistArt;
     private int numberOfAlbums;
     private int mumberOfTracks;
 
@@ -44,6 +45,7 @@ public class Artist implements Parcelable {
         return "Artist{" +
                 "artistId=" + artistId +
                 ", artistName='" + artistName + '\'' +
+                ", artistArt='" + artistArt + '\'' +
                 ", numberOfAlbums=" + numberOfAlbums +
                 ", mumberOfTracks=" + mumberOfTracks +
                 ", albums=" + albums +
@@ -59,6 +61,7 @@ public class Artist implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.artistId);
         dest.writeString(this.artistName);
+        dest.writeString(this.artistArt);
         dest.writeInt(this.numberOfAlbums);
         dest.writeInt(this.mumberOfTracks);
         dest.writeTypedList(this.albums);
@@ -78,6 +81,14 @@ public class Artist implements Parcelable {
 
     public void setArtistName(String artistName) {
         this.artistName = artistName;
+    }
+
+    public String getArtistArt() {
+        return this.artistArt;
+    }
+
+    public void setArtistArt(String artistArt) {
+        this.artistArt = artistArt;
     }
 
     public int getNumberOfAlbums() {
@@ -175,15 +186,18 @@ public class Artist implements Parcelable {
     protected Artist(Parcel in) {
         this.artistId = in.readLong();
         this.artistName = in.readString();
+        this.artistArt = in.readString();
         this.numberOfAlbums = in.readInt();
         this.mumberOfTracks = in.readInt();
         this.albums = in.createTypedArrayList(Album.CREATOR);
     }
 
-    @Generated(hash = 819040101)
-    public Artist(long artistId, String artistName, int numberOfAlbums, int mumberOfTracks) {
+    @Generated(hash = 442881388)
+    public Artist(long artistId, String artistName, String artistArt, int numberOfAlbums,
+                  int mumberOfTracks) {
         this.artistId = artistId;
         this.artistName = artistName;
+        this.artistArt = artistArt;
         this.numberOfAlbums = numberOfAlbums;
         this.mumberOfTracks = mumberOfTracks;
     }
@@ -200,15 +214,11 @@ public class Artist implements Parcelable {
         }
     };
 
-    /**
-     * Used to resolve relations
-     */
+    /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 619827925)
     private transient ArtistDao myDao;
 }

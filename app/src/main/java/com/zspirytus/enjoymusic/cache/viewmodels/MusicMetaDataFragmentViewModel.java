@@ -33,12 +33,12 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
     public void obtainMusicMetaList(Music music) {
         MusicMetaDataListItem item = new MusicMetaDataListItem();
         item.setArtistArt(true);
-        item.setPreview(music);
+        item.setArtist(music.getArtist());
         dataList.add(item);
 
         MusicMetaDataListItem item1 = new MusicMetaDataListItem();
-        item1.setPreview(true);
-        item1.setPreview(music);
+        item1.setMusic(true);
+        item1.setMusic(music);
         dataList.add(item1);
 
         if (SettingConfig.isNetWorkSourceEnable) {
@@ -66,13 +66,13 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
         MusicMetaDataListItem item6 = new MusicMetaDataListItem();
         item6.setSingleEditText(true);
         item6.setEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_artist));
-        item6.setEditTextDefaultText(music.getMusicArtist());
+        item6.setEditTextDefaultText(music.getArtist().getArtistName());
         dataList.add(item6);
 
         MusicMetaDataListItem item7 = new MusicMetaDataListItem();
         item7.setSingleEditText(true);
         item7.setEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_album));
-        item7.setEditTextDefaultText(music.getMusicAlbumName());
+        item7.setEditTextDefaultText(music.getAlbum().getAlbumName());
         dataList.add(item7);
 
         MusicMetaDataListItem item8 = new MusicMetaDataListItem();
@@ -90,7 +90,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
     }
 
     public void applyMusicData(Music music) {
-        RetrofitManager.searchAlbum(music.getMusicAlbumName(), new Observer<SearchAlbumResponse>() {
+        RetrofitManager.searchAlbum(music.getAlbum().getAlbumName(), new Observer<SearchAlbumResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
             }
@@ -111,7 +111,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             public void onComplete() {
             }
         });
-        RetrofitManager.searchArtist(music.getMusicArtist(), new Observer<SearchArtistResponse>() {
+        RetrofitManager.searchArtist(music.getArtist().getArtistName(), new Observer<SearchArtistResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
             }
@@ -136,13 +136,13 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
 
     @WorkerThread
     private void updateAlbumInfo(String picUrl) {
-        dataList.get(1).getPreview().setMusicThumbAlbumCoverPath(picUrl);
+        dataList.get(1).getMusic().getAlbum().setAlbumArt(picUrl);
         AndroidSchedulers.mainThread().scheduleDirect(() -> mMusicMetaList.setValue(dataList));
     }
 
     @WorkerThread
     private void updateArtistInfo(String picUrl) {
-        dataList.get(0).getPreview().setArtistArt(picUrl);
+        dataList.get(0).getArtist().setArtistArt(picUrl);
         AndroidSchedulers.mainThread().scheduleDirect(() -> mMusicMetaList.setValue(dataList));
     }
 }
