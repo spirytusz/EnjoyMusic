@@ -4,6 +4,9 @@ import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.MediaMetadataRetriever;
 
+import com.zspirytus.enjoymusic.db.QueryExecutor;
+import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.entity.MusicMetaData;
 
@@ -35,9 +38,11 @@ public class MusicMetaDataReader {
             e.printStackTrace();
         }
         MusicMetaData metaData = new MusicMetaData();
+        Album album = QueryExecutor.findAlbum(music);
+        Artist artist = QueryExecutor.findArtist(music);
         metaData.setTitle(music.getMusicName());
-        metaData.setAlbum(music.getAlbum().getAlbumName());
-        metaData.setArtist(music.getArtist().getArtistName());
+        metaData.setAlbum(album.getAlbumName());
+        metaData.setArtist(artist.getArtistName());
         metaData.setDuration(music.getMusicDuration());
         String mime = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
         String date = mRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);

@@ -9,6 +9,7 @@ import com.zspirytus.basesdk.recyclerview.ItemViewDelegate;
 import com.zspirytus.basesdk.recyclerview.adapter.MultiItemAdapter;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
@@ -69,8 +70,8 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
             @Override
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
                 Music music = data.getMusic();
-                Album album = music.getAlbum();
-                Artist artist = music.getArtist();
+                Album album = QueryExecutor.findAlbum(music);
+                Artist artist = QueryExecutor.findArtist(music);
                 String path = album.getAlbumArt();
                 ImageLoader.load(holder.getView(R.id.music_preview_cover), path, album.getAlbumName(), new CenterCrop());
                 MusicMetaData metaData = MusicMetaDataReader.getInstance().readMetaData(music);

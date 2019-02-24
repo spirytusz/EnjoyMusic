@@ -7,7 +7,6 @@ import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinAlbumToArtist;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -18,21 +17,31 @@ public class QueryExecutor {
     private static final String TAG = "QueryExecutor";
 
     public static Album findAlbum(Music music) {
-        LogUtil.e(TAG, "music = " + music.getMusicName());
-        List<Album> albumList = DBManager.getInstance().getDaoSession().queryBuilder(Album.class)
-                .where(AlbumDao.Properties.AlbumId.eq(music.getAlbumId()))
-                .list();
-        return albumList.get(0);
+        if (music.peakAlbum() != null) {
+            return music.peakAlbum();
+        } else {
+            List<Album> albumList = DBManager.getInstance().getDaoSession().queryBuilder(Album.class)
+                    .where(AlbumDao.Properties.AlbumId.eq(music.getAlbumId()))
+                    .list();
+            Album album = albumList.get(0);
+            music.setAlbum(album);
+            return albumList.get(0);
+        }
     }
 
     public static Artist findArtist(Music music) {
-        List<Artist> artistList = DBManager.getInstance().getDaoSession().queryBuilder(Artist.class)
-                .where(ArtistDao.Properties.ArtistId.eq(music.getArtistId())).list();
-        return artistList.get(0);
+        if (music.peakArtist() != null) {
+            return music.peakArtist();
+        } else {
+            List<Artist> artistList = DBManager.getInstance().getDaoSession().queryBuilder(Artist.class)
+                    .where(ArtistDao.Properties.ArtistId.eq(music.getArtistId())).list();
+            Artist artist = artistList.get(0);
+            music.setArtist(artist);
+            return artist;
+        }
     }
 
     public static Artist findArtist(Album album) {
-        LogUtil.e(TAG, "album = " + album.getAlbumName() + "\talbumId = " + album.getAlbumId());
         QueryBuilder<Artist> queryBuilder = DBManager.getInstance().getDaoSession().queryBuilder(Artist.class);
         queryBuilder.join(JoinAlbumToArtist.class, JoinAlbumToArtistDao.Properties.ArtistId)
                 .where(JoinAlbumToArtistDao.Properties.AlbumId.eq(album.getAlbumId()));

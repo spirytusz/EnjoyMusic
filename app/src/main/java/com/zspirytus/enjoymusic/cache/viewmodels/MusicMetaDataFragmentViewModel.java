@@ -5,6 +5,9 @@ import android.arch.lifecycle.ViewModel;
 import android.support.annotation.WorkerThread;
 
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
+import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.entity.MusicMetaDataListItem;
 import com.zspirytus.enjoymusic.global.MainApplication;
@@ -31,9 +34,11 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
     }
 
     public void obtainMusicMetaList(Music music) {
+        Album album = QueryExecutor.findAlbum(music);
+        Artist artist = QueryExecutor.findArtist(music);
         MusicMetaDataListItem item = new MusicMetaDataListItem();
         item.setArtistArt(true);
-        item.setArtist(music.getArtist());
+        item.setArtist(artist);
         dataList.add(item);
 
         MusicMetaDataListItem item1 = new MusicMetaDataListItem();
@@ -66,13 +71,13 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
         MusicMetaDataListItem item6 = new MusicMetaDataListItem();
         item6.setSingleEditText(true);
         item6.setEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_artist));
-        item6.setEditTextDefaultText(music.getArtist().getArtistName());
+        item6.setEditTextDefaultText(artist.getArtistName());
         dataList.add(item6);
 
         MusicMetaDataListItem item7 = new MusicMetaDataListItem();
         item7.setSingleEditText(true);
         item7.setEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_album));
-        item7.setEditTextDefaultText(music.getAlbum().getAlbumName());
+        item7.setEditTextDefaultText(album.getAlbumName());
         dataList.add(item7);
 
         MusicMetaDataListItem item8 = new MusicMetaDataListItem();
