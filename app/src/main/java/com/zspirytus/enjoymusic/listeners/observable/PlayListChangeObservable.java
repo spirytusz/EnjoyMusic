@@ -3,7 +3,7 @@ package com.zspirytus.enjoymusic.listeners.observable;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayListChangeObserver;
 

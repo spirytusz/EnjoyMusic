@@ -1,6 +1,6 @@
 package com.zspirytus.enjoymusic;
 
-import com.zspirytus.enjoymusic.entity.Album;
+import com.zspirytus.enjoymusic.db.table.Album;
 
 import org.junit.Test;
 

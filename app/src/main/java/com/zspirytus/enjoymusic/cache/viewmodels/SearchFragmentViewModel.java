@@ -5,9 +5,9 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 
 import com.zspirytus.enjoymusic.base.BaseActivity;
-import com.zspirytus.enjoymusic.entity.Album;
-import com.zspirytus.enjoymusic.entity.Artist;
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.entity.SearchResult;
 
 import java.util.ArrayList;

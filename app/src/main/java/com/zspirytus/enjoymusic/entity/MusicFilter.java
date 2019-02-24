@@ -3,6 +3,8 @@ package com.zspirytus.enjoymusic.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zspirytus.enjoymusic.db.table.Music;
+
 import java.util.ArrayList;
 import java.util.List;
 

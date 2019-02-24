@@ -3,9 +3,9 @@ package com.zspirytus.enjoymusic;
 
 import java.util.List;
 
-import com.zspirytus.enjoymusic.entity.Music;
-import com.zspirytus.enjoymusic.entity.Album;
-import com.zspirytus.enjoymusic.entity.Artist;
+import com.zspirytus.enjoymusic.db.table.Music;
+import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 
 interface IGetMusicList {

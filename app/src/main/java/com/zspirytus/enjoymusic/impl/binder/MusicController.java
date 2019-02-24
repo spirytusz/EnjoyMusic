@@ -1,8 +1,8 @@
 package com.zspirytus.enjoymusic.impl.binder;
 
 import com.zspirytus.enjoymusic.IMusicControl;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
-import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
 public class MusicController extends IMusicControl.Stub {

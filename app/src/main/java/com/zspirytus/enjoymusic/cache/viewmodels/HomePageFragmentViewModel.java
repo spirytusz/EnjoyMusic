@@ -6,8 +6,7 @@ import android.arch.lifecycle.ViewModel;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.greendao.SongDao;
-import com.zspirytus.enjoymusic.db.table.Song;
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.entity.convert.Convertor;
 
 import java.util.ArrayList;

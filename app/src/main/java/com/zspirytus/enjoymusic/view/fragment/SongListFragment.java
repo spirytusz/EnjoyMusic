@@ -13,7 +13,6 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.SongListAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
-import com.zspirytus.enjoymusic.db.table.Song;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;

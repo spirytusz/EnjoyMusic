@@ -12,9 +12,9 @@ import android.view.KeyEvent;
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.MusicScanner;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
-import com.zspirytus.enjoymusic.entity.Music;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 
 /**

@@ -2,7 +2,7 @@ package com.zspirytus.enjoymusic.impl.binder;
 
 import android.os.RemoteException;
 
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayListChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeDirectlyObserver;

@@ -1,6 +1,6 @@
 package com.zspirytus.enjoymusic.cache;
 
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.global.MainApplication;
 
 /**

@@ -7,9 +7,8 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 
 import com.zspirytus.enjoymusic.db.DBManager;
-import com.zspirytus.enjoymusic.db.table.JoinSongListToSong;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
-import com.zspirytus.enjoymusic.entity.Music;
 
 import java.util.ArrayList;
 import java.util.List;

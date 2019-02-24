@@ -4,11 +4,11 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.CallSuper;
 
+import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
-import com.zspirytus.enjoymusic.entity.Album;
-import com.zspirytus.enjoymusic.entity.Artist;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
-import com.zspirytus.enjoymusic.entity.Music;
 
 import java.util.List;
 

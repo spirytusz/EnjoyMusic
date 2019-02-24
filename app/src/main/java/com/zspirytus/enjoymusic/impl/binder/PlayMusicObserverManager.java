@@ -1,6 +1,6 @@
 package com.zspirytus.enjoymusic.impl.binder;
 
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 

@@ -8,7 +8,7 @@ import com.zspirytus.enjoymusic.IMusicProgressControl;
 import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.entity.MusicFilter;
 import com.zspirytus.enjoymusic.impl.binder.MusicController;
 import com.zspirytus.enjoymusic.impl.binder.MusicProgressControl;

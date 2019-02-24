@@ -5,7 +5,7 @@ import android.arch.lifecycle.ViewModel;
 import android.support.annotation.WorkerThread;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.entity.MusicMetaDataListItem;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.global.SettingConfig;

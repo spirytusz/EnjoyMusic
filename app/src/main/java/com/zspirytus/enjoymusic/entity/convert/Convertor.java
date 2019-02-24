@@ -1,12 +1,8 @@
 package com.zspirytus.enjoymusic.entity.convert;
 
-import com.zspirytus.enjoymusic.db.table.AlbumTable;
-import com.zspirytus.enjoymusic.db.table.ArtistTable;
-import com.zspirytus.enjoymusic.db.table.JoinArtistToAlbum;
-import com.zspirytus.enjoymusic.db.table.Song;
-import com.zspirytus.enjoymusic.entity.Album;
-import com.zspirytus.enjoymusic.entity.Artist;
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.Music;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,8 +18,6 @@ public class Convertor {
     public static Music createMusic(Song song) {
         return new Music(
                 song.getSongId(),
-                song.getAlbumId(),
-                song.getArtistId(),
                 song.getMusicFilePath(),
                 song.getMusicName(),
                 song.getMusicArtist(),

@@ -1,5 +1,9 @@
 package com.zspirytus.enjoymusic.entity;
 
+import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.Music;
+
 public class SearchResult {
 
     private boolean isTitle = false;

@@ -9,7 +9,7 @@ import android.util.SparseIntArray;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.db.table.Music;
 
 public class MusicPlayFragmentViewModels extends ViewModel {
 

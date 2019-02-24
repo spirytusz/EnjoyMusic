@@ -14,7 +14,7 @@ import android.support.v4.media.app.NotificationCompat.MediaStyle;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
 import com.zspirytus.enjoymusic.utils.DeviceUtils;

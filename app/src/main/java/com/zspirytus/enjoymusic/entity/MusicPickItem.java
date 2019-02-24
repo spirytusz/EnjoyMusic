@@ -1,5 +1,7 @@
 package com.zspirytus.enjoymusic.entity;
 
+import com.zspirytus.enjoymusic.db.table.Music;
+
 public class MusicPickItem {
 
     private MusicPickItem() {

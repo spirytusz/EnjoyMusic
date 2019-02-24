@@ -1,6 +1,6 @@
 package com.zspirytus.enjoymusic.receivers.observer;
 
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.db.table.Music;
 
 /**
  * 播放音乐改变观察接口

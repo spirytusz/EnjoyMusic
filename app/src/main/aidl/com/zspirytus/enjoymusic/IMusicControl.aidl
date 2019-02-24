@@ -1,7 +1,7 @@
 // IMusicControl.aidl
 package com.zspirytus.enjoymusic;
 
-import com.zspirytus.enjoymusic.entity.Music;
+import com.zspirytus.enjoymusic.db.table.Music;
 
 interface IMusicControl {
     void play(in Music music);
