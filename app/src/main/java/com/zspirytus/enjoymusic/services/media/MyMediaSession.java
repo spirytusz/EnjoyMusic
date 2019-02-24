@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.MusicScanner;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
@@ -72,9 +73,9 @@ public class MyMediaSession {
     public void setMetaData(Music music) {
         MediaMetadataCompat.Builder metaData = new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, music.getMusicName())
-                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, music.getArtist().getArtistName())
+                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, QueryExecutor.findArtist(music).getArtistName())
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, music.getMusicDuration())
-                .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, MusicCoverFileCache.getInstance().getCover(music.getAlbum().getAlbumArt()));
+                .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, MusicCoverFileCache.getInstance().getCover(QueryExecutor.findAlbum(music).getAlbumArt()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             metaData.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, MusicScanner.getInstance().getAllMusicList().size());

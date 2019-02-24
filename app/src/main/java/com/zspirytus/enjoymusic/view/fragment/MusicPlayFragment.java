@@ -16,6 +16,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MusicPlayFragmentViewModels;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
@@ -279,8 +280,8 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     private void setView(Music music) {
-        Album album = music.getAlbum();
-        Artist artist = music.getArtist();
+        Album album = QueryExecutor.findAlbum(music);
+        Artist artist = QueryExecutor.findArtist(music);
         String musicThumbAlbumCoverPath = album.getAlbumArt();
         ImageLoader.load(mCover, musicThumbAlbumCoverPath, music.getMusicName(), new CenterCrop());
         mTitle.setText(music.getMusicName());
@@ -292,7 +293,7 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     private void setBackgroundBlur(Music music) {
-        Album album = music.getAlbum();
+        Album album = QueryExecutor.findAlbum(music);
         String imagePath = album.getAlbumArt();
         if (imagePath != null && !imagePath.isEmpty()) {
             File file = new File(imagePath);

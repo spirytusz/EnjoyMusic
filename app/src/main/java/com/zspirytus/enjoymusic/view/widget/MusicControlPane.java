@@ -64,7 +64,7 @@ public class MusicControlPane extends LinearLayout implements View.OnClickListen
         String path = album.getAlbumArt();
         ImageLoader.load(findViewById(R.id.bottom_music_cover), path, music.getMusicName());
         ((TextView) findViewById(R.id.bottom_music_name)).setText(music.getMusicName());
-        ((TextView) findViewById(R.id.bottom_music_album)).setText(music.getAlbum().getAlbumName());
+        ((TextView) findViewById(R.id.bottom_music_album)).setText(album.getAlbumName());
     }
 
     public void setPlayState(boolean isPlaying) {

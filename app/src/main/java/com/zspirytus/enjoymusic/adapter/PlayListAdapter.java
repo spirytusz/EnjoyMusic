@@ -5,6 +5,8 @@ import android.view.View;
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
+import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 
@@ -17,10 +19,11 @@ public class PlayListAdapter extends CommonRecyclerViewAdapter<Music> {
 
     @Override
     public void convert(CommonViewHolder holder, Music music, int position) {
-        String coverPath = music.getAlbum().getAlbumArt();
+        Album album = QueryExecutor.findAlbum(music);
+        String coverPath = album.getAlbumArt();
         ImageLoader.load(holder.getView(R.id.item_cover), coverPath, music.getMusicName());
         holder.setText(R.id.item_title, music.getMusicName());
-        holder.setText(R.id.item_sub_title, music.getAlbum().getAlbumName());
+        holder.setText(R.id.item_sub_title, album.getAlbumName());
         holder.setVisibility(R.id.item_more_info_button, View.GONE);
         if (mListener != null) {
             holder.setOnItemClickListener(mListener);

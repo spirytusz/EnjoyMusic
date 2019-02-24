@@ -14,6 +14,9 @@ import android.support.v4.media.app.NotificationCompat.MediaStyle;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
+import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
@@ -128,13 +131,15 @@ public class NotificationHelper {
     }
 
     private NotificationCompat.Builder getDefaultBuilder(Music music) {
+        Album album = QueryExecutor.findAlbum(music);
+        Artist artist = QueryExecutor.findArtist(music);
         Intent intent = new Intent(MainApplication.getBackgroundContext(), PlayMusicService.class);
         PendingIntent startActivity = createPendingIntentByExtra(intent, SINGLE_CLICK, Constant.NotificationEvent.SINGLE_CLICK);
         return new NotificationCompat.Builder(MainApplication.getBackgroundContext(), mChannelId)
                 .setSmallIcon(R.drawable.ic_music_note_white_24dp)
-                .setLargeIcon(MusicCoverFileCache.getInstance().getCover(music.getAlbum().getAlbumArt()))
+                .setLargeIcon(MusicCoverFileCache.getInstance().getCover(album.getAlbumArt()))
                 .setContentTitle(music.getMusicName())
-                .setContentText(music.getArtist().getArtistName())
+                .setContentText(artist.getArtistName())
                 .setChannelId(mChannelId)
                 .setAutoCancel(false)
                 .setOngoing(true)
