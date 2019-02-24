@@ -34,12 +34,10 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
         MusicMetaDataListItem item = new MusicMetaDataListItem();
         item.setArtistArt(true);
         item.setPreview(music);
-        item.setArtistArtUrl(null);
         dataList.add(item);
 
         MusicMetaDataListItem item1 = new MusicMetaDataListItem();
         item1.setPreview(true);
-        item.setAlbumUrl(null);
         item1.setPreview(music);
         dataList.add(item1);
 
