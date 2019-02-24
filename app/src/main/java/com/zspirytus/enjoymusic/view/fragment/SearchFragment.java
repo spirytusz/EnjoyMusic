@@ -4,8 +4,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,6 +27,8 @@ public class SearchFragment extends BaseFragment {
     private EditText mEditText;
     @ViewInject(R.id.clear_text_btn)
     private ImageView mClearTextBtn;
+    @ViewInject(R.id.search_btn)
+    private ImageView mSearchBtn;
     @ViewInject(R.id.recyclerview)
     private RecyclerView mRecyclerView;
     @ViewInject(R.id.info_text)
@@ -49,25 +49,11 @@ public class SearchFragment extends BaseFragment {
         getParentActivity().setLightStatusIconColor();
         mClearTextBtn.setOnClickListener(v -> {
             mEditText.setText("");
-            mAdapter.clearData();
             mInfoText.setVisibility(View.GONE);
         });
-        mEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    mViewModel.applyToSearch(s.toString());
-                } else {
-                    mAdapter.clearData();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
+        mSearchBtn.setOnClickListener(v -> {
+            if (mEditText.getText().length() > 0) {
+                mViewModel.applyToSearch(mEditText.getText().toString());
             }
         });
         mBackBtn.setOnClickListener(v -> goBack());
@@ -92,6 +78,16 @@ public class SearchFragment extends BaseFragment {
     @Override
     public int getContainerId() {
         return R.id.full_fragment_container;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            getParentActivity().setLightStatusIconColor();
+        } else {
+            getParentActivity().setDefaultStatusIconColor();
+        }
     }
 
     @Override

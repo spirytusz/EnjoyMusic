@@ -85,6 +85,7 @@ public class AudioEffectFragment extends BaseFragment
 
     @Override
     protected void initView() {
+        getParentActivity().setLightStatusIconColor();
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
         mBackBtn.setOnClickListener(this);
@@ -156,12 +157,23 @@ public class AudioEffectFragment extends BaseFragment
             mTitle.setText(R.string.audio_effect_fragment_main_title);
         } else {
             FragmentVisibilityManager.getInstance().remove(this);
+            getParentActivity().setDefaultStatusIconColor();
         }
     }
 
     @Override
     public int getContainerId() {
         return R.id.full_fragment_container;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            getParentActivity().setLightStatusIconColor();
+        } else {
+            getParentActivity().setDefaultStatusIconColor();
+        }
     }
 
     private void showEqualizer() {

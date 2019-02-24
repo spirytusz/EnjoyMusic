@@ -86,4 +86,8 @@
     <string name="new_song_list">新建歌单</string>
     <!-- FilterMusicFragment Menu Text end -->
 
+    <!-- Search Text start -->
+    <string name="search">搜索</string>
+    <!-- Search Text end -->
+
 </resources>

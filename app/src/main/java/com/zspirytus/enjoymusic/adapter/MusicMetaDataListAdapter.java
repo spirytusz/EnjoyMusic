@@ -20,6 +20,8 @@ import java.util.List;
 
 public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataListItem> {
 
+    private OnDownLoadBtnClickListener mListener;
+
     public MusicMetaDataListAdapter(List<MusicMetaDataListItem> data) {
         super(data);
         addArtistArtItemDelegate();
@@ -143,6 +145,9 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
             @Override
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
                 holder.setOnItemClickListener((view, position) -> {
+                    if (mListener != null) {
+                        mListener.onDownLoadBtnClick();
+                    }
                 });
             }
         };
@@ -191,5 +196,13 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
             }
         };
         addDelegate(delegate);
+    }
+
+    public void setOnDownBtnClickListener(OnDownLoadBtnClickListener listener) {
+        mListener = listener;
+    }
+
+    public interface OnDownLoadBtnClickListener {
+        void onDownLoadBtnClick();
     }
 }

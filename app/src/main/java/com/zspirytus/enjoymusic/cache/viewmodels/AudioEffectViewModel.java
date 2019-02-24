@@ -13,6 +13,8 @@ import java.util.List;
 
 public class AudioEffectViewModel extends ViewModel {
 
+    private static final String TAG = "AudioEffectViewModel";
+
     private MutableLiveData<List<AudioEffectItem>> mAudioEffects = new MutableLiveData<>();
     private MutableLiveData<List<AudioEffectItem>> mPresetReverbNameList = new MutableLiveData<>();
     private MutableLiveData<EqualizerMetaData> mEqualizerMetaData = new MutableLiveData<>();

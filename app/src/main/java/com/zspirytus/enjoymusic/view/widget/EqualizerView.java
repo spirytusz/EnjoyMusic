@@ -18,11 +18,13 @@ import android.widget.TextView;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EqualizerView extends ConstraintLayout {
 
     private static final String TAG = "EqualizerView";
 
-    private EqualizerMetaData mMetaData;
     private OnBandLevelChangeListener mListener;
 
     @ColorInt
@@ -64,6 +66,17 @@ public class EqualizerView extends ConstraintLayout {
 
     public void setOnBandLevelChangeListener(OnBandLevelChangeListener listener) {
         mListener = listener;
+    }
+
+    public List<Integer> getBands() {
+        int i = 0;
+        List<Integer> integers = new ArrayList<>();
+        VerticalSeekBar seekBar = (VerticalSeekBar) getChildAt(3 + 2 * i);
+        while (seekBar != null) {
+            integers.add(seekBar.getProgress());
+            i++;
+        }
+        return integers;
     }
 
     public void reset() {

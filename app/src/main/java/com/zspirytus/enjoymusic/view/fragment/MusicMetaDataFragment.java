@@ -37,6 +37,9 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
         Music music = getArguments().getParcelable("music");
         List<MusicMetaDataListItem> dataList = wrapDataList(music);
         mAdapter = new MusicMetaDataListAdapter(dataList);
+        mAdapter.setOnDownBtnClickListener(() -> {
+
+        });
     }
 
     @Override
