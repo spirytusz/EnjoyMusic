@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
+import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 
@@ -58,7 +60,8 @@ public class MusicControlPane extends LinearLayout implements View.OnClickListen
     }
 
     public void wrapMusic(Music music) {
-        String path = music.getAlbum().getAlbumArt();
+        Album album = QueryExecutor.findAlbum(music);
+        String path = album.getAlbumArt();
         ImageLoader.load(findViewById(R.id.bottom_music_cover), path, music.getMusicName());
         ((TextView) findViewById(R.id.bottom_music_name)).setText(music.getMusicName());
         ((TextView) findViewById(R.id.bottom_music_album)).setText(music.getAlbum().getAlbumName());

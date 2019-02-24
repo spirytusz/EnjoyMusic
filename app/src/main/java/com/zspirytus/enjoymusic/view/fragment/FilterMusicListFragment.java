@@ -17,6 +17,7 @@ import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.FilterMusicListFragmentViewModel;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
@@ -67,7 +68,7 @@ public class FilterMusicListFragment extends BaseFragment
         mAdapter = new HeaderFooterViewWrapAdapter() {
             @Override
             public void convertHeaderView(CommonViewHolder holder, int position) {
-                Album album = mInnerAdapter.getList().get(0).getAlbum();
+                Album album = QueryExecutor.findAlbum(mInnerAdapter.getList().get(0));
                 String title = getArguments().getString(TITLE_KEY);
                 ImageLoader.load(holder.getView(R.id.big_music_preview_cover), album.getAlbumArt(), title);
                 holder.setText(R.id.big_music_preview_text, mViewModel.createSpannableString(mViewModel.getPreviewTitle(title), mInnerAdapter.getList()));

@@ -8,7 +8,9 @@ import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.greendao.MusicDao;
+import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
@@ -30,10 +32,11 @@ public class HomePageListAdapter extends CommonRecyclerViewAdapter<Music> implem
 
     @Override
     public void convert(CommonViewHolder holder, Music music, int position) {
-        String coverPath = music.getAlbum().getAlbumArt();
+        Album album = QueryExecutor.findAlbum(music);
+        String coverPath = album.getAlbumArt();
         ImageLoader.load(holder.getView(R.id.item_cover), coverPath, music.getMusicName());
         holder.setText(R.id.item_title, music.getMusicName());
-        holder.setText(R.id.item_sub_title, music.getAlbum().getAlbumName());
+        holder.setText(R.id.item_sub_title, album.getAlbumName());
         if (mListener != null) {
             holder.setOnItemClickListener(mListener);
         }

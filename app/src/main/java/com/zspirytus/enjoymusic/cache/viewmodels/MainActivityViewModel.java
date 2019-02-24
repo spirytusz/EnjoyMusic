@@ -65,11 +65,10 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
             try {
                 IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.GET_MUSIC_LIST);
                 IGetMusicList getMusicListBinder = IGetMusicList.Stub.asInterface(binder);
-                final List<FolderSortedMusic> folderSortedMusicList = getMusicListBinder.getFolderSortedMusic();
-
-                List<Music> allMusicList = DBManager.getInstance().getDaoSession().loadAll(Music.class);
-                List<Album> albumList = DBManager.getInstance().getDaoSession().loadAll(Album.class);
-                List<Artist> artistList = DBManager.getInstance().getDaoSession().loadAll(Artist.class);
+                List<Music> allMusicList = getMusicListBinder.getMusicList();
+                List<Album> albumList = getMusicListBinder.getAlbumList();
+                List<Artist> artistList = getMusicListBinder.getArtistList();
+                List<FolderSortedMusic> folderSortedMusicList = getMusicListBinder.getFolderSortedMusic();
 
                 getMusicList().postValue(allMusicList);
                 getAlbumList().postValue(albumList);

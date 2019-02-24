@@ -7,6 +7,7 @@ import com.zspirytus.basesdk.recyclerview.listeners.OnItemLongClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -28,11 +29,11 @@ public class FolderSortedMusicListAdapter extends CommonRecyclerViewAdapter<Fold
     @Override
     public void convert(CommonViewHolder holder, FolderSortedMusic folderSortedMusic, int position) {
         Music firstMusicInFolder = folderSortedMusic.getFolderMusicList().get(0);
-        Album album = firstMusicInFolder.getAlbum();
+        Album album = QueryExecutor.findAlbum(firstMusicInFolder);
         String coverPath = album.getAlbumArt();
         ImageLoader.load(holder.getView(R.id.item_cover), coverPath, folderSortedMusic.getParentFolderDir());
-        holder.setText(R.id.item_title, folderSortedMusic.getParentFolderDir());
-        holder.setText(R.id.item_sub_title, folderSortedMusic.getFolderName());
+        holder.setText(R.id.item_title, folderSortedMusic.getFolderName());
+        holder.setText(R.id.item_sub_title, folderSortedMusic.getParentFolderDir());
         if (mListener != null) {
             holder.setOnItemClickListener(mListener);
         }

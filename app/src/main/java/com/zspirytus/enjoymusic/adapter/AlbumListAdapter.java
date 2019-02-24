@@ -8,6 +8,7 @@ import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.greendao.MusicDao;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
@@ -33,10 +34,11 @@ public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
 
     @Override
     public void convert(CommonViewHolder holder, Album album, int position) {
+        Artist artist = QueryExecutor.findArtist(album);
         String coverPath = album.getAlbumArt();
         ImageLoader.load(holder.getView(R.id.item_cover), coverPath, album.getAlbumName());
         holder.setText(R.id.item_title, album.getAlbumName());
-        holder.setText(R.id.item_sub_title, "artist");
+        holder.setText(R.id.item_sub_title, artist != null ? artist.getArtistName() : "artist");
         if (mListener != null) {
             holder.setOnItemClickListener(mListener);
         }

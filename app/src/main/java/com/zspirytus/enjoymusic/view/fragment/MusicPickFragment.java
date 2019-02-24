@@ -16,6 +16,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
@@ -59,7 +60,7 @@ public class MusicPickFragment extends BaseFragment
 
             @Override
             public void convert(CommonViewHolder holder, MusicPickItem musicPickItem, int position) {
-                Album album = musicPickItem.getMusic().getAlbum();
+                Album album = QueryExecutor.findAlbum(musicPickItem.getMusic());
                 holder.setText(R.id.item_title, musicPickItem.getMusic().getMusicName());
                 holder.setText(R.id.item_sub_title, album.getAlbumName());
                 CheckBox checkBox = holder.getView(R.id.item_checkbox);
