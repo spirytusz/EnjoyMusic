@@ -3,6 +3,8 @@ package com.zspirytus.enjoymusic.db.table.jointable;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.util.Objects;
+
 @Entity
 public class JoinMusicToArtist {
 
@@ -17,6 +19,29 @@ public class JoinMusicToArtist {
 
     @Generated(hash = 71194154)
     public JoinMusicToArtist() {
+    }
+
+    @Override
+    public String toString() {
+        return "JoinMusicToArtist{" +
+                "musicId=" + musicId +
+                ", artistId=" + artistId +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JoinMusicToArtist that = (JoinMusicToArtist) o;
+        return musicId == that.musicId &&
+                artistId == that.artistId;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(musicId, artistId);
     }
 
     public long getMusicId() {
@@ -34,5 +59,4 @@ public class JoinMusicToArtist {
     public void setArtistId(long artistId) {
         this.artistId = artistId;
     }
-
 }
