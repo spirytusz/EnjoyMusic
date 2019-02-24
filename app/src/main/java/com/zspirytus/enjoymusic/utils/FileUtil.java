@@ -8,15 +8,17 @@ public class FileUtil {
         throw new AssertionError();
     }
 
-    public static String getParent(String path) {
-        return new File(path).getParent();
-    }
-
-    public static String[] getParentFileNameAndDir(String path) {
-        File parent = new File(path).getParentFile();
-        return new String[]{
-                parent.getName(),
-                parent.getParentFile().getPath()
-        };
+    /**
+     * Get Folder and Folder its Directory.
+     *
+     * @param path
+     * @return String array, arr[0] == folder, arr[1] == folder its directory, arr[2] == folder its absolute path.
+     */
+    public static String[] getFolderNameAndFolderDir(String path) {
+        File file = new File(path);
+        File folder = file.getParentFile();
+        String folderName = folder.getName();
+        String folderDir = folder.getParentFile().getAbsolutePath();
+        return new String[]{folderName, folderDir, folder.getAbsolutePath()};
     }
 }

@@ -31,24 +31,7 @@ public class Album implements Parcelable {
     private long albumId;
 
     private String albumName;
-
-    @Override
-    public String toString() {
-        return "Album{" +
-                "albumId=" + albumId +
-                ", albumName='" + albumName + '\'' +
-                ", albumCoverPath='" + albumCoverPath + '\'' +
-                ", firstYear='" + firstYear + '\'' +
-                ", lastYear='" + lastYear + '\'' +
-                ", albumSongCount=" + albumSongCount +
-                ", contentMusic=" + contentMusic +
-                ", artist=" + artist +
-                '}';
-    }
-
-    private String albumCoverPath;
-    private String firstYear;
-    private String lastYear;
+    private String albumArt;
     private int albumSongCount;
 
     @ToMany
@@ -75,12 +58,69 @@ public class Album implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.albumId);
         dest.writeString(this.albumName);
-        dest.writeString(this.albumCoverPath);
-        dest.writeString(this.firstYear);
-        dest.writeString(this.lastYear);
+        dest.writeString(this.albumArt);
         dest.writeInt(this.albumSongCount);
         dest.writeTypedList(this.contentMusic);
         dest.writeParcelable(this.artist, flags);
+    }
+
+    public Album() {
+    }
+
+    protected Album(Parcel in) {
+        this.albumId = in.readLong();
+        this.albumName = in.readString();
+        this.albumArt = in.readString();
+        this.albumSongCount = in.readInt();
+        this.contentMusic = in.createTypedArrayList(Music.CREATOR);
+        this.artist = in.readParcelable(Artist.class.getClassLoader());
+    }
+
+    @Generated(hash = 582391069)
+    public Album(long albumId, String albumName, String albumArt, int albumSongCount) {
+        this.albumId = albumId;
+        this.albumName = albumName;
+        this.albumArt = albumArt;
+        this.albumSongCount = albumSongCount;
+    }
+
+    public static final Parcelable.Creator<Album> CREATOR = new Parcelable.Creator<Album>() {
+        @Override
+        public Album createFromParcel(Parcel source) {
+            return new Album(source);
+        }
+
+        @Override
+        public Album[] newArray(int size) {
+            return new Album[size];
+        }
+    };
+
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 172302968)
+    private transient AlbumDao myDao;
+
+    @Generated(hash = 1550754473)
+    private transient boolean artist__refreshed;
+
+    @Override
+    public String toString() {
+        return "Album{" +
+                "albumId=" + albumId +
+                ", albumName='" + albumName + '\'' +
+                ", albumArt='" + albumArt + '\'' +
+                ", albumSongCount=" + albumSongCount +
+                ", contentMusic=" + contentMusic +
+                ", artist=" + artist +
+                '}';
     }
 
     public long getAlbumId() {
@@ -99,28 +139,12 @@ public class Album implements Parcelable {
         this.albumName = albumName;
     }
 
-    public String getAlbumCoverPath() {
-        return this.albumCoverPath;
+    public String getAlbumArt() {
+        return this.albumArt;
     }
 
-    public void setAlbumCoverPath(String albumCoverPath) {
-        this.albumCoverPath = albumCoverPath;
-    }
-
-    public String getFirstYear() {
-        return this.firstYear;
-    }
-
-    public void setFirstYear(String firstYear) {
-        this.firstYear = firstYear;
-    }
-
-    public String getLastYear() {
-        return this.lastYear;
-    }
-
-    public void setLastYear(String lastYear) {
-        this.lastYear = lastYear;
+    public void setAlbumArt(String albumArt) {
+        this.albumArt = albumArt;
     }
 
     public int getAlbumSongCount() {
@@ -131,9 +155,7 @@ public class Album implements Parcelable {
         this.albumSongCount = albumSongCount;
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     @Generated(hash = 88144874)
     public Artist getArtist() {
         if (artist != null || !artist__refreshed) {
@@ -147,17 +169,13 @@ public class Album implements Parcelable {
         return artist;
     }
 
-    /**
-     * To-one relationship, returned entity is not refreshed and may carry only the PK property.
-     */
+    /** To-one relationship, returned entity is not refreshed and may carry only the PK property. */
     @Generated(hash = 782467558)
     public Artist peakArtist() {
         return artist;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 2128689463)
     public void setArtist(Artist artist) {
         synchronized (this) {
@@ -188,9 +206,7 @@ public class Album implements Parcelable {
         return contentMusic;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 581154520)
     public synchronized void resetContentMusic() {
         contentMusic = null;
@@ -232,64 +248,10 @@ public class Album implements Parcelable {
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1023911229)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getAlbumDao() : null;
     }
-
-    public Album() {
-    }
-
-    protected Album(Parcel in) {
-        this.albumId = in.readLong();
-        this.albumName = in.readString();
-        this.albumCoverPath = in.readString();
-        this.firstYear = in.readString();
-        this.lastYear = in.readString();
-        this.albumSongCount = in.readInt();
-        this.contentMusic = in.createTypedArrayList(Music.CREATOR);
-        this.artist = in.readParcelable(Artist.class.getClassLoader());
-    }
-
-    @Generated(hash = 1167985938)
-    public Album(long albumId, String albumName, String albumCoverPath, String firstYear,
-                 String lastYear, int albumSongCount) {
-        this.albumId = albumId;
-        this.albumName = albumName;
-        this.albumCoverPath = albumCoverPath;
-        this.firstYear = firstYear;
-        this.lastYear = lastYear;
-        this.albumSongCount = albumSongCount;
-    }
-
-    public static final Parcelable.Creator<Album> CREATOR = new Parcelable.Creator<Album>() {
-        @Override
-        public Album createFromParcel(Parcel source) {
-            return new Album(source);
-        }
-
-        @Override
-        public Album[] newArray(int size) {
-            return new Album[size];
-        }
-    };
-
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 172302968)
-    private transient AlbumDao myDao;
-
-    @Generated(hash = 1550754473)
-    private transient boolean artist__refreshed;
 }

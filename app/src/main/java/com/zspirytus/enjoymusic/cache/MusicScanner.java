@@ -4,19 +4,24 @@ import android.content.ContentQueryMap;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.provider.MediaStore;
-import android.text.format.Formatter;
 import android.util.SparseIntArray;
 
+import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
+import com.zspirytus.enjoymusic.db.table.jointable.JoinAlbumToArtist;
+import com.zspirytus.enjoymusic.db.table.jointable.JoinMusicToAlbum;
+import com.zspirytus.enjoymusic.db.table.jointable.JoinMusicToArtist;
 import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.utils.FileUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 音乐扫描类，获取本机所有音乐。
@@ -48,84 +53,142 @@ public class MusicScanner {
     }
 
     public List<Music> getAllMusicList() {
-        if (mAllMusicList.isEmpty()) {
-            scanMusic();
+        if (mAllMusicList.isEmpty() || mAlbumList.isEmpty() || mArtistList.isEmpty() || mFolderSortedMusicList.isEmpty()) {
+            scan();
         }
         return mAllMusicList;
     }
 
     public List<Album> getAlbumList() {
+        if (mAllMusicList.isEmpty() || mAlbumList.isEmpty() || mArtistList.isEmpty() || mFolderSortedMusicList.isEmpty()) {
+            scan();
+        }
         return mAlbumList;
     }
 
     public List<Artist> getArtistList() {
+        if (mAllMusicList.isEmpty() || mAlbumList.isEmpty() || mArtistList.isEmpty() || mFolderSortedMusicList.isEmpty()) {
+            scan();
+        }
         return mArtistList;
     }
 
     public List<FolderSortedMusic> getFolderSortedMusicList() {
+        if (mAllMusicList.isEmpty() || mAlbumList.isEmpty() || mArtistList.isEmpty() || mFolderSortedMusicList.isEmpty()) {
+            scan();
+        }
         return mFolderSortedMusicList;
     }
 
-    private void scanMusic() {
-        SparseIntArray indexMemory = new SparseIntArray();
-        Map<String, ContentValues> albumQueryMap = prepareAlbums();
-        Map<String, ContentValues> artistQueryMap = prepareArtist();
-        final String[] musicProjection = {
-                MediaStore.Audio.AudioColumns._ID,
-                MediaStore.Audio.AudioColumns.DATA,
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.ALBUM,
-                MediaStore.Audio.Media.ALBUM_ID,
-                MediaStore.Audio.Media.SIZE,
-                MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.DATE_ADDED,
-                MediaStore.Audio.Media.ARTIST_ID
-        };
-        final String selection = MediaStore.Audio.AudioColumns.IS_MUSIC + " != ? And "
-                + MediaStore.Audio.AudioColumns.DURATION + " >= ?";
-        final String[] selectionArgs = new String[]{"0", "60000"};
-        Cursor musicCursor = MainApplication.getBackgroundContext().getContentResolver().query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                musicProjection,
-                selection,
-                selectionArgs,
-                null
-        );
-        if (musicCursor != null) {
-            while (musicCursor.moveToNext()) {
-                // scan item music
-                long id = musicCursor.getLong(0);
-                String musicFilePath = musicCursor.getString(1);
-                String musicName = musicCursor.getString(2);
-                String musicArtist = musicCursor.getString(3);
-                String musicAlbumName = musicCursor.getString(4);
-                String albumId = musicCursor.getString(5);
-                String coverPath = albumQueryMap.get(albumId).getAsString(MediaStore.Audio.Albums.ALBUM_ART);
-                String musicFileSize = Formatter.formatFileSize(MainApplication.getBackgroundContext(), musicCursor.getLong(6));
-                long musicDuration = musicCursor.getLong(7);
-                long musicAddDate = musicCursor.getLong(8);
-                long artistId = musicCursor.getLong(9);
-                Music itemMusic = new Music(id, Long.valueOf(albumId), artistId, musicFilePath, musicName, musicArtist, musicAlbumName, coverPath, musicDuration, musicFileSize, musicAddDate);
-                mAllMusicList.add(itemMusic);
+    private void scan() {
+        List<Music> musicList = DBManager.getInstance().getDaoSession().loadAll(Music.class);
+        if (musicList != null && !musicList.isEmpty()) {
+            mAllMusicList = musicList;
+            mAlbumList = DBManager.getInstance().getDaoSession().loadAll(Album.class);
+            mArtistList = DBManager.getInstance().getDaoSession().loadAll(Artist.class);
 
-                // add to folder sorted music list
-                int hash = FileUtil.getParent(musicFilePath).hashCode();
-                int findIndex = indexMemory.get(hash, -1);
-                if (findIndex == -1) {
-                    String[] strings = FileUtil.getParentFileNameAndDir(musicFilePath);
-                    String fileName = strings[0];
-                    String parentDir = strings[1];
-                    List<Music> musicList = new ArrayList<>();
-                    musicList.add(itemMusic);
-                    FolderSortedMusic folderSortedMusic = new FolderSortedMusic(fileName, parentDir, musicList);
-                    mFolderSortedMusicList.add(folderSortedMusic);
-                    indexMemory.put(hash, mFolderSortedMusicList.size());
+            SparseIntArray folderDirMapIndex = new SparseIntArray();
+            for (Music music : musicList) {
+                String[] dir = FileUtil.getFolderNameAndFolderDir(music.getMusicFilePath());
+                int index = folderDirMapIndex.get(dir.hashCode(), -1);
+                if (index != -1) {
+                    mFolderSortedMusicList.get(index).addMusic(music);
                 } else {
-                    mFolderSortedMusicList.get(findIndex - 1).getFolderMusicList().add(itemMusic);
+                    List<Music> folderMusicList = new ArrayList<>();
+                    folderMusicList.add(music);
+                    FolderSortedMusic folderSortedMusic = new FolderSortedMusic(dir[1], dir[0], folderMusicList);
+                    mFolderSortedMusicList.add(folderSortedMusic);
+                    folderDirMapIndex.append(dir[2].hashCode(), mFolderSortedMusicList.size() - 1);
                 }
             }
-            musicCursor.close();
+        } else {
+            scanDirectorily();
+        }
+    }
+
+    private void scanDirectorily() {
+        prepareMusics();
+        prepareAlbums();
+        prepareArtist();
+
+        SparseIntArray folderDirMapIndex = new SparseIntArray();
+
+        Set<JoinMusicToAlbum> joinMusicToAlbumSet = new HashSet<>();
+        Set<JoinMusicToArtist> joinMusicToArtistSet = new HashSet<>();
+        Set<JoinAlbumToArtist> joinAlbumToArtistSet = new HashSet<>();
+
+        for (Music music : mAllMusicList) {
+            // init FolderSortedList
+            String[] dir = FileUtil.getFolderNameAndFolderDir(music.getMusicFilePath());
+            int index = folderDirMapIndex.get(dir.hashCode(), -1);
+            if (index != -1) {
+                mFolderSortedMusicList.get(index).addMusic(music);
+            } else {
+                List<Music> folderMusicList = new ArrayList<>();
+                folderMusicList.add(music);
+                FolderSortedMusic folderSortedMusic = new FolderSortedMusic(dir[1], dir[0], folderMusicList);
+                mFolderSortedMusicList.add(folderSortedMusic);
+                folderDirMapIndex.append(dir[2].hashCode(), mFolderSortedMusicList.size() - 1);
+            }
+
+            // create Join Table.
+            JoinMusicToAlbum joinMusicToAlbum = new JoinMusicToAlbum(music.getMusicId(), music.getAlbumId());
+            JoinMusicToArtist joinMusicToArtist = new JoinMusicToArtist(music.getMusicId(), music.getArtistId());
+            JoinAlbumToArtist joinAlbumToArtist = new JoinAlbumToArtist(music.getAlbumId(), music.getArtistId());
+
+            // insert into Join Tables.
+            joinMusicToAlbumSet.add(joinMusicToAlbum);
+            joinMusicToArtistSet.add(joinMusicToArtist);
+            joinAlbumToArtistSet.add(joinAlbumToArtist);
+        }
+
+        // insert into database.
+        DBManager.getInstance().getDaoSession().getJoinMusicToAlbumDao().insertOrReplaceInTx(joinMusicToAlbumSet);
+        DBManager.getInstance().getDaoSession().getJoinMusicToArtistDao().insertOrReplaceInTx(joinMusicToArtistSet);
+        DBManager.getInstance().getDaoSession().getJoinAlbumToArtistDao().insertOrReplaceInTx(joinAlbumToArtistSet);
+    }
+
+    private Map<String, ContentValues> prepareMusics() {
+        final String[] musicProjection = {
+                MediaStore.Audio.AudioColumns._ID,
+                MediaStore.Audio.AudioColumns.ALBUM_ID,
+                MediaStore.Audio.AudioColumns.ARTIST_ID,
+                MediaStore.Audio.AudioColumns.DATA,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.SIZE,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.DATE_ADDED
+        };
+        Cursor cursor = MainApplication.getBackgroundContext().getContentResolver().query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                musicProjection,
+                null,
+                null,
+                null);
+        ContentQueryMap queryMap = new ContentQueryMap(
+                cursor,
+                MediaStore.Audio.Media._ID,
+                false,
+                null
+        );
+        Map<String, ContentValues> map = queryMap.getRows();
+        for (String musicId : map.keySet()) {
+            ContentValues values = map.get(musicId);
+            long albumId = values.getAsLong(MediaStore.Audio.AudioColumns.ALBUM_ID);
+            long artistId = values.getAsLong(MediaStore.Audio.AudioColumns.ARTIST_ID);
+            String musicFilePath = values.getAsString(MediaStore.Audio.AudioColumns.DATA);
+            String musicName = values.getAsString(MediaStore.Audio.AudioColumns.TITLE);
+            long duration = values.getAsLong(MediaStore.Audio.AudioColumns.DURATION);
+            String musicFileSize = values.getAsString(MediaStore.Audio.AudioColumns.SIZE);
+            String musicAddDate = values.getAsString(MediaStore.Audio.AudioColumns.DATE_ADDED);
+            Music music = new Music(Long.valueOf(musicId), albumId, artistId, musicFilePath, musicName, duration, musicFileSize, Long.valueOf(musicAddDate));
+            mAllMusicList.add(music);
+        }
+        try {
+            return map;
+        } finally {
+            cursor.close();
+            queryMap.close();
         }
     }
 
@@ -134,10 +197,7 @@ public class MusicScanner {
                 MediaStore.Audio.Albums._ID,
                 MediaStore.Audio.Albums.ALBUM,
                 MediaStore.Audio.Albums.ALBUM_ART,
-                MediaStore.Audio.Albums.ARTIST,
-                MediaStore.Audio.Albums.FIRST_YEAR,
-                MediaStore.Audio.Albums.LAST_YEAR,
-                MediaStore.Audio.Albums.NUMBER_OF_SONGS,
+                MediaStore.Audio.Albums.NUMBER_OF_SONGS
         };
         Cursor cursor = MainApplication.getBackgroundContext().getContentResolver().query(
                 MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
@@ -156,12 +216,9 @@ public class MusicScanner {
             ContentValues values = map.get(albumId);
             String albumName = values.getAsString(MediaStore.Audio.Albums.ALBUM);
             String albumArt = values.getAsString(MediaStore.Audio.Albums.ALBUM_ART);
-            String artist = values.getAsString(MediaStore.Audio.Albums.ARTIST);
-            String firstYear = values.getAsString(MediaStore.Audio.Albums.FIRST_YEAR);
-            String lastYear = values.getAsString(MediaStore.Audio.Albums.LAST_YEAR);
-            int numberOfSongs = values.getAsInteger(MediaStore.Audio.Artists.Albums.NUMBER_OF_SONGS);
-            Album item = new Album(Long.valueOf(albumId), albumName, albumArt, artist, firstYear, lastYear, numberOfSongs);
-            mAlbumList.add(item);
+            int numberOfSong = values.getAsInteger(MediaStore.Audio.Albums.NUMBER_OF_SONGS);
+            Album album = new Album(Long.valueOf(albumId), albumName, albumArt, numberOfSong);
+            mAlbumList.add(album);
         }
         try {
             return map;
@@ -194,11 +251,11 @@ public class MusicScanner {
         Map<String, ContentValues> map = queryMap.getRows();
         for (String artistId : map.keySet()) {
             ContentValues values = map.get(artistId);
-            String artist = values.getAsString(MediaStore.Audio.Artists.ARTIST);
-            int numberOfAlbums = values.getAsInteger(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS);
-            int numberOfTracks = values.getAsInteger(MediaStore.Audio.Artists.NUMBER_OF_TRACKS);
-            Artist item = new Artist(Long.valueOf(artistId), artist, numberOfAlbums, numberOfTracks);
-            mArtistList.add(item);
+            String artistName = values.getAsString(MediaStore.Audio.Artists.ARTIST);
+            int numberOfAlbum = values.getAsInteger(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS);
+            int numberOfTrack = values.getAsInteger(MediaStore.Audio.Artists.NUMBER_OF_TRACKS);
+            Artist artist = new Artist(Long.valueOf(artistId), artistName, numberOfAlbum, numberOfTrack);
+            mArtistList.add(artist);
         }
         try {
             return map;

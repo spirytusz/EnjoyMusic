@@ -31,6 +31,11 @@ public class FolderSortedMusic implements Parcelable {
         mFolderMusicCount = source.readInt();
     }
 
+    public void addMusic(Music music) {
+        mFolderMusicList.add(music);
+        mFolderMusicCount++;
+    }
+
     public String getParentFolderDir() {
         return mParentFolderDir;
     }

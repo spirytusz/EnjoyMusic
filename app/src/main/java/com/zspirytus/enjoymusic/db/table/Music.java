@@ -28,20 +28,8 @@ public class Music implements Parcelable {
     @Id
     private long musicId;
 
-    @Override
-    public String toString() {
-        return "Music{" +
-                "musicId=" + musicId +
-                ", musicFilePath='" + musicFilePath + '\'' +
-                ", musicName='" + musicName + '\'' +
-                ", musicDuration=" + musicDuration +
-                ", musicFileSize='" + musicFileSize + '\'' +
-                ", musicAddDate=" + musicAddDate +
-                ", album=" + album +
-                ", artist=" + artist +
-                '}';
-    }
-
+    private long albumId;
+    private long artistId;
     private String musicFilePath;
     private String musicName;
     private long musicDuration;
@@ -64,6 +52,22 @@ public class Music implements Parcelable {
     private Artist artist;
 
     @Override
+    public String toString() {
+        return "Music{" +
+                "musicId=" + musicId +
+                ", albumId=" + albumId +
+                ", artistId=" + artistId +
+                ", musicFilePath='" + musicFilePath + '\'' +
+                ", musicName='" + musicName + '\'' +
+                ", musicDuration=" + musicDuration +
+                ", musicFileSize='" + musicFileSize + '\'' +
+                ", musicAddDate=" + musicAddDate +
+                ", album=" + album +
+                ", artist=" + artist +
+                '}';
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -71,6 +75,8 @@ public class Music implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.musicId);
+        dest.writeLong(this.albumId);
+        dest.writeLong(this.artistId);
         dest.writeString(this.musicFilePath);
         dest.writeString(this.musicName);
         dest.writeLong(this.musicDuration);
@@ -86,6 +92,22 @@ public class Music implements Parcelable {
 
     public void setMusicId(long musicId) {
         this.musicId = musicId;
+    }
+
+    public long getAlbumId() {
+        return this.albumId;
+    }
+
+    public void setAlbumId(long albumId) {
+        this.albumId = albumId;
+    }
+
+    public long getArtistId() {
+        return this.artistId;
+    }
+
+    public void setArtistId(long artistId) {
+        this.artistId = artistId;
     }
 
     public String getMusicFilePath() {
@@ -144,17 +166,13 @@ public class Music implements Parcelable {
         return album;
     }
 
-    /**
-     * To-one relationship, returned entity is not refreshed and may carry only the PK property.
-     */
+    /** To-one relationship, returned entity is not refreshed and may carry only the PK property. */
     @Generated(hash = 371327305)
     public Album peakAlbum() {
         return album;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1875665110)
     public void setAlbum(Album album) {
         synchronized (this) {
@@ -163,9 +181,7 @@ public class Music implements Parcelable {
         }
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     @Generated(hash = 88144874)
     public Artist getArtist() {
         if (artist != null || !artist__refreshed) {
@@ -179,17 +195,13 @@ public class Music implements Parcelable {
         return artist;
     }
 
-    /**
-     * To-one relationship, returned entity is not refreshed and may carry only the PK property.
-     */
+    /** To-one relationship, returned entity is not refreshed and may carry only the PK property. */
     @Generated(hash = 782467558)
     public Artist peakArtist() {
         return artist;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 2128689463)
     public void setArtist(Artist artist) {
         synchronized (this) {
@@ -234,9 +246,7 @@ public class Music implements Parcelable {
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1218270154)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
@@ -248,6 +258,8 @@ public class Music implements Parcelable {
 
     protected Music(Parcel in) {
         this.musicId = in.readLong();
+        this.albumId = in.readLong();
+        this.artistId = in.readLong();
         this.musicFilePath = in.readString();
         this.musicName = in.readString();
         this.musicDuration = in.readLong();
@@ -257,10 +269,12 @@ public class Music implements Parcelable {
         this.artist = in.readParcelable(Artist.class.getClassLoader());
     }
 
-    @Generated(hash = 2086951305)
-    public Music(long musicId, String musicFilePath, String musicName, long musicDuration,
-                 String musicFileSize, long musicAddDate) {
+    @Generated(hash = 455153504)
+    public Music(long musicId, long albumId, long artistId, String musicFilePath,
+                 String musicName, long musicDuration, String musicFileSize, long musicAddDate) {
         this.musicId = musicId;
+        this.albumId = albumId;
+        this.artistId = artistId;
         this.musicFilePath = musicFilePath;
         this.musicName = musicName;
         this.musicDuration = musicDuration;
@@ -279,18 +293,18 @@ public class Music implements Parcelable {
             return new Music[size];
         }
     };
-    /**
-     * Used to resolve relations
-     */
+
+    /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
+
+    /** Used for active entity operations. */
     @Generated(hash = 1255683360)
     private transient MusicDao myDao;
+
     @Generated(hash = 1449801263)
     private transient boolean album__refreshed;
+
     @Generated(hash = 1550754473)
     private transient boolean artist__refreshed;
 }
