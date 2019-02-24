@@ -1,41 +1,41 @@
 
 package com.zspirytus.enjoymusic.online.entity.response;
 
-import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.zspirytus.enjoymusic.online.entity.OnlineArtistList;
 
 @SuppressWarnings("unused")
 public class SearchArtistResponse {
 
-    @Expose
-    private Long code;
-    @Expose
-    private OnlineArtistList data;
-    @Expose
-    private String result;
+    @SerializedName("code")
+    private Long mCode;
+    @SerializedName("data")
+    private OnlineArtistList mOnlineArtistList;
+    @SerializedName("result")
+    private String mResult;
 
     public Long getCode() {
-        return code;
+        return mCode;
     }
 
     public void setCode(Long code) {
-        this.code = code;
+        mCode = code;
     }
 
     public OnlineArtistList getData() {
-        return data;
+        return mOnlineArtistList;
     }
 
-    public void setData(OnlineArtistList data) {
-        this.data = data;
+    public void setData(OnlineArtistList onlineArtistList) {
+        mOnlineArtistList = onlineArtistList;
     }
 
     public String getResult() {
-        return result;
+        return mResult;
     }
 
     public void setResult(String result) {
-        this.result = result;
+        mResult = result;
     }
 
 }

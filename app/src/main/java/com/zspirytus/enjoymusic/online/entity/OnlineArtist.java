@@ -1,142 +1,142 @@
 
 package com.zspirytus.enjoymusic.online.entity;
 
-import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
 public class OnlineArtist {
 
-    @Expose
-    private Long albumSize;
-    @Expose
-    private List<String> alia;
-    @Expose
-    private List<String> alias;
-    @Expose
-    private Boolean followed;
-    @Expose
-    private Long id;
-    @Expose
-    private Long img1v1;
-    @Expose
-    private String img1v1Url;
-    @Expose
-    private Long mvSize;
-    @Expose
-    private String name;
-    @Expose
-    private Long picId;
-    @Expose
-    private String picUrl;
-    @Expose
-    private String trans;
-    @Expose
-    private List<String> transNames;
+    @SerializedName("albumSize")
+    private Long mAlbumSize;
+    @SerializedName("alia")
+    private List<String> mAlia;
+    @SerializedName("alias")
+    private List<String> mAlias;
+    @SerializedName("followed")
+    private Boolean mFollowed;
+    @SerializedName("id")
+    private Long mId;
+    @SerializedName("img1v1")
+    private Long mImg1v1;
+    @SerializedName("img1v1Url")
+    private String mImg1v1Url;
+    @SerializedName("mvSize")
+    private Long mMvSize;
+    @SerializedName("name")
+    private String mName;
+    @SerializedName("picId")
+    private Long mPicId;
+    @SerializedName("picUrl")
+    private String mPicUrl;
+    @SerializedName("trans")
+    private String mTrans;
+    @SerializedName("transNames")
+    private List<String> mTransNames;
 
     public Long getAlbumSize() {
-        return albumSize;
+        return mAlbumSize;
     }
 
     public void setAlbumSize(Long albumSize) {
-        this.albumSize = albumSize;
+        mAlbumSize = albumSize;
     }
 
     public List<String> getAlia() {
-        return alia;
+        return mAlia;
     }
 
     public void setAlia(List<String> alia) {
-        this.alia = alia;
+        mAlia = alia;
     }
 
     public List<String> getAlias() {
-        return alias;
+        return mAlias;
     }
 
     public void setAlias(List<String> alias) {
-        this.alias = alias;
+        mAlias = alias;
     }
 
     public Boolean getFollowed() {
-        return followed;
+        return mFollowed;
     }
 
     public void setFollowed(Boolean followed) {
-        this.followed = followed;
+        mFollowed = followed;
     }
 
     public Long getId() {
-        return id;
+        return mId;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        mId = id;
     }
 
     public Long getImg1v1() {
-        return img1v1;
+        return mImg1v1;
     }
 
     public void setImg1v1(Long img1v1) {
-        this.img1v1 = img1v1;
+        mImg1v1 = img1v1;
     }
 
     public String getImg1v1Url() {
-        return img1v1Url;
+        return mImg1v1Url;
     }
 
     public void setImg1v1Url(String img1v1Url) {
-        this.img1v1Url = img1v1Url;
+        mImg1v1Url = img1v1Url;
     }
 
     public Long getMvSize() {
-        return mvSize;
+        return mMvSize;
     }
 
     public void setMvSize(Long mvSize) {
-        this.mvSize = mvSize;
+        mMvSize = mvSize;
     }
 
     public String getName() {
-        return name;
+        return mName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        mName = name;
     }
 
     public Long getPicId() {
-        return picId;
+        return mPicId;
     }
 
     public void setPicId(Long picId) {
-        this.picId = picId;
+        mPicId = picId;
     }
 
     public String getPicUrl() {
-        return picUrl;
+        return mPicUrl;
     }
 
     public void setPicUrl(String picUrl) {
-        this.picUrl = picUrl;
+        mPicUrl = picUrl;
     }
 
     public String getTrans() {
-        return trans;
+        return mTrans;
     }
 
     public void setTrans(String trans) {
-        this.trans = trans;
+        mTrans = trans;
     }
 
     public List<String> getTransNames() {
-        return transNames;
+        return mTransNames;
     }
 
     public void setTransNames(List<String> transNames) {
-        this.transNames = transNames;
+        mTransNames = transNames;
     }
 
 }

@@ -1,32 +1,32 @@
 
 package com.zspirytus.enjoymusic.online.entity;
 
-import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
 public class OnlineArtistList {
 
-    @Expose
-    private Long artistCount;
-    @Expose
-    private List<OnlineArtist> artists;
+    @SerializedName("artistCount")
+    private Long mArtistCount;
+    @SerializedName("artists")
+    private List<OnlineArtist> mOnlineArtists;
 
     public Long getArtistCount() {
-        return artistCount;
+        return mArtistCount;
     }
 
     public void setArtistCount(Long artistCount) {
-        this.artistCount = artistCount;
+        mArtistCount = artistCount;
     }
 
     public List<OnlineArtist> getArtists() {
-        return artists;
+        return mOnlineArtists;
     }
 
-    public void setArtists(List<OnlineArtist> artists) {
-        this.artists = artists;
+    public void setArtists(List<OnlineArtist> onlineArtists) {
+        mOnlineArtists = onlineArtists;
     }
 
 }

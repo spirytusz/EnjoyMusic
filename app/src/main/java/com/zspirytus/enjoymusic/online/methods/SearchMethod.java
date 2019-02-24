@@ -17,7 +17,7 @@ public interface SearchMethod {
     @GET("music/tencent/search?key=579621905&type=album&limit=10")
     Observable<SearchAlbumResponse> searchAlbum(@Query("s") String albumName);
 
-    @GET("music/netease/search?key=579621905&type=singer?&imit=5")
+    @GET("music/netease/search?key=579621905&type=singer&limit=5")
     Observable<SearchArtistResponse> searchArtist(@Query("s") String artistName);
 
     @GET("music/tencent/songList?key=579621905&limit=10")

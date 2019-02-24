@@ -87,7 +87,7 @@ public class SearchResult {
         } else if (isAlbum) {
             return "Album = " + album.getAlbumName();
         } else {
-            return "Artist = " + artist.getArtistName();
+            return "OnlineArtist = " + artist.getArtistName();
         }
     }
 }
