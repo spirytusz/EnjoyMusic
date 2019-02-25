@@ -10,6 +10,7 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinAlbumToArtist;
 
 import org.greenrobot.greendao.Property;
+import org.greenrobot.greendao.query.Query;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
@@ -17,6 +18,24 @@ import java.util.List;
 public class QueryExecutor {
 
     private static final String TAG = "QueryExecutor";
+
+    private static class Singleton {
+        static QueryExecutor INSTANCE = new QueryExecutor();
+    }
+
+    private QueryExecutor() {
+
+    }
+
+    private Query<Album> artistFilterAlbumQuery;
+
+    public static List<Music> findMusicList(Album album) {
+        return filterMusicList(MusicDao.Properties.AlbumId, album.getAlbumId());
+    }
+
+    public static List<Music> findMusicList(Artist artist) {
+        return filterMusicList(MusicDao.Properties.ArtistId, artist.getArtistId());
+    }
 
     public static Album findAlbum(Music music) {
         if (music.peakAlbum() != null) {
@@ -31,17 +50,9 @@ public class QueryExecutor {
         }
     }
 
-    public static List<Music> findMusicList(Album album) {
-        return filterMusicList(MusicDao.Properties.AlbumId, album.getAlbumId());
-    }
-
-    public static List<Music> findMusicList(Artist artist) {
-        return filterMusicList(MusicDao.Properties.ArtistId, artist.getArtistId());
-    }
-
-    private static List<Music> filterMusicList(Property property, Object values) {
-        return DBManager.getInstance().getDaoSession().queryBuilder(Music.class)
-                .where(property.eq(values)).list();
+    public static List<Album> findAlbumList(Artist artist) {
+        Query<Album> query = getAlbumQuery(artist).setParameter(0, artist.getArtistId());
+        return query.list();
     }
 
     public static Artist findArtist(Music music) {
@@ -66,5 +77,21 @@ public class QueryExecutor {
         } else {
             return null;
         }
+    }
+
+    private static List<Music> filterMusicList(Property property, Object values) {
+        return DBManager.getInstance().getDaoSession().queryBuilder(Music.class)
+                .where(property.eq(values)).list();
+    }
+
+    private static Query<Album> getAlbumQuery(Artist artist) {
+        if (Singleton.INSTANCE.artistFilterAlbumQuery == null) {
+            long artistId = artist.getArtistId();
+            QueryBuilder<Album> queryBuilder = DBManager.getInstance().getDaoSession().queryBuilder(Album.class);
+            queryBuilder.join(JoinAlbumToArtist.class, JoinAlbumToArtistDao.Properties.AlbumId)
+                    .where(JoinAlbumToArtistDao.Properties.ArtistId.eq(artistId));
+            Singleton.INSTANCE.artistFilterAlbumQuery = queryBuilder.build().forCurrentThread();
+        }
+        return Singleton.INSTANCE.artistFilterAlbumQuery;
     }
 }

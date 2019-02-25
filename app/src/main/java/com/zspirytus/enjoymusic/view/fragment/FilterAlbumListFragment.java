@@ -15,6 +15,7 @@ import com.zspirytus.basesdk.recyclerview.adapter.HeaderFooterViewWrapAdapter;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
@@ -24,6 +25,7 @@ import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @LayoutIdInject(R.layout.fragment_filter_album_list_layout)
 public class FilterAlbumListFragment extends BaseFragment {
@@ -54,9 +56,10 @@ public class FilterAlbumListFragment extends BaseFragment {
 
             @Override
             public void convert(CommonViewHolder holder, Album album, int position) {
+                Artist albumArtist = QueryExecutor.findArtist(album);
                 ImageLoader.load(holder.getView(R.id.item_cover), album.getAlbumArt(), album.getAlbumName());
                 holder.setText(R.id.item_title, album.getAlbumName());
-                holder.setText(R.id.item_sub_title, album.getArtist().getArtistName());
+                holder.setText(R.id.item_sub_title, albumArtist.getArtistName());
             }
         };
         mInnerAdapter.setList(getArguments().getParcelableArrayList(ALBUM_LIST_KEY));
@@ -114,10 +117,11 @@ public class FilterAlbumListFragment extends BaseFragment {
     }
 
     public static FilterAlbumListFragment getInstance(Artist artist) {
+        List<Album> albumList = QueryExecutor.findAlbumList(artist);
         FilterAlbumListFragment fragment = new FilterAlbumListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARTIST_KEY, artist);
-        bundle.putParcelableArrayList(ALBUM_LIST_KEY, (ArrayList<Album>) artist.getAlbums());
+        bundle.putParcelableArrayList(ALBUM_LIST_KEY, (ArrayList<Album>) albumList);
         fragment.setArguments(bundle);
         return fragment;
     }
