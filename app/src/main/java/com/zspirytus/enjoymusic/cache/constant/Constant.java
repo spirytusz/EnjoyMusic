@@ -80,11 +80,13 @@ public interface Constant {
             albumMenuTexts = new ArrayList<>();
             albumMenuTexts.add("添加到播放队列");
             albumMenuTexts.add("新建歌单");
+            albumMenuTexts.add("曲目");
             albumMenuTexts.add("艺术家");
 
             artistMenuTexts = new ArrayList<>();
             artistMenuTexts.add("添加到播放队列");
             artistMenuTexts.add("新建歌单");
+            artistMenuTexts.add("曲目");
             artistMenuTexts.add("专辑");
 
             folderMenuTexts = new ArrayList<>();

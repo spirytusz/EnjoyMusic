@@ -26,12 +26,15 @@
 
             <ImageView
                 android:id="@+id/back_btn"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="4dp"
+                android:focusable="true"
+                android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_arrow_back_black_24dp" />
 
             <View
-                android:layout_width="32dp"
+                android:layout_width="24dp"
                 android:layout_height="match_parent" />
 
             <TextView
