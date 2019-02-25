@@ -32,7 +32,6 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
 
     private MusicMetaDataFragmentViewModel mViewModel;
     private MusicMetaDataListAdapter mAdapter;
-    private OnMusicMetaDataChangeListener mListener;
 
     @Override
     protected void initData() {
@@ -59,6 +58,10 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
         super.onActivityCreated(savedInstanceState);
         mViewModel.getMusicMetaList().observe(this, values -> {
             mAdapter.setData(values);
+        });
+        // 这里注册一个ArtistList的观察者，以便在没有初始化ArtistListFragment的情况下，getValue()拿到非空值。
+        ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class)
+                .getArtistList().observe(getParentActivity(), values -> {
         });
     }
 
@@ -97,10 +100,6 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
         showDialog();
     }
 
-    public void setOnMusicMetaDataChangeListener(OnMusicMetaDataChangeListener listener) {
-        mListener = listener;
-    }
-
     private void showDialog() {
         SaveMusicInfoDialog dialog = new SaveMusicInfoDialog();
         dialog.setOnDialogButtonClickListener(new SaveMusicInfoDialog.OnDialogButtonClickListener() {
@@ -122,9 +121,5 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
         bundle.putParcelable("music", music);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    public interface OnMusicMetaDataChangeListener {
-        void onMusicMetaDataChange(Music music);
     }
 }

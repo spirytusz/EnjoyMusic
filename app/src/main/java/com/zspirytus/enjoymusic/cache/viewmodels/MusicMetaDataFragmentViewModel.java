@@ -17,10 +17,9 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.entity.MusicMetaDataListItem;
 import com.zspirytus.enjoymusic.global.MainApplication;
-import com.zspirytus.enjoymusic.global.SettingConfig;
 import com.zspirytus.enjoymusic.online.RetrofitManager;
-import com.zspirytus.enjoymusic.online.entity.response.SearchAlbumResponse;
 import com.zspirytus.enjoymusic.online.entity.response.SearchArtistResponse;
+import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,16 +54,14 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
         item1.setMusic(music);
         dataList.add(item1);
 
-        if (SettingConfig.isNetWorkSourceEnable) {
-            MusicMetaDataListItem item2 = new MusicMetaDataListItem();
-            item2.setTitle(true);
-            item2.setTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_download_music_info));
-            dataList.add(item2);
+        MusicMetaDataListItem item2 = new MusicMetaDataListItem();
+        item2.setTitle(true);
+        item2.setTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_download_music_info));
+        dataList.add(item2);
 
-            MusicMetaDataListItem item3 = new MusicMetaDataListItem();
-            item3.setDownloadAlbumArtView(true);
-            dataList.add(item3);
-        }
+        MusicMetaDataListItem item3 = new MusicMetaDataListItem();
+        item3.setDownloadAlbumArtView(true);
+        dataList.add(item3);
 
         MusicMetaDataListItem item4 = new MusicMetaDataListItem();
         item4.setTitle(true);
@@ -95,29 +92,11 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
     public void updateMusic(List<MusicMetaDataListItem> datas, MainActivityViewModel viewModel) {
         updateState.setValue(false);
         ThreadPool.execute(() -> {
-            // read data from dataList.
-            String artistArtUrl = datas.get(0).getArtist().getArtistArt();
-            String albumArtUrl = /*datas.get(1).getAlbum() != null ?
-                    datas.get(1).getAlbum().getAlbumArt() : null*/"~~~";
-
             // wrap need update data.
-            Album needUpdateAlbum = QueryExecutor.findAlbum(datas.get(1).getMusic());
-            Artist needUpdateArtist = QueryExecutor.findArtist(datas.get(1).getMusic());
-
-            if (albumArtUrl != null) {
-                needUpdateAlbum.setAlbumArt(albumArtUrl);
-            }
-            needUpdateArtist.setArtistArt(artistArtUrl);
-
-            List<Album> albumList = viewModel.getAlbumList().getValue();
-            List<Artist> artistList = viewModel.getArtistList().getValue();
+            Artist needUpdateArtist = datas.get(0).getArtist();
 
             // update foreground data.
-            for (int i = 0; i < albumList.size(); i++) {
-                if (needUpdateAlbum.getAlbumId().equals(albumList.get(i).getAlbumId())) {
-                    albumList.set(i, needUpdateAlbum);
-                }
-            }
+            List<Artist> artistList = viewModel.getArtistList().getValue();
             for (int i = 0; i < artistList.size(); i++) {
                 if (needUpdateArtist.getArtistId().equals(artistList.get(i).getArtistId())) {
                     artistList.set(i, needUpdateArtist);
@@ -128,7 +107,6 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_META_DATA_UPDATOR);
             IMusicMetaDataUpdator updator = IMusicMetaDataUpdator.Stub.asInterface(binder);
             try {
-                updator.updateAlbum(needUpdateAlbum);
                 updator.updateArtist(needUpdateArtist);
             } catch (RemoteException e) {
                 e.printStackTrace();
@@ -138,28 +116,8 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
     }
 
     public void applyMusicData(Music music) {
-        RetrofitManager.searchAlbum(music.getAlbum().getAlbumName(), new Observer<SearchAlbumResponse>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-            }
-
-            @Override
-            public void onNext(SearchAlbumResponse searchAlbumResponse) {
-                if (!searchAlbumResponse.getData().isEmpty()) {
-                    updateAlbumInfo(searchAlbumResponse.getData().get(0).getAlbumPic());
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });
-        RetrofitManager.searchArtist(music.getArtist().getArtistName(), new Observer<SearchArtistResponse>() {
+        Artist artist = QueryExecutor.findArtist(music);
+        RetrofitManager.searchArtist(artist.getArtistName(), new Observer<SearchArtistResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
             }
@@ -183,18 +141,12 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
     }
 
     @WorkerThread
-    private void updateAlbumInfo(String picUrl) {
-        Album album = QueryExecutor.findAlbum(dataList.get(1).getMusic());
-        album.setAlbumArt(picUrl);
-        dataList.get(1).getMusic().setAlbum(album);
-        AndroidSchedulers.mainThread().scheduleDirect(() -> mMusicMetaList.setValue(dataList));
-    }
-
-    @WorkerThread
     private void updateArtistInfo(String picUrl) {
-        Artist artist = QueryExecutor.findArtist(dataList.get(0).getMusic());
-        artist.setArtistArt(picUrl);
-        dataList.get(0).getArtist().setArtistArt(picUrl);
-        AndroidSchedulers.mainThread().scheduleDirect(() -> mMusicMetaList.setValue(dataList));
+        if (picUrl != null) {
+            dataList.get(0).getArtist().setArtistArt(picUrl);
+            mMusicMetaList.postValue(dataList);
+        } else {
+            AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), "没有找到艺术家图片..."));
+        }
     }
 }

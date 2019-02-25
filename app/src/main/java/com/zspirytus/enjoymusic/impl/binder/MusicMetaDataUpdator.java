@@ -1,8 +1,7 @@
 package com.zspirytus.enjoymusic.impl.binder;
 
 import com.zspirytus.enjoymusic.IMusicMetaDataUpdator;
-import com.zspirytus.enjoymusic.db.EntityUpdator;
-import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Artist;
 
 public class MusicMetaDataUpdator extends IMusicMetaDataUpdator.Stub {
@@ -19,12 +18,7 @@ public class MusicMetaDataUpdator extends IMusicMetaDataUpdator.Stub {
     }
 
     @Override
-    public void updateAlbum(Album album) {
-        EntityUpdator.updateAlbum(album);
-    }
-
-    @Override
     public void updateArtist(Artist artist) {
-        EntityUpdator.updateArtist(artist);
+        DBManager.getInstance().getDaoSession().getArtistDao().save(artist);
     }
 }

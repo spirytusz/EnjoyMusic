@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.Switch;
 
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
@@ -18,7 +17,6 @@ import com.zspirytus.enjoymusic.cache.viewmodels.SettingFragmentViewModel;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.SettingItem;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.global.SettingConfig;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
@@ -69,21 +67,8 @@ public class SettingsFragment extends CommonHeaderBaseFragment implements OnItem
             @Override
             public void convert(CommonViewHolder holder, SettingItem item, int position) {
                 holder.setVisibility(R.id.item_image, View.GONE);
-                if (item.isHasSwitch()) {
-                    Switch check = holder.getView(R.id.item_switch);
-                    check.setOnClickListener(v -> {
-                        SettingConfig.isNetWorkSourceEnable = !SettingConfig.isNetWorkSourceEnable;
-                        boolean isChecked = SettingConfig.isNetWorkSourceEnable;
-                        mAdapter.getList().get(position).setChecked(isChecked);
-                        check.setChecked(isChecked);
-                    });
-                    check.setVisibility(View.VISIBLE);
-                    check.setChecked(item.isChecked());
-                    holder.setText(R.id.item_text, item.getTitle());
-                } else {
-                    holder.setVisibility(R.id.item_switch, View.GONE);
-                    holder.setText(R.id.item_text, item.getTitle());
-                }
+                holder.setVisibility(R.id.item_switch, View.GONE);
+                holder.setText(R.id.item_text, item.getTitle());
                 holder.setOnItemClickListener(SettingsFragment.this);
             }
         };
@@ -96,22 +81,14 @@ public class SettingsFragment extends CommonHeaderBaseFragment implements OnItem
             AudioEffectFragment fragment = AudioEffectFragment.getInstance();
             FragmentVisibilityManager.getInstance().addToBackStack(this);
             FragmentVisibilityManager.getInstance().show(fragment);
-        } else if (position == 1) {
-            SettingConfig.isNetWorkSourceEnable = !SettingConfig.isNetWorkSourceEnable;
-            boolean isChecked = SettingConfig.isNetWorkSourceEnable;
-            mAdapter.getList().get(position).setChecked(isChecked);
-            Switch checked = view.findViewById(R.id.item_switch);
-            checked.setChecked(isChecked);
         }
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
-            //getParentActivity().setLightStatusIconColor();
             playShadowAnimator();
         } else {
-            //getParentActivity().setDefaultStatusIconColor();
             if (mShadowAnim.isRunning()) {
                 mShadowAnim.cancel();
             }
