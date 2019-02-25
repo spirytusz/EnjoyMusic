@@ -19,7 +19,9 @@ import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.dialog.PlainTextMenuDialog;
 import com.zspirytus.enjoymusic.view.dialog.SaveSongListDialog;
 
-public class FolderSortedMusicListAdapter extends CommonRecyclerViewAdapter<Folder> implements OnItemLongClickListener {
+import java.util.List;
+
+public class FolderListAdapter extends CommonRecyclerViewAdapter<Folder> implements OnItemLongClickListener {
 
     @Override
     public int getLayoutId() {
@@ -28,12 +30,13 @@ public class FolderSortedMusicListAdapter extends CommonRecyclerViewAdapter<Fold
 
     @Override
     public void convert(CommonViewHolder holder, Folder folder, int position) {
-        Music firstMusicInFolder = folder.getFolderMusicList().get(0);
+        List<Music> musicList = QueryExecutor.findMusicList(folder);
+        Music firstMusicInFolder = musicList.get(0);
         Album album = QueryExecutor.findAlbum(firstMusicInFolder);
         String coverPath = album.getAlbumArt();
-        ImageLoader.load(holder.getView(R.id.item_cover), coverPath, folder.getParentFolderDir());
+        ImageLoader.load(holder.getView(R.id.item_cover), coverPath, folder.getFolderName());
         holder.setText(R.id.item_title, folder.getFolderName());
-        holder.setText(R.id.item_sub_title, folder.getParentFolderDir());
+        holder.setText(R.id.item_sub_title, folder.getFolderDir());
         if (mListener != null) {
             holder.setOnItemClickListener(mListener);
         }
@@ -46,18 +49,19 @@ public class FolderSortedMusicListAdapter extends CommonRecyclerViewAdapter<Fold
     }
 
     private void showDialog(int position) {
-        targetArtist = getList().get(position);
-        PlainTextMenuDialog dialog = PlainTextMenuDialog.create(targetArtist.getParentFolderDir(), Constant.MenuTexts.folderMenuTexts);
+        targetFolder = getList().get(position);
+        PlainTextMenuDialog dialog = PlainTextMenuDialog.create(targetFolder.getFolderDir(), Constant.MenuTexts.folderMenuTexts);
         dialog.setOnMenuItemClickListener(listener);
         FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
     }
 
-    private Folder targetArtist;
+    private Folder targetFolder;
 
     private PlainTextMenuDialog.OnMenuItemClickListener listener = (menuText, pos) -> {
         switch (pos) {
             case 0:
-                ForegroundMusicController.getInstance().addToPlayList(targetArtist.getFolderMusicList());
+                List<Music> musicList = QueryExecutor.findMusicList(targetFolder);
+                ForegroundMusicController.getInstance().addToPlayList(musicList);
                 ToastUtil.showToast(MainApplication.getForegroundContext(), "成功");
                 break;
             case 1:

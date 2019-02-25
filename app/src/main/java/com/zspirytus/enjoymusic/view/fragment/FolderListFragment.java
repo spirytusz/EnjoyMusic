@@ -12,9 +12,10 @@ import android.widget.ProgressBar;
 import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.FolderSortedMusicListAdapter;
+import com.zspirytus.enjoymusic.adapter.FolderListAdapter;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Folder;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
@@ -27,7 +28,7 @@ import java.util.List;
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
 @LayoutIdInject(R.layout.fragment_folder_sorted_music_list_layout)
-public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
+public class FolderListFragment extends LazyLoadBaseFragment
         implements OnItemClickListener {
 
     @ViewInject(R.id.file_sorted_music_fragment_progress_bar)
@@ -37,12 +38,12 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
     @ViewInject(R.id.file_sorted_music_fragment_recycler_view)
     private RecyclerView mFileSortedMusicRecyclerView;
 
-    private FolderSortedMusicListAdapter mAdapter;
+    private FolderListAdapter mAdapter;
     private AlphaInAnimationAdapter mAnimationWrapAdapter;
 
     @Override
     protected void initData() {
-        mAdapter = new FolderSortedMusicListAdapter();
+        mAdapter = new FolderListAdapter();
         mAdapter.setOnItemClickListener(this);
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
@@ -83,13 +84,13 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
     @Override
     public void onItemClick(View view, int position) {
         Folder folder = mAdapter.getList().get(position);
-        List<Music> musicList = folder.getFolderMusicList();
+        List<Music> musicList = QueryExecutor.findMusicList(folder);
         FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(folder.getFolderName(), musicList, FilterMusicListFragment.FOLDER_FLAG);
         FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
         FragmentVisibilityManager.getInstance().show(fragment);
     }
 
-    public static FolderSortedMusicListFragment getInstance() {
-        return new FolderSortedMusicListFragment();
+    public static FolderListFragment getInstance() {
+        return new FolderListFragment();
     }
 }

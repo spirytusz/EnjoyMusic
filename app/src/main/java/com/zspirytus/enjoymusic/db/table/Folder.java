@@ -3,78 +3,38 @@ package com.zspirytus.enjoymusic.db.table;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
+import com.zspirytus.enjoymusic.db.greendao.DaoSession;
+import com.zspirytus.enjoymusic.db.greendao.FolderDao;
+import com.zspirytus.enjoymusic.db.greendao.MusicDao;
+import com.zspirytus.enjoymusic.db.table.jointable.JoinFolderToMusic;
+
+import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.JoinEntity;
+import org.greenrobot.greendao.annotation.ToMany;
+
 import java.util.List;
 
+@Entity
 public class Folder implements Parcelable {
 
-    private String mParentFolderDir;
-    private String mFolderName;
+    // use full path hashCode as Id.
+    @Id
+    private long folderId;
+
+    private String folderDir;
+    private String folderName;
+    private int folderMusicCount;
+
+    @ToMany
+    @JoinEntity(
+            entity = JoinFolderToMusic.class,
+            sourceProperty = "folderId",
+            targetProperty = "musicId"
+    )
     private List<Music> mFolderMusicList;
-    private int mFolderMusicCount;
-
-    public Folder(String parentFolderDir, String folderName, List<Music> folderMusicList) {
-        mParentFolderDir = parentFolderDir;
-        mFolderName = folderName;
-        mFolderMusicList = folderMusicList;
-        if (mFolderMusicList != null)
-            mFolderMusicCount = mFolderMusicList.size();
-    }
-
-    private Folder(Parcel source) {
-        mParentFolderDir = source.readString();
-        mFolderName = source.readString();
-        mFolderMusicList = new ArrayList<>();
-        source.readTypedList(mFolderMusicList, Music.CREATOR);
-        mFolderMusicCount = source.readInt();
-    }
-
-    public void addMusic(Music music) {
-        mFolderMusicList.add(music);
-        mFolderMusicCount++;
-    }
-
-    public String getParentFolderDir() {
-        return mParentFolderDir;
-    }
-
-    public String getFolderName() {
-        return mFolderName;
-    }
-
-    public List<Music> getFolderMusicList() {
-        return mFolderMusicList;
-    }
-
-    public int getFolderMusicCount() {
-        return mFolderMusicCount;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj != null && obj instanceof Folder && toString().equals(obj.toString());
-    }
-
-    @Override
-    public int hashCode() {
-        return toString().hashCode();
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("{");
-        stringBuilder.append("parentFolderDir = ");
-        stringBuilder.append(mParentFolderDir != null ? mParentFolderDir + ", " : "null, ");
-        stringBuilder.append("folderName = ");
-        stringBuilder.append(mFolderName != null ? mFolderName + ", " : "null, ");
-        stringBuilder.append("folderMusicList = ");
-        stringBuilder.append(mFolderMusicList != null ? mFolderMusicList.toString() + ", " : "null, ");
-        stringBuilder.append("folderMusicCount = ");
-        stringBuilder.append(mFolderMusicCount);
-        stringBuilder.append("}");
-        return stringBuilder.toString();
-    }
 
     @Override
     public int describeContents() {
@@ -83,13 +43,33 @@ public class Folder implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mParentFolderDir);
-        dest.writeString(mFolderName);
-        dest.writeTypedList(mFolderMusicList);
-        dest.writeInt(mFolderMusicCount);
+        dest.writeLong(this.folderId);
+        dest.writeString(this.folderDir);
+        dest.writeString(this.folderName);
+        dest.writeInt(this.folderMusicCount);
+        dest.writeTypedList(this.mFolderMusicList);
     }
 
-    public static final Parcelable.Creator<Folder> CREATOR = new Creator<Folder>() {
+    public Folder() {
+    }
+
+    protected Folder(Parcel in) {
+        this.folderId = in.readLong();
+        this.folderDir = in.readString();
+        this.folderName = in.readString();
+        this.folderMusicCount = in.readInt();
+        this.mFolderMusicList = in.createTypedArrayList(Music.CREATOR);
+    }
+
+    @Generated(hash = 1363465614)
+    public Folder(long folderId, String folderDir, String folderName, int folderMusicCount) {
+        this.folderId = folderId;
+        this.folderDir = folderDir;
+        this.folderName = folderName;
+        this.folderMusicCount = folderMusicCount;
+    }
+
+    public static final Parcelable.Creator<Folder> CREATOR = new Parcelable.Creator<Folder>() {
         @Override
         public Folder createFromParcel(Parcel source) {
             return new Folder(source);
@@ -97,7 +77,137 @@ public class Folder implements Parcelable {
 
         @Override
         public Folder[] newArray(int size) {
-            return new Folder[0];
+            return new Folder[size];
         }
     };
+
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 2091473052)
+    private transient FolderDao myDao;
+
+    @Override
+    public String toString() {
+        return "Folder{" +
+                "folderId=" + folderId +
+                ", folderDir='" + folderDir + '\'' +
+                ", folderName='" + folderName + '\'' +
+                ", folderMusicCount=" + folderMusicCount +
+                ", mFolderMusicList=" + mFolderMusicList +
+                '}';
+    }
+
+    public long getFolderId() {
+        return this.folderId;
+    }
+
+    public void setFolderId(long folderId) {
+        this.folderId = folderId;
+    }
+
+    public String getFolderDir() {
+        return this.folderDir;
+    }
+
+    public void setFolderDir(String folderDir) {
+        this.folderDir = folderDir;
+    }
+
+    public String getFolderName() {
+        return this.folderName;
+    }
+
+    public void setFolderName(String folderName) {
+        this.folderName = folderName;
+    }
+
+    public int getFolderMusicCount() {
+        return this.folderMusicCount;
+    }
+
+    public void setFolderMusicCount(int folderMusicCount) {
+        this.folderMusicCount = folderMusicCount;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 23642457)
+    public List<Music> getMFolderMusicList() {
+        if (mFolderMusicList == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            MusicDao targetDao = daoSession.getMusicDao();
+            List<Music> mFolderMusicListNew = targetDao._queryFolder_MFolderMusicList(folderId);
+            synchronized (this) {
+                if (mFolderMusicList == null) {
+                    mFolderMusicList = mFolderMusicListNew;
+                }
+            }
+        }
+        return mFolderMusicList;
+    }
+
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
+    @Generated(hash = 1884641740)
+    public synchronized void resetMFolderMusicList() {
+        mFolderMusicList = null;
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 1822270472)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getFolderDao() : null;
+    }
 }

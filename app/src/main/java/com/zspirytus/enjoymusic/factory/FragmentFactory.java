@@ -7,7 +7,7 @@ import com.zspirytus.enjoymusic.view.fragment.AboutFragment;
 import com.zspirytus.enjoymusic.view.fragment.AlbumMusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.AllMusicListFragment;
 import com.zspirytus.enjoymusic.view.fragment.ArtistMusicListFragment;
-import com.zspirytus.enjoymusic.view.fragment.FolderSortedMusicListFragment;
+import com.zspirytus.enjoymusic.view.fragment.FolderListFragment;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicCategoryFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
@@ -32,7 +32,7 @@ public class FragmentFactory {
     private AlbumMusicListFragment mAlbumMusicListFragment;
     private ArtistMusicListFragment mArtistMusicListFragment;
     private PlayListFragment mPlayListFragment;
-    private FolderSortedMusicListFragment mFolderSortedMusicListFragment;
+    private FolderListFragment mFolderListFragment;
     private SongListFragment mSongListFragment;
 
     private FragmentFactory() {
@@ -88,10 +88,10 @@ public class FragmentFactory {
             if (mPlayListFragment == null)
                 mPlayListFragment = PlayListFragment.getInstance();
             return (T) mPlayListFragment;
-        } else if (tClass == FolderSortedMusicListFragment.class) {
-            if (mFolderSortedMusicListFragment == null)
-                mFolderSortedMusicListFragment = FolderSortedMusicListFragment.getInstance();
-            return (T) mFolderSortedMusicListFragment;
+        } else if (tClass == FolderListFragment.class) {
+            if (mFolderListFragment == null)
+                mFolderListFragment = FolderListFragment.getInstance();
+            return (T) mFolderListFragment;
         } else if (tClass == SongListFragment.class) {
             if (mSongListFragment == null)
                 mSongListFragment = SongListFragment.getIntance();
@@ -105,7 +105,7 @@ public class FragmentFactory {
         mAllMusicListFragment = (AllMusicListFragment) manager.findFragmentByTag(AllMusicListFragment.class.getSimpleName());
         mAlbumMusicListFragment = (AlbumMusicListFragment) manager.findFragmentByTag(AlbumMusicListFragment.class.getSimpleName());
         mArtistMusicListFragment = (ArtistMusicListFragment) manager.findFragmentByTag(ArtistMusicListFragment.class.getSimpleName());
-        mFolderSortedMusicListFragment = (FolderSortedMusicListFragment) manager.findFragmentByTag(FolderSortedMusicListFragment.class.getSimpleName());
+        mFolderListFragment = (FolderListFragment) manager.findFragmentByTag(FolderListFragment.class.getSimpleName());
         mMusicCategoryFragment = (MusicCategoryFragment) manager.findFragmentByTag(MusicCategoryFragment.class.getSimpleName());
         mSettingsFragment = (SettingsFragment) manager.findFragmentByTag(SettingsFragment.class.getSimpleName());
         mAboutFragment = (AboutFragment) manager.findFragmentByTag(AboutFragment.class.getSimpleName());

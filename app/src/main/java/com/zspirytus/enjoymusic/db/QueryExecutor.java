@@ -3,11 +3,14 @@ package com.zspirytus.enjoymusic.db;
 import com.zspirytus.enjoymusic.db.greendao.AlbumDao;
 import com.zspirytus.enjoymusic.db.greendao.ArtistDao;
 import com.zspirytus.enjoymusic.db.greendao.JoinAlbumToArtistDao;
+import com.zspirytus.enjoymusic.db.greendao.JoinFolderToMusicDao;
 import com.zspirytus.enjoymusic.db.greendao.MusicDao;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.Folder;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinAlbumToArtist;
+import com.zspirytus.enjoymusic.db.table.jointable.JoinFolderToMusic;
 
 import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.query.Query;
@@ -28,6 +31,7 @@ public class QueryExecutor {
     }
 
     private Query<Album> artistFilterAlbumQuery;
+    private Query<Music> folderFilterMusicQuery;
 
     public static List<Music> findMusicList(Album album) {
         return filterMusicList(MusicDao.Properties.AlbumId, album.getAlbumId());
@@ -35,6 +39,11 @@ public class QueryExecutor {
 
     public static List<Music> findMusicList(Artist artist) {
         return filterMusicList(MusicDao.Properties.ArtistId, artist.getArtistId());
+    }
+
+    public static List<Music> findMusicList(Folder folder) {
+        Query<Music> query = getMusicQuery(folder).setParameter(0, folder.getFolderId());
+        return query.list();
     }
 
     public static Album findAlbum(Music music) {
@@ -93,5 +102,16 @@ public class QueryExecutor {
             Singleton.INSTANCE.artistFilterAlbumQuery = queryBuilder.build().forCurrentThread();
         }
         return Singleton.INSTANCE.artistFilterAlbumQuery;
+    }
+
+    private static Query<Music> getMusicQuery(Folder folder) {
+        if (Singleton.INSTANCE.folderFilterMusicQuery == null) {
+            long folderId = folder.getFolderId();
+            QueryBuilder<Music> queryBuilder = DBManager.getInstance().getDaoSession().queryBuilder(Music.class);
+            queryBuilder.join(JoinFolderToMusic.class, JoinFolderToMusicDao.Properties.MusicId)
+                    .where(JoinFolderToMusicDao.Properties.FolderId.eq(folderId));
+            Singleton.INSTANCE.folderFilterMusicQuery = queryBuilder.build().forCurrentThread();
+        }
+        return Singleton.INSTANCE.folderFilterMusicQuery;
     }
 }

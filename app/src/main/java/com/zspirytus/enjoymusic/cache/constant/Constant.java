@@ -44,7 +44,7 @@ public interface Constant {
     }
 
     interface FragmentName {
-        String folderSortedMusicListFragment = "FolderSortedMusicListFragment";
+        String folderSortedMusicListFragment = "FolderListFragment";
         String aboutFragmentName = "AboutFragment";
         String albumMusicListFragmentName = "AlbumMusicListFragment";
         String allMusicListFragmentName = "AllMusicListFragment";

@@ -12,9 +12,9 @@ import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Folder;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinAlbumToArtist;
+import com.zspirytus.enjoymusic.db.table.jointable.JoinFolderToMusic;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.utils.FileUtil;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -85,25 +85,9 @@ public class MusicScanner {
             mAllMusicList = musicList;
             mAlbumList = DBManager.getInstance().getDaoSession().loadAll(Album.class);
             mArtistList = DBManager.getInstance().getDaoSession().loadAll(Artist.class);
-
-            SparseIntArray folderDirMapIndex = new SparseIntArray();
-            for (Music music : musicList) {
-                String[] dir = FileUtil.getFolderNameAndFolderDir(music.getMusicFilePath());
-                int index = folderDirMapIndex.get(dir[2].hashCode(), -1);
-                if (index != -1) {
-                    mFolderList.get(index).addMusic(music);
-                } else {
-                    List<Music> folderMusicList = new ArrayList<>();
-                    folderMusicList.add(music);
-                    Folder folder = new Folder(dir[1], dir[0], folderMusicList);
-                    mFolderList.add(folder);
-                    folderDirMapIndex.append(dir[2].hashCode(), mFolderList.size() - 1);
-                }
-            }
+            mFolderList = DBManager.getInstance().getDaoSession().loadAll(Folder.class);
         } else {
-            long start = System.currentTimeMillis();
             scanDirectorily();
-            LogUtil.e(TAG, "usingTime = " + (System.currentTimeMillis() - start) + "ms");
         }
     }
 
@@ -114,13 +98,15 @@ public class MusicScanner {
         DBManager.getInstance().getDaoSession().getMusicDao().insertOrReplaceInTx(mAllMusicList);
         DBManager.getInstance().getDaoSession().getAlbumDao().insertOrReplaceInTx(mAlbumList);
         DBManager.getInstance().getDaoSession().getArtistDao().insertOrReplaceInTx(mArtistList);
+        DBManager.getInstance().getDaoSession().getFolderDao().insertOrReplaceInTx(mFolderList);
     }
 
     private void scanMusic() {
         Map<String, ContentValues> albumMap = prepareAlbums();
         Map<String, ContentValues> artistMap = prepareArtist();
-        SparseIntArray folderDirMapIndex = new SparseIntArray();
+        SparseIntArray array = new SparseIntArray();
         Set<JoinAlbumToArtist> joinAlbumToArtistSet = new HashSet<>();
+        Set<JoinFolderToMusic> joinFolderToMusics = new HashSet<>();
 
         final String[] musicProjection = {
                 MediaStore.Audio.AudioColumns._ID,
@@ -175,21 +161,27 @@ public class MusicScanner {
                 Artist artist = new Artist(artistId, artistName, "", numberOfAlbum, numberOfTrack);
                 mArtistList.add(artist);
 
-                // init FolderSortedList
                 String[] dir = FileUtil.getFolderNameAndFolderDir(music.getMusicFilePath());
-                int index = folderDirMapIndex.get(dir[2].hashCode(), -1);
+                String fullPath = dir[2];
+                int index = array.get(fullPath.hashCode(), -1);
                 if (index != -1) {
-                    mFolderList.get(index).addMusic(music);
+                    int oldCount = mFolderList.get(index).getFolderMusicCount();
+                    int newCount = oldCount + 1;
+                    mFolderList.get(index).setFolderMusicCount(newCount);
                 } else {
-                    List<Music> folderMusicList = new ArrayList<>();
-                    folderMusicList.add(music);
-                    Folder folder = new Folder(dir[1], dir[0], folderMusicList);
+                    String folderName = dir[0];
+                    String folderDir = dir[1];
+                    Folder folder = new Folder(fullPath.hashCode(), folderDir, folderName, 1);
                     mFolderList.add(folder);
-                    folderDirMapIndex.append(dir[2].hashCode(), mFolderList.size() - 1);
+                    array.put(dir[2].hashCode(), mFolderList.size() - 1);
                 }
+                JoinFolderToMusic joinFolderToMusic = new JoinFolderToMusic(fullPath.hashCode(), musicId);
+                joinFolderToMusics.add(joinFolderToMusic);
             }
         }
+
         DBManager.getInstance().getDaoSession().getJoinAlbumToArtistDao().insertOrReplaceInTx(joinAlbumToArtistSet);
+        DBManager.getInstance().getDaoSession().getJoinFolderToMusicDao().insertOrReplaceInTx(joinFolderToMusics);
         cursor.close();
     }
 

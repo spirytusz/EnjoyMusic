@@ -47,7 +47,7 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
         fragments.add(FragmentFactory.getInstance().get(AllMusicListFragment.class));
         fragments.add(FragmentFactory.getInstance().get(AlbumMusicListFragment.class));
         fragments.add(FragmentFactory.getInstance().get(ArtistMusicListFragment.class));
-        fragments.add(FragmentFactory.getInstance().get(FolderSortedMusicListFragment.class));
+        fragments.add(FragmentFactory.getInstance().get(FolderListFragment.class));
         fragments.add(FragmentFactory.getInstance().get(SongListFragment.class));
         mAdapter = new MyViewPagerAdapter(getChildFragmentManager(), fragments);
     }
