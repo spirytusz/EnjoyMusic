@@ -29,6 +29,23 @@ public class MusicMetaDataListItem {
 
     private Album album;
 
+    /*@Override
+    public String toString() {
+        if(isArtistArt) {
+            return artist.toString();
+        } else if(isMusic) {
+            return music.toString();
+        } else if(isTitle) {
+            return title;
+        } else if(isDownloadAlbumArtView) {
+            return "downloadView";
+        } else if(isSingleEditText) {
+            return editTextDefaultText;
+        } else {
+            return "none";
+        }
+    }*/
+
     public boolean isArtistArt() {
         return isArtistArt;
     }

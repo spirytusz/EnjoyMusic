@@ -20,6 +20,7 @@ public interface Constant {
         int BACKGROUND_EVENT_PROCESSOR = 0x40;
         int PLAY_LIST_OBSERVER = 0x80;
         int AUDIO_EFFECT = 0x81;
+        int MUSIC_META_DATA_UPDATOR = 0x82;
     }
 
     interface AnimationProperty {

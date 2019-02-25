@@ -22,7 +22,7 @@ public class Folder implements Parcelable {
 
     // use full path hashCode as Id.
     @Id
-    private long folderId;
+    private Long folderId;
 
     private String folderDir;
     private String folderName;
@@ -43,7 +43,7 @@ public class Folder implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.folderId);
+        dest.writeValue(this.folderId);
         dest.writeString(this.folderDir);
         dest.writeString(this.folderName);
         dest.writeInt(this.folderMusicCount);
@@ -54,15 +54,15 @@ public class Folder implements Parcelable {
     }
 
     protected Folder(Parcel in) {
-        this.folderId = in.readLong();
+        this.folderId = (Long) in.readValue(Long.class.getClassLoader());
         this.folderDir = in.readString();
         this.folderName = in.readString();
         this.folderMusicCount = in.readInt();
         this.mFolderMusicList = in.createTypedArrayList(Music.CREATOR);
     }
 
-    @Generated(hash = 1363465614)
-    public Folder(long folderId, String folderDir, String folderName, int folderMusicCount) {
+    @Generated(hash = 1670692894)
+    public Folder(Long folderId, String folderDir, String folderName, int folderMusicCount) {
         this.folderId = folderId;
         this.folderDir = folderDir;
         this.folderName = folderName;
@@ -87,9 +87,7 @@ public class Folder implements Parcelable {
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 2091473052)
     private transient FolderDao myDao;
 
@@ -104,11 +102,11 @@ public class Folder implements Parcelable {
                 '}';
     }
 
-    public long getFolderId() {
+    public Long getFolderId() {
         return this.folderId;
     }
 
-    public void setFolderId(long folderId) {
+    public void setFolderId(Long folderId) {
         this.folderId = folderId;
     }
 
@@ -158,9 +156,7 @@ public class Folder implements Parcelable {
         return mFolderMusicList;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 1884641740)
     public synchronized void resetMFolderMusicList() {
         mFolderMusicList = null;
@@ -202,9 +198,7 @@ public class Folder implements Parcelable {
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1822270472)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

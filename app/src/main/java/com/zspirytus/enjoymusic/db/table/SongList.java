@@ -21,7 +21,7 @@ import java.util.List;
 public class SongList implements Parcelable {
 
     @Id
-    private long songListId;
+    private Long songListId;
     private String songListName;
     private int musicCount;
 
@@ -34,6 +34,58 @@ public class SongList implements Parcelable {
     private List<Music> songsOfThisSongList;
 
     @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.songListId);
+        dest.writeString(this.songListName);
+        dest.writeInt(this.musicCount);
+        dest.writeTypedList(this.songsOfThisSongList);
+    }
+
+    public SongList() {
+    }
+
+    protected SongList(Parcel in) {
+        this.songListId = (Long) in.readValue(Long.class.getClassLoader());
+        this.songListName = in.readString();
+        this.musicCount = in.readInt();
+        this.songsOfThisSongList = in.createTypedArrayList(Music.CREATOR);
+    }
+
+    @Generated(hash = 811326554)
+    public SongList(Long songListId, String songListName, int musicCount) {
+        this.songListId = songListId;
+        this.songListName = songListName;
+        this.musicCount = musicCount;
+    }
+
+    public static final Parcelable.Creator<SongList> CREATOR = new Parcelable.Creator<SongList>() {
+        @Override
+        public SongList createFromParcel(Parcel source) {
+            return new SongList(source);
+        }
+
+        @Override
+        public SongList[] newArray(int size) {
+            return new SongList[size];
+        }
+    };
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 741189411)
+    private transient SongListDao myDao;
+
+    @Override
     public String toString() {
         return "SongList{" +
                 "songListId=" + songListId +
@@ -43,24 +95,11 @@ public class SongList implements Parcelable {
                 '}';
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.songListId);
-        dest.writeString(this.songListName);
-        dest.writeInt(this.musicCount);
-        dest.writeTypedList(this.songsOfThisSongList);
-    }
-
-    public long getSongListId() {
+    public Long getSongListId() {
         return this.songListId;
     }
 
-    public void setSongListId(long songListId) {
+    public void setSongListId(Long songListId) {
         this.songListId = songListId;
     }
 
@@ -147,49 +186,12 @@ public class SongList implements Parcelable {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1874485990)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getSongListDao() : null;
     }
-
-    public SongList() {
-    }
-
-    protected SongList(Parcel in) {
-        this.songListId = in.readLong();
-        this.songListName = in.readString();
-        this.musicCount = in.readInt();
-        this.songsOfThisSongList = in.createTypedArrayList(Music.CREATOR);
-    }
-
-    @Generated(hash = 1222049496)
-    public SongList(long songListId, String songListName, int musicCount) {
-        this.songListId = songListId;
-        this.songListName = songListName;
-        this.musicCount = musicCount;
-    }
-
-    public static final Parcelable.Creator<SongList> CREATOR = new Parcelable.Creator<SongList>() {
-        @Override
-        public SongList createFromParcel(Parcel source) {
-            return new SongList(source);
-        }
-
-        @Override
-        public SongList[] newArray(int size) {
-            return new SongList[size];
-        }
-    };
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 741189411)
-    private transient SongListDao myDao;
 }

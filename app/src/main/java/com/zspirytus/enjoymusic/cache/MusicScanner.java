@@ -171,7 +171,7 @@ public class MusicScanner {
                 } else {
                     String folderName = dir[0];
                     String folderDir = dir[1];
-                    Folder folder = new Folder(fullPath.hashCode(), folderDir, folderName, 1);
+                    Folder folder = new Folder(Long.parseLong(String.valueOf(fullPath.hashCode())), folderDir, folderName, 1);
                     mFolderList.add(folder);
                     array.put(dir[2].hashCode(), mFolderList.size() - 1);
                 }

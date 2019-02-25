@@ -1,7 +1,10 @@
 package com.zspirytus.enjoymusic.adapter;
 
+import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextWatcher;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -29,7 +32,6 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
         addTitleItemDelegate();
         addDownloadItemDelegate();
         addSingleEditTextItemDelegate();
-        addDuplicateEditTextItemDelegate();
     }
 
     private void addArtistArtItemDelegate() {
@@ -172,35 +174,29 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
                 holder.setText(R.id.title, data.getEditTextTitle());
                 holder.setText(R.id.edit_text, data.getEditTextDefaultText());
+                EditText editText = holder.getView(R.id.edit_text);
+                editText.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        data.setEditTextDefaultText(s.toString());
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
             }
         };
         addDelegate(delegate);
     }
 
-    private void addDuplicateEditTextItemDelegate() {
-        ItemViewDelegate<MusicMetaDataListItem> delegate = new ItemViewDelegate<MusicMetaDataListItem>() {
-            @Override
-            public boolean isForViewType(MusicMetaDataListItem data) {
-                return data.isDuplicateEditText();
-            }
-
-            @Override
-            public int getLayoutId() {
-                return R.layout.item_duplicate_edittext;
-            }
-
-            @Override
-            public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
-                holder.setText(R.id.first_title, data.getFirstEditTextTitle());
-                holder.setText(R.id.second_title, data.getSecondEditTextTitle());
-                holder.setText(R.id.first_edit_text, data.getFirstEditTextDefaultText());
-                holder.setText(R.id.second_edit_text, data.getSecondEditTextDefaultText());
-            }
-        };
-        addDelegate(delegate);
-    }
-
-    public void setOnDownBtnClickListener(OnDownLoadBtnClickListener listener) {
+    public void setOnDownloadBtnClickListener(OnDownLoadBtnClickListener listener) {
         mListener = listener;
     }
 

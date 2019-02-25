@@ -2,13 +2,19 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.annotation.WorkerThread;
 
+import com.zspirytus.enjoymusic.IMusicMetaDataUpdator;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.cache.ThreadPool;
+import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
+import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.entity.MusicMetaDataListItem;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.global.SettingConfig;
@@ -29,6 +35,8 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
     private MutableLiveData<List<MusicMetaDataListItem>> mMusicMetaList = new MutableLiveData<>();
     private List<MusicMetaDataListItem> dataList = new ArrayList<>();
 
+    private MutableLiveData<Boolean> updateState = new MutableLiveData<>();
+
     public MutableLiveData<List<MusicMetaDataListItem>> getMusicMetaList() {
         return mMusicMetaList;
     }
@@ -36,6 +44,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
     public void obtainMusicMetaList(Music music) {
         Album album = QueryExecutor.findAlbum(music);
         Artist artist = QueryExecutor.findArtist(music);
+
         MusicMetaDataListItem item = new MusicMetaDataListItem();
         item.setArtistArt(true);
         item.setArtist(artist);
@@ -80,18 +89,52 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
         item7.setEditTextDefaultText(album.getAlbumName());
         dataList.add(item7);
 
-        MusicMetaDataListItem item8 = new MusicMetaDataListItem();
-        item8.setDuplicateEditText(true);
-        item8.setFirstEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_disk_number));
-        item8.setSecondEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_music_number));
-        dataList.add(item8);
-
-        MusicMetaDataListItem item9 = new MusicMetaDataListItem();
-        item9.setDuplicateEditText(true);
-        item9.setFirstEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_year));
-        item9.setSecondEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_genre));
-        dataList.add(item9);
         mMusicMetaList.setValue(dataList);
+    }
+
+    public void updateMusic(List<MusicMetaDataListItem> datas, MainActivityViewModel viewModel) {
+        updateState.setValue(false);
+        ThreadPool.execute(() -> {
+            // read data from dataList.
+            String artistArtUrl = datas.get(0).getArtist().getArtistArt();
+            String albumArtUrl = /*datas.get(1).getAlbum() != null ?
+                    datas.get(1).getAlbum().getAlbumArt() : null*/"~~~";
+
+            // wrap need update data.
+            Album needUpdateAlbum = QueryExecutor.findAlbum(datas.get(1).getMusic());
+            Artist needUpdateArtist = QueryExecutor.findArtist(datas.get(1).getMusic());
+
+            if (albumArtUrl != null) {
+                needUpdateAlbum.setAlbumArt(albumArtUrl);
+            }
+            needUpdateArtist.setArtistArt(artistArtUrl);
+
+            List<Album> albumList = viewModel.getAlbumList().getValue();
+            List<Artist> artistList = viewModel.getArtistList().getValue();
+
+            // update foreground data.
+            for (int i = 0; i < albumList.size(); i++) {
+                if (needUpdateAlbum.getAlbumId().equals(albumList.get(i).getAlbumId())) {
+                    albumList.set(i, needUpdateAlbum);
+                }
+            }
+            for (int i = 0; i < artistList.size(); i++) {
+                if (needUpdateArtist.getArtistId().equals(artistList.get(i).getArtistId())) {
+                    artistList.set(i, needUpdateArtist);
+                }
+            }
+
+            // update background data.
+            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_META_DATA_UPDATOR);
+            IMusicMetaDataUpdator updator = IMusicMetaDataUpdator.Stub.asInterface(binder);
+            try {
+                updator.updateAlbum(needUpdateAlbum);
+                updator.updateArtist(needUpdateArtist);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            updateState.postValue(true);
+        });
     }
 
     public void applyMusicData(Music music) {
@@ -141,12 +184,16 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
 
     @WorkerThread
     private void updateAlbumInfo(String picUrl) {
-        dataList.get(1).getMusic().getAlbum().setAlbumArt(picUrl);
+        Album album = QueryExecutor.findAlbum(dataList.get(1).getMusic());
+        album.setAlbumArt(picUrl);
+        dataList.get(1).getMusic().setAlbum(album);
         AndroidSchedulers.mainThread().scheduleDirect(() -> mMusicMetaList.setValue(dataList));
     }
 
     @WorkerThread
     private void updateArtistInfo(String picUrl) {
+        Artist artist = QueryExecutor.findArtist(dataList.get(0).getMusic());
+        artist.setArtistArt(picUrl);
         dataList.get(0).getArtist().setArtistArt(picUrl);
         AndroidSchedulers.mainThread().scheduleDirect(() -> mMusicMetaList.setValue(dataList));
     }

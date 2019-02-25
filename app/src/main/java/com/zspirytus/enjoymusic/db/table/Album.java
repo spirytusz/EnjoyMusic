@@ -23,7 +23,7 @@ import org.greenrobot.greendao.annotation.ToOne;
 public class Album implements Parcelable {
 
     @Id
-    private long albumId;
+    private Long albumId;
 
     private String albumName;
     private String albumArt;
@@ -55,18 +55,18 @@ public class Album implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.albumId);
+        dest.writeValue(this.albumId);
         dest.writeString(this.albumName);
         dest.writeString(this.albumArt);
         dest.writeInt(this.albumSongCount);
         dest.writeParcelable(this.artist, flags);
     }
 
-    public long getAlbumId() {
+    public Long getAlbumId() {
         return this.albumId;
     }
 
-    public void setAlbumId(long albumId) {
+    public void setAlbumId(Long albumId) {
         this.albumId = albumId;
     }
 
@@ -170,15 +170,15 @@ public class Album implements Parcelable {
     }
 
     protected Album(Parcel in) {
-        this.albumId = in.readLong();
+        this.albumId = (Long) in.readValue(Long.class.getClassLoader());
         this.albumName = in.readString();
         this.albumArt = in.readString();
         this.albumSongCount = in.readInt();
         this.artist = in.readParcelable(Artist.class.getClassLoader());
     }
 
-    @Generated(hash = 582391069)
-    public Album(long albumId, String albumName, String albumArt, int albumSongCount) {
+    @Generated(hash = 2122088805)
+    public Album(Long albumId, String albumName, String albumArt, int albumSongCount) {
         this.albumId = albumId;
         this.albumName = albumName;
         this.albumArt = albumArt;
@@ -203,9 +203,7 @@ public class Album implements Parcelable {
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 172302968)
     private transient AlbumDao myDao;
 

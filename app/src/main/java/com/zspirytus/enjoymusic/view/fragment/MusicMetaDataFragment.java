@@ -13,15 +13,12 @@ import com.zspirytus.enjoymusic.adapter.MusicMetaDataListAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.cache.viewmodels.MusicMetaDataFragmentViewModel;
-import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.view.dialog.SaveMusicInfoDialog;
-
-import java.util.List;
 
 @LayoutIdInject(R.layout.fragment_music_meta_data)
 public class MusicMetaDataFragment extends BaseFragment implements View.OnClickListener {
@@ -43,7 +40,7 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
         Music music = getArguments().getParcelable("music");
         mViewModel.obtainMusicMetaList(music);
         mAdapter = new MusicMetaDataListAdapter();
-        mAdapter.setOnDownBtnClickListener(() -> {
+        mAdapter.setOnDownloadBtnClickListener(() -> {
             mViewModel.applyMusicData(getArguments().getParcelable("music"));
         });
     }
@@ -69,7 +66,9 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.save_btn:
-                saveMusicMetaData();
+                MainActivityViewModel viewModel = ViewModelProviders.of(getParentActivity())
+                        .get(MainActivityViewModel.class);
+                mViewModel.updateMusic(mAdapter.getData(), viewModel);
                 FragmentVisibilityManager.getInstance().remove(this);
                 break;
             case R.id.cancel_btn:
@@ -100,23 +99,6 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
 
     public void setOnMusicMetaDataChangeListener(OnMusicMetaDataChangeListener listener) {
         mListener = listener;
-    }
-
-    private void saveMusicMetaData() {
-        Music music = mAdapter.getData().get(0).getMusic();
-        if (mListener != null) {
-            mListener.onMusicMetaDataChange(music);
-        }
-        DBManager.getInstance().getDaoSession().insertOrReplace(music);
-        MainActivityViewModel viewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
-        List<Music> shareMusicList = viewModel.getMusicList().getValue();
-        for (int i = 0; i < shareMusicList.size(); i++) {
-            if (music.getMusicId() == shareMusicList.get(i).getMusicId()) {
-                shareMusicList.set(i, music);
-                break;
-            }
-        }
-        viewModel.getMusicList().setValue(shareMusicList);
     }
 
     private void showDialog() {

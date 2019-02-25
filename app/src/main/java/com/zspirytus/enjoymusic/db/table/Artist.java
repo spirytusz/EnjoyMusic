@@ -25,7 +25,7 @@ import java.util.List;
 public class Artist implements Parcelable {
 
     @Id
-    private long artistId;
+    private Long artistId;
 
     private String artistName;
     private String artistArt;
@@ -59,7 +59,7 @@ public class Artist implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.artistId);
+        dest.writeValue(this.artistId);
         dest.writeString(this.artistName);
         dest.writeString(this.artistArt);
         dest.writeInt(this.numberOfAlbums);
@@ -67,11 +67,11 @@ public class Artist implements Parcelable {
         dest.writeTypedList(this.albums);
     }
 
-    public long getArtistId() {
+    public Long getArtistId() {
         return this.artistId;
     }
 
-    public void setArtistId(long artistId) {
+    public void setArtistId(Long artistId) {
         this.artistId = artistId;
     }
 
@@ -184,7 +184,7 @@ public class Artist implements Parcelable {
     }
 
     protected Artist(Parcel in) {
-        this.artistId = in.readLong();
+        this.artistId = (Long) in.readValue(Long.class.getClassLoader());
         this.artistName = in.readString();
         this.artistArt = in.readString();
         this.numberOfAlbums = in.readInt();
@@ -192,8 +192,8 @@ public class Artist implements Parcelable {
         this.albums = in.createTypedArrayList(Album.CREATOR);
     }
 
-    @Generated(hash = 442881388)
-    public Artist(long artistId, String artistName, String artistArt, int numberOfAlbums,
+    @Generated(hash = 2141919485)
+    public Artist(Long artistId, String artistName, String artistArt, int numberOfAlbums,
                   int mumberOfTracks) {
         this.artistId = artistId;
         this.artistName = artistName;

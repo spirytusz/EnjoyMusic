@@ -22,6 +22,8 @@ public class BinderPool extends IBinderPool.Stub {
                 return BackgroundEventProcessor.getInstance();
             case Constant.BinderCode.AUDIO_EFFECT:
                 return AudioEffectHelper.getInstance();
+            case Constant.BinderCode.MUSIC_META_DATA_UPDATOR:
+                return MusicMetaDataUpdator.getInstance();
         }
         return null;
     }

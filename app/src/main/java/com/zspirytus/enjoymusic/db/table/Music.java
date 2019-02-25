@@ -23,10 +23,10 @@ import org.greenrobot.greendao.annotation.ToOne;
 public class Music implements Parcelable {
 
     @Id
-    private long musicId;
+    private Long musicId;
 
-    private long albumId;
-    private long artistId;
+    private Long albumId;
+    private Long artistId;
     private String musicFilePath;
     private String musicName;
     private long musicDuration;
@@ -37,6 +37,84 @@ public class Music implements Parcelable {
     private Album album;
     @ToOne
     private Artist artist;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.musicId);
+        dest.writeValue(this.albumId);
+        dest.writeValue(this.artistId);
+        dest.writeString(this.musicFilePath);
+        dest.writeString(this.musicName);
+        dest.writeLong(this.musicDuration);
+        dest.writeString(this.musicFileSize);
+        dest.writeLong(this.musicAddDate);
+        dest.writeParcelable(this.album, flags);
+        dest.writeParcelable(this.artist, flags);
+    }
+
+    public Music() {
+    }
+
+    protected Music(Parcel in) {
+        this.musicId = (Long) in.readValue(Long.class.getClassLoader());
+        this.albumId = (Long) in.readValue(Long.class.getClassLoader());
+        this.artistId = (Long) in.readValue(Long.class.getClassLoader());
+        this.musicFilePath = in.readString();
+        this.musicName = in.readString();
+        this.musicDuration = in.readLong();
+        this.musicFileSize = in.readString();
+        this.musicAddDate = in.readLong();
+        this.album = in.readParcelable(Album.class.getClassLoader());
+        this.artist = in.readParcelable(Artist.class.getClassLoader());
+    }
+
+    @Generated(hash = 1235278863)
+    public Music(Long musicId, Long albumId, Long artistId, String musicFilePath,
+                 String musicName, long musicDuration, String musicFileSize, long musicAddDate) {
+        this.musicId = musicId;
+        this.albumId = albumId;
+        this.artistId = artistId;
+        this.musicFilePath = musicFilePath;
+        this.musicName = musicName;
+        this.musicDuration = musicDuration;
+        this.musicFileSize = musicFileSize;
+        this.musicAddDate = musicAddDate;
+    }
+
+    public static final Parcelable.Creator<Music> CREATOR = new Parcelable.Creator<Music>() {
+        @Override
+        public Music createFromParcel(Parcel source) {
+            return new Music(source);
+        }
+
+        @Override
+        public Music[] newArray(int size) {
+            return new Music[size];
+        }
+    };
+
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 1255683360)
+    private transient MusicDao myDao;
+
+    @Generated(hash = 1449801263)
+    private transient boolean album__refreshed;
+
+    @Generated(hash = 1550754473)
+    private transient boolean artist__refreshed;
 
     @Override
     public String toString() {
@@ -54,46 +132,27 @@ public class Music implements Parcelable {
                 '}';
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.musicId);
-        dest.writeLong(this.albumId);
-        dest.writeLong(this.artistId);
-        dest.writeString(this.musicFilePath);
-        dest.writeString(this.musicName);
-        dest.writeLong(this.musicDuration);
-        dest.writeString(this.musicFileSize);
-        dest.writeLong(this.musicAddDate);
-        dest.writeParcelable(this.album, flags);
-        dest.writeParcelable(this.artist, flags);
-    }
-
-    public long getMusicId() {
+    public Long getMusicId() {
         return this.musicId;
     }
 
-    public void setMusicId(long musicId) {
+    public void setMusicId(Long musicId) {
         this.musicId = musicId;
     }
 
-    public long getAlbumId() {
+    public Long getAlbumId() {
         return this.albumId;
     }
 
-    public void setAlbumId(long albumId) {
+    public void setAlbumId(Long albumId) {
         this.albumId = albumId;
     }
 
-    public long getArtistId() {
+    public Long getArtistId() {
         return this.artistId;
     }
 
-    public void setArtistId(long artistId) {
+    public void setArtistId(Long artistId) {
         this.artistId = artistId;
     }
 
@@ -137,9 +196,7 @@ public class Music implements Parcelable {
         this.musicAddDate = musicAddDate;
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     @Generated(hash = 1355616784)
     public Album getAlbum() {
         if (album != null || !album__refreshed) {
@@ -239,59 +296,4 @@ public class Music implements Parcelable {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMusicDao() : null;
     }
-
-    public Music() {
-    }
-
-    protected Music(Parcel in) {
-        this.musicId = in.readLong();
-        this.albumId = in.readLong();
-        this.artistId = in.readLong();
-        this.musicFilePath = in.readString();
-        this.musicName = in.readString();
-        this.musicDuration = in.readLong();
-        this.musicFileSize = in.readString();
-        this.musicAddDate = in.readLong();
-        this.album = in.readParcelable(Album.class.getClassLoader());
-        this.artist = in.readParcelable(Artist.class.getClassLoader());
-    }
-
-    @Generated(hash = 455153504)
-    public Music(long musicId, long albumId, long artistId, String musicFilePath,
-                 String musicName, long musicDuration, String musicFileSize, long musicAddDate) {
-        this.musicId = musicId;
-        this.albumId = albumId;
-        this.artistId = artistId;
-        this.musicFilePath = musicFilePath;
-        this.musicName = musicName;
-        this.musicDuration = musicDuration;
-        this.musicFileSize = musicFileSize;
-        this.musicAddDate = musicAddDate;
-    }
-
-    public static final Parcelable.Creator<Music> CREATOR = new Parcelable.Creator<Music>() {
-        @Override
-        public Music createFromParcel(Parcel source) {
-            return new Music(source);
-        }
-
-        @Override
-        public Music[] newArray(int size) {
-            return new Music[size];
-        }
-    };
-
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-
-    /** Used for active entity operations. */
-    @Generated(hash = 1255683360)
-    private transient MusicDao myDao;
-
-    @Generated(hash = 1449801263)
-    private transient boolean album__refreshed;
-
-    @Generated(hash = 1550754473)
-    private transient boolean artist__refreshed;
 }
