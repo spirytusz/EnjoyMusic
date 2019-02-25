@@ -1,6 +1,7 @@
 package com.zspirytus.enjoymusic.engine;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
@@ -123,6 +124,15 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         if (mCurrentFragment != null && !backStack.contains(mCurrentFragment)) {
             backStack.push(mCurrentFragment);
         }
+    }
+
+    public void removeAllFragment() {
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        for (Fragment fragment : mFragmentManager.getFragments()) {
+            transaction.remove(fragment);
+        }
+        transaction.commitAllowingStateLoss();
+        mCurrentFragment = null;
     }
 
     private void setCurrentFragment(BaseFragment fragment) {

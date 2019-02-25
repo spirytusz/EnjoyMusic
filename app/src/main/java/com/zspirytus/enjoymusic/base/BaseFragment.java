@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.interfaces.IBackPressed;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -81,16 +82,6 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
         registerEvent();
     }
 
-    /*@Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden) {
-            getParentActivity().setLightStatusIconColor();
-        } else {
-            getParentActivity().setDefaultStatusIconColor();
-        }
-    }*/
-
     @Override
     public void onPause() {
         super.onPause();
@@ -108,6 +99,7 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
         long now = System.currentTimeMillis();
         if (now - pressedBackLastTime < 2 * 1000) {
             getParentActivity().finish();
+            FragmentVisibilityManager.getInstance().removeAllFragment();
         } else {
             toast("Press back again to quit");
             pressedBackLastTime = now;
@@ -119,9 +111,6 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
     protected abstract void initView();
 
     public abstract int getContainerId();
-
-    protected void lazyWrapDataInView() {
-    }
 
     public int enterAnim() {
         return 0;

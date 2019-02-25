@@ -105,14 +105,6 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
         MediaPlayController.getInstance().setOnPlayListener(null);
     }
 
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        NotificationHelper.getInstance().showNotification(BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic());
-        Notification currentNotification = NotificationHelper.getInstance().getCurrentNotification();
-        int notificationNotifyId = NotificationHelper.getInstance().getNotificationNotifyId();
-        startForeground(notificationNotifyId, currentNotification);
-    }
-
     private void handleStatusBarEvent(Intent intent) {
         if (intent != null) {
             String event = intent.getStringExtra(Constant.NotificationEvent.EXTRA);

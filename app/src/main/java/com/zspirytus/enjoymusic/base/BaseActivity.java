@@ -34,12 +34,15 @@ public abstract class BaseActivity extends AppCompatActivity
         autoInjectLayoutId();
         autoInjectAllField();
         setTransparentStatusBar();
+        e("onCreate");
 
         if (savedInstanceState != null) {
+            e("onCreate and restore");
             onMRestoreInstanceState(savedInstanceState);
             initView();
             registerEvent();
         } else {
+            e("onCreate and new one.");
             initView();
             initData();
             registerEvent();
