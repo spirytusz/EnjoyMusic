@@ -16,6 +16,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
+import com.zspirytus.enjoymusic.cache.viewmodels.MusicPlayFragmentViewModel;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
@@ -74,6 +75,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     private ImageView mNextButton;
 
     private MainActivityViewModel mViewModel;
+    private MusicPlayFragmentViewModel viewModel;
 
     @Override
     public void onClick(View view) {
@@ -128,6 +130,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
         mViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
         mViewModel.init();
         mViewModel.obtainPlayMode(getContext());
+        viewModel = ViewModelProviders.of(this).get(MusicPlayFragmentViewModel.class);
     }
 
     @Override
@@ -149,6 +152,9 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
                     return true;
                 case R.id.menu_audio_effect:
                     showAudioEffectFragment();
+                    break;
+                case R.id.menu_lyric_download:
+                    viewModel.applyLyric(mViewModel.getCurrentPlayingMusic().getValue());
                     break;
             }
             return false;
@@ -178,6 +184,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
             mPlayMode.setImageResource(mViewModel.getPlayModeResId().get(values));
             ForegroundMusicController.getInstance().setPlayMode(values);
         });
+        viewModel.getLyricRows().observe(this, values -> mLyricView.setLyricRows(values));
     }
 
     @Override

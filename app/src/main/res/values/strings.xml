@@ -72,6 +72,7 @@
     <!-- MusicPlay Text start -->
     <string name="music_play_menu_edit_music_info">编辑音乐信息</string>
     <string name="music_play_menu_audio_effect">音效设定</string>
+    <string name="music_play_menu_lyric_download">下载歌词</string>
     <!-- MusicPlay Text end -->
 
     <!-- AudioEffect Text start -->
