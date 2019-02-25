@@ -3,11 +3,13 @@ package com.zspirytus.enjoymusic.db;
 import com.zspirytus.enjoymusic.db.greendao.AlbumDao;
 import com.zspirytus.enjoymusic.db.greendao.ArtistDao;
 import com.zspirytus.enjoymusic.db.greendao.JoinAlbumToArtistDao;
+import com.zspirytus.enjoymusic.db.greendao.MusicDao;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinAlbumToArtist;
 
+import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
@@ -27,6 +29,19 @@ public class QueryExecutor {
             music.setAlbum(album);
             return albumList.get(0);
         }
+    }
+
+    public static List<Music> findMusicList(Album album) {
+        return filterMusicList(MusicDao.Properties.AlbumId, album.getAlbumId());
+    }
+
+    public static List<Music> findMusicList(Artist artist) {
+        return filterMusicList(MusicDao.Properties.ArtistId, artist.getArtistId());
+    }
+
+    private static List<Music> filterMusicList(Property property, Object values) {
+        return DBManager.getInstance().getDaoSession().queryBuilder(Music.class)
+                .where(property.eq(values)).list();
     }
 
     public static Artist findArtist(Music music) {

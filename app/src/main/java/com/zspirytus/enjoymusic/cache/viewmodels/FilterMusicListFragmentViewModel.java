@@ -46,7 +46,15 @@ public class FilterMusicListFragmentViewModel extends ViewModel {
             totalDuration += music.getMusicDuration();
         }
         String countOfMusic = musicList.size() + "首曲目";
-        String duration = (totalDuration / 1000 / 60) + "分钟";
+        long durationMinsValue = totalDuration / 1000 / 60;
+        String duration;
+        if (durationMinsValue > 60) {
+            long min = durationMinsValue % 60;
+            long hour = durationMinsValue / 60;
+            duration = hour + "小时" + min + "分钟";
+        } else {
+            duration = durationMinsValue + "分钟";
+        }
         String content = title + "\n" + countOfMusic + "\n" + duration;
         SpannableString spannableString = new SpannableString(content);
         int pointer = 0;

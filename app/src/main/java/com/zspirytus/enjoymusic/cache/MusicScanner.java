@@ -90,7 +90,7 @@ public class MusicScanner {
             SparseIntArray folderDirMapIndex = new SparseIntArray();
             for (Music music : musicList) {
                 String[] dir = FileUtil.getFolderNameAndFolderDir(music.getMusicFilePath());
-                int index = folderDirMapIndex.get(dir.hashCode(), -1);
+                int index = folderDirMapIndex.get(dir[2].hashCode(), -1);
                 if (index != -1) {
                     mFolderSortedMusicList.get(index).addMusic(music);
                 } else {

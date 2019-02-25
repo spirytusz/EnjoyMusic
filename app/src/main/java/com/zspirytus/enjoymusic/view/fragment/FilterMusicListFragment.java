@@ -36,14 +36,14 @@ import java.util.List;
 public class FilterMusicListFragment extends BaseFragment
         implements OnItemClickListener {
 
+    public static final int ALBUM_FLAG = 1;
+    public static final int ARTIST_FLAG = 2;
+    public static final int FOLDER_FLAG = 3;
+    public static final int SONG_LIST_FLAG = 4;
+
     private static final String TITLE_KEY = "title";
     private static final String MUSIC_LIST_EXTRA_KEY = "MusicListExtra";
     private static final String FLAG_KEY = "flag";
-
-    private static final int ALBUM_FLAG = 1;
-    private static final int ARTIST_FLAG = 2;
-    private static final int FOLDER_FLAG = 3;
-    private static final int SONG_LIST_FLAG = 4;
 
     @ViewInject(R.id.music_detail_recyclerview)
     private RecyclerView mRecyclerView;

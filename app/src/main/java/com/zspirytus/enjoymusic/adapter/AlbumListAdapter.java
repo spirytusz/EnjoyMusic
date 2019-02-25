@@ -82,12 +82,10 @@ public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
                 FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
                 break;
             case 2:
-                Artist artist = targetAlbum.getArtist();
-                List<Music> artistFilterMusicList = DBManager.getInstance().getDaoSession().queryBuilder(Music.class)
-                        .where(MusicDao.Properties.ArtistId.eq(artist.getArtistId()))
-                        .list();
+                Artist artist = QueryExecutor.findArtist(targetAlbum);
+                List<Music> artistFilterMusicList = QueryExecutor.findMusicList(artist);
                 FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
-                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(targetAlbum.getAlbumName(), artistFilterMusicList, 1));
+                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(targetAlbum.getAlbumName(), artistFilterMusicList, FilterMusicListFragment.ALBUM_FLAG));
                 break;
         }
     };

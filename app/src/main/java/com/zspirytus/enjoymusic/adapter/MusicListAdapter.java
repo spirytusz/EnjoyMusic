@@ -7,9 +7,7 @@ import com.zspirytus.basesdk.recyclerview.listeners.OnItemLongClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
-import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
-import com.zspirytus.enjoymusic.db.greendao.MusicDao;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
@@ -72,22 +70,16 @@ public class MusicListAdapter extends CommonRecyclerViewAdapter<Music>
                 ToastUtil.showToast(MainApplication.getForegroundContext(), "delete it.");
                 break;
             case 2:
-                long albumId = targetMusic.getAlbumId();
-                Album album = targetMusic.getAlbum();
-                List<Music> albumFilterMusicList = DBManager.getInstance().getDaoSession().queryBuilder(Music.class)
-                        .where(MusicDao.Properties.AlbumId.eq(albumId))
-                        .list();
+                Album album = QueryExecutor.findAlbum(targetMusic);
+                List<Music> albumFilterMusicList = QueryExecutor.findMusicList(album);
                 FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
-                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(album.getAlbumName(), albumFilterMusicList, 1));
+                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(album.getAlbumName(), albumFilterMusicList, FilterMusicListFragment.ALBUM_FLAG));
                 break;
             case 3:
-                long artistId = targetMusic.getArtistId();
-                Artist artist = targetMusic.getArtist();
-                List<Music> artistFilterMusicList = DBManager.getInstance().getDaoSession().queryBuilder(Music.class)
-                        .where(MusicDao.Properties.ArtistId.eq(artistId))
-                        .list();
+                Artist artist = QueryExecutor.findArtist(targetMusic);
+                List<Music> artistFilterMusicList = QueryExecutor.findMusicList(artist);
                 FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
-                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(artist.getArtistName(), artistFilterMusicList, 2));
+                FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(artist.getArtistName(), artistFilterMusicList, FilterMusicListFragment.ARTIST_FLAG));
                 break;
             case 4:
                 FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();

@@ -15,8 +15,8 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.ArtistListAdapter;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
-import com.zspirytus.enjoymusic.db.DBManager;
-import com.zspirytus.enjoymusic.db.greendao.MusicDao;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
+import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
@@ -48,12 +48,9 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     public void onItemClick(View view, int position) {
-        String artist = mAdapter.getList().get(position).getArtistName();
-        long artistId = mAdapter.getList().get(position).getArtistId();
-        List<Music> musicList = DBManager.getInstance().getDaoSession().queryBuilder(Music.class)
-                .where(MusicDao.Properties.ArtistId.eq(artistId))
-                .list();
-        FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(artist, musicList, 2);
+        Artist artist = mAdapter.getList().get(position);
+        List<Music> musicList = QueryExecutor.findMusicList(artist);
+        FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(artist.getArtistName(), musicList, FilterMusicListFragment.ARTIST_FLAG);
         FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
         FragmentVisibilityManager.getInstance().show(fragment);
     }
