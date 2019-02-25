@@ -77,6 +77,7 @@ public class MainActivity extends BaseActivity
         super.onSaveInstanceState(outState);
         FragmentVisibilityManager.getInstance().onSaveInstanceState(outState);
         AudioEffectConfig.onSaveInstanceState(outState);
+        mViewModel.onSaveInstanceState(outState);
     }
 
     @Override
@@ -85,6 +86,7 @@ public class MainActivity extends BaseActivity
         FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
         FragmentVisibilityManager.getInstance().onRestoreInstanceState(savedInstanceState);
         AudioEffectConfig.onRestoreInstanceState(savedInstanceState);
+        mViewModel.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -125,7 +127,7 @@ public class MainActivity extends BaseActivity
         mBottomMusicControl.setOnViewClickListener(new MusicControlPane.OnViewClickListener() {
             @Override
             public void onPlayOrPause() {
-                if (mViewModel.getMusicPlayState().getValue()) {
+                if (mViewModel.getPlayState().getValue()) {
                     ForegroundMusicController.getInstance().pause();
                 } else {
                     ForegroundMusicController.getInstance().play(mViewModel.getCurrentPlayingMusic().getValue());
@@ -169,7 +171,7 @@ public class MainActivity extends BaseActivity
         mViewModel.getCurrentPlayingMusic().observe(this, values -> {
             mBottomMusicControl.wrapMusic(values);
         });
-        mViewModel.getMusicPlayState().observe(this, values -> {
+        mViewModel.getPlayState().observe(this, values -> {
             mBottomMusicControl.setPlayState(values);
         });
     }

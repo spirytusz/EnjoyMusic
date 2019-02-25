@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
-import com.zspirytus.enjoymusic.cache.viewmodels.MusicPlayFragmentViewModels;
+import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
@@ -23,15 +23,9 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
-import com.zspirytus.enjoymusic.impl.binder.PlayMusicObserverManager;
-import com.zspirytus.enjoymusic.impl.binder.PlayStateObserverManager;
-import com.zspirytus.enjoymusic.impl.binder.ProgressObserverManager;
 import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
-import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
-import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
-import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 import com.zspirytus.enjoymusic.view.widget.AutoRotateCircleImage;
 import com.zspirytus.enjoymusic.view.widget.BlurImageView;
@@ -39,17 +33,13 @@ import com.zspirytus.enjoymusic.view.widget.LyricView;
 
 import java.io.File;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-
 /**
  * Fragment: 显示音乐播放界面
  * Created by ZSpirytus on 2018/8/2.
  */
 
 @LayoutIdInject(R.layout.fragment_music_play_layout)
-public class MusicPlayFragment extends BaseFragment
-        implements View.OnClickListener, MusicPlayStateObserver,
-        MusicPlayProgressObserver, PlayedMusicChangeObserver {
+public class MusicPlayFragment extends BaseFragment implements View.OnClickListener {
 
     @ViewInject(R.id.tool_bar)
     private Toolbar mToolbar;
@@ -83,7 +73,7 @@ public class MusicPlayFragment extends BaseFragment
     @ViewInject(R.id.next)
     private ImageView mNextButton;
 
-    private MusicPlayFragmentViewModels mViewModel;
+    private MainActivityViewModel mViewModel;
 
     @Override
     public void onClick(View view) {
@@ -135,7 +125,7 @@ public class MusicPlayFragment extends BaseFragment
 
     @Override
     protected void initData() {
-        mViewModel = ViewModelProviders.of(this).get(MusicPlayFragmentViewModels.class);
+        mViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
         mViewModel.init();
         mViewModel.obtainPlayMode(getContext());
     }
@@ -169,70 +159,30 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mViewModel.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel.getPlayProgress().observe(this, (values) -> {
+        mViewModel.getPlayProgress().observe(getParentActivity(), (values) -> {
             if (values != null) {
                 mSeekBar.setProgress(values / 1000);
                 mLyricView.onPlayProgressChange(values);
             }
         });
-        mViewModel.getPlayState().observe(this, (values) -> {
+        mViewModel.getPlayState().observe(getParentActivity(), (values) -> {
             if (values != null) {
                 setButtonSrc(values);
                 mCover.setRotating(values);
             }
         });
-        mViewModel.getCurrentPlayingMusic().observe(this, (values) -> {
-            if (values != null) {
-                setView(values);
-            }
-        });
-        mViewModel.getPlayMode().observe(this, (values) -> {
+        mViewModel.getCurrentPlayingMusic().observe(getParentActivity(), this::setView);
+        mViewModel.getPlayMode().observe(getParentActivity(), (values) -> {
             mPlayMode.setImageResource(mViewModel.getPlayModeResId().get(values));
             ForegroundMusicController.getInstance().setPlayMode(values);
         });
-        mViewModel.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
     public int getContainerId() {
         return R.id.full_fragment_container;
-    }
-
-    @Override
-    public void onProgressChanged(int progress) {
-        AndroidSchedulers.mainThread().scheduleDirect(() -> mViewModel.setPlayProgress(progress));
-    }
-
-    @Override
-    public void onPlayingStateChanged(boolean isPlaying) {
-        AndroidSchedulers.mainThread().scheduleDirect(() -> mViewModel.setPlayState(isPlaying));
-    }
-
-    @Override
-    public void onPlayedMusicChanged(Music music) {
-        AndroidSchedulers.mainThread().scheduleDirect(() -> mViewModel.setCurrentPlayingMusic(music));
-    }
-
-    @Override
-    protected void registerEvent() {
-        PlayMusicObserverManager.getInstance().register(this);
-        ProgressObserverManager.getInstance().register(this);
-        PlayStateObserverManager.getInstance().register(this);
-    }
-
-    @Override
-    protected void unregisterEvent() {
-        PlayMusicObserverManager.getInstance().unregister(this);
-        ProgressObserverManager.getInstance().unregister(this);
-        PlayStateObserverManager.getInstance().unregister(this);
     }
 
     @Override
@@ -309,7 +259,6 @@ public class MusicPlayFragment extends BaseFragment
 
     private void showMusicMetaDataFragment() {
         MusicMetaDataFragment fragment = MusicMetaDataFragment.getInstance(mViewModel.getCurrentPlayingMusic().getValue());
-        fragment.setOnMusicMetaDataChangeListener(music -> mViewModel.setCurrentPlayingMusic(music));
         FragmentVisibilityManager.getInstance().addToBackStack(this);
         FragmentVisibilityManager.getInstance().show(fragment);
     }

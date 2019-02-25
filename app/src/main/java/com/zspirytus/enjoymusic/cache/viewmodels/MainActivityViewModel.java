@@ -15,50 +15,10 @@ import com.zspirytus.enjoymusic.db.table.Folder;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
-import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
-import com.zspirytus.enjoymusic.global.MainApplication;
-import com.zspirytus.enjoymusic.impl.binder.PlayMusicObserverManager;
-import com.zspirytus.enjoymusic.impl.binder.PlayStateObserverManager;
-import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
-import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-
-public class MainActivityViewModel extends MusicDataViewModel implements PlayedMusicChangeObserver,
-        MusicPlayStateObserver {
-
-    public void init() {
-        super.init();
-        PlayMusicObserverManager.getInstance().register(this);
-        PlayStateObserverManager.getInstance().register(this);
-        setPlayList(MusicSharedPreferences.restorePlayList(MainApplication.getForegroundContext()));
-    }
-
-    @Override
-    public void onPlayedMusicChanged(final Music music) {
-        AndroidSchedulers.mainThread().scheduleDirect(() -> {
-            if (music != null) {
-                setCurrentPlayingMusic(music);
-            }
-        });
-    }
-
-    @Override
-    public void onPlayingStateChanged(final boolean isPlaying) {
-        AndroidSchedulers.mainThread().scheduleDirect(() -> {
-            setMusicPlayState(isPlaying);
-        });
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        ForegroundMusicController.getInstance().release();
-        PlayMusicObserverManager.getInstance().unregister(this);
-        PlayStateObserverManager.getInstance().unregister(this);
-    }
+public class MainActivityViewModel extends MusicPlayingStateViewModel {
 
     public void obtainMusicList() {
         ThreadPool.execute(() -> {
@@ -83,7 +43,7 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
     public void obtainMusicDataFromPref(Context context) {
         Music savedMusic = MusicSharedPreferences.restoreMusic(context);
         if (savedMusic != null) {
-            setCurrentPlayingMusic(savedMusic);
+            postCurrentPlayingMusic(savedMusic);
         }
     }
 

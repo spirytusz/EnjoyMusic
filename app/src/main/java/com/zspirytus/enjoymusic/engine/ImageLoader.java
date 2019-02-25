@@ -72,17 +72,20 @@ public class ImageLoader {
             s = s.replaceAll(" ", "");
             s = s.substring(0, 2);
         }
-        TextDrawable.IConfigBuilder builder = TextDrawable.builder()
-                .beginConfig()
-                .textColor(0x88FFFFFF)
-                .useFont(Typeface.DEFAULT)
-                .bold();
-        if (imageView instanceof CircleImageView) {
-            int width = imageView.getWidth();
-            int height = imageView.getHeight();
-            builder.width(width).height(height);
-        }
-        TextDrawable drawable = builder.endConfig().buildRect(s);
-        imageView.setImageDrawable(drawable);
+        final String ss = s;
+        imageView.post(() -> {
+            TextDrawable.IConfigBuilder builder = TextDrawable.builder()
+                    .beginConfig()
+                    .textColor(0x88FFFFFF)
+                    .useFont(Typeface.DEFAULT)
+                    .bold();
+            if (imageView instanceof CircleImageView) {
+                int width = imageView.getWidth();
+                int height = imageView.getHeight();
+                builder.width(width).height(height);
+            }
+            TextDrawable drawable = builder.endConfig().buildRect(ss);
+            imageView.setImageDrawable(drawable);
+        });
     }
 }

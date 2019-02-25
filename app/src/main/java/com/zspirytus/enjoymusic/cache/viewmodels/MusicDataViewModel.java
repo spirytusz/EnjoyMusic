@@ -20,9 +20,6 @@ public class MusicDataViewModel extends ViewModel {
     private MutableLiveData<List<SongList>> mSongListLiveData;
     private MutableLiveData<List<Music>> mPlayListLiveData;
 
-    private MutableLiveData<Music> mCurrentMusicLiveData;
-    private MutableLiveData<Boolean> mPlayState;
-
     @CallSuper
     public void init() {
         mMusicListLiveData = new MutableLiveData<>();
@@ -30,8 +27,6 @@ public class MusicDataViewModel extends ViewModel {
         mArtistListLiveData = new MutableLiveData<>();
         mFolderListLiveData = new MutableLiveData<>();
         mPlayListLiveData = new MutableLiveData<>();
-        mCurrentMusicLiveData = new MutableLiveData<>();
-        mPlayState = new MutableLiveData<>();
         mSongListLiveData = new MutableLiveData<>();
     }
 
@@ -65,22 +60,6 @@ public class MusicDataViewModel extends ViewModel {
 
     public void setFolderList(List<Folder> folderList) {
         mFolderListLiveData.setValue(folderList);
-    }
-
-    public MutableLiveData<Music> getCurrentPlayingMusic() {
-        return mCurrentMusicLiveData;
-    }
-
-    public void setCurrentPlayingMusic(Music currentMusic) {
-        mCurrentMusicLiveData.setValue(currentMusic);
-    }
-
-    public MutableLiveData<Boolean> getMusicPlayState() {
-        return mPlayState;
-    }
-
-    public void setMusicPlayState(boolean isPlaying) {
-        mPlayState.setValue(isPlaying);
     }
 
     public MutableLiveData<List<Music>> getPlayList() {
