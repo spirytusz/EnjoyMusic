@@ -81,6 +81,16 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
         registerEvent();
     }
 
+    /*@Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            getParentActivity().setLightStatusIconColor();
+        } else {
+            getParentActivity().setDefaultStatusIconColor();
+        }
+    }*/
+
     @Override
     public void onPause() {
         super.onPause();

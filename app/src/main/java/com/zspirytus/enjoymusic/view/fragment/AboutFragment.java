@@ -43,7 +43,6 @@ public class AboutFragment extends CommonHeaderBaseFragment implements OnItemCli
 
     @Override
     protected void initView() {
-        getParentActivity().setLightStatusIconColor();
         mToolbar.setTitleTextColor(getResources().getColor(R.color.black));
         mToolbar.setTitle(R.string.about_fragment_title);
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
@@ -86,8 +85,10 @@ public class AboutFragment extends CommonHeaderBaseFragment implements OnItemCli
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
+            //getParentActivity().setLightStatusIconColor();
             playShadowAnimator();
         } else {
+            //getParentActivity().setDefaultStatusIconColor();
             if (mShadowAnim.isRunning()) {
                 mShadowAnim.cancel();
             }

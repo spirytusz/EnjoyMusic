@@ -54,7 +54,6 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
 
     @Override
     protected void initView() {
-        getParentActivity().setLightStatusIconColor();
         mToolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
         initTabLayout();
         mViewPager.setAdapter(mAdapter);

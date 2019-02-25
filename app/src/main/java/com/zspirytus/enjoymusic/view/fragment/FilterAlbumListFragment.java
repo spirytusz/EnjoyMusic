@@ -80,7 +80,6 @@ public class FilterAlbumListFragment extends BaseFragment {
 
     @Override
     protected void initView() {
-        getParentActivity().setLightStatusIconColor();
         mTitle.setText("专辑列表");
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);

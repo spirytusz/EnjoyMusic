@@ -46,7 +46,6 @@ public class SearchFragment extends BaseFragment {
 
     @Override
     protected void initView() {
-        getParentActivity().setLightStatusIconColor();
         mClearTextBtn.setOnClickListener(v -> {
             mEditText.setText("");
             mInfoText.setVisibility(View.GONE);
@@ -81,18 +80,7 @@ public class SearchFragment extends BaseFragment {
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden) {
-            getParentActivity().setLightStatusIconColor();
-        } else {
-            getParentActivity().setDefaultStatusIconColor();
-        }
-    }
-
-    @Override
     public void goBack() {
-        getParentActivity().setDefaultStatusIconColor();
         FragmentVisibilityManager.getInstance().remove(this);
     }
 }

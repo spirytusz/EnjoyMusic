@@ -93,7 +93,6 @@ public class HomePageFragment extends CommonHeaderBaseFragment
 
     @Override
     protected void initView() {
-        getParentActivity().setLightStatusIconColor();
         mHomePageRecyclerView.setLayoutManager(LayoutManagerFactory.createGridLayoutManagerWithHeader(getParentActivity(), 2, 2));
         mHomePageRecyclerView.addItemDecoration(
                 new ItemSpacingDecoration.Builder(
@@ -155,11 +154,11 @@ public class HomePageFragment extends CommonHeaderBaseFragment
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
         if (!hidden) {
+            getParentActivity().setDefaultStatusIconColor();
             mHomePageRecyclerView.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
         } else {
-            getParentActivity().setDefaultNavBar();
+            getParentActivity().setLightStatusIconColor();
         }
     }
 

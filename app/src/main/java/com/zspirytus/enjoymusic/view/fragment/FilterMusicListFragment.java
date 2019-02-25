@@ -84,7 +84,6 @@ public class FilterMusicListFragment extends BaseFragment
 
     @Override
     protected void initView() {
-        getParentActivity().setLightStatusIconColor();
         mBackBtn.setOnClickListener(v -> {
             goBack();
         });

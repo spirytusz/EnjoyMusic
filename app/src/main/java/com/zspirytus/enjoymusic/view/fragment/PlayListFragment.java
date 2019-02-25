@@ -58,7 +58,6 @@ public class PlayListFragment extends CommonHeaderBaseFragment
 
     @Override
     protected void initView() {
-        getParentActivity().setLightStatusIconColor();
         mToolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
         mPlayListRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getParentActivity()));
         mPlayListRecyclerView.setAdapter(mAdapter);
@@ -101,10 +100,11 @@ public class PlayListFragment extends CommonHeaderBaseFragment
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
         if (!hidden) {
+            //getParentActivity().setLightStatusIconColor();
             playShadowAnimator();
         } else {
+            //getParentActivity().setDefaultStatusIconColor();
             if (mAnim.isRunning()) {
                 mAnim.cancel();
             }

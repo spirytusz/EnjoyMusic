@@ -50,7 +50,6 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
 
     @Override
     protected void initView() {
-        getParentActivity().setLightStatusIconColor();
         mCancelBtn.setOnClickListener(this);
         mSaveBtn.setOnClickListener(this);
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));

@@ -48,7 +48,6 @@ public class SettingsFragment extends CommonHeaderBaseFragment implements OnItem
 
     @Override
     protected void initView() {
-        getParentActivity().setLightStatusIconColor();
         mToolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
         mToolbar.setTitleTextColor(getResources().getColor(R.color.black));
         mToolbar.setTitle(R.string.settings_fragment_title);
@@ -108,12 +107,11 @@ public class SettingsFragment extends CommonHeaderBaseFragment implements OnItem
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
         if (!hidden) {
-            getParentActivity().setLightStatusIconColor();
+            //getParentActivity().setLightStatusIconColor();
             playShadowAnimator();
         } else {
-            getParentActivity().setDefaultStatusIconColor();
+            //getParentActivity().setDefaultStatusIconColor();
             if (mShadowAnim.isRunning()) {
                 mShadowAnim.cancel();
             }
