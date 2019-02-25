@@ -1,10 +1,10 @@
 package com.zspirytus.enjoymusic.adapter;
 
-import android.text.Editable;
+import android.graphics.Rect;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
-import android.text.TextWatcher;
-import android.widget.EditText;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -20,6 +20,7 @@ import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.engine.MusicMetaDataReader;
 import com.zspirytus.enjoymusic.entity.MusicMetaData;
 import com.zspirytus.enjoymusic.entity.MusicMetaDataListItem;
+import com.zspirytus.enjoymusic.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 
 public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataListItem> {
@@ -93,9 +94,9 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
                 }
                 float sampleRate = (float) metaData.getSampleRate() / 1000;
                 // 限制每行长度
-                musicName = musicName.substring(0, 16 <= musicName.length() - 1 ? 16 : musicName.length() - 1);
-                artistName = artistName.substring(0, 16 <= artistName.length() - 1 ? 16 : artistName.length() - 1);
-                albumName = albumName.substring(0, 16 <= albumName.length() - 1 ? 16 : albumName.length() - 1);
+                musicName = musicName.substring(0, 16 <= musicName.length() ? 16 : musicName.length());
+                artistName = artistName.substring(0, 16 <= artistName.length() ? 16 : artistName.length());
+                albumName = albumName.substring(0, 16 <= albumName.length() ? 16 : albumName.length());
                 Spanned previewText = Html.fromHtml(
                         "<big><font color='black' style=\"line-height:150%;\">" + musicName + "</font></big><br/>"
                                 + "<font color='grey' style=\"line-height:150%;\">" + artistName + "</font><br/>"
@@ -174,26 +175,25 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
                 holder.setText(R.id.title, data.getEditTextTitle());
                 holder.setText(R.id.edit_text, data.getEditTextDefaultText());
-                EditText editText = holder.getView(R.id.edit_text);
-                editText.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        data.setEditTextDefaultText(s.toString());
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-
-                    }
-                });
             }
         };
         addDelegate(delegate);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                int postion = parent.getChildAdapterPosition(view);
+                MusicMetaDataListItem item = getData().get(postion);
+                if (item.isTitle() || item.isSingleEditText()) {
+                    outRect.left = PixelsUtil.dp2px(parent.getContext(), 18);
+                }
+            }
+        });
     }
 
     public void setOnDownloadBtnClickListener(OnDownLoadBtnClickListener listener) {

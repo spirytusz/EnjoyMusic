@@ -36,14 +36,15 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/edit_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="12dp"
-                    android:theme="@style/MyEditText"
                     android:hint="@string/search"
+                    android:textSize="18sp"
+                    app:backgroundTint="@color/colorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/clear_text_btn"
                     app:layout_constraintStart_toEndOf="@id/back_btn"
