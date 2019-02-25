@@ -6,9 +6,9 @@ import android.support.annotation.CallSuper;
 
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.Folder;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
-import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class MusicDataViewModel extends ViewModel {
     private MutableLiveData<List<Music>> mMusicListLiveData;
     private MutableLiveData<List<Album>> mAlbumListLiveData;
     private MutableLiveData<List<Artist>> mArtistListLiveData;
-    private MutableLiveData<List<FolderSortedMusic>> mFolderListLiveData;
+    private MutableLiveData<List<Folder>> mFolderListLiveData;
     private MutableLiveData<List<SongList>> mSongListLiveData;
     private MutableLiveData<List<Music>> mPlayListLiveData;
 
@@ -59,11 +59,11 @@ public class MusicDataViewModel extends ViewModel {
         mArtistListLiveData.setValue(artistList);
     }
 
-    public MutableLiveData<List<FolderSortedMusic>> getFolderList() {
+    public MutableLiveData<List<Folder>> getFolderList() {
         return mFolderListLiveData;
     }
 
-    public void setFolderList(List<FolderSortedMusic> folderList) {
+    public void setFolderList(List<Folder> folderList) {
         mFolderListLiveData.setValue(folderList);
     }
 

@@ -1,21 +1,19 @@
-package com.zspirytus.enjoymusic.entity;
+package com.zspirytus.enjoymusic.db.table;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.zspirytus.enjoymusic.db.table.Music;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class FolderSortedMusic implements Parcelable {
+public class Folder implements Parcelable {
 
     private String mParentFolderDir;
     private String mFolderName;
     private List<Music> mFolderMusicList;
     private int mFolderMusicCount;
 
-    public FolderSortedMusic(String parentFolderDir, String folderName, List<Music> folderMusicList) {
+    public Folder(String parentFolderDir, String folderName, List<Music> folderMusicList) {
         mParentFolderDir = parentFolderDir;
         mFolderName = folderName;
         mFolderMusicList = folderMusicList;
@@ -23,7 +21,7 @@ public class FolderSortedMusic implements Parcelable {
             mFolderMusicCount = mFolderMusicList.size();
     }
 
-    private FolderSortedMusic(Parcel source) {
+    private Folder(Parcel source) {
         mParentFolderDir = source.readString();
         mFolderName = source.readString();
         mFolderMusicList = new ArrayList<>();
@@ -54,7 +52,7 @@ public class FolderSortedMusic implements Parcelable {
 
     @Override
     public boolean equals(Object obj) {
-        return obj != null && obj instanceof FolderSortedMusic && toString().equals(obj.toString());
+        return obj != null && obj instanceof Folder && toString().equals(obj.toString());
     }
 
     @Override
@@ -91,15 +89,15 @@ public class FolderSortedMusic implements Parcelable {
         dest.writeInt(mFolderMusicCount);
     }
 
-    public static final Parcelable.Creator<FolderSortedMusic> CREATOR = new Creator<FolderSortedMusic>() {
+    public static final Parcelable.Creator<Folder> CREATOR = new Creator<Folder>() {
         @Override
-        public FolderSortedMusic createFromParcel(Parcel source) {
-            return new FolderSortedMusic(source);
+        public Folder createFromParcel(Parcel source) {
+            return new Folder(source);
         }
 
         @Override
-        public FolderSortedMusic[] newArray(int size) {
-            return new FolderSortedMusic[0];
+        public Folder[] newArray(int size) {
+            return new Folder[0];
         }
     };
 }

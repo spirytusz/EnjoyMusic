@@ -6,19 +6,14 @@ import android.os.Parcelable;
 import com.zspirytus.enjoymusic.db.greendao.AlbumDao;
 import com.zspirytus.enjoymusic.db.greendao.ArtistDao;
 import com.zspirytus.enjoymusic.db.greendao.DaoSession;
-import com.zspirytus.enjoymusic.db.greendao.MusicDao;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinAlbumToArtist;
-import com.zspirytus.enjoymusic.db.table.jointable.JoinMusicToAlbum;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinEntity;
-import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.ToOne;
-
-import java.util.List;
 
 /**
  * Created by ZSpirytus on 2018/9/12.
@@ -34,13 +29,6 @@ public class Album implements Parcelable {
     private String albumArt;
     private int albumSongCount;
 
-    @ToMany
-    @JoinEntity(
-            entity = JoinMusicToAlbum.class,
-            sourceProperty = "albumId",
-            targetProperty = "musicId"
-    )
-    private List<Music> contentMusic;
     @ToOne
     @JoinEntity(
             entity = JoinAlbumToArtist.class,
@@ -48,6 +36,17 @@ public class Album implements Parcelable {
             targetProperty = "artistId"
     )
     private Artist artist;
+
+    @Override
+    public String toString() {
+        return "Album{" +
+                "albumId=" + albumId +
+                ", albumName='" + albumName + '\'' +
+                ", albumArt='" + albumArt + '\'' +
+                ", albumSongCount=" + albumSongCount +
+                ", artist=" + artist +
+                '}';
+    }
 
     @Override
     public int describeContents() {
@@ -60,67 +59,7 @@ public class Album implements Parcelable {
         dest.writeString(this.albumName);
         dest.writeString(this.albumArt);
         dest.writeInt(this.albumSongCount);
-        dest.writeTypedList(this.contentMusic);
         dest.writeParcelable(this.artist, flags);
-    }
-
-    public Album() {
-    }
-
-    protected Album(Parcel in) {
-        this.albumId = in.readLong();
-        this.albumName = in.readString();
-        this.albumArt = in.readString();
-        this.albumSongCount = in.readInt();
-        this.contentMusic = in.createTypedArrayList(Music.CREATOR);
-        this.artist = in.readParcelable(Artist.class.getClassLoader());
-    }
-
-    @Generated(hash = 582391069)
-    public Album(long albumId, String albumName, String albumArt, int albumSongCount) {
-        this.albumId = albumId;
-        this.albumName = albumName;
-        this.albumArt = albumArt;
-        this.albumSongCount = albumSongCount;
-    }
-
-    public static final Parcelable.Creator<Album> CREATOR = new Parcelable.Creator<Album>() {
-        @Override
-        public Album createFromParcel(Parcel source) {
-            return new Album(source);
-        }
-
-        @Override
-        public Album[] newArray(int size) {
-            return new Album[size];
-        }
-    };
-
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 172302968)
-    private transient AlbumDao myDao;
-
-    @Generated(hash = 1550754473)
-    private transient boolean artist__refreshed;
-
-    @Override
-    public String toString() {
-        return "Album{" +
-                "albumId=" + albumId +
-                ", albumName='" + albumName + '\'' +
-                ", albumArt='" + albumArt + '\'' +
-                ", albumSongCount=" + albumSongCount +
-                ", contentMusic=" + contentMusic +
-                ", artist=" + artist +
-                '}';
     }
 
     public long getAlbumId() {
@@ -185,34 +124,6 @@ public class Album implements Parcelable {
     }
 
     /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 622838453)
-    public List<Music> getContentMusic() {
-        if (contentMusic == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            MusicDao targetDao = daoSession.getMusicDao();
-            List<Music> contentMusicNew = targetDao._queryAlbum_ContentMusic(albumId);
-            synchronized (this) {
-                if (contentMusic == null) {
-                    contentMusic = contentMusicNew;
-                }
-            }
-        }
-        return contentMusic;
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 581154520)
-    public synchronized void resetContentMusic() {
-        contentMusic = null;
-    }
-
-    /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
      * Entity must attached to an entity context.
      */
@@ -254,4 +165,50 @@ public class Album implements Parcelable {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getAlbumDao() : null;
     }
+
+    public Album() {
+    }
+
+    protected Album(Parcel in) {
+        this.albumId = in.readLong();
+        this.albumName = in.readString();
+        this.albumArt = in.readString();
+        this.albumSongCount = in.readInt();
+        this.artist = in.readParcelable(Artist.class.getClassLoader());
+    }
+
+    @Generated(hash = 582391069)
+    public Album(long albumId, String albumName, String albumArt, int albumSongCount) {
+        this.albumId = albumId;
+        this.albumName = albumName;
+        this.albumArt = albumArt;
+        this.albumSongCount = albumSongCount;
+    }
+
+    public static final Parcelable.Creator<Album> CREATOR = new Parcelable.Creator<Album>() {
+        @Override
+        public Album createFromParcel(Parcel source) {
+            return new Album(source);
+        }
+
+        @Override
+        public Album[] newArray(int size) {
+            return new Album[size];
+        }
+    };
+
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 172302968)
+    private transient AlbumDao myDao;
+
+    @Generated(hash = 1550754473)
+    private transient boolean artist__refreshed;
 }

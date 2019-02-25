@@ -7,14 +7,11 @@ import com.zspirytus.enjoymusic.db.greendao.AlbumDao;
 import com.zspirytus.enjoymusic.db.greendao.ArtistDao;
 import com.zspirytus.enjoymusic.db.greendao.DaoSession;
 import com.zspirytus.enjoymusic.db.greendao.MusicDao;
-import com.zspirytus.enjoymusic.db.table.jointable.JoinMusicToAlbum;
-import com.zspirytus.enjoymusic.db.table.jointable.JoinMusicToArtist;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.JoinEntity;
 import org.greenrobot.greendao.annotation.ToOne;
 
 /**
@@ -37,18 +34,8 @@ public class Music implements Parcelable {
     private long musicAddDate;
 
     @ToOne
-    @JoinEntity(
-            entity = JoinMusicToAlbum.class,
-            sourceProperty = "musicId",
-            targetProperty = "albumId"
-    )
     private Album album;
     @ToOne
-    @JoinEntity(
-            entity = JoinMusicToArtist.class,
-            sourceProperty = "musicId",
-            targetProperty = "artistId"
-    )
     private Artist artist;
 
     @Override

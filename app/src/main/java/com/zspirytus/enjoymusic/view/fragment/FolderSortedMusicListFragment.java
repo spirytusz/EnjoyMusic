@@ -15,9 +15,9 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.FolderSortedMusicListAdapter;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
+import com.zspirytus.enjoymusic.db.table.Folder;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
-import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
@@ -82,9 +82,9 @@ public class FolderSortedMusicListFragment extends LazyLoadBaseFragment
 
     @Override
     public void onItemClick(View view, int position) {
-        FolderSortedMusic folderSortedMusic = mAdapter.getList().get(position);
-        List<Music> musicList = folderSortedMusic.getFolderMusicList();
-        FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(folderSortedMusic.getFolderName(), musicList, FilterMusicListFragment.FOLDER_FLAG);
+        Folder folder = mAdapter.getList().get(position);
+        List<Music> musicList = folder.getFolderMusicList();
+        FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(folder.getFolderName(), musicList, FilterMusicListFragment.FOLDER_FLAG);
         FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
         FragmentVisibilityManager.getInstance().show(fragment);
     }

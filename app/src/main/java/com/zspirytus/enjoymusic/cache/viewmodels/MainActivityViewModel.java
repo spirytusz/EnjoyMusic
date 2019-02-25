@@ -11,11 +11,11 @@ import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.Folder;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
-import com.zspirytus.enjoymusic.entity.FolderSortedMusic;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.impl.binder.PlayMusicObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.PlayStateObserverManager;
@@ -68,12 +68,12 @@ public class MainActivityViewModel extends MusicDataViewModel implements PlayedM
                 List<Music> allMusicList = getMusicListBinder.getMusicList();
                 List<Album> albumList = getMusicListBinder.getAlbumList();
                 List<Artist> artistList = getMusicListBinder.getArtistList();
-                List<FolderSortedMusic> folderSortedMusicList = getMusicListBinder.getFolderSortedMusic();
+                List<Folder> folderList = getMusicListBinder.getFolderList();
 
                 getMusicList().postValue(allMusicList);
                 getAlbumList().postValue(albumList);
                 getArtistList().postValue(artistList);
-                getFolderList().postValue(folderSortedMusicList);
+                getFolderList().postValue(folderList);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
