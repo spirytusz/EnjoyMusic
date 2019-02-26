@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.animation.ValueAnimator;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,7 +8,6 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -76,6 +76,8 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
 
     private MainActivityViewModel mViewModel;
     private MusicPlayFragmentViewModel viewModel;
+    private ValueAnimator mCIVAnim;
+    private ValueAnimator mLyricViewAnim;
 
     @Override
     public void onClick(View view) {
@@ -102,14 +104,22 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
                 mViewModel.setPlayMode(mode);
                 break;
             case R.id.cover:
-            case R.id.lyricView:
-                if (mCover.getAlpha() == 1.0f && mLyricView.getAlpha() == 0.0f) {
-                    mCover.animate().alpha(0).setDuration(618).setInterpolator(new DecelerateInterpolator()).start();
-                    mLyricView.animate().alpha(1).setDuration(618).setInterpolator(new DecelerateInterpolator()).start();
-                } else if (mCover.getAlpha() == 0.0f && mLyricView.getAlpha() == 1.0f) {
-                    mCover.animate().alpha(1).setDuration(618).setInterpolator(new DecelerateInterpolator()).start();
-                    mLyricView.animate().alpha(0).setDuration(618).setInterpolator(new DecelerateInterpolator()).start();
+                if (mLyricViewAnim == null) {
+                    initAnim();
                 }
+                if (mCIVAnim != null && mCIVAnim.isRunning()) {
+                    mCIVAnim.end();
+                }
+                mLyricViewAnim.start();
+                break;
+            case R.id.lyricView:
+                if (mCIVAnim == null) {
+                    initAnim();
+                }
+                if (mLyricViewAnim != null && mLyricViewAnim.isRunning()) {
+                    mLyricViewAnim.end();
+                }
+                mCIVAnim.start();
                 break;
         }
     }
@@ -131,6 +141,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
         mViewModel.init();
         mViewModel.obtainPlayMode(getContext());
         viewModel = ViewModelProviders.of(this).get(MusicPlayFragmentViewModel.class);
+        initView();
     }
 
     @Override
@@ -161,7 +172,6 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
         }));
         mCover.setOnClickListener(this);
         mLyricView.setOnClickListener(this);
-        mLyricView.setAlpha(0.0f);
     }
 
     @Override
@@ -277,6 +287,33 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
         AudioEffectFragment fragment = AudioEffectFragment.getInstance();
         FragmentVisibilityManager.getInstance().addToBackStack(this);
         FragmentVisibilityManager.getInstance().show(fragment);
+    }
+
+    private void initAnim() {
+        mCIVAnim = ValueAnimator.ofFloat(0.0f, 1.0f);
+        mCIVAnim.addUpdateListener(animation -> {
+            float alphaValue = (float) animation.getAnimatedValue();
+            if (alphaValue == 0.0f) {
+                mCover.setVisibility(View.VISIBLE);
+            } else if (alphaValue == 1.0f) {
+                mLyricView.setVisibility(View.GONE);
+            } else {
+                mCover.setAlpha(alphaValue);
+                mLyricView.setAlpha(1.0f - alphaValue);
+            }
+        });
+        mLyricViewAnim = ValueAnimator.ofFloat(0.0f, 1.0f);
+        mLyricViewAnim.addUpdateListener(animation -> {
+            float alphaValue = (float) animation.getAnimatedValue();
+            if (alphaValue == 0.0f) {
+                mLyricView.setVisibility(View.VISIBLE);
+            } else if (alphaValue == 1.0f) {
+                mCover.setVisibility(View.GONE);
+            } else {
+                mLyricView.setAlpha(alphaValue);
+                mCover.setAlpha(1.0f - alphaValue);
+            }
+        });
     }
 
     public static MusicPlayFragment getInstance() {

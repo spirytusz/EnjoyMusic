@@ -116,7 +116,6 @@ public class LyricView extends View {
         for (LyricRow row : rows) {
             mLyricRows.add(new WrapLyricRow(row, mLyricPaint, getWidth()));
         }
-        invalidate();
     }
 
     public void onPlayProgressChange(long milliseconds) {
@@ -300,6 +299,14 @@ public class LyricView extends View {
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (hasLyric()) {
+            invalidate();
+        }
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         removeCallbacks(mHideCenterLineTask);
@@ -338,6 +345,7 @@ public class LyricView extends View {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
             if (hasLyric()) {
+                isCenterLineVisible = true;
                 mOffset += -distanceY;
                 mOffset = Math.min(mOffset, getOffsetByRow(0));
                 mOffset = Math.max(mOffset, getOffsetByRow(mLyricRows.size() - 1));
@@ -362,7 +370,6 @@ public class LyricView extends View {
             if (hasLyric()) {
                 mScroller.forceFinished(true);
                 removeCallbacks(mHideCenterLineTask);
-                isCenterLineVisible = true;
                 isTouching = true;
                 invalidate();
                 return true;

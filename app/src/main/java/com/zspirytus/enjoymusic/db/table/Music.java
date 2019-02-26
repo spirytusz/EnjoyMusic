@@ -14,6 +14,8 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToOne;
 
+import java.util.Objects;
+
 /**
  * Music实体类
  * Created by ZSpirytus on 2018/8/4.
@@ -128,6 +130,27 @@ public class Music implements Parcelable {
                 ", musicFileSize='" + musicFileSize + '\'' +
                 ", musicAddDate=" + musicAddDate +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Music music = (Music) o;
+        return musicDuration == music.musicDuration &&
+                musicAddDate == music.musicAddDate &&
+                Objects.equals(musicId, music.musicId) &&
+                Objects.equals(albumId, music.albumId) &&
+                Objects.equals(artistId, music.artistId) &&
+                Objects.equals(musicFilePath, music.musicFilePath) &&
+                Objects.equals(musicName, music.musicName) &&
+                Objects.equals(musicFileSize, music.musicFileSize);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(musicId, albumId, artistId, musicFilePath, musicName, musicDuration, musicFileSize, musicAddDate);
     }
 
     public Long getMusicId() {
