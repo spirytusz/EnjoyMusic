@@ -11,7 +11,7 @@ public class LyricLoaderTest {
 
     @Test
     public void load() {
-        LyricLoader loader = new LyricLoader();
+        LyricLoader loader = LyricLoader.getInstance();
         String testLyric = "[ti:Let's Twist Again]\n" +
                 "[ar:Chubby Checker oppure  Beatles The]\n" +
                 "[au:Written by Kal Mann / Dave Appell 1961]\n" +

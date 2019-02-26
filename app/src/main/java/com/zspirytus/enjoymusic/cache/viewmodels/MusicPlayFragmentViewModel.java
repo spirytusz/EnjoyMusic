@@ -2,18 +2,22 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.support.annotation.WorkerThread;
 
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.greendao.LyricDao;
+import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Lyric;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.LyricLoader;
+import com.zspirytus.enjoymusic.engine.MinEditDistance;
 import com.zspirytus.enjoymusic.entity.LyricRow;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.online.RetrofitManager;
+import com.zspirytus.enjoymusic.online.entity.OnlineMusic;
 import com.zspirytus.enjoymusic.online.entity.response.SearchMusicResponse;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 import java.io.BufferedReader;
@@ -65,7 +69,8 @@ public class MusicPlayFragmentViewModel extends ViewModel {
             @Override
             public void onNext(SearchMusicResponse searchMusicResponse) {
                 if (!searchMusicResponse.getData().isEmpty()) {
-                    downloadLyric(music, searchMusicResponse.getData().get(0).getLrc());
+                    Artist artist = QueryExecutor.findArtist(music);
+                    getSuitableLyric(music, artist, searchMusicResponse.getData());
                 } else {
                     AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), "没有找到歌词..."));
                 }
@@ -81,6 +86,25 @@ public class MusicPlayFragmentViewModel extends ViewModel {
         });
     }
 
+    @WorkerThread
+    private void getSuitableLyric(Music targetMusic, Artist targetArtist, List<OnlineMusic> onlineMusicList) {
+        String targetMusicName = targetMusic.getMusicName();
+        String targetArtistName = targetArtist.getArtistName();
+        double maxConfidence = 0;
+        OnlineMusic maxMatchMusic = null;
+        for (OnlineMusic onlineMusic : onlineMusicList) {
+            String musicName = onlineMusic.getName();
+            String artistName = onlineMusic.getSinger();
+            double confidence = MinEditDistance.SimilarDegree(targetMusicName, musicName) + MinEditDistance.SimilarDegree(targetArtistName, artistName);
+            if (confidence > maxConfidence) {
+                maxConfidence = confidence;
+                maxMatchMusic = onlineMusic;
+            }
+        }
+        downloadLyric(targetMusic, maxMatchMusic.getLrc());
+    }
+
+    @WorkerThread
     private void downloadLyric(Music music, String lyricUrl) {
         if (lyricUrl != null) {
             ThreadPool.execute(() -> {
@@ -88,7 +112,6 @@ public class MusicPlayFragmentViewModel extends ViewModel {
                 BufferedReader reader = null;
                 BufferedWriter writer = null;
                 File file = new File(MainApplication.getForegroundContext().getExternalFilesDir("/"), music.getMusicName());
-                LogUtil.e(this.getClass().getSimpleName(), "path = " + file.getAbsolutePath());
                 if (file.exists()) {
                     file.delete();
                 }
@@ -133,6 +156,9 @@ public class MusicPlayFragmentViewModel extends ViewModel {
                 }
                 Lyric lyric = new Lyric(music.getMusicId(), file.getAbsolutePath());
                 DBManager.getInstance().getDaoSession().getLyricDao().insertOrReplace(lyric);
+                AndroidSchedulers.mainThread().scheduleDirect(() -> {
+                    ToastUtil.showToast(MainApplication.getForegroundContext(), "下载成功！");
+                });
             });
         } else {
             ToastUtil.showToast(MainApplication.getForegroundContext(), "没有找到歌词...");
