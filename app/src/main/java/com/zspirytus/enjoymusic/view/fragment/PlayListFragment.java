@@ -14,7 +14,6 @@ import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.PlayListAdapter;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
-import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.cache.viewmodels.PlayListFragmentViewModel;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -26,7 +25,6 @@ import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by ZSpirytus on 2018/9/17.
@@ -49,11 +47,8 @@ public class PlayListFragment extends CommonHeaderBaseFragment
     protected void initData() {
         mAdapter = new PlayListAdapter();
         mAdapter.setOnItemClickListener(this);
-        List<Music> allMusicList = ViewModelProviders.of(getParentActivity())
-                .get(MainActivityViewModel.class)
-                .getMusicList().getValue();
         mViewModel = ViewModelProviders.of(this).get(PlayListFragmentViewModel.class);
-        mViewModel.init(allMusicList);
+        mViewModel.init();
     }
 
     @Override

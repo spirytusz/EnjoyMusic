@@ -1,7 +1,5 @@
 package com.zspirytus.enjoymusic.engine;
 
-import android.util.SparseBooleanArray;
-
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
@@ -40,25 +38,19 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
     }
 
     public void setPlayList(List<Music> playList) {
-        mPlayList = playList;
-        MusicSharedPreferences.savePlayList(playList);
-        notifyAllObserverPlayListChange(playList);
+        orderPlayList(playList);
+        MusicSharedPreferences.savePlayList(mPlayList);
+        notifyAllObserverPlayListChange(mPlayList);
     }
 
     public void addMusicListToPlayList(List<Music> musicList) {
         if (mPlayList != null) {
-            SparseBooleanArray array = new SparseBooleanArray();
-            for (int i = 0; i < mPlayList.size(); i++) {
-                array.append(mPlayList.get(i).hashCode(), true);
-            }
-            for (Music music : musicList) {
-                if (!array.get(music.hashCode())) {
-                    mPlayList.add(music);
-                }
-            }
+            mPlayList.addAll(musicList);
+            List<Music> playList = new ArrayList<>(mPlayList);
+            orderPlayList(playList);
         } else {
             mPlayList = new ArrayList<>();
-            mPlayList.addAll(musicList);
+            orderPlayList(musicList);
         }
         MusicSharedPreferences.savePlayList(mPlayList);
         notifyAllObserverPlayListChange(mPlayList);
@@ -77,14 +69,11 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
                     break;
                 }
             case Constant.PlayMode.LIST_LOOP:
+            case Constant.PlayMode.RANDOM:
+                // 随机播放
                 // 列表循环
                 int currentPosition = mPlayList.indexOf(BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic());
                 nextPosition = (currentPosition + 1) % mPlayList.size();
-                nextMusic = mPlayList.get(nextPosition);
-                break;
-            case Constant.PlayMode.RANDOM:
-                // 随机播放
-                nextPosition = RandomUtil.rand(mPlayList.size());
                 nextMusic = mPlayList.get(nextPosition);
                 break;
         }
@@ -98,6 +87,22 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
     public void setPlayMode(int playMode) {
         mPlayMode = playMode;
         MusicSharedPreferences.savePlayMode(playMode);
+    }
+
+    private void orderPlayList(List<Music> playList) {
+        if (mPlayMode == Constant.PlayMode.SINGLE_LOOP) {
+            mPlayList = playList;
+        } else if (mPlayMode == Constant.PlayMode.LIST_LOOP) {
+            mPlayList = playList;
+        } else if (mPlayMode == Constant.PlayMode.RANDOM) {
+            List<Music> musicList = new ArrayList<>();
+            while (!playList.isEmpty()) {
+                int randomIndex = RandomUtil.rand(playList.size());
+                musicList.add(playList.get(randomIndex));
+                playList.remove(randomIndex);
+            }
+            mPlayList = musicList;
+        }
     }
 
 }

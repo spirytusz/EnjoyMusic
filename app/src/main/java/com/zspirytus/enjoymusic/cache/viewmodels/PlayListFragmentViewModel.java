@@ -9,17 +9,13 @@ import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeDirectlyObserve
 
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-
 public class PlayListFragmentViewModel extends ViewModel
         implements PlayListChangeDirectlyObserver {
 
     private MutableLiveData<List<Music>> mPlayList;
-    private List<Music> mAllMusicList;
 
-    public void init(List<Music> musicList) {
+    public void init() {
         mPlayList = new MutableLiveData<>();
-        mAllMusicList = musicList;
         PlayListObserverManager.getInstance().register(this);
     }
 
@@ -29,7 +25,7 @@ public class PlayListFragmentViewModel extends ViewModel
 
     @Override
     public void onPlayListChangeDirectly(List<Music> playList) {
-        AndroidSchedulers.mainThread().scheduleDirect(() -> mPlayList.setValue(playList));
+        mPlayList.postValue(playList);
     }
 
     @Override

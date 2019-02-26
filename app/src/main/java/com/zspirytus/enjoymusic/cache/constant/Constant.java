@@ -58,9 +58,9 @@ public interface Constant {
     }
 
     interface PlayMode {
-        int RANDOM = 0;
+        int RANDOM = 2;
         int SINGLE_LOOP = 1;
-        int LIST_LOOP = 2;
+        int LIST_LOOP = 0;
     }
 
     class MenuTexts {

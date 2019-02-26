@@ -299,9 +299,9 @@ public class LyricView extends View {
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (hasLyric()) {
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+        if (hasWindowFocus) {
             invalidate();
         }
     }
@@ -371,7 +371,6 @@ public class LyricView extends View {
                 mScroller.forceFinished(true);
                 removeCallbacks(mHideCenterLineTask);
                 isTouching = true;
-                invalidate();
                 return true;
             }
             return super.onDown(e);

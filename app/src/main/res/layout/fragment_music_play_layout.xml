@@ -125,7 +125,6 @@
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
-        android:visibility="gone"
         app:centerLineMainColor="@color/white"
         app:diverLineHeight="16dp"
         app:currentRowColor="@color/white"
