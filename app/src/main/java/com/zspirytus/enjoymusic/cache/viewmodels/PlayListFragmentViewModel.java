@@ -4,7 +4,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.zspirytus.enjoymusic.db.table.Music;
-import com.zspirytus.enjoymusic.impl.binder.PlayListObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayListObserverManager;
 import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeDirectlyObserver;
 
 import java.util.List;

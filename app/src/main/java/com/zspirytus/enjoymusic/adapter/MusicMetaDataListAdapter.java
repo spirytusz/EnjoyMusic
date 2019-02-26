@@ -18,8 +18,8 @@ import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.engine.MusicMetaDataReader;
-import com.zspirytus.enjoymusic.entity.MusicMetaData;
-import com.zspirytus.enjoymusic.entity.MusicMetaDataListItem;
+import com.zspirytus.enjoymusic.entity.listitem.MusicMetaData;
+import com.zspirytus.enjoymusic.entity.listitem.MusicMetaDataListItem;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 

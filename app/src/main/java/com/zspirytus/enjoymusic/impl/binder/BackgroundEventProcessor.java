@@ -3,8 +3,10 @@ package com.zspirytus.enjoymusic.impl.binder;
 import android.os.IBinder;
 
 import com.zspirytus.enjoymusic.IBackgroundEventProcessor;
+import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
+import com.zspirytus.enjoymusic.foregroundobserver.IPlayHistoryChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayListChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayProgressChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayStateChangeObserver;
@@ -36,6 +38,9 @@ public class BackgroundEventProcessor extends IBackgroundEventProcessor.Stub {
             case Constant.BinderCode.PLAY_LIST_OBSERVER:
                 MusicPlayOrderManager.getInstance().register(IPlayListChangeObserver.Stub.asInterface(observer));
                 break;
+            case Constant.BinderCode.PLAY_HISTORY_OBSERVER:
+                PlayHistoryCache.getInstance().register(IPlayHistoryChangeObserver.Stub.asInterface(observer));
+                break;
         }
     }
 
@@ -54,6 +59,9 @@ public class BackgroundEventProcessor extends IBackgroundEventProcessor.Stub {
                 break;
             case Constant.BinderCode.PLAY_LIST_OBSERVER:
                 MusicPlayOrderManager.getInstance().unregister(IPlayListChangeObserver.Stub.asInterface(observer));
+                break;
+            case Constant.BinderCode.PLAY_HISTORY_OBSERVER:
+                PlayHistoryCache.getInstance().unregister(IPlayHistoryChangeObserver.Stub.asInterface(observer));
                 break;
         }
     }

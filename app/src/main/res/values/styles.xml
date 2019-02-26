@@ -186,4 +186,13 @@
         <item name="android:windowFrame">@null</item>
     </style>
 
+    <style name="PlayHistoryDialogStyle" parent="@android:style/Theme.Panel">
+        <item name="android:windowAnimationStyle">@style/PlayHistoryDialog</item>
+    </style>
+
+    <style name="PlayHistoryDialog" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/anim_alpha_translate_from_bottom_show</item>
+        <item name="android:windowExitAnimation">@anim/anim_alpha_translate_to_bottom_hide</item>
+    </style>
+
 </resources>

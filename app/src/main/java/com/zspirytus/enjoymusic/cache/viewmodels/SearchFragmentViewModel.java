@@ -8,7 +8,7 @@ import com.zspirytus.enjoymusic.base.BaseActivity;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
-import com.zspirytus.enjoymusic.entity.SearchResult;
+import com.zspirytus.enjoymusic.entity.listitem.SearchResult;
 
 import java.util.ArrayList;
 import java.util.List;

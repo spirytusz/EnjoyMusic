@@ -5,7 +5,7 @@ import com.zspirytus.basesdk.recyclerview.adapter.MultiItemAdapter;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
-import com.zspirytus.enjoymusic.entity.SearchResult;
+import com.zspirytus.enjoymusic.entity.listitem.SearchResult;
 
 public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
 

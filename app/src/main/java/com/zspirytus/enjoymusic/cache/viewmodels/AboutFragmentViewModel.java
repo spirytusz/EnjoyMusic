@@ -3,7 +3,7 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.zspirytus.enjoymusic.entity.AboutItem;
+import com.zspirytus.enjoymusic.entity.listitem.AboutItem;
 
 import java.util.ArrayList;
 import java.util.List;

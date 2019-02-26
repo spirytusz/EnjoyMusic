@@ -7,10 +7,11 @@ import com.zspirytus.enjoymusic.IBackgroundEventProcessor;
 import com.zspirytus.enjoymusic.IBinderPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.global.AudioEffectConfig;
-import com.zspirytus.enjoymusic.impl.binder.PlayListObserverManager;
-import com.zspirytus.enjoymusic.impl.binder.PlayMusicObserverManager;
-import com.zspirytus.enjoymusic.impl.binder.PlayStateObserverManager;
-import com.zspirytus.enjoymusic.impl.binder.ProgressObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayHistoryObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayListObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayMusicObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayStateObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.ProgressObserverManager;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class ForegroundBinderManager implements AudioEffectController.OnResultLi
             backgroundEventProcessor.registerObserver(ProgressObserverManager.getInstance(), Constant.BinderCode.PLAY_PROGRESS_CHANGE_OBSERVER);
             backgroundEventProcessor.registerObserver(PlayMusicObserverManager.getInstance(), Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER);
             backgroundEventProcessor.registerObserver(PlayListObserverManager.getInstance(), Constant.BinderCode.PLAY_LIST_OBSERVER);
+            backgroundEventProcessor.registerObserver(PlayHistoryObserverManager.getInstance(), Constant.BinderCode.PLAY_HISTORY_OBSERVER);
             initGlobalData();
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -85,6 +87,7 @@ public class ForegroundBinderManager implements AudioEffectController.OnResultLi
             backgroundEventProcessor.unregisterObserver(ProgressObserverManager.getInstance(), Constant.BinderCode.PLAY_PROGRESS_CHANGE_OBSERVER);
             backgroundEventProcessor.unregisterObserver(PlayMusicObserverManager.getInstance(), Constant.BinderCode.PLAY_MUSIC_CHANGE_OBSERVER);
             backgroundEventProcessor.unregisterObserver(PlayListObserverManager.getInstance(), Constant.BinderCode.PLAY_LIST_OBSERVER);
+            backgroundEventProcessor.unregisterObserver(PlayHistoryObserverManager.getInstance(), Constant.BinderCode.PLAY_HISTORY_OBSERVER);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

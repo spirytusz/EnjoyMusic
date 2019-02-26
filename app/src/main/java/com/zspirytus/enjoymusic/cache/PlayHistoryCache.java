@@ -1,22 +1,20 @@
 package com.zspirytus.enjoymusic.cache;
 
 import com.zspirytus.enjoymusic.db.table.Music;
+import com.zspirytus.enjoymusic.listeners.observable.PlayHistoryObservable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
-public class PlayHistoryCache {
+public class PlayHistoryCache extends PlayHistoryObservable {
 
     private static final int LIMIT_SIZE = 100;
-
-    private List<Music> mPlayHistory;
 
     private static class SingletonHolder {
         static PlayHistoryCache INSTANCE = new PlayHistoryCache();
     }
 
     private PlayHistoryCache() {
-        mPlayHistory = new ArrayList<>(LIMIT_SIZE);
+        mPlayHistory = new LinkedList<>();
     }
 
     public static PlayHistoryCache getInstance() {
@@ -29,9 +27,11 @@ public class PlayHistoryCache {
             mPlayHistory.remove(indexOfTargetMusic);
         }
         if (mPlayHistory.size() == LIMIT_SIZE) {
-            mPlayHistory.remove(0);
+            mPlayHistory.remove(LIMIT_SIZE - 1);
         }
-        mPlayHistory.add(music);
+        mPlayHistory.add(0, music);
+        notifyAllObserverPlayListChange();
+        MusicSharedPreferences.savePlayHistory(mPlayHistory);
     }
 
     public Music getPreviousPlayedMusic() {

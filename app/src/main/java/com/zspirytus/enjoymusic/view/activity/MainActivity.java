@@ -141,7 +141,9 @@ public class MainActivity extends BaseActivity
 
             @Override
             public void onClick() {
-                showFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
+                if (mViewModel.getCurrentPlayingMusic().getValue() != null) {
+                    showFragment(FragmentFactory.getInstance().get(MusicPlayFragment.class));
+                }
             }
         });
         mCustomNavigationView.setNavigationItemSelectedListener(this);

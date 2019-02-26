@@ -2,7 +2,6 @@ package com.zspirytus.enjoymusic.engine;
 
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
-import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.global.MainApplication;
@@ -23,7 +22,6 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
     }
 
     private int mPlayMode;
-    private List<Music> mPlayList;
 
     private MusicPlayOrderManager() {
         int restorePlayMode = MusicSharedPreferences.restorePlayMode(MainApplication.getBackgroundContext());
@@ -81,7 +79,9 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
     }
 
     public Music getPreviousMusic() {
-        return PlayHistoryCache.getInstance().getPreviousPlayedMusic();
+        int currentPosition = mPlayList.indexOf(BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic());
+        int previousPosition = (currentPosition - 1 + mPlayList.size()) % mPlayList.size();
+        return mPlayList.get(previousPosition);
     }
 
     public void setPlayMode(int playMode) {

@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.impl.binder;
+package com.zspirytus.enjoymusic.impl.binder.aidlobserver;
 
 import android.os.RemoteException;
 

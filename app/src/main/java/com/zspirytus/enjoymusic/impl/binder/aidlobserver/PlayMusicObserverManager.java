@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.impl.binder;
+package com.zspirytus.enjoymusic.impl.binder.aidlobserver;
 
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayedMusicChangeObserver;

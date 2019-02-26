@@ -5,7 +5,7 @@ import com.zspirytus.basesdk.recyclerview.adapter.MultiItemAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.entity.AboutItem;
+import com.zspirytus.enjoymusic.entity.listitem.AboutItem;
 
 public class AboutListAdapter extends MultiItemAdapter<AboutItem> {
 

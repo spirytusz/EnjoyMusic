@@ -15,7 +15,7 @@ import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
-import com.zspirytus.enjoymusic.entity.MusicMetaDataListItem;
+import com.zspirytus.enjoymusic.entity.listitem.MusicMetaDataListItem;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.online.RetrofitManager;
 import com.zspirytus.enjoymusic.online.entity.response.SearchArtistResponse;

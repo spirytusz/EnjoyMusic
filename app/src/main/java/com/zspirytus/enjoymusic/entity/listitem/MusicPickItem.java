@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.entity;
+package com.zspirytus.enjoymusic.entity.listitem;
 
 import com.zspirytus.enjoymusic.db.table.Music;
 

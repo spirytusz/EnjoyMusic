@@ -2,7 +2,7 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 
 import android.arch.lifecycle.ViewModel;
 
-import com.zspirytus.enjoymusic.entity.SettingItem;
+import com.zspirytus.enjoymusic.entity.listitem.SettingItem;
 
 import java.util.ArrayList;
 import java.util.List;

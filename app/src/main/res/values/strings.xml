@@ -91,4 +91,8 @@
     <string name="search">搜索</string>
     <!-- Search Text end -->
 
+    <!-- PlayHistory Dialog Text start -->
+    <string name="play_history">播放记录</string>
+    <!-- PlayHistory Dialog Text end -->
+
 </resources>

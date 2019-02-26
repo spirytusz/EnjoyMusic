@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.entity;
+package com.zspirytus.enjoymusic.entity.listitem;
 
 public class AudioEffectItem {
     private String title;

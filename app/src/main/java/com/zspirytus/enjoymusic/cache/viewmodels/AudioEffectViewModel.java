@@ -4,8 +4,8 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.zspirytus.enjoymusic.engine.AudioEffectController;
-import com.zspirytus.enjoymusic.entity.AudioEffectItem;
 import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
+import com.zspirytus.enjoymusic.entity.listitem.AudioEffectItem;
 import com.zspirytus.enjoymusic.global.AudioEffectConfig;
 
 import java.util.ArrayList;

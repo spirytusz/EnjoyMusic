@@ -28,6 +28,7 @@ import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
+import com.zspirytus.enjoymusic.view.dialog.PlayHistoryDialog;
 import com.zspirytus.enjoymusic.view.widget.AutoRotateCircleImage;
 import com.zspirytus.enjoymusic.view.widget.BlurImageView;
 import com.zspirytus.enjoymusic.view.widget.LyricView;
@@ -73,6 +74,8 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     private ImageView mPlayOrPauseButton;
     @ViewInject(R.id.next)
     private ImageView mNextButton;
+    @ViewInject(R.id.play_history)
+    private ImageView mPlayHistoryBtn;
 
     private MainActivityViewModel mViewModel;
     private MusicPlayFragmentViewModel viewModel;
@@ -162,6 +165,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
         mCover.setOnClickListener(this);
         mLyricView.setOnClickListener(this);
         mLyricView.setAlpha(0);
+        mPlayHistoryBtn.setOnClickListener(v -> FragmentVisibilityManager.getInstance().showDialogFragment(new PlayHistoryDialog()));
     }
 
     @Override

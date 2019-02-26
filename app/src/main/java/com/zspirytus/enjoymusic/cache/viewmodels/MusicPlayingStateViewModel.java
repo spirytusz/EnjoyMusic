@@ -9,10 +9,9 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.table.Music;
-import com.zspirytus.enjoymusic.global.MainApplication;
-import com.zspirytus.enjoymusic.impl.binder.PlayMusicObserverManager;
-import com.zspirytus.enjoymusic.impl.binder.PlayStateObserverManager;
-import com.zspirytus.enjoymusic.impl.binder.ProgressObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayMusicObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayStateObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.ProgressObserverManager;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
@@ -40,8 +39,6 @@ public class MusicPlayingStateViewModel extends MusicDataViewModel implements Pl
         PlayMusicObserverManager.getInstance().register(this);
         PlayStateObserverManager.getInstance().register(this);
         ProgressObserverManager.getInstance().register(this);
-
-        setPlayList(MusicSharedPreferences.restorePlayList(MainApplication.getForegroundContext()));
     }
 
     @Override

@@ -8,7 +8,7 @@ import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
-import com.zspirytus.enjoymusic.entity.MusicMetaData;
+import com.zspirytus.enjoymusic.entity.listitem.MusicMetaData;
 
 import java.io.IOException;
 
