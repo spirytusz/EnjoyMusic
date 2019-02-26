@@ -28,17 +28,6 @@ public class LyricRow implements Comparable<LyricRow> {
         this.text = text;
     }
 
-    public TreeMap<Integer, String> getLyricRowTime() {
-        return lyricRowTime;
-    }
-
-    public void putLyricRowTime(Integer index, String subLyricRow) {
-        if (lyricRowTime == null) {
-            lyricRowTime = new TreeMap<>();
-        }
-        lyricRowTime.put(index, subLyricRow);
-    }
-
     private void setTimeIntValue(String time) {
         String[] strings = time.split(":");
         if (strings.length == 2) {
@@ -49,17 +38,6 @@ public class LyricRow implements Comparable<LyricRow> {
 
     public long getTimeIntValue() {
         return timeIntValue;
-    }
-
-    @Override
-    public String toString() {
-        if (time == null) {
-            return text;
-        } else if (lyricRowTime == null) {
-            return "[" + time + "]" + text;
-        } else {
-            return "[" + time + "]" + text + "\tlyricRowTime = " + lyricRowTime;
-        }
     }
 
     @Override

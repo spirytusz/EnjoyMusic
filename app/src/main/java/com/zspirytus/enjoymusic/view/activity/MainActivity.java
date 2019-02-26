@@ -163,17 +163,6 @@ public class MainActivity extends BaseActivity
         } else {
             showFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
         }
-        mViewModel.obtainMusicDataFromPref(this);
-    }
-
-    @Override
-    protected void registerEvent() {
-        mViewModel.getCurrentPlayingMusic().observe(this, values -> {
-            mBottomMusicControl.wrapMusic(values);
-        });
-        mViewModel.getPlayState().observe(this, values -> {
-            mBottomMusicControl.setPlayState(values);
-        });
     }
 
     @Override
@@ -194,6 +183,12 @@ public class MainActivity extends BaseActivity
     @Override
     public void onGranted() {
         mViewModel.obtainMusicList();
+        mViewModel.getCurrentPlayingMusic().observe(this, values -> {
+            mBottomMusicControl.wrapMusic(values);
+        });
+        mViewModel.getPlayState().observe(this, values -> {
+            mBottomMusicControl.setPlayState(values);
+        });
     }
 
     private void showFragment(BaseFragment fragment) {

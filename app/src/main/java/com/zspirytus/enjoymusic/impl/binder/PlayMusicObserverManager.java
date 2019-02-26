@@ -35,8 +35,9 @@ public class PlayMusicObserverManager extends IPlayedMusicChangeObserver.Stub {
     public void register(PlayedMusicChangeObserver observer) {
         if (!observers.contains(observer)) {
             observers.add(observer);
-            if (mEvent != null)
+            if (mEvent != null) {
                 observer.onPlayedMusicChanged(mEvent);
+            }
         }
     }
 

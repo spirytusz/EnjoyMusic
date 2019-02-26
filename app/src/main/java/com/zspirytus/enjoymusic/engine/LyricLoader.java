@@ -29,6 +29,8 @@ package com.zspirytus.enjoymusic.engine;
  * [mm:ss.xx] <mm:ss.xx> 最后一行第一个词 <mm:ss.xx> 最后一行第二个词 <mm:ss.xx> ...  最后一行最后一个词 <mm:ss.xx>
  */
 
+import android.util.SparseIntArray;
+
 import com.zspirytus.enjoymusic.entity.LyricRow;
 
 import java.io.BufferedReader;
@@ -79,73 +81,35 @@ public class LyricLoader {
     }
 
     public List<LyricRow> load(List<String> rows) {
+        SparseIntArray indexMapper = new SparseIntArray();
         List<LyricRow> lyricRows = new ArrayList<>();
-        String[] tagName = new String[]{
-                "",
-                "专辑: ",
-                "歌曲: ",
-                "艺术家: ",
-                "作曲家: ",
-                "歌词作者: ",
-        };
-        Pattern[] patterns = new Pattern[]{
-                Pattern.compile("\\[(\\d{2}:\\d{2}\\.\\d{2}|\\d{2}:\\d{2})\\](.*)"),
-                // 时间, 歌词
-                Pattern.compile("\\[al:(.*)]"),
-                // 专辑
-                Pattern.compile("\\[ti:(.*)]"),
-                // 歌名
-                Pattern.compile("\\[ar:(.*)]"),
-                // 艺术家
-                Pattern.compile("\\[au:(.*)]"),
-                // 作曲家
-                Pattern.compile("\\[by:(.*)]")
-                // 歌词作者
-        };
+        Pattern pattern = Pattern.compile("\\[(\\d{2}:\\d{2}\\.\\d{2}|\\d{2}:\\d{2})\\](.*)");
         for (String row : rows) {
-            for (int i = 0; i < patterns.length; i++) {
-                Matcher matcher = patterns[i].matcher(row);
-                if (matcher.find()) {
+            Matcher matcher = pattern.matcher(row);
+            if (matcher.find()) {
+                // 获取时间
+                String time = matcher.group(1);
+                // 获取歌词
+                String lyric = matcher.group(matcher.groupCount());
+                if (lyric.equals("//")) {
+                    continue;
+                }
+
+                int index = indexMapper.get(time.hashCode(), -1);
+                if (index != -1) {
+                    String previousLyric = lyricRows.get(index).getText();
+                    String newLyric = previousLyric + "\n" + lyric;
+                    lyricRows.get(index).setText(newLyric);
+                } else {
                     LyricRow lyricRow = new LyricRow();
-                    if (i == 0) {
-                        // 获取时间
-                        lyricRow.setTime(matcher.group(1));
-                        // 获取歌词
-                        String lyric = matcher.group(matcher.groupCount());
-                        String reg = "<(\\d{2}:\\d{2}\\.\\d{2}|\\d{2}:\\d{2})>(.+?)";
-                        Matcher advanceLyricMatcher = Pattern.compile(reg).matcher(lyric);
-                        if (advanceLyricMatcher.find()) {
-                            // 增强格式
-                            parseAdvanceLyric(lyricRow, advanceLyricMatcher);
-                        } else {
-                            // 简易格式
-                            lyricRow.setText(lyric);
-                        }
-                    } else {
-                        // 获取标签
-                        lyricRow.setText(tagName[i] + matcher.group(1));
-                        lyricRow.setTime("00:00.00");
-                    }
+                    lyricRow.setTime(time);
+                    lyricRow.setText(lyric);
                     lyricRows.add(lyricRow);
-                    break;
+                    indexMapper.put(time.hashCode(), lyricRows.size() - 1);
                 }
             }
         }
         Collections.sort(lyricRows);
         return lyricRows;
-    }
-
-    private void parseAdvanceLyric(LyricRow row, Matcher matcher) {
-        int offset = 0;
-        StringBuilder textBuilder = new StringBuilder();
-        matcher.reset();
-        while (matcher.find()) {
-            String time = matcher.group(1);
-            String subRow = matcher.group(2);
-            row.putLyricRowTime(offset, time);
-            offset += subRow.length();
-            textBuilder.append(subRow);
-        }
-        row.setText(textBuilder.toString());
     }
 }

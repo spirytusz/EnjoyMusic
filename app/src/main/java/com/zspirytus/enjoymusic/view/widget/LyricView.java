@@ -116,6 +116,7 @@ public class LyricView extends View {
         for (LyricRow row : rows) {
             mLyricRows.add(new WrapLyricRow(row, mLyricPaint, getWidth()));
         }
+        invalidate();
     }
 
     public void onPlayProgressChange(long milliseconds) {

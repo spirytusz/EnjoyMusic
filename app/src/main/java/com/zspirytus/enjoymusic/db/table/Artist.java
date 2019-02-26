@@ -48,7 +48,6 @@ public class Artist implements Parcelable {
                 ", artistArt='" + artistArt + '\'' +
                 ", numberOfAlbums=" + numberOfAlbums +
                 ", mumberOfTracks=" + mumberOfTracks +
-                ", albums=" + albums +
                 '}';
     }
 

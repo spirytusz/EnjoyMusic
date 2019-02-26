@@ -127,8 +127,6 @@ public class Music implements Parcelable {
                 ", musicDuration=" + musicDuration +
                 ", musicFileSize='" + musicFileSize + '\'' +
                 ", musicAddDate=" + musicAddDate +
-                ", album=" + album +
-                ", artist=" + artist +
                 '}';
     }
 
@@ -196,7 +194,9 @@ public class Music implements Parcelable {
         this.musicAddDate = musicAddDate;
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1355616784)
     public Album getAlbum() {
         if (album != null || !album__refreshed) {
@@ -210,13 +210,17 @@ public class Music implements Parcelable {
         return album;
     }
 
-    /** To-one relationship, returned entity is not refreshed and may carry only the PK property. */
+    /**
+     * To-one relationship, returned entity is not refreshed and may carry only the PK property.
+     */
     @Generated(hash = 371327305)
     public Album peakAlbum() {
         return album;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1875665110)
     public void setAlbum(Album album) {
         synchronized (this) {
@@ -225,7 +229,9 @@ public class Music implements Parcelable {
         }
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 88144874)
     public Artist getArtist() {
         if (artist != null || !artist__refreshed) {
@@ -239,13 +245,17 @@ public class Music implements Parcelable {
         return artist;
     }
 
-    /** To-one relationship, returned entity is not refreshed and may carry only the PK property. */
+    /**
+     * To-one relationship, returned entity is not refreshed and may carry only the PK property.
+     */
     @Generated(hash = 782467558)
     public Artist peakArtist() {
         return artist;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 2128689463)
     public void setArtist(Artist artist) {
         synchronized (this) {
@@ -290,7 +300,9 @@ public class Music implements Parcelable {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1218270154)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

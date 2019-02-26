@@ -15,6 +15,7 @@ import com.zspirytus.enjoymusic.db.table.Folder;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
+import com.zspirytus.enjoymusic.global.MainApplication;
 
 import java.util.List;
 
@@ -34,13 +35,14 @@ public class MainActivityViewModel extends MusicPlayingStateViewModel {
                 getAlbumList().postValue(albumList);
                 getArtistList().postValue(artistList);
                 getFolderList().postValue(folderList);
+                obtainMusicDataFromPref(MainApplication.getForegroundContext());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         });
     }
 
-    public void obtainMusicDataFromPref(Context context) {
+    private void obtainMusicDataFromPref(Context context) {
         Music savedMusic = MusicSharedPreferences.restoreMusic(context);
         if (savedMusic != null) {
             postCurrentPlayingMusic(savedMusic);

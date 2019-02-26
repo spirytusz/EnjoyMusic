@@ -44,7 +44,6 @@ public class Album implements Parcelable {
                 ", albumName='" + albumName + '\'' +
                 ", albumArt='" + albumArt + '\'' +
                 ", albumSongCount=" + albumSongCount +
-                ", artist=" + artist +
                 '}';
     }
 

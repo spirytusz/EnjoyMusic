@@ -154,7 +154,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
                     showAudioEffectFragment();
                     break;
                 case R.id.menu_lyric_download:
-                    viewModel.applyLyric(mViewModel.getCurrentPlayingMusic().getValue());
+                    viewModel.applyLyricFromNetWork(mViewModel.getCurrentPlayingMusic().getValue());
                     break;
             }
             return false;
@@ -179,7 +179,10 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
                 mCover.setRotating(values);
             }
         });
-        mViewModel.getCurrentPlayingMusic().observe(getParentActivity(), this::setView);
+        mViewModel.getCurrentPlayingMusic().observe(getParentActivity(), values -> {
+            setView(values);
+            viewModel.applyLyricFromDB(values);
+        });
         mViewModel.getPlayMode().observe(getParentActivity(), (values) -> {
             mPlayMode.setImageResource(mViewModel.getPlayModeResId().get(values));
             ForegroundMusicController.getInstance().setPlayMode(values);
