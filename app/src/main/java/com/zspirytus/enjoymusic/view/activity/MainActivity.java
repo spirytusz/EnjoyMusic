@@ -213,7 +213,7 @@ public class MainActivity extends BaseActivity
 
     private void bindPlayMusicService() {
         Intent startPlayMusicServiceIntent = new Intent(this, PlayMusicService.class);
-        /**
+        /*
          * 先启动Service，走onStartCommand并返回START_STICKY.
          * 这样Service就一直是粘性的.
          */

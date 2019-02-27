@@ -15,6 +15,7 @@ import com.zspirytus.enjoymusic.impl.binder.aidlobserver.ProgressObserverManager
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayProgressObserver;
 import com.zspirytus.enjoymusic.receivers.observer.MusicPlayStateObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
+import com.zspirytus.enjoymusic.utils.LogUtil;
 
 public class MusicPlayingStateViewModel extends MusicDataViewModel implements PlayedMusicChangeObserver,
         MusicPlayStateObserver, MusicPlayProgressObserver {
@@ -124,10 +125,12 @@ public class MusicPlayingStateViewModel extends MusicDataViewModel implements Pl
     }
 
     public void setCurrentPlayingMusic(Music currentPlayingMusic) {
+        LogUtil.e(this.getClass().getSimpleName(), "setCurrentPlayingMusic");
         mCurrentPlayingMusic.setValue(currentPlayingMusic);
     }
 
     public void postCurrentPlayingMusic(Music currentPlayingMusic) {
+        LogUtil.e(this.getClass().getSimpleName(), "postCurrentPlayingMusic");
         mCurrentPlayingMusic.postValue(currentPlayingMusic);
     }
 

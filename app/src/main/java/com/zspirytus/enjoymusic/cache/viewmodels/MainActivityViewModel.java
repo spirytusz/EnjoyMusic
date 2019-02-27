@@ -1,11 +1,9 @@
 package com.zspirytus.enjoymusic.cache.viewmodels;
 
-import android.content.Context;
 import android.os.IBinder;
 import android.os.RemoteException;
 
 import com.zspirytus.enjoymusic.IGetMusicList;
-import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.DBManager;
@@ -15,7 +13,6 @@ import com.zspirytus.enjoymusic.db.table.Folder;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
-import com.zspirytus.enjoymusic.global.MainApplication;
 
 import java.util.List;
 
@@ -35,18 +32,10 @@ public class MainActivityViewModel extends MusicPlayingStateViewModel {
                 getAlbumList().postValue(albumList);
                 getArtistList().postValue(artistList);
                 getFolderList().postValue(folderList);
-                obtainMusicDataFromPref(MainApplication.getForegroundContext());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         });
-    }
-
-    private void obtainMusicDataFromPref(Context context) {
-        Music savedMusic = MusicSharedPreferences.restoreMusic(context);
-        if (savedMusic != null) {
-            postCurrentPlayingMusic(savedMusic);
-        }
     }
 
     public void applySongLists() {

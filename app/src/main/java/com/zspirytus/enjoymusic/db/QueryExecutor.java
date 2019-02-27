@@ -4,6 +4,7 @@ import com.zspirytus.enjoymusic.db.greendao.AlbumDao;
 import com.zspirytus.enjoymusic.db.greendao.ArtistDao;
 import com.zspirytus.enjoymusic.db.greendao.JoinAlbumToArtistDao;
 import com.zspirytus.enjoymusic.db.greendao.JoinFolderToMusicDao;
+import com.zspirytus.enjoymusic.db.greendao.JoinPlayHistoryToMusicDao;
 import com.zspirytus.enjoymusic.db.greendao.MusicDao;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
@@ -11,11 +12,13 @@ import com.zspirytus.enjoymusic.db.table.Folder;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinAlbumToArtist;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinFolderToMusic;
+import com.zspirytus.enjoymusic.db.table.jointable.JoinPlayHistoryToMusic;
 
 import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.query.Query;
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QueryExecutor {
@@ -83,6 +86,29 @@ public class QueryExecutor {
         List<Artist> artistList = queryBuilder.list();
         if (!artistList.isEmpty()) {
             return artistList.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public static List<Music> getPlayHistory() {
+        List<JoinPlayHistoryToMusic> joinPlayHistoryToMusicList = DBManager.getInstance()
+                .getDaoSession().queryBuilder(JoinPlayHistoryToMusic.class)
+                .orderDesc(JoinPlayHistoryToMusicDao.Properties.TimeStamp)
+                .limit(100).list();
+        List<Music> musicList = new ArrayList<>();
+        for (JoinPlayHistoryToMusic joinPlayHistoryToMusic : joinPlayHistoryToMusicList) {
+            musicList.add(DBManager.getInstance().getDaoSession().load(Music.class, joinPlayHistoryToMusic.getMusicId()));
+        }
+        return musicList;
+    }
+
+    public static Music getLastestPlayMusic() {
+        List<Music> playHistory = getPlayHistory();
+        if (playHistory.size() >= 2) {
+            return playHistory.get(1);
+        } else if (playHistory.size() == 1) {
+            return playHistory.get(0);
         } else {
             return null;
         }

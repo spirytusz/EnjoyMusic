@@ -1,7 +1,7 @@
 package com.zspirytus.enjoymusic.cache;
 
+import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Music;
-import com.zspirytus.enjoymusic.global.MainApplication;
 
 /**
  * Created by ZSpirytus on 2018/9/12.
@@ -19,7 +19,7 @@ public class BackgroundMusicStateCache {
     }
 
     private BackgroundMusicStateCache() {
-        currentPlayingMusic = MusicSharedPreferences.restoreMusic(MainApplication.getBackgroundContext());
+        currentPlayingMusic = QueryExecutor.getLastestPlayMusic();
     }
 
     public void setCurrentPlayingMusic(Music music) {

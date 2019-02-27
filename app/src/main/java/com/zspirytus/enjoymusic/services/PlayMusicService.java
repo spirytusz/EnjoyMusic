@@ -8,8 +8,6 @@ import android.os.IBinder;
 
 import com.zspirytus.enjoymusic.base.BaseService;
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
-import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
-import com.zspirytus.enjoymusic.cache.PlayHistoryCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
@@ -43,10 +41,7 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
         super.onCreate();
         MyMediaSession.getInstance().initMediaSession(this);
         MediaPlayController.getInstance().setOnPlayListener(this);
-        Music savedMusic = MusicSharedPreferences.restoreMusic(this);
-        if (savedMusic != null) {
-            BackgroundMusicStateCache.getInstance().setCurrentPlayingMusic(savedMusic);
-        }
+        BackgroundMusicStateCache.getInstance();
     }
 
     @Override
@@ -71,7 +66,6 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
     @Override
     public void onDestroy() {
         super.onDestroy();
-        MusicSharedPreferences.saveMusic(BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic());
     }
 
     @Override
@@ -115,7 +109,7 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
                         StatusBarUtil.collapseStatusBar(this);
                         break;
                     case Constant.NotificationEvent.PREVIOUS:
-                        BackgroundMusicController.getInstance().play(PlayHistoryCache.getInstance().getPreviousPlayedMusic());
+                        BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getPreviousMusic());
                         break;
                     case Constant.NotificationEvent.PLAY:
                         BackgroundMusicController.getInstance().play(BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic());

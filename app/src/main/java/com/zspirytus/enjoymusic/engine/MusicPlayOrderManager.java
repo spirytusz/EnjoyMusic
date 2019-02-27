@@ -3,7 +3,10 @@ package com.zspirytus.enjoymusic.engine;
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Music;
+import com.zspirytus.enjoymusic.db.table.PlayList;
+import com.zspirytus.enjoymusic.db.table.jointable.JoinPlayListToMusic;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.listeners.observable.PlayListChangeObservable;
 import com.zspirytus.enjoymusic.utils.RandomUtil;
@@ -28,7 +31,12 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
         if (restorePlayMode != -1) {
             setPlayMode(restorePlayMode);
         }
-        mPlayList = MusicSharedPreferences.restorePlayList(MainApplication.getBackgroundContext());
+        PlayList playList = DBManager.getInstance().getDaoSession().load(PlayList.class, PLAY_LIST_PRIMARY_KEY);
+        if (playList != null) {
+            mPlayList = playList.getPlayList();
+        } else {
+            mPlayList = new ArrayList<>();
+        }
     }
 
     public static MusicPlayOrderManager getInstance() {
@@ -37,8 +45,18 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
 
     public void setPlayList(List<Music> playList) {
         orderPlayList(playList);
-        MusicSharedPreferences.savePlayList(mPlayList);
         notifyAllObserverPlayListChange(mPlayList);
+        DBManager.getInstance().getDaoSession().getPlayListDao().deleteAll();
+        DBManager.getInstance().getDaoSession().getJoinPlayListToMusicDao().deleteAll();
+        long playListId = PLAY_LIST_PRIMARY_KEY;
+        PlayList playListTable = new PlayList(playListId);
+        List<JoinPlayListToMusic> joinPlayListToMusics = new ArrayList<>();
+        for (Music music : mPlayList) {
+            JoinPlayListToMusic joinPlayListToMusic = new JoinPlayListToMusic(playListId, music.getMusicId());
+            joinPlayListToMusics.add(joinPlayListToMusic);
+        }
+        DBManager.getInstance().getDaoSession().getPlayListDao().insert(playListTable);
+        DBManager.getInstance().getDaoSession().getJoinPlayListToMusicDao().insertInTx(joinPlayListToMusics);
     }
 
     public void addMusicListToPlayList(List<Music> musicList) {
@@ -50,8 +68,13 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
             mPlayList = new ArrayList<>();
             orderPlayList(musicList);
         }
-        MusicSharedPreferences.savePlayList(mPlayList);
         notifyAllObserverPlayListChange(mPlayList);
+        List<JoinPlayListToMusic> joinPlayListToMusics = new ArrayList<>();
+        for (Music music : mPlayList) {
+            JoinPlayListToMusic joinPlayListToMusic = new JoinPlayListToMusic(PLAY_LIST_PRIMARY_KEY, music.getMusicId());
+            joinPlayListToMusics.add(joinPlayListToMusic);
+        }
+        DBManager.getInstance().getDaoSession().getJoinPlayListToMusicDao().insertOrReplaceInTx(joinPlayListToMusics);
     }
 
     public Music getNextMusic(boolean fromUser) {
@@ -87,6 +110,11 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
     public void setPlayMode(int playMode) {
         mPlayMode = playMode;
         MusicSharedPreferences.savePlayMode(playMode);
+        if (mPlayList != null) {
+            List<Music> musicList = new ArrayList<>(mPlayList);
+            orderPlayList(musicList);
+            notifyAllObserverPlayListChange(mPlayList);
+        }
     }
 
     private void orderPlayList(List<Music> playList) {

@@ -3,23 +3,24 @@ package com.zspirytus.enjoymusic.listeners.observable;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 
-import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
+import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Music;
+import com.zspirytus.enjoymusic.db.table.PlayList;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayListChangeObserver;
-import com.zspirytus.enjoymusic.global.MainApplication;
 
 import java.util.List;
 
 public class PlayListChangeObservable {
 
     protected List<Music> mPlayList;
+    protected static final long PLAY_LIST_PRIMARY_KEY = 2333;
 
     private RemoteCallbackList<IPlayListChangeObserver> mObservers = new RemoteCallbackList<>();
 
     public void register(IPlayListChangeObserver observer) {
         mObservers.register(observer);
         if (mPlayList == null) {
-            mPlayList = MusicSharedPreferences.restorePlayList(MainApplication.getBackgroundContext());
+            mPlayList = DBManager.getInstance().getDaoSession().load(PlayList.class, PLAY_LIST_PRIMARY_KEY).getPlayList();
         }
         try {
             observer.onPlayListChange(mPlayList);
