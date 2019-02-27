@@ -3,6 +3,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'org.greenrobot.greendao'
 
 android {
+    signingConfigs {
+    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.zspirytus.enjoymusic"
@@ -22,6 +24,8 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources true
+            useProguard true
         }
     }
     compileOptions {
