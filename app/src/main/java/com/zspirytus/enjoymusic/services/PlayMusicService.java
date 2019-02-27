@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.os.Handler;
 import android.os.IBinder;
 
 import com.zspirytus.enjoymusic.base.BaseService;
@@ -13,7 +14,8 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.impl.binder.BinderPool;
-import com.zspirytus.enjoymusic.interfaces.IOnRemotePlayedListener;
+import com.zspirytus.enjoymusic.listeners.OnRemotePauseListener;
+import com.zspirytus.enjoymusic.listeners.OnRemotePlayListener;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
@@ -27,11 +29,12 @@ import com.zspirytus.enjoymusic.view.activity.MainActivity;
  */
 
 // TODO: 16/01/2019 onStartCommond接收到空intent
-public class PlayMusicService extends BaseService implements IOnRemotePlayedListener {
+public class PlayMusicService extends BaseService implements OnRemotePlayListener, OnRemotePauseListener {
 
     private static final String TAG = "PlayMusicService";
 
     private BinderPool mBinderPool;
+    private Handler mHandler;
 
     private MyHeadSetPlugOutReceiver myHeadSetPlugOutReceiver;
     private MyHeadSetButtonClickBelowLReceiver myHeadSetButtonClickBelowLReceiver;
@@ -52,6 +55,9 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
 
     @Override
     public IBinder onBind(Intent intent) {
+        if (mHandler == null) {
+            mHandler = new Handler();
+        }
         if (mBinderPool == null) {
             mBinderPool = new BinderPool();
         }
@@ -91,12 +97,17 @@ public class PlayMusicService extends BaseService implements IOnRemotePlayedList
     public void onPlay() {
         Notification currentNotification = NotificationHelper.getInstance().getCurrentNotification();
         int notificationNotifyId = NotificationHelper.getInstance().getNotificationNotifyId();
-        /**
+        /*
          * notificationNotifyId 不能为0
          * @see #startForeground(int, Notification)
          */
         startForeground(notificationNotifyId, currentNotification);
-        MediaPlayController.getInstance().setOnPlayListener(null);
+        NotificationHelper.getInstance().pauseAutoCancel(mHandler);
+    }
+
+    @Override
+    public void onPause() {
+        NotificationHelper.getInstance().beginAutoCancel(mHandler);
     }
 
     private void handleStatusBarEvent(Intent intent) {

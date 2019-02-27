@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.app.NotificationCompat.MediaStyle;
 
@@ -39,6 +40,8 @@ public class NotificationHelper {
     private static final int PAUSE = 2;
     private static final int NEXT = 3;
     private static final int SINGLE_CLICK = 4;
+
+    private static final long AUTO_CANCEL_DELAY = 10 * 60 * 1000;
 
     private static class SingletonHolder {
         static NotificationHelper INSTANCE = new NotificationHelper();
@@ -95,6 +98,14 @@ public class NotificationHelper {
 
     public int getNotificationNotifyId() {
         return NOTIFICATION_MANAGER_NOTIFY_ID;
+    }
+
+    public void beginAutoCancel(Handler handler) {
+        handler.postDelayed(autoCancelNotificationTask, AUTO_CANCEL_DELAY);
+    }
+
+    public void pauseAutoCancel(Handler handler) {
+        handler.removeCallbacks(autoCancelNotificationTask);
     }
 
     public void cancelNotification() {
@@ -180,5 +191,11 @@ public class NotificationHelper {
             LogUtil.e(this.getClass().getSimpleName(), "OS is not MIUI");
         }
     }
+
+    private Runnable autoCancelNotificationTask = () -> {
+        NotificationManager nMgr = (NotificationManager) MainApplication.getBackgroundContext()
+                .getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        nMgr.cancel(NOTIFICATION_MANAGER_NOTIFY_ID);
+    };
 
 }
