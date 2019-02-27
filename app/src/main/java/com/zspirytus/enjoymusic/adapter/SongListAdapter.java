@@ -56,7 +56,7 @@ public class SongListAdapter extends CommonRecyclerViewAdapter<SongList> impleme
             case 0:
                 List<Music> musicList = targetSongList.getSongsOfThisSongList();
                 ForegroundMusicController.getInstance().addToPlayList(musicList);
-                ToastUtil.showToast(MainApplication.getForegroundContext(), "成功");
+                ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.success);
                 break;
         }
     };

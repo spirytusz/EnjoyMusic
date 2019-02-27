@@ -27,6 +27,7 @@ import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.dialog.SaveSongListDialog;
 
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ public class FilterMusicListFragment extends BaseFragment
                                         .getSongList().getValue().add(songList);
                                 dialog.dismiss();
                             } else {
-                                toast("emmm...");
+                                ToastUtil.showToast(getContext(), R.string.please_enter_leagl_song_list);
                             }
                         });
                         dialog.show(getChildFragmentManager(), dialog.getClass().getSimpleName());

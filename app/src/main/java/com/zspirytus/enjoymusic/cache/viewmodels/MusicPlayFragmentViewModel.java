@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.WorkerThread;
 
+import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
@@ -72,7 +73,7 @@ public class MusicPlayFragmentViewModel extends ViewModel {
                     Artist artist = QueryExecutor.findArtist(music);
                     getSuitableLyric(music, artist, searchMusicResponse.getData());
                 } else {
-                    AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), "没有找到歌词..."));
+                    AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_lyric_available));
                 }
             }
 
@@ -154,14 +155,18 @@ public class MusicPlayFragmentViewModel extends ViewModel {
                         connection.disconnect();
                     }
                 }
+                final int tip;
+                if (mLyricRows.getValue() != null && !mLyricRows.getValue().isEmpty()) {
+                    tip = R.string.download_success;
+                } else {
+                    tip = R.string.no_lyric_available;
+                }
+                AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), tip));
                 Lyric lyric = new Lyric(music.getMusicId(), file.getAbsolutePath());
                 DBManager.getInstance().getDaoSession().getLyricDao().insertOrReplace(lyric);
-                AndroidSchedulers.mainThread().scheduleDirect(() -> {
-                    ToastUtil.showToast(MainApplication.getForegroundContext(), "下载成功！");
-                });
             });
         } else {
-            ToastUtil.showToast(MainApplication.getForegroundContext(), "没有找到歌词...");
+            ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_lyric_available);
         }
     }
 }

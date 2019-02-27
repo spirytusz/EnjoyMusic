@@ -23,6 +23,7 @@ import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
+import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 import java.util.ArrayList;
 
@@ -67,7 +68,7 @@ public class PlayListFragment extends CommonHeaderBaseFragment
                         Music firstMusic = mAdapter.getList().get(0);
                         ForegroundMusicController.getInstance().play(firstMusic);
                     } else {
-                        toast("播放列表为空...");
+                        ToastUtil.showToast(getContext(), R.string.play_list_is_empty);
                     }
                     break;
                 case R.id.clear_play_list:

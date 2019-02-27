@@ -146,7 +146,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             dataList.get(0).getArtist().setArtistArt(picUrl);
             mMusicMetaList.postValue(dataList);
         } else {
-            AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), "没有找到艺术家图片..."));
+            AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_artist_art_available));
         }
     }
 }

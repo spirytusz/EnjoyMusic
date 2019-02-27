@@ -1,5 +1,7 @@
 package com.zspirytus.enjoymusic.online;
 
+import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.online.entity.response.ObtainSongListResponse;
 import com.zspirytus.enjoymusic.online.entity.response.SearchAlbumResponse;
 import com.zspirytus.enjoymusic.online.entity.response.SearchArtistResponse;
@@ -8,6 +10,8 @@ import com.zspirytus.enjoymusic.online.entity.response.SearchSongListResponse;
 import com.zspirytus.enjoymusic.online.methods.ObtainMethod;
 import com.zspirytus.enjoymusic.online.methods.SearchMethod;
 import com.zspirytus.enjoymusic.utils.LogUtil;
+import com.zspirytus.enjoymusic.utils.NetWorkUtil;
+import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -73,38 +77,58 @@ public class RetrofitManager {
     }
 
     public static void searchMusic(String musicName, Observer<SearchMusicResponse> observer) {
-        getSearchMethod().searchMusic(musicName)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
+        if (NetWorkUtil.isNetWorkReady()) {
+            getSearchMethod().searchMusic(musicName)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer);
+        } else {
+            ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_net_work_tip);
+        }
     }
 
     public static void searchAlbum(String albumName, Observer<SearchAlbumResponse> observer) {
-        getSearchMethod().searchAlbum(albumName)
-                .subscribeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
+        if (NetWorkUtil.isNetWorkReady()) {
+            getSearchMethod().searchAlbum(albumName)
+                    .subscribeOn(Schedulers.io())
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer);
+        } else {
+            ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_net_work_tip);
+        }
     }
 
     public static void searchSongList(String songListId, Observer<SearchSongListResponse> observer) {
-        getSearchMethod().searchSongList(songListId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
+        if (NetWorkUtil.isNetWorkReady()) {
+            getSearchMethod().searchSongList(songListId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer);
+        } else {
+            ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_net_work_tip);
+        }
     }
 
     public static void searchArtist(String artistName, Observer<SearchArtistResponse> observer) {
-        getSearchMethod().searchArtist(artistName)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
+        if (NetWorkUtil.isNetWorkReady()) {
+            getSearchMethod().searchArtist(artistName)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer);
+        } else {
+            ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_net_work_tip);
+        }
     }
 
     public static void obtainHotSongList(Observer<ObtainSongListResponse> observer) {
-        getObtainMethod().obtainHotSongList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
+        if (NetWorkUtil.isNetWorkReady()) {
+            getObtainMethod().obtainHotSongList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer);
+        } else {
+            ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_net_work_tip);
+        }
     }
 
 }

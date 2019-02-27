@@ -63,7 +63,7 @@ public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
             case 0:
                 List<Music> albumFilterMusicList = QueryExecutor.findMusicList(targetAlbum);
                 ForegroundMusicController.getInstance().addToPlayList(albumFilterMusicList);
-                ToastUtil.showToast(MainApplication.getForegroundContext(), "成功");
+                ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.success);
                 break;
             case 1:
                 SaveSongListDialog dialog = new SaveSongListDialog();
@@ -71,7 +71,7 @@ public class AlbumListAdapter extends CommonRecyclerViewAdapter<Album>
                     if (content != null) {
                         dialog.dismiss();
                     } else {
-                        ToastUtil.showToast(MainApplication.getForegroundContext(), "emmm...");
+                        ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.please_enter_leagl_song_list);
                     }
                 });
                 FragmentVisibilityManager.getInstance().showDialogFragment(dialog);

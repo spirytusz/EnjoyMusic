@@ -63,7 +63,7 @@ public class HomePageListAdapter extends CommonRecyclerViewAdapter<Music> implem
         switch (pos) {
             case 0:
                 ForegroundMusicController.getInstance().addToPlayList(targetMusic);
-                ToastUtil.showToast(MainApplication.getForegroundContext(), "成功");
+                ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.success);
                 break;
             case 1:
                 ToastUtil.showToast(MainApplication.getForegroundContext(), "delete it.");

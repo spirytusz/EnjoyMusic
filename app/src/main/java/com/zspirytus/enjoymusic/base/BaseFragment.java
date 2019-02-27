@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.interfaces.IBackPressed;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
@@ -101,7 +102,7 @@ public abstract class BaseFragment extends Fragment implements IBackPressed {
             getParentActivity().finish();
             FragmentVisibilityManager.getInstance().removeAllFragment();
         } else {
-            toast("Press back again to quit");
+            ToastUtil.showToast(getContext(), R.string.press_agin_to_exit);
             pressedBackLastTime = now;
         }
     }

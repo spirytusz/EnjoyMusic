@@ -5,7 +5,6 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.PlayHistory;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinPlayHistoryToMusic;
 import com.zspirytus.enjoymusic.listeners.observable.PlayHistoryObservable;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 
 import java.util.LinkedList;
 
@@ -30,12 +29,6 @@ public class PlayHistoryManager extends PlayHistoryObservable {
         }
         mPlayHistory.add(0, music);
         notifyAllObserverPlayListChange();
-
-        LogUtil.e(this.getClass().getSimpleName(), "\n\n\n\n\n============================");
-        for (Music music1 : mPlayHistory) {
-            LogUtil.e(this.getClass().getSimpleName(), "=====  " + music1.getMusicName() + "  =====");
-        }
-        LogUtil.e(this.getClass().getSimpleName(), "============================\n\n\n\n\n");
 
         insertToDB(music);
     }
