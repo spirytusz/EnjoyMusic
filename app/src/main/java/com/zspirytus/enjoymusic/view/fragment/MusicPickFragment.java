@@ -15,12 +15,11 @@ import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
-import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.cache.viewmodels.MusicPickFragmentViewModel;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
-import com.zspirytus.enjoymusic.db.table.jointable.JoinMusicToSongList;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.listitem.MusicPickItem;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
@@ -46,6 +45,7 @@ public class MusicPickFragment extends BaseFragment
     private int mSaveMusicCount;
 
     private MainActivityViewModel mViewModel;
+    private MusicPickFragmentViewModel viewModel;
     private CommonRecyclerViewAdapter<MusicPickItem> mAdapter;
 
     private OnSaveSongListListener mListener;
@@ -53,6 +53,7 @@ public class MusicPickFragment extends BaseFragment
     @Override
     protected void initData() {
         mViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(MusicPickFragmentViewModel.class);
         mAdapter = new CommonRecyclerViewAdapter<MusicPickItem>() {
             @Override
             public int getLayoutId() {
@@ -133,38 +134,20 @@ public class MusicPickFragment extends BaseFragment
         SaveSongListDialog dialog = new SaveSongListDialog();
         dialog.setOnDialogButtonClickListener(content -> {
             if (mListener != null && content != null && mSaveMusicCount > 0) {
-                SongList songList = saveSongListToDB(content);
-                mListener.onNewSongList(songList);
-                dialog.dismiss();
-                goBack();
+                boolean isSongListDuplicate = viewModel.isSongListNameDuplicate(content);
+                if (!isSongListDuplicate) {
+                    SongList songList = viewModel.saveSongListToDB(content, mAdapter.getList());
+                    mListener.onNewSongList(songList);
+                    dialog.dismiss();
+                    goBack();
+                } else {
+                    ToastUtil.showToast(getContext(), R.string.duplicate_song_list_name);
+                }
             } else {
                 ToastUtil.showToast(getContext(), R.string.please_enter_leagl_song_list);
             }
         });
         dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
-    }
-
-    public SongList saveSongListToDB(String songListName) {
-        List<Music> musicList = new ArrayList<>();
-        for (MusicPickItem item : mAdapter.getList()) {
-            if (item.isSelected()) {
-                musicList.add(item.getMusic());
-            }
-        }
-        SongList songList = new SongList();
-        songList.setMusicCount(musicList.size());
-        songList.setSongListName(songListName);
-        songList.setSongListId(System.currentTimeMillis());
-        List<JoinMusicToSongList> joinSongListToSongs = new ArrayList<>();
-        for (Music music : musicList) {
-            JoinMusicToSongList joinMusicToSongList = new JoinMusicToSongList();
-            joinMusicToSongList.setMusicId(music.getMusicId());
-            joinMusicToSongList.setSongListId(songList.getSongListId());
-            joinSongListToSongs.add(joinMusicToSongList);
-        }
-        DBManager.getInstance().getDaoSession().getSongListDao().insert(songList);
-        DBManager.getInstance().getDaoSession().getJoinMusicToSongListDao().insertOrReplaceInTx(joinSongListToSongs);
-        return songList;
     }
 
     public static MusicPickFragment getInstance() {
