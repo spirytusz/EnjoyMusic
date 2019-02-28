@@ -235,6 +235,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             mToolbar.setBackgroundColor(getResources().getColor(R.color.white));
             mAppBarLayout.setBackgroundColor(getResources().getColor(R.color.white));
             mToolbar.setTitleTextColor(0xFF4C4E4A);
+            mToolbar.setTitle(R.string.nav_text_home_page);
             Drawable drawable = mToolbar.getNavigationIcon();
             if (drawable != null) {
                 drawable.setTint(0xFF000000);
