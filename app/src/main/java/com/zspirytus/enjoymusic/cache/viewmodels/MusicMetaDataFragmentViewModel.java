@@ -16,9 +16,12 @@ import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.ArtistArt;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
+import com.zspirytus.enjoymusic.engine.MinEditDistance;
 import com.zspirytus.enjoymusic.entity.listitem.MusicMetaDataListItem;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.online.RetrofitManager;
+import com.zspirytus.enjoymusic.online.entity.OnlineArtist;
+import com.zspirytus.enjoymusic.online.entity.OnlineArtistList;
 import com.zspirytus.enjoymusic.online.entity.response.SearchArtistResponse;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 
@@ -116,7 +119,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
         });
     }
 
-    public void applyMusicData(Music music) {
+    public void applyArtistArt(Music music) {
         Artist artist = QueryExecutor.findArtist(music);
         RetrofitManager.searchArtist(artist.getArtistName(), new Observer<SearchArtistResponse>() {
             @Override
@@ -125,9 +128,28 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
 
             @Override
             public void onNext(SearchArtistResponse searchArtistResponse) {
-                if (!searchArtistResponse.getData().getArtists().isEmpty()) {
-                    updateArtistInfo(searchArtistResponse.getData().getArtists().get(0).getPicUrl());
+                OnlineArtistList onlineArtistList = searchArtistResponse.getData();
+                if (onlineArtistList == null) {
+                    AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.download_failed));
+                    return;
                 }
+                if (onlineArtistList.getArtistCount() == 0) {
+                    AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_artist_art_available));
+                    return;
+                }
+                List<OnlineArtist> onlineArtists = onlineArtistList.getArtists();
+                double maxConfidence = 0;
+                String picUrl = null;
+                for (OnlineArtist onlineArtist : onlineArtists) {
+                    if (onlineArtist.getName() != null) {
+                        double confidence = MinEditDistance.SimilarDegree(onlineArtist.getName(), artist.getArtistName());
+                        if (maxConfidence < confidence) {
+                            maxConfidence = confidence;
+                            picUrl = onlineArtist.getPicUrl();
+                        }
+                    }
+                }
+                updateArtistInfo(picUrl);
             }
 
             @Override
