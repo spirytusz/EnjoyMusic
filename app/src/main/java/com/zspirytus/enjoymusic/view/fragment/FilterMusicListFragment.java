@@ -19,6 +19,8 @@ import com.zspirytus.enjoymusic.cache.viewmodels.FilterMusicListFragmentViewMode
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.ArtistArt;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
@@ -61,6 +63,7 @@ public class FilterMusicListFragment extends BaseFragment
 
     @Override
     protected void initData() {
+        int flag = getArguments().getInt(FLAG_KEY);
         mViewModel = ViewModelProviders.of(this).get(FilterMusicListFragmentViewModel.class);
         List<Music> musicList = getArguments().getParcelableArrayList(MUSIC_LIST_EXTRA_KEY);
         mInnerAdapter = new MusicListAdapter();
@@ -69,9 +72,19 @@ public class FilterMusicListFragment extends BaseFragment
         mAdapter = new HeaderFooterViewWrapAdapter() {
             @Override
             public void convertHeaderView(CommonViewHolder holder, int position) {
-                Album album = QueryExecutor.findAlbum(mInnerAdapter.getList().get(0));
+                String path = null;
+                if (flag == ALBUM_FLAG) {
+                    Album album = QueryExecutor.findAlbum(mInnerAdapter.getList().get(0));
+                    path = album.getAlbumArt();
+                } else if (flag == ARTIST_FLAG) {
+                    Artist artist = QueryExecutor.findArtist(mInnerAdapter.getList().get(0));
+                    ArtistArt artistArt = QueryExecutor.findArtistArt(artist);
+                    if (artistArt != null) {
+                        path = artistArt.getArtistArt();
+                    }
+                }
                 String title = getArguments().getString(TITLE_KEY);
-                ImageLoader.load(holder.getView(R.id.big_music_preview_cover), album.getAlbumArt(), title);
+                ImageLoader.load(holder.getView(R.id.big_music_preview_cover), path, title);
                 holder.setText(R.id.big_music_preview_text, mViewModel.createSpannableString(mViewModel.getPreviewTitle(title), mInnerAdapter.getList()));
             }
 

@@ -39,6 +39,10 @@ public class SearchFragmentViewModel extends ViewModel {
             result.setTitle("曲目");
             results.add(result);
             results.addAll(musicResult);
+
+            result = new SearchResult();
+            result.setDividerLine(true);
+            results.add(result);
         }
 
         List<SearchResult> albumResult = searchAlbum(key);
@@ -48,6 +52,10 @@ public class SearchFragmentViewModel extends ViewModel {
             result.setTitle("专辑");
             results.add(result);
             results.addAll(albumResult);
+
+            result = new SearchResult();
+            result.setDividerLine(true);
+            results.add(result);
         }
 
         List<SearchResult> artistResult = searchArtist(key);
@@ -56,8 +64,11 @@ public class SearchFragmentViewModel extends ViewModel {
             result.setTitle(true);
             result.setTitle("艺术家");
             results.add(result);
-
             results.addAll(artistResult);
+
+            result = new SearchResult();
+            result.setDividerLine(true);
+            results.add(result);
         }
 
         mSearchResultList.setValue(results);

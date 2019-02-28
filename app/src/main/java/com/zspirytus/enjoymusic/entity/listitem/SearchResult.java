@@ -18,6 +18,8 @@ public class SearchResult {
     private boolean isArtist = false;
     private Artist artist;
 
+    private boolean isDividerLine = false;
+
     public boolean isTitle() {
         return isTitle;
     }
@@ -80,6 +82,14 @@ public class SearchResult {
 
     public void setArtist(Artist artist) {
         this.artist = artist;
+    }
+
+    public boolean isDividerLine() {
+        return isDividerLine;
+    }
+
+    public void setDividerLine(boolean dividerLine) {
+        isDividerLine = dividerLine;
     }
 
     @Override

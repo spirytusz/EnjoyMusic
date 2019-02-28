@@ -1,11 +1,19 @@
 package com.zspirytus.enjoymusic.adapter;
 
+import android.graphics.Rect;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+
 import com.zspirytus.basesdk.recyclerview.ItemViewDelegate;
 import com.zspirytus.basesdk.recyclerview.adapter.MultiItemAdapter;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
+import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.listitem.SearchResult;
+import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
 
@@ -14,6 +22,7 @@ public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
         addMusicDelegate();
         addAlbumDelegate();
         addArtistDelegate();
+        addDividerLineDelegate();
     }
 
     private void addTitleDelegate() {
@@ -50,9 +59,11 @@ public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
 
             @Override
             public void convert(CommonViewHolder holder, SearchResult data) {
-                ImageLoader.load(holder.getView(R.id.item_cover), data.getMusic().getAlbum().getAlbumArt(), data.getMusic().getMusicName());
+                Album album = QueryExecutor.findAlbum(data.getMusic());
+                ImageLoader.load(holder.getView(R.id.item_cover), album.getAlbumArt(), data.getMusic().getMusicName());
                 holder.setText(R.id.item_title, data.getMusic().getMusicName());
-
+                holder.setText(R.id.item_sub_title, album.getAlbumName());
+                holder.setVisibility(R.id.item_more_info_button, View.GONE);
             }
         };
         addDelegate(delegate);
@@ -72,8 +83,11 @@ public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
 
             @Override
             public void convert(CommonViewHolder holder, SearchResult data) {
+                Artist artist = QueryExecutor.findArtist(data.getAlbum());
                 ImageLoader.load(holder.getView(R.id.item_cover), data.getAlbum().getAlbumArt(), data.getAlbum().getAlbumName());
                 holder.setText(R.id.item_title, data.getAlbum().getAlbumName());
+                holder.setText(R.id.item_sub_title, artist.getArtistName());
+                holder.setVisibility(R.id.item_more_info_button, View.GONE);
             }
         };
         addDelegate(delegate);
@@ -95,8 +109,50 @@ public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
             public void convert(CommonViewHolder holder, SearchResult data) {
                 ImageLoader.load(holder.getView(R.id.item_cover), null, data.getArtist().getArtistName());
                 holder.setText(R.id.item_title, data.getArtist().getArtistName());
+                holder.setText(R.id.item_sub_title, data.getArtist().getMumberOfTracks() + "首歌曲");
+                holder.setVisibility(R.id.item_more_info_button, View.GONE);
             }
         };
         addDelegate(delegate);
+    }
+
+    private void addDividerLineDelegate() {
+        addDelegate(new ItemViewDelegate<SearchResult>() {
+            @Override
+            public boolean isForViewType(SearchResult data) {
+                return data.isDividerLine();
+            }
+
+            @Override
+            public int getLayoutId() {
+                return R.layout.item_divider_line;
+            }
+
+            @Override
+            public void convert(CommonViewHolder holder, SearchResult data) {
+            }
+        });
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                outRect.left = PixelsUtil.dp2px(parent.getContext(), 8);
+            }
+        });
+        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                int position = parent.getChildAdapterPosition(view);
+                if (getData().get(position).isTitle()) {
+                    outRect.left = PixelsUtil.dp2px(parent.getContext(), 10);
+                }
+            }
+        });
     }
 }
