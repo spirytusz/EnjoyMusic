@@ -61,6 +61,11 @@ public class SearchFragment extends BaseFragment {
     }
 
     @Override
+    public int enterAnim() {
+        return R.anim.anim_fragment_translate_show_up;
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel.getSearchResultList().observe(this, values -> {

@@ -149,6 +149,11 @@ public class FilterMusicListFragment extends BaseFragment
     }
 
     @Override
+    public int enterAnim() {
+        return R.anim.anim_fragment_translate_show_up;
+    }
+
+    @Override
     public int getContainerId() {
         return R.id.full_fragment_container;
     }
