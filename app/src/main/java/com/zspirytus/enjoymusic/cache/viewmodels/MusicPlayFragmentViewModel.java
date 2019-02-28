@@ -79,6 +79,8 @@ public class MusicPlayFragmentViewModel extends ViewModel {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
+                ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.download_failed);
             }
 
             @Override

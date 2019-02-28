@@ -15,6 +15,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.ArtistArt;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.engine.MusicMetaDataReader;
@@ -49,7 +50,9 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
 
             @Override
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
-                String path = data.getArtist().getArtistArt();
+                Artist artist = data.getArtist();
+                ArtistArt artistArt = artist.peakArtistArt();
+                String path = artistArt != null ? artistArt.getArtistArt() : null;
                 ImageLoader.load((ImageView) holder.getItemView(), path, data.getArtist().getArtistName(), new CenterCrop());
                 holder.setOnItemClickListener((view, position) -> {
                 });

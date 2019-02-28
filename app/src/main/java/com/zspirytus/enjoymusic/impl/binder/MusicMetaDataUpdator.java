@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.impl.binder;
 import com.zspirytus.enjoymusic.IMusicMetaDataUpdator;
 import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.ArtistArt;
 
 public class MusicMetaDataUpdator extends IMusicMetaDataUpdator.Stub {
 
@@ -19,6 +20,7 @@ public class MusicMetaDataUpdator extends IMusicMetaDataUpdator.Stub {
 
     @Override
     public void updateArtist(Artist artist) {
-        DBManager.getInstance().getDaoSession().getArtistDao().save(artist);
+        ArtistArt artistArt = artist.getArtistArt();
+        DBManager.getInstance().getDaoSession().getArtistArtDao().save(artistArt);
     }
 }

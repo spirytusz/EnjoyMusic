@@ -32,7 +32,6 @@ public class Music implements Parcelable {
     private String musicFilePath;
     private String musicName;
     private long musicDuration;
-    private String musicFileSize;
     private long musicAddDate;
 
     @ToOne
@@ -53,7 +52,6 @@ public class Music implements Parcelable {
         dest.writeString(this.musicFilePath);
         dest.writeString(this.musicName);
         dest.writeLong(this.musicDuration);
-        dest.writeString(this.musicFileSize);
         dest.writeLong(this.musicAddDate);
         dest.writeParcelable(this.album, flags);
         dest.writeParcelable(this.artist, flags);
@@ -69,22 +67,20 @@ public class Music implements Parcelable {
         this.musicFilePath = in.readString();
         this.musicName = in.readString();
         this.musicDuration = in.readLong();
-        this.musicFileSize = in.readString();
         this.musicAddDate = in.readLong();
         this.album = in.readParcelable(Album.class.getClassLoader());
         this.artist = in.readParcelable(Artist.class.getClassLoader());
     }
 
-    @Generated(hash = 1235278863)
-    public Music(Long musicId, Long albumId, Long artistId, String musicFilePath,
-                 String musicName, long musicDuration, String musicFileSize, long musicAddDate) {
+    @Generated(hash = 1357307943)
+    public Music(Long musicId, Long albumId, Long artistId, String musicFilePath, String musicName, long musicDuration,
+                 long musicAddDate) {
         this.musicId = musicId;
         this.albumId = albumId;
         this.artistId = artistId;
         this.musicFilePath = musicFilePath;
         this.musicName = musicName;
         this.musicDuration = musicDuration;
-        this.musicFileSize = musicFileSize;
         this.musicAddDate = musicAddDate;
     }
 
@@ -127,7 +123,6 @@ public class Music implements Parcelable {
                 ", musicFilePath='" + musicFilePath + '\'' +
                 ", musicName='" + musicName + '\'' +
                 ", musicDuration=" + musicDuration +
-                ", musicFileSize='" + musicFileSize + '\'' +
                 ", musicAddDate=" + musicAddDate +
                 '}';
     }
@@ -143,14 +138,13 @@ public class Music implements Parcelable {
                 Objects.equals(albumId, music.albumId) &&
                 Objects.equals(artistId, music.artistId) &&
                 Objects.equals(musicFilePath, music.musicFilePath) &&
-                Objects.equals(musicName, music.musicName) &&
-                Objects.equals(musicFileSize, music.musicFileSize);
+                Objects.equals(musicName, music.musicName);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(musicId, albumId, artistId, musicFilePath, musicName, musicDuration, musicFileSize, musicAddDate);
+        return Objects.hash(musicId, albumId, artistId, musicFilePath, musicName, musicDuration, musicAddDate);
     }
 
     public Long getMusicId() {
@@ -199,14 +193,6 @@ public class Music implements Parcelable {
 
     public void setMusicDuration(long musicDuration) {
         this.musicDuration = musicDuration;
-    }
-
-    public String getMusicFileSize() {
-        return this.musicFileSize;
-    }
-
-    public void setMusicFileSize(String musicFileSize) {
-        this.musicFileSize = musicFileSize;
     }
 
     public long getMusicAddDate() {

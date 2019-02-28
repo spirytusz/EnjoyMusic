@@ -80,7 +80,7 @@ public class MusicScanner {
     }
 
     private void scan() {
-        List<Music> musicList = DBManager.getInstance().getDaoSession().loadAll(Music.class);
+        /*List<Music> musicList = DBManager.getInstance().getDaoSession().loadAll(Music.class);
         if (musicList != null && !musicList.isEmpty()) {
             mAllMusicList = musicList;
             mAlbumList = DBManager.getInstance().getDaoSession().loadAll(Album.class);
@@ -88,13 +88,19 @@ public class MusicScanner {
             mFolderList = DBManager.getInstance().getDaoSession().loadAll(Folder.class);
         } else {
             scanDirectorily();
-        }
+        }*/
+        scanDirectorily();
     }
 
     private void scanDirectorily() {
         scanMusic();
 
         // insert into my database.
+        DBManager.getInstance().getDaoSession().deleteAll(Music.class);
+        DBManager.getInstance().getDaoSession().deleteAll(Album.class);
+        DBManager.getInstance().getDaoSession().deleteAll(Artist.class);
+        DBManager.getInstance().getDaoSession().deleteAll(Folder.class);
+
         DBManager.getInstance().getDaoSession().getMusicDao().insertOrReplaceInTx(mAllMusicList);
         DBManager.getInstance().getDaoSession().getAlbumDao().insertOrReplaceInTx(mAlbumList);
         DBManager.getInstance().getDaoSession().getArtistDao().insertOrReplaceInTx(mArtistList);
@@ -114,7 +120,6 @@ public class MusicScanner {
                 MediaStore.Audio.AudioColumns.ARTIST_ID,
                 MediaStore.Audio.AudioColumns.DATA,
                 MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.SIZE,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.DATE_ADDED,
                 MediaStore.Audio.Media.IS_MUSIC
@@ -135,10 +140,9 @@ public class MusicScanner {
                 long artistId = cursor.getLong(2);
                 String musicFilePath = cursor.getString(3);
                 String musicName = cursor.getString(4);
-                String musicFileSize = cursor.getString(5);
-                long duration = cursor.getLong(6);
-                String musicAddDate = cursor.getString(7);
-                Music music = new Music(musicId, albumId, artistId, musicFilePath, musicName, duration, musicFileSize, Long.valueOf(musicAddDate));
+                long duration = cursor.getLong(5);
+                String musicAddDate = cursor.getString(6);
+                Music music = new Music(musicId, albumId, artistId, musicFilePath, musicName, duration, Long.valueOf(musicAddDate));
                 mAllMusicList.add(music);
 
                 // create Join Table & insert into Join Tables.
@@ -158,7 +162,7 @@ public class MusicScanner {
                 String artistName = artistValues.getAsString(MediaStore.Audio.Artists.ARTIST);
                 int numberOfAlbum = artistValues.getAsInteger(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS);
                 int numberOfTrack = artistValues.getAsInteger(MediaStore.Audio.Artists.NUMBER_OF_TRACKS);
-                Artist artist = new Artist(artistId, artistName, "", numberOfAlbum, numberOfTrack);
+                Artist artist = new Artist(artistId, artistName, numberOfAlbum, numberOfTrack);
                 mArtistList.add(artist);
 
                 String[] dir = FileUtil.getFolderNameAndFolderDir(music.getMusicFilePath());

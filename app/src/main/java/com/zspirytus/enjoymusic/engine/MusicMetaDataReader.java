@@ -10,6 +10,7 @@ import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.entity.listitem.MusicMetaData;
 
+import java.io.File;
 import java.io.IOException;
 
 public class MusicMetaDataReader {
@@ -29,6 +30,10 @@ public class MusicMetaDataReader {
     }
 
     public MusicMetaData readMetaData(Music music) {
+        File file = new File(music.getMusicFilePath());
+        if (!file.isFile() || !file.exists()) {
+            return new MusicMetaData();
+        }
         mRetriever = new MediaMetadataRetriever();
         mMediaExtractor = new MediaExtractor();
         mRetriever.setDataSource(music.getMusicFilePath());

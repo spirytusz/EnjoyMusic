@@ -13,6 +13,7 @@ import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.ArtistArt;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.entity.listitem.MusicMetaDataListItem;
@@ -131,6 +132,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
 
             @Override
             public void onError(Throwable e) {
+                ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.download_failed);
                 e.printStackTrace();
             }
 
@@ -143,7 +145,9 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
     @WorkerThread
     private void updateArtistInfo(String picUrl) {
         if (picUrl != null) {
-            dataList.get(0).getArtist().setArtistArt(picUrl);
+            long artistId = dataList.get(0).getArtist().getArtistId();
+            ArtistArt artistArt = new ArtistArt(artistId, picUrl);
+            dataList.get(0).getArtist().setArtistArt(artistArt);
             mMusicMetaList.postValue(dataList);
         } else {
             AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_artist_art_available));

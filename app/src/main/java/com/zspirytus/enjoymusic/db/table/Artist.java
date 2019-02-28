@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.zspirytus.enjoymusic.db.greendao.AlbumDao;
+import com.zspirytus.enjoymusic.db.greendao.ArtistArtDao;
 import com.zspirytus.enjoymusic.db.greendao.ArtistDao;
 import com.zspirytus.enjoymusic.db.greendao.DaoSession;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinAlbumToArtist;
@@ -14,6 +15,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinEntity;
 import org.greenrobot.greendao.annotation.ToMany;
+import org.greenrobot.greendao.annotation.ToOne;
 
 import java.util.List;
 
@@ -28,7 +30,6 @@ public class Artist implements Parcelable {
     private Long artistId;
 
     private String artistName;
-    private String artistArt;
     private int numberOfAlbums;
     private int mumberOfTracks;
 
@@ -40,30 +41,44 @@ public class Artist implements Parcelable {
     )
     private List<Album> albums;
 
+    @ToOne
+    private ArtistArt artistArt;
+
+
+    public Artist() {
+    }
+
+    @Generated(hash = 2060216416)
+    public Artist(Long artistId, String artistName, int numberOfAlbums, int mumberOfTracks) {
+        this.artistId = artistId;
+        this.artistName = artistName;
+        this.numberOfAlbums = numberOfAlbums;
+        this.mumberOfTracks = mumberOfTracks;
+    }
+
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 619827925)
+    private transient ArtistDao myDao;
+
+    @Generated(hash = 1118352004)
+    private transient boolean artistArt__refreshed;
+
     @Override
     public String toString() {
         return "Artist{" +
                 "artistId=" + artistId +
                 ", artistName='" + artistName + '\'' +
-                ", artistArt='" + artistArt + '\'' +
                 ", numberOfAlbums=" + numberOfAlbums +
                 ", mumberOfTracks=" + mumberOfTracks +
                 '}';
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.artistId);
-        dest.writeString(this.artistName);
-        dest.writeString(this.artistArt);
-        dest.writeInt(this.numberOfAlbums);
-        dest.writeInt(this.mumberOfTracks);
-        dest.writeTypedList(this.albums);
     }
 
     public Long getArtistId() {
@@ -82,14 +97,6 @@ public class Artist implements Parcelable {
         this.artistName = artistName;
     }
 
-    public String getArtistArt() {
-        return this.artistArt;
-    }
-
-    public void setArtistArt(String artistArt) {
-        this.artistArt = artistArt;
-    }
-
     public int getNumberOfAlbums() {
         return this.numberOfAlbums;
     }
@@ -104,6 +111,41 @@ public class Artist implements Parcelable {
 
     public void setMumberOfTracks(int mumberOfTracks) {
         this.mumberOfTracks = mumberOfTracks;
+    }
+
+    /**
+     * To-one relationship, resolved on first access.
+     */
+    @Generated(hash = 1989872803)
+    public ArtistArt getArtistArt() {
+        if (artistArt != null || !artistArt__refreshed) {
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            ArtistArtDao targetDao = daoSession.getArtistArtDao();
+            targetDao.refresh(artistArt);
+            artistArt__refreshed = true;
+        }
+        return artistArt;
+    }
+
+    /**
+     * To-one relationship, returned entity is not refreshed and may carry only the PK property.
+     */
+    @Generated(hash = 572947206)
+    public ArtistArt peakArtistArt() {
+        return artistArt;
+    }
+
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 977824197)
+    public void setArtistArt(ArtistArt artistArt) {
+        synchronized (this) {
+            this.artistArt = artistArt;
+            artistArt__refreshed = true;
+        }
     }
 
     /**
@@ -172,36 +214,38 @@ public class Artist implements Parcelable {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 964463518)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getArtistDao() : null;
     }
 
-    public Artist() {
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.artistId);
+        dest.writeString(this.artistName);
+        dest.writeInt(this.numberOfAlbums);
+        dest.writeInt(this.mumberOfTracks);
+        dest.writeParcelable(this.artistArt, flags);
     }
 
     protected Artist(Parcel in) {
         this.artistId = (Long) in.readValue(Long.class.getClassLoader());
         this.artistName = in.readString();
-        this.artistArt = in.readString();
         this.numberOfAlbums = in.readInt();
         this.mumberOfTracks = in.readInt();
-        this.albums = in.createTypedArrayList(Album.CREATOR);
+        this.artistArt = in.readParcelable(ArtistArt.class.getClassLoader());
     }
 
-    @Generated(hash = 2141919485)
-    public Artist(Long artistId, String artistName, String artistArt, int numberOfAlbums,
-                  int mumberOfTracks) {
-        this.artistId = artistId;
-        this.artistName = artistName;
-        this.artistArt = artistArt;
-        this.numberOfAlbums = numberOfAlbums;
-        this.mumberOfTracks = mumberOfTracks;
-    }
-
-    public static final Parcelable.Creator<Artist> CREATOR = new Parcelable.Creator<Artist>() {
+    public static final Creator<Artist> CREATOR = new Creator<Artist>() {
         @Override
         public Artist createFromParcel(Parcel source) {
             return new Artist(source);
@@ -212,12 +256,4 @@ public class Artist implements Parcelable {
             return new Artist[size];
         }
     };
-
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-
-    /** Used for active entity operations. */
-    @Generated(hash = 619827925)
-    private transient ArtistDao myDao;
 }
