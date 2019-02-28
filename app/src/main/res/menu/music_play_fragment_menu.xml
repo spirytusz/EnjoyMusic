@@ -11,9 +11,9 @@
         android:id="@+id/menu_equalizer"
         android:title="@string/audio_effect_equalizer" />
 
-    <item
+    <!--<item
         android:id="@+id/menu_bass_boast"
-        android:title="@string/audio_effect_bass_boast" />
+        android:title="@string/audio_effect_bass_boast" />-->
 
     <item
         android:id="@+id/menu_lyric_download"

@@ -159,9 +159,9 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
                 case R.id.menu_equalizer:
                     showAudioEffectFragment(AudioEffectFragment.FLAG_EQUALIZER);
                     break;
-                case R.id.menu_bass_boast:
+                /*case R.id.menu_bass_boast:
                     showAudioEffectFragment(AudioEffectFragment.FLAG_BASS_BOAST);
-                    break;
+                    break;*/
                 case R.id.menu_lyric_download:
                     viewModel.applyLyricFromNetWork(mViewModel.getCurrentPlayingMusic().getValue());
                     break;

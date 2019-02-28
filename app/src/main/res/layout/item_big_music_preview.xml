@@ -5,23 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="256dp">
 
-    <ImageView
-        android:id="@+id/big_music_preview_cover"
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:background="@drawable/defalut_cover" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/big_music_preview_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            tools:background="@drawable/defalut_cover" />
+
+    </android.support.v7.widget.CardView>
 
     <TextView
         android:id="@+id/big_music_preview_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        app:layout_constraintStart_toEndOf="@id/big_music_preview_cover"
-        app:layout_constraintTop_toTopOf="@id/big_music_preview_cover"
+        app:layout_constraintStart_toEndOf="@id/card_view"
+        app:layout_constraintTop_toTopOf="@id/card_view"
         tools:text="HaHaHa" />
 
     <android.support.constraint.Guideline
