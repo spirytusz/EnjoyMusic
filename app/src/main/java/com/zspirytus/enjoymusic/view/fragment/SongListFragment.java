@@ -67,11 +67,6 @@ public class SongListFragment extends BaseFragment implements OnItemClickListene
     }
 
     @Override
-    public int enterAnim() {
-        return R.anim.anim_fragment_translate_show_up;
-    }
-
-    @Override
     public void onItemClick(View view, int position) {
         if (position == 0) {
             MusicPickFragment fragment = MusicPickFragment.getInstance();

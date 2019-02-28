@@ -67,6 +67,11 @@ public class SongListContentFragment extends CommonHeaderBaseFragment implements
     }
 
     @Override
+    public int enterAnim() {
+        return R.anim.anim_fragment_translate_show_up;
+    }
+
+    @Override
     public void onItemClick(View view, int position) {
         Music music = mInnerAdapter.getList().get(position - mAdapter.getHeaderViewCount());
         ForegroundMusicController.getInstance().play(music);
