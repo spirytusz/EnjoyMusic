@@ -86,6 +86,7 @@ public class MainActivity extends BaseActivity
         FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
         FragmentVisibilityManager.getInstance().onRestoreInstanceState(savedInstanceState);
         AudioEffectConfig.onRestoreInstanceState(savedInstanceState);
+        mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         mViewModel.onRestoreInstanceState(savedInstanceState);
     }
 

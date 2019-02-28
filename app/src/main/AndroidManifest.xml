@@ -45,6 +45,8 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".receivers.MyNotificationAlarm" />
+
         <service
             android:name=".services.PlayMusicService"
             android:enabled="true"

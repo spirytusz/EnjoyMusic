@@ -8,7 +8,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.app.NotificationCompat.MediaStyle;
 
@@ -100,16 +99,14 @@ public class NotificationHelper {
         return NOTIFICATION_MANAGER_NOTIFY_ID;
     }
 
-    public void beginAutoCancel(Handler handler) {
-        handler.postDelayed(autoCancelNotificationTask, AUTO_CANCEL_DELAY);
-    }
-
-    public void pauseAutoCancel(Handler handler) {
-        handler.removeCallbacks(autoCancelNotificationTask);
-    }
-
-    public void cancelNotification() {
-        mNotificationManager.cancel(NOTIFICATION_MANAGER_NOTIFY_ID);
+    public void setClear(boolean canClear) {
+        if (mCurrentNotification != null) {
+            if (canClear) {
+                mCurrentNotification.flags = Notification.FLAG_AUTO_CANCEL;
+            } else {
+                mCurrentNotification.flags = Notification.FLAG_NO_CLEAR;
+            }
+        }
     }
 
     private void createNotificationChannel() {
@@ -191,11 +188,5 @@ public class NotificationHelper {
             LogUtil.e(this.getClass().getSimpleName(), "OS is not MIUI");
         }
     }
-
-    private Runnable autoCancelNotificationTask = () -> {
-        NotificationManager nMgr = (NotificationManager) MainApplication.getBackgroundContext()
-                .getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        nMgr.cancel(NOTIFICATION_MANAGER_NOTIFY_ID);
-    };
 
 }

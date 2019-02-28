@@ -18,6 +18,7 @@ import com.zspirytus.enjoymusic.listeners.OnRemotePauseListener;
 import com.zspirytus.enjoymusic.listeners.OnRemotePlayListener;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
+import com.zspirytus.enjoymusic.receivers.MyNotificationAlarm;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
 import com.zspirytus.enjoymusic.utils.StatusBarUtil;
@@ -35,6 +36,7 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
 
     private BinderPool mBinderPool;
     private Handler mHandler;
+    private MyNotificationAlarm mAlarm;
 
     private MyHeadSetPlugOutReceiver myHeadSetPlugOutReceiver;
     private MyHeadSetButtonClickBelowLReceiver myHeadSetButtonClickBelowLReceiver;
@@ -66,6 +68,7 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
 
     @Override
     public boolean onUnbind(Intent intent) {
+        mBinderPool = null;
         return super.onUnbind(intent);
     }
 
@@ -102,12 +105,15 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
          * @see #startForeground(int, Notification)
          */
         startForeground(notificationNotifyId, currentNotification);
-        NotificationHelper.getInstance().pauseAutoCancel(mHandler);
+        NotificationHelper.getInstance().setClear(false);
     }
 
     @Override
     public void onPause() {
-        NotificationHelper.getInstance().beginAutoCancel(mHandler);
+        if (mBinderPool == null) {
+            stopForeground(false);
+            NotificationHelper.getInstance().setClear(true);
+        }
     }
 
     private void handleStatusBarEvent(Intent intent) {
