@@ -2,10 +2,21 @@ package com.zspirytus.enjoymusic.entity.listitem;
 
 public class SettingItem {
 
+    private boolean isTitle = false;
     private String title;
 
-    private boolean hasSwitch = false;
-    private boolean isChecked = false;
+    private boolean isAudioEffect = false;
+    private AudioEffectItem audioEffectItem;
+
+    private boolean isDividerLine = false;
+
+    public boolean isTitle() {
+        return isTitle;
+    }
+
+    public void setTitle(boolean title) {
+        isTitle = title;
+    }
 
     public String getTitle() {
         return title;
@@ -15,19 +26,27 @@ public class SettingItem {
         this.title = title;
     }
 
-    public boolean isHasSwitch() {
-        return hasSwitch;
+    public boolean isAudioEffect() {
+        return isAudioEffect;
     }
 
-    public void setHasSwitch(boolean hasSwitch) {
-        this.hasSwitch = hasSwitch;
+    public void setAudioEffect(boolean audioEffect) {
+        isAudioEffect = audioEffect;
     }
 
-    public boolean isChecked() {
-        return isChecked;
+    public AudioEffectItem getAudioEffectItem() {
+        return audioEffectItem;
     }
 
-    public void setChecked(boolean checked) {
-        isChecked = checked;
+    public void setAudioEffectItem(AudioEffectItem audioEffectItem) {
+        this.audioEffectItem = audioEffectItem;
+    }
+
+    public boolean isDividerLine() {
+        return isDividerLine;
+    }
+
+    public void setDividerLine(boolean dividerLine) {
+        isDividerLine = dividerLine;
     }
 }

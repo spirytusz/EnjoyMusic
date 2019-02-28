@@ -45,6 +45,7 @@ public class AboutFragment extends CommonHeaderBaseFragment implements OnItemCli
     protected void initView() {
         mToolbar.setTitleTextColor(getResources().getColor(R.color.black));
         mToolbar.setTitle(R.string.about_fragment_title);
+        mToolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
         playShadowAnimator();
     }

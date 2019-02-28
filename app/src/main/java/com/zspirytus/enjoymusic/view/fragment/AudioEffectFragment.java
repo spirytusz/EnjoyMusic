@@ -1,12 +1,13 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Switch;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.zspirytus.basesdk.recyclerview.ItemSpacingNavBarFixer;
@@ -21,11 +22,17 @@ import com.zspirytus.enjoymusic.entity.listitem.AudioEffectItem;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
 import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.enjoymusic.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.view.widget.EqualizerView;
 
 @LayoutIdInject(R.layout.fragment_audio_effect)
 public class AudioEffectFragment extends BaseFragment
-        implements OnItemClickListener, View.OnClickListener {
+        implements OnItemClickListener {
+
+    private static final String FLAG_KEY = "flag";
+    public static final int FLAG_AUDIO_FILED = 1;
+    public static final int FLAG_EQUALIZER = 2;
+    public static final int FLAG_BASS_BOAST = 3;
 
     @ViewInject(R.id.recyclerview)
     private RecyclerView mRecyclerView;
@@ -37,30 +44,14 @@ public class AudioEffectFragment extends BaseFragment
     private TextView mTitle;
     @ViewInject(R.id.reset_btn)
     private TextView mResetBtn;
+    @ViewInject(R.id.seek_bar)
+    private SeekBar mBassBoaster;
 
     private AudioEffectViewModel mViewModel;
-    private CommonRecyclerViewAdapter<AudioEffectItem> mAdapter;
     private CommonRecyclerViewAdapter<AudioEffectItem> mPresetReverbAdapter;
 
     @Override
     protected void initData() {
-        mAdapter = new CommonRecyclerViewAdapter<AudioEffectItem>() {
-            @Override
-            public int getLayoutId() {
-                return R.layout.item_simple;
-            }
-
-            @Override
-            public void convert(CommonViewHolder holder, AudioEffectItem item, int position) {
-                holder.setText(R.id.item_text, item.getTitle());
-                if (item.isSingleEffect()) {
-                    holder.setVisibility(R.id.item_switch, View.VISIBLE);
-                    Switch checked = holder.getView(R.id.item_switch);
-                    checked.setChecked(item.isChecked());
-                }
-                holder.setOnItemClickListener(AudioEffectFragment.this);
-            }
-        };
         mPresetReverbAdapter = new CommonRecyclerViewAdapter<AudioEffectItem>() {
             @Override
             public int getLayoutId() {
@@ -74,89 +65,72 @@ public class AudioEffectFragment extends BaseFragment
                 holder.setOnItemClickListener(AudioEffectFragment.this);
             }
         };
-        mRecyclerView.addItemDecoration(new ItemSpacingNavBarFixer());
-        mEqualizer.setOnBandLevelChangeListener((band, level) -> {
-            mViewModel.setBandLevel(band, level);
-        });
         mViewModel = ViewModelProviders.of(this).get(AudioEffectViewModel.class);
-        mViewModel.obtainAudioEffects();
-        mViewModel.obtainPresetReverbList();
+        mViewModel.obtainDataByFlag(getArguments().getInt(FLAG_KEY));
     }
 
     @Override
     protected void initView() {
+        mBackBtn.setOnClickListener(v -> goBack());
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
-        mRecyclerView.setAdapter(mAdapter);
-        mBackBtn.setOnClickListener(this);
-        mResetBtn.setOnClickListener(this);
+        mRecyclerView.setAdapter(mPresetReverbAdapter);
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                outRect.left = PixelsUtil.dp2px(getContext(), 22);
+            }
+        });
+        mRecyclerView.addItemDecoration(new ItemSpacingNavBarFixer());
+
+        mResetBtn.setOnClickListener(v -> mEqualizer.reset());
+        mEqualizer.setOnBandLevelChangeListener((band, level) -> mViewModel.setBandLevel(band, level));
+
+        mBassBoaster.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mViewModel.setBassBoastStrength(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel.getAudioEffects().observe(this, values -> {
-            mAdapter.setList(values);
-        });
         mViewModel.getPresetReverbNameList().observe(this, values -> {
+            mTitle.setText(R.string.audio_effect_audio_field);
+            mRecyclerView.setVisibility(View.VISIBLE);
             mPresetReverbAdapter.setList(values);
         });
         mViewModel.getEqualizerMetaData().observe(this, values -> {
+            mTitle.setText(R.string.audio_effect_equalizer);
+            mResetBtn.setVisibility(View.VISIBLE);
             mEqualizer.setEqualizerMetaData(values);
+            mEqualizer.setVisibility(View.VISIBLE);
+        });
+        mViewModel.getBassBoastFlag().observe(this, values -> {
+            mTitle.setText(R.string.audio_effect_bass_boast);
+            mBassBoaster.setVisibility(View.VISIBLE);
         });
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        if (mRecyclerView.getAdapter() == mAdapter) {
-            if (position == mAdapter.getItemCount() - 1) {
-                mTitle.setText(R.string.audio_effect_fragment_second_title);
-                mRecyclerView.setAdapter(mPresetReverbAdapter);
-            } else {
-                boolean isChecked = mAdapter.getList().get(position).isChecked();
-                mAdapter.getList().get(position).setChecked(!isChecked);
-                Switch check = view.findViewById(R.id.item_switch);
-                check.setChecked(!isChecked);
-                mViewModel.setEffectEnable(!isChecked, position);
-            }
-        } else {
-            for (int i = 0; i < mPresetReverbAdapter.getList().size(); i++) {
-                if (mPresetReverbAdapter.getList().get(i).isChecked()) {
-                    mPresetReverbAdapter.getList().get(i).setChecked(false);
-                    break;
-                }
-            }
-            mPresetReverbAdapter.getList().get(position).setChecked(true);
-            mPresetReverbAdapter.notifyDataSetChanged();
-            if (position != mPresetReverbAdapter.getItemCount() - 1) {
-                mViewModel.setPresetReverb(position);
-            } else {
-                showEqualizer();
-            }
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.back_btn:
-                goBack();
-                break;
-            case R.id.reset_btn:
-                mEqualizer.reset();
-                break;
-        }
+        mViewModel.setPresetReverb(position);
     }
 
     @Override
     public void goBack() {
-        if (mEqualizer.getVisibility() == View.VISIBLE) {
-            hideEqualizer();
-        } else if (mRecyclerView.getAdapter() == mPresetReverbAdapter) {
-            mRecyclerView.setAdapter(mAdapter);
-            mTitle.setText(R.string.audio_effect_fragment_main_title);
-        } else {
-            FragmentVisibilityManager.getInstance().remove(this);
-        }
+        FragmentVisibilityManager.getInstance().remove(this);
     }
 
     @Override
@@ -164,24 +138,11 @@ public class AudioEffectFragment extends BaseFragment
         return R.id.full_fragment_container;
     }
 
-    private void showEqualizer() {
-        if (!mViewModel.isEqualizerInited()) {
-            mViewModel.obtainEqualizerMetaData();
-        }
-        mRecyclerView.setVisibility(View.GONE);
-        mEqualizer.setVisibility(View.VISIBLE);
-        mTitle.setText(R.string.audio_effect_fragment_third_title);
-        mResetBtn.setVisibility(View.VISIBLE);
-    }
-
-    private void hideEqualizer() {
-        mRecyclerView.setVisibility(View.VISIBLE);
-        mEqualizer.setVisibility(View.GONE);
-        mTitle.setText(R.string.audio_effect_fragment_second_title);
-        mResetBtn.setVisibility(View.GONE);
-    }
-
-    public static AudioEffectFragment getInstance() {
-        return new AudioEffectFragment();
+    public static AudioEffectFragment getInstance(int flag) {
+        AudioEffectFragment fragment = new AudioEffectFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(FLAG_KEY, flag);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 }

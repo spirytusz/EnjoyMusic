@@ -4,8 +4,16 @@
         android:id="@+id/menu_edit_music_info"
         android:title="@string/music_play_menu_edit_music_info" />
     <item
-        android:id="@+id/menu_audio_effect"
-        android:title="@string/music_play_menu_audio_effect" />
+        android:id="@+id/menu_audio_field"
+        android:title="@string/audio_effect_audio_field" />
+
+    <item
+        android:id="@+id/menu_equalizer"
+        android:title="@string/audio_effect_equalizer" />
+
+    <item
+        android:id="@+id/menu_bass_boast"
+        android:title="@string/audio_effect_bass_boast" />
 
     <item
         android:id="@+id/menu_lyric_download"

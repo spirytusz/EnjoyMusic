@@ -1,6 +1,7 @@
 package com.zspirytus.basesdk.recyclerview.viewholder;
 
 import android.content.Context;
+import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.v7.widget.RecyclerView;
@@ -78,6 +79,11 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
     public void setText(@IdRes int id, Spanned text) {
         TextView textView = getView(id);
         textView.setText(text);
+    }
+
+    public void setTextColor(@IdRes int id, @ColorRes int color) {
+        TextView textView = getView(id);
+        textView.setTextColor(mContext.getResources().getColor(color));
     }
 
     public void setOnItemClickListener(final OnItemClickListener listener) {

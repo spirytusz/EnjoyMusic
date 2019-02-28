@@ -3,18 +3,19 @@ package com.zspirytus.enjoymusic.view.fragment;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
-import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
-import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.adapter.SettingListAdapter;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.SettingFragmentViewModel;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
+import com.zspirytus.enjoymusic.entity.listitem.AudioEffectItem;
 import com.zspirytus.enjoymusic.entity.listitem.SettingItem;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
@@ -35,13 +36,12 @@ public class SettingsFragment extends CommonHeaderBaseFragment implements OnItem
     @ViewInject(R.id.tool_bar)
     private Toolbar mToolbar;
 
-    private CommonRecyclerViewAdapter<SettingItem> mAdapter;
+    private SettingListAdapter mAdapter;
     private SettingFragmentViewModel mViewModel;
     private AnimatorSet mShadowAnim;
 
     public static SettingsFragment getInstance() {
-        SettingsFragment instance = new SettingsFragment();
-        return instance;
+        return new SettingsFragment();
     }
 
     @Override
@@ -51,6 +51,20 @@ public class SettingsFragment extends CommonHeaderBaseFragment implements OnItem
         mToolbar.setTitle(R.string.settings_fragment_title);
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                int position = parent.getChildAdapterPosition(view);
+                if (position == 0) {
+                    outRect.top = PixelsUtil.dp2px(getContext(), 10);
+                }
+                if (!mAdapter.getData().get(position).isDividerLine()) {
+                    outRect.left = PixelsUtil.dp2px(getContext(), 28);
+                    outRect.right = PixelsUtil.dp2px(getContext(), 28);
+                }
+            }
+        });
         playShadowAnimator();
     }
 
@@ -58,29 +72,21 @@ public class SettingsFragment extends CommonHeaderBaseFragment implements OnItem
     protected void initData() {
         mViewModel = ViewModelProviders.of(this).get(SettingFragmentViewModel.class);
         List<SettingItem> items = mViewModel.obtainListItem();
-        mAdapter = new CommonRecyclerViewAdapter<SettingItem>() {
-            @Override
-            public int getLayoutId() {
-                return R.layout.item_simple;
-            }
-
-            @Override
-            public void convert(CommonViewHolder holder, SettingItem item, int position) {
-                holder.setVisibility(R.id.item_image, View.GONE);
-                holder.setVisibility(R.id.item_switch, View.GONE);
-                holder.setText(R.id.item_text, item.getTitle());
-                holder.setOnItemClickListener(SettingsFragment.this);
-            }
-        };
-        mAdapter.setList(items);
+        mAdapter = new SettingListAdapter();
+        mAdapter.setData(items);
+        mAdapter.setOnItemClickListener(this);
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        if (position == 0) {
-            AudioEffectFragment fragment = AudioEffectFragment.getInstance();
-            FragmentVisibilityManager.getInstance().addToBackStack(this);
-            FragmentVisibilityManager.getInstance().show(fragment);
+        SettingItem item = mAdapter.getData().get(position);
+        if (item.isAudioEffect()) {
+            AudioEffectItem audioEffectItem = item.getAudioEffectItem();
+            if (audioEffectItem.isSingleEffect()) {
+
+            } else {
+                showAudioEffectFragment(audioEffectItem);
+            }
         }
     }
 
@@ -116,6 +122,23 @@ public class SettingsFragment extends CommonHeaderBaseFragment implements OnItem
             initAnim();
         }
         mShadowAnim.start();
+    }
+
+    private void showAudioEffectFragment(AudioEffectItem item) {
+        AudioEffectFragment fragment = null;
+        switch (item.getTitle()) {
+            case "音场":
+                fragment = AudioEffectFragment.getInstance(AudioEffectFragment.FLAG_AUDIO_FILED);
+                break;
+            case "均衡器":
+                fragment = AudioEffectFragment.getInstance(AudioEffectFragment.FLAG_EQUALIZER);
+                break;
+            case "重低音调节器":
+                fragment = AudioEffectFragment.getInstance(AudioEffectFragment.FLAG_BASS_BOAST);
+                break;
+        }
+        FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
+        FragmentVisibilityManager.getInstance().show(fragment);
     }
 
     @Override

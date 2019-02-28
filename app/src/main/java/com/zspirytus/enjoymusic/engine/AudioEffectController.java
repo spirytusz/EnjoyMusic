@@ -194,6 +194,17 @@ public class AudioEffectController {
         });
     }
 
+    public void setBassBoastStrength(int strength) {
+        ThreadPool.execute(() -> {
+            initBinder();
+            try {
+                mAudioEffectHelper.setBassBoostStrength(strength);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     public interface OnResultListener {
         void onResult(Object result, int callbackId);
     }

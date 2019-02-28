@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.zspirytus.basesdk.ItemViewDelegateManager;
 import com.zspirytus.basesdk.recyclerview.ItemViewDelegate;
+import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class MultiItemAdapter<T> extends RecyclerView.Adapter<CommonViewHolder> 
 
     private List<T> mData;
     private ItemViewDelegateManager<T> mItemViewDelegateManager;
+    protected OnItemClickListener mListener;
 
     public MultiItemAdapter(List<T> data) {
         mData = data;
@@ -60,6 +62,10 @@ public class MultiItemAdapter<T> extends RecyclerView.Adapter<CommonViewHolder> 
     public void setData(List<T> data) {
         mData = data;
         notifyDataSetChanged();
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
     }
 
     public void addData(List<T> data) {

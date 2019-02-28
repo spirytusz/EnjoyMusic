@@ -76,9 +76,9 @@
     <!-- MusicPlay Text end -->
 
     <!-- AudioEffect Text start -->
-    <string name="audio_effect_fragment_main_title">音效</string>
-    <string name="audio_effect_fragment_second_title">音场</string>
-    <string name="audio_effect_fragment_third_title">均衡器</string>
+    <string name="audio_effect_audio_field">音场</string>
+    <string name="audio_effect_equalizer">均衡器</string>
+    <string name="audio_effect_bass_boast">重低音调节器</string>
     <string name="audio_effect_reset">重置</string>
     <!-- AudioEffect Text end -->
 

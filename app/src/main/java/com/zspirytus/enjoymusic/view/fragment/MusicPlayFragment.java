@@ -153,8 +153,14 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
                 case R.id.menu_edit_music_info:
                     showMusicMetaDataFragment();
                     return true;
-                case R.id.menu_audio_effect:
-                    showAudioEffectFragment();
+                case R.id.menu_audio_field:
+                    showAudioEffectFragment(AudioEffectFragment.FLAG_AUDIO_FILED);
+                    break;
+                case R.id.menu_equalizer:
+                    showAudioEffectFragment(AudioEffectFragment.FLAG_EQUALIZER);
+                    break;
+                case R.id.menu_bass_boast:
+                    showAudioEffectFragment(AudioEffectFragment.FLAG_BASS_BOAST);
                     break;
                 case R.id.menu_lyric_download:
                     viewModel.applyLyricFromNetWork(mViewModel.getCurrentPlayingMusic().getValue());
@@ -277,8 +283,8 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
         FragmentVisibilityManager.getInstance().show(fragment);
     }
 
-    private void showAudioEffectFragment() {
-        AudioEffectFragment fragment = AudioEffectFragment.getInstance();
+    private void showAudioEffectFragment(int flag) {
+        AudioEffectFragment fragment = AudioEffectFragment.getInstance(flag);
         FragmentVisibilityManager.getInstance().addToBackStack(this);
         FragmentVisibilityManager.getInstance().show(fragment);
     }
