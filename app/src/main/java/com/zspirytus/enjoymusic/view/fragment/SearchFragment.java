@@ -1,10 +1,13 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,6 +49,10 @@ public class SearchFragment extends BaseFragment {
 
     @Override
     protected void initView() {
+        mEditText.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getParentActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
         mClearTextBtn.setOnClickListener(v -> {
             mEditText.setText("");
             mInfoText.setVisibility(View.GONE);
@@ -86,6 +93,10 @@ public class SearchFragment extends BaseFragment {
 
     @Override
     public void goBack() {
+        mEditText.clearFocus();
+        InputMethodManager imm = (InputMethodManager) getParentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+
         FragmentVisibilityManager.getInstance().remove(this);
     }
 }
