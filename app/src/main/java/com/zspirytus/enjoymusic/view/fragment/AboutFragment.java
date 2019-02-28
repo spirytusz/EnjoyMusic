@@ -37,8 +37,7 @@ public class AboutFragment extends CommonHeaderBaseFragment implements OnItemCli
     private AnimatorSet mShadowAnim;
 
     public static AboutFragment getInstance() {
-        AboutFragment instance = new AboutFragment();
-        return instance;
+        return new AboutFragment();
     }
 
     @Override

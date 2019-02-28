@@ -1,5 +1,7 @@
 package com.zspirytus.enjoymusic.adapter;
 
+import android.graphics.Rect;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Switch;
 
@@ -8,6 +10,7 @@ import com.zspirytus.basesdk.recyclerview.adapter.MultiItemAdapter;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.entity.listitem.SettingItem;
+import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 public class SettingListAdapter extends MultiItemAdapter<SettingItem> {
 
@@ -83,5 +86,24 @@ public class SettingListAdapter extends MultiItemAdapter<SettingItem> {
             }
         };
         addDelegate(delegate);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                int position = parent.getChildAdapterPosition(view);
+                if (position == 0) {
+                    outRect.top = PixelsUtil.dp2px(parent.getContext(), 10);
+                }
+                if (!getData().get(position).isDividerLine()) {
+                    outRect.left = PixelsUtil.dp2px(parent.getContext(), 28);
+                    outRect.right = PixelsUtil.dp2px(parent.getContext(), 28);
+                }
+            }
+        });
     }
 }

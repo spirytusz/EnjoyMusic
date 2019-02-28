@@ -51,6 +51,10 @@ public class AboutFragmentViewModel extends ViewModel {
         aboutItems.add(item);
 
         item = new AboutItem();
+        item.setDividerLine(true);
+        aboutItems.add(item);
+
+        item = new AboutItem();
         item.setIsTitle(true);
         item.setTitle("关于作者");
         aboutItems.add(item);
@@ -70,6 +74,11 @@ public class AboutFragmentViewModel extends ViewModel {
         item.setSubTitle("http://www.zspirytus.com/");
         item.setExtraInfo("http://www.zspirytus.com/");
         aboutItems.add(item);
+
+        item = new AboutItem();
+        item.setDividerLine(true);
+        aboutItems.add(item);
+
         mListItem.setValue(aboutItems);
     }
 }

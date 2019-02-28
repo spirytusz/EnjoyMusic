@@ -12,6 +12,16 @@ public class AboutItem {
 
     private String extraInfo;
 
+    private boolean isDividerLine = false;
+
+    public boolean isDividerLine() {
+        return isDividerLine;
+    }
+
+    public void setDividerLine(boolean dividerLine) {
+        isDividerLine = dividerLine;
+    }
+
     public boolean isTitle() {
         return isTitle;
     }

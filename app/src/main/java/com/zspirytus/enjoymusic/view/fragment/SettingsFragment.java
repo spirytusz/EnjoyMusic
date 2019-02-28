@@ -3,7 +3,6 @@ package com.zspirytus.enjoymusic.view.fragment;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.arch.lifecycle.ViewModelProviders;
-import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -51,20 +50,6 @@ public class SettingsFragment extends CommonHeaderBaseFragment implements OnItem
         mToolbar.setTitle(R.string.settings_fragment_title);
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-                int position = parent.getChildAdapterPosition(view);
-                if (position == 0) {
-                    outRect.top = PixelsUtil.dp2px(getContext(), 10);
-                }
-                if (!mAdapter.getData().get(position).isDividerLine()) {
-                    outRect.left = PixelsUtil.dp2px(getContext(), 28);
-                    outRect.right = PixelsUtil.dp2px(getContext(), 28);
-                }
-            }
-        });
         playShadowAnimator();
     }
 

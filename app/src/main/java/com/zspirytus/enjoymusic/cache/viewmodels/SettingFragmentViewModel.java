@@ -72,13 +72,13 @@ public class SettingFragmentViewModel extends ViewModel {
         item.setAudioEffect(true);
         settingItems.add(item);
 
-        item = new SettingItem();
+        /*item = new SettingItem();
         audioEffectItem = new AudioEffectItem();
         audioEffectItem.setTitle("重低音调节器");
         audioEffectItem.setSingleEffect(false);
         item.setAudioEffectItem(audioEffectItem);
         item.setAudioEffect(true);
-        settingItems.add(item);
+        settingItems.add(item);*/
 
         item = new SettingItem();
         item.setDividerLine(true);
