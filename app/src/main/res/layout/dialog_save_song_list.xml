@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="18dp"
+        android:layout_marginEnd="24dp"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,6 +36,7 @@
 
     <TextView
         android:id="@+id/cancel_btn"
+        style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -47,10 +48,11 @@
 
     <TextView
         android:id="@+id/ok_btn"
+        style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="18dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="16dp"
         android:text="@string/save"
         android:textColor="@color/colorPrimary"
