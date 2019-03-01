@@ -206,6 +206,11 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     }
 
     @Override
+    public int enterAnim() {
+        return R.anim.anim_fragment_translate_show_up;
+    }
+
+    @Override
     public void goBack() {
         FragmentVisibilityManager.getInstance().hide(this);
         getParentActivity().setDefaultNavBar();

@@ -55,7 +55,7 @@ public class SaveSongListDialog extends BaseDialogFragment implements View.OnCli
         WindowManager.LayoutParams lp = getDialog().getWindow().getAttributes();
         lp.dimAmount = 0.8f;
         lp.width = PixelsUtil.getPixelsConfig()[0] - 2 * PixelsUtil.dp2px(getContext(), 40);
-        lp.height = PixelsUtil.dp2px(getContext(), 120);
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(lp);
         window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
