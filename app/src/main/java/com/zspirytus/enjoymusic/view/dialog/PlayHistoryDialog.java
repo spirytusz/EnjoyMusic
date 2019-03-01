@@ -12,6 +12,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zspirytus.basesdk.annotations.LayoutIdInject;
+import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
@@ -21,8 +23,6 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.entity.listitem.PlayHistoryItem;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayHistoryObserverManager;
-import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.receivers.observer.PlayHistoryObserver;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.utils.TimeUtil;

@@ -7,14 +7,14 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.view.animation.DecelerateInterpolator;
 
+import com.zspirytus.basesdk.annotations.LayoutIdInject;
+import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MyViewPagerAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
-import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.view.widget.lazyviewpager.LazyViewPager;
 

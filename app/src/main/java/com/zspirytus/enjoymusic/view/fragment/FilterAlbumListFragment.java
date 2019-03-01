@@ -10,6 +10,8 @@ import android.text.style.RelativeSizeSpan;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zspirytus.basesdk.annotations.LayoutIdInject;
+import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.adapter.HeaderFooterViewWrapAdapter;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
@@ -21,8 +23,6 @@ import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
 import java.util.ArrayList;
 import java.util.List;

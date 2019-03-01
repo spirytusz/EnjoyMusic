@@ -13,6 +13,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.zspirytus.basesdk.annotations.LayoutIdInject;
+import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
@@ -25,8 +27,6 @@ import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.impl.glide.GlideApp;
-import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 import com.zspirytus.enjoymusic.view.dialog.PlayHistoryDialog;
 import com.zspirytus.enjoymusic.view.widget.AutoRotateCircleImage;

@@ -14,6 +14,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.MenuItem;
 
+import com.zspirytus.basesdk.annotations.LayoutIdInject;
+import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.enjoymusic.AndroidBug5497Workaround;
 import com.zspirytus.enjoymusic.IBinderPool;
 import com.zspirytus.enjoymusic.R;
@@ -28,8 +30,6 @@ import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.global.AudioEffectConfig;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
-import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 import com.zspirytus.enjoymusic.view.fragment.LaunchAnimationFragment;

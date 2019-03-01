@@ -8,10 +8,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.zspirytus.basesdk.annotations.LayoutIdInject;
+import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseDialogFragment;
-import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 @LayoutIdInject(R.layout.dialog_save_music_info)

@@ -15,6 +15,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.zspirytus.basesdk.annotations.LayoutIdInject;
+import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.basesdk.recyclerview.ItemSpacingDecoration;
 import com.zspirytus.basesdk.recyclerview.adapter.HeaderFooterViewWrapAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
@@ -29,8 +31,6 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.utils.RandomUtil;
 

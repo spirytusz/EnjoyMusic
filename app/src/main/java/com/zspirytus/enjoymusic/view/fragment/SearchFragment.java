@@ -12,14 +12,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zspirytus.basesdk.annotations.LayoutIdInject;
+import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.SearchResultListAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.SearchFragmentViewModel;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
 @LayoutIdInject(R.layout.fragment_search_layout)
 public class SearchFragment extends BaseFragment {

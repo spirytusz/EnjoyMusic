@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
+import com.zspirytus.basesdk.annotations.LayoutIdInject;
+import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.utils.ToastUtil;

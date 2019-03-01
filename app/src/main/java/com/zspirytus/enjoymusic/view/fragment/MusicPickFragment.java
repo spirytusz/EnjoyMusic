@@ -9,6 +9,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zspirytus.basesdk.annotations.LayoutIdInject;
+import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
@@ -23,8 +25,6 @@ import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.listitem.MusicPickItem;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.dialog.SaveSongListDialog;
 

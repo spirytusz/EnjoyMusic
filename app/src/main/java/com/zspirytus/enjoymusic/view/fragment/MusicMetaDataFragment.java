@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zspirytus.basesdk.annotations.LayoutIdInject;
+import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MusicMetaDataListAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
@@ -16,8 +18,6 @@ import com.zspirytus.enjoymusic.cache.viewmodels.MusicMetaDataFragmentViewModel;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 import com.zspirytus.enjoymusic.view.dialog.SaveMusicInfoDialog;
 
 @LayoutIdInject(R.layout.fragment_music_meta_data)

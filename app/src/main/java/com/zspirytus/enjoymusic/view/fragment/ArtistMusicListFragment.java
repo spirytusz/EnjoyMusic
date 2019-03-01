@@ -9,6 +9,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.zspirytus.basesdk.annotations.LayoutIdInject;
+import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.enjoymusic.R;
@@ -20,8 +22,6 @@ import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
 import java.util.List;
 

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.zspirytus.basesdk.annotations.LayoutIdInject;
+import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.basesdk.recyclerview.adapter.HeaderFooterViewWrapAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
@@ -18,8 +20,6 @@ import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.interfaces.annotations.LayoutIdInject;
-import com.zspirytus.enjoymusic.interfaces.annotations.ViewInject;
 
 @LayoutIdInject(R.layout.fragment_song_list_content)
 public class SongListContentFragment extends CommonHeaderBaseFragment implements OnItemClickListener {

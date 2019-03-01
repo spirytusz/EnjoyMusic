@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.interfaces.annotations;
+package com.zspirytus.basesdk.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

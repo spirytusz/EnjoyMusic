@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.interfaces.annotations;
+package com.zspirytus.basesdk.annotations;
 
 import android.support.annotation.LayoutRes;
 
