@@ -6,8 +6,6 @@ import com.zspirytus.enjoymusic.db.table.PlayHistory;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinPlayHistoryToMusic;
 import com.zspirytus.enjoymusic.listeners.observable.PlayHistoryObservable;
 
-import java.util.LinkedList;
-
 public class PlayHistoryManager extends PlayHistoryObservable {
 
     private static class SingletonHolder {
@@ -15,7 +13,6 @@ public class PlayHistoryManager extends PlayHistoryObservable {
     }
 
     private PlayHistoryManager() {
-        mPlayHistory = new LinkedList<>();
     }
 
     public static PlayHistoryManager getInstance() {
