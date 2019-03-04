@@ -45,6 +45,8 @@
                     android:hint="@string/search"
                     android:singleLine="true"
                     android:textSize="18sp"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
                     app:backgroundTint="@color/colorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/clear_text_btn"

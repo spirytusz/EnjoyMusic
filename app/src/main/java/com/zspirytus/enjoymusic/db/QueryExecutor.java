@@ -96,11 +96,11 @@ public class QueryExecutor {
         }
     }
 
-    public static List<Music> getPlayHistory() {
+    public static List<Music> getPlayHistory(int limit) {
         List<JoinPlayHistoryToMusic> joinPlayHistoryToMusicList = DBManager.getInstance()
                 .getDaoSession().queryBuilder(JoinPlayHistoryToMusic.class)
                 .orderDesc(JoinPlayHistoryToMusicDao.Properties.TimeStamp)
-                .limit(100).list();
+                .limit(limit).list();
         List<Music> musicList = new ArrayList<>();
         for (JoinPlayHistoryToMusic joinPlayHistoryToMusic : joinPlayHistoryToMusicList) {
             musicList.add(DBManager.getInstance().getDaoSession().load(Music.class, joinPlayHistoryToMusic.getMusicId()));
@@ -109,10 +109,8 @@ public class QueryExecutor {
     }
 
     public static Music getLastestPlayMusic() {
-        List<Music> playHistory = getPlayHistory();
-        if (playHistory.size() >= 2) {
-            return playHistory.get(1);
-        } else if (playHistory.size() == 1) {
+        List<Music> playHistory = getPlayHistory(1);
+        if (!playHistory.isEmpty()) {
             return playHistory.get(0);
         } else {
             return null;

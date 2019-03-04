@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,15 +15,23 @@ import android.widget.TextView;
 
 import com.zspirytus.basesdk.annotations.LayoutIdInject;
 import com.zspirytus.basesdk.annotations.ViewInject;
+import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.SearchResultListAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.SearchFragmentViewModel;
+import com.zspirytus.enjoymusic.db.QueryExecutor;
+import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.Music;
+import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
+import com.zspirytus.enjoymusic.entity.listitem.SearchResult;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
+import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 @LayoutIdInject(R.layout.fragment_search_layout)
-public class SearchFragment extends BaseFragment {
+public class SearchFragment extends BaseFragment implements OnItemClickListener {
 
     @ViewInject(R.id.back_btn)
     private ImageView mBackBtn;
@@ -45,22 +54,27 @@ public class SearchFragment extends BaseFragment {
         mViewModel = ViewModelProviders.of(this).get(SearchFragmentViewModel.class);
         mViewModel.init(getParentActivity());
         mAdapter = new SearchResultListAdapter();
+        mAdapter.setOnItemClickListener(this);
     }
 
     @Override
     protected void initView() {
         mEditText.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getParentActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        openSoftKeyBoard();
 
+        mEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                performSearch();
+                return true;
+            }
+            return false;
+        });
         mClearTextBtn.setOnClickListener(v -> {
             mEditText.setText("");
             mInfoText.setVisibility(View.GONE);
         });
         mSearchBtn.setOnClickListener(v -> {
-            if (mEditText.getText().length() > 0) {
-                mViewModel.applyToSearch(mEditText.getText().toString());
-            }
+            performSearch();
         });
         mBackBtn.setOnClickListener(v -> goBack());
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
@@ -92,11 +106,49 @@ public class SearchFragment extends BaseFragment {
     }
 
     @Override
+    public void onItemClick(View view, int position) {
+        SearchResult result = mAdapter.getData().get(position);
+        if (result.isMusic()) {
+            Music music = result.getMusic();
+            ForegroundMusicController.getInstance().play(music);
+            ForegroundMusicController.getInstance().addToPlayList(music);
+        } else if (result.isAlbum()) {
+            Album album = result.getAlbum();
+            FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(album.getAlbumName(), QueryExecutor.findMusicList(album), FilterMusicListFragment.ALBUM_FLAG);
+            FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
+            FragmentVisibilityManager.getInstance().show(fragment);
+        } else if (result.isArtist()) {
+            Artist artist = result.getArtist();
+            FilterMusicListFragment fragment = FilterMusicListFragment.getInstance(artist.getArtistName(), QueryExecutor.findMusicList(artist), FilterMusicListFragment.ARTIST_FLAG);
+            FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
+            FragmentVisibilityManager.getInstance().show(fragment);
+        }
+    }
+
+    @Override
     public void goBack() {
         mEditText.clearFocus();
-        InputMethodManager imm = (InputMethodManager) getParentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+        closeSoftKeyBoard();
 
         FragmentVisibilityManager.getInstance().remove(this);
+    }
+
+    private void performSearch() {
+        if (mEditText.getText().length() > 0) {
+            mViewModel.applyToSearch(mEditText.getText().toString());
+            closeSoftKeyBoard();
+        } else {
+            ToastUtil.showToast(getContext(), R.string.no_search_text);
+        }
+    }
+
+    private void openSoftKeyBoard() {
+        InputMethodManager imm = (InputMethodManager) getParentActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+    }
+
+    private void closeSoftKeyBoard() {
+        InputMethodManager imm = (InputMethodManager) getParentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
     }
 }

@@ -11,6 +11,8 @@ import java.util.List;
 
 public class PlayHistoryObservable {
 
+    private static final int PLAY_HISTORY_LIMIT_SIZE = 100;
+
     private RemoteCallbackList<IPlayHistoryChangeObserver> mObservers = new RemoteCallbackList<>();
     protected List<Music> mPlayHistory;
     protected static final long PLAY_HISTORY_PRIMARY_KEY = 6666;
@@ -18,7 +20,7 @@ public class PlayHistoryObservable {
     public void register(IPlayHistoryChangeObserver observer) {
         mObservers.register(observer);
         if (mPlayHistory == null) {
-            mPlayHistory = QueryExecutor.getPlayHistory();
+            mPlayHistory = QueryExecutor.getPlayHistory(PLAY_HISTORY_LIMIT_SIZE);
         }
         try {
             observer.onPlayHistoryChange(mPlayHistory);

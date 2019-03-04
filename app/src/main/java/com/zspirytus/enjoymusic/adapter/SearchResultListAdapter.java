@@ -64,6 +64,7 @@ public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
                 holder.setText(R.id.item_title, data.getMusic().getMusicName());
                 holder.setText(R.id.item_sub_title, album.getAlbumName());
                 holder.setVisibility(R.id.item_more_info_button, View.GONE);
+                holder.setOnItemClickListener(mListener);
             }
         };
         addDelegate(delegate);
@@ -88,6 +89,7 @@ public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
                 holder.setText(R.id.item_title, data.getAlbum().getAlbumName());
                 holder.setText(R.id.item_sub_title, artist.getArtistName());
                 holder.setVisibility(R.id.item_more_info_button, View.GONE);
+                holder.setOnItemClickListener(mListener);
             }
         };
         addDelegate(delegate);
@@ -111,6 +113,7 @@ public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
                 holder.setText(R.id.item_title, data.getArtist().getArtistName());
                 holder.setText(R.id.item_sub_title, data.getArtist().getMumberOfTracks() + "首歌曲");
                 holder.setVisibility(R.id.item_more_info_button, View.GONE);
+                holder.setOnItemClickListener(mListener);
             }
         };
         addDelegate(delegate);
