@@ -79,6 +79,7 @@ public class SearchFragment extends BaseFragment implements OnItemClickListener 
         mBackBtn.setOnClickListener(v -> goBack());
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
+        fixNavBarHeight(mRecyclerView);
     }
 
     @Override

@@ -144,13 +144,6 @@ public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 super.getItemOffsets(outRect, view, parent, state);
-                outRect.left = PixelsUtil.dp2px(parent.getContext(), 8);
-            }
-        });
-        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
                 int position = parent.getChildAdapterPosition(view);
                 if (getData().get(position).isTitle()) {
                     outRect.left = PixelsUtil.dp2px(parent.getContext(), 10);
