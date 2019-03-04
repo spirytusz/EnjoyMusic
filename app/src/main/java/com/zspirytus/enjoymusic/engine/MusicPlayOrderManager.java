@@ -87,15 +87,19 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
                 // 否则，继续播放当前音乐
                 if (!fromUser) {
                     nextMusic = BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic();
-                    break;
                 }
+                break;
             case Constant.PlayMode.LIST_LOOP:
             case Constant.PlayMode.RANDOM:
                 // 随机播放
                 // 列表循环
                 int currentPosition = mPlayList.indexOf(BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic());
-                nextPosition = (currentPosition + 1) % mPlayList.size();
-                nextMusic = mPlayList.get(nextPosition);
+                if (!mPlayList.isEmpty()) {
+                    nextPosition = (currentPosition + 1) % mPlayList.size();
+                    nextMusic = mPlayList.get(nextPosition);
+                } else {
+                    nextMusic = BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic();
+                }
                 break;
         }
         return nextMusic;

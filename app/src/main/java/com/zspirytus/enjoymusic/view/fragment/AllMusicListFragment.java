@@ -48,6 +48,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     public void onItemClick(View view, int position) {
         Music music = mAdapter.getList().get(position);
         ForegroundMusicController.getInstance().play(music);
+        ForegroundMusicController.getInstance().setPlayList(mAdapter.getList());
         FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
         FragmentVisibilityManager.getInstance().show(FragmentFactory.getInstance().get(MusicPlayFragment.class));
     }
