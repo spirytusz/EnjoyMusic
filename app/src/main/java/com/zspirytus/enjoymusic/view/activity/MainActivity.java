@@ -207,9 +207,9 @@ public class MainActivity extends BaseActivity
                 .at(this)
                 .requestCode(123)
                 .permissions(PermissionGroup.STORAGE_GROUP)
-                .permissions(PermissionGroup.PHONE_GROUP)
                 .listenBy(this)
                 .request();
+
     }
 
     private void bindPlayMusicService() {
