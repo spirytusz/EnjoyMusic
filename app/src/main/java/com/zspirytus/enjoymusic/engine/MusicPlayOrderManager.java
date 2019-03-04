@@ -61,7 +61,11 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
 
     public void addMusicListToPlayList(List<Music> musicList) {
         if (mPlayList != null) {
-            mPlayList.addAll(musicList);
+            for (Music music : musicList) {
+                if (!mPlayList.contains(music)) {
+                    mPlayList.add(music);
+                }
+            }
             List<Music> playList = new ArrayList<>(mPlayList);
             orderPlayList(playList);
         } else {
