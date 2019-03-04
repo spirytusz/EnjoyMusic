@@ -75,7 +75,7 @@ public class MyMediaSession {
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, music.getMusicName())
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, QueryExecutor.findArtist(music).getArtistName())
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, music.getMusicDuration())
-                .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, MusicCoverFileCache.getInstance().getCover(QueryExecutor.findAlbum(music).getAlbumArt()));
+                .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, MusicCoverFileCache.getInstance().getCoverBitmap(QueryExecutor.findAlbum(music)));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             metaData.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, MusicScanner.getInstance().getAllMusicList().size());

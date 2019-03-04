@@ -1,12 +1,15 @@
 package com.zspirytus.enjoymusic.cache;
 
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.util.SparseArray;
 
-import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.utils.BitmapUtil;
+import com.zspirytus.enjoymusic.view.widget.TextDrawable;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 
 /**
  * Created by ZSpirytus on 2018/8/25.
@@ -16,8 +19,8 @@ public class MusicCoverFileCache {
 
     private static MusicCoverFileCache INSTANCE = new MusicCoverFileCache();
 
-    private SparseArray<File> mCoverFileCache;
-    private SparseArray<Bitmap> mCoverCache;
+    private SparseArray<WeakReference<File>> mCoverFileCache;
+    private SparseArray<WeakReference<Bitmap>> mCoverCache;
 
     private MusicCoverFileCache() {
         mCoverFileCache = new SparseArray<>();
@@ -31,11 +34,12 @@ public class MusicCoverFileCache {
     public File getCoverFile(String path) {
         if (path != null) {
             int key = path.hashCode();
-            File file = mCoverFileCache.get(key);
+            File file = mCoverFileCache.get(key).get();
             if (file == null) {
                 file = new File(path);
                 if (file.exists()) {
-                    mCoverFileCache.put(key, file);
+                    WeakReference<File> fileWeakReference = new WeakReference<>(file);
+                    mCoverFileCache.put(key, fileWeakReference);
                 } else {
                     file = null;
                 }
@@ -46,36 +50,39 @@ public class MusicCoverFileCache {
         }
     }
 
-    public Bitmap getCover(String path) {
+    public Bitmap getCoverBitmap(Album album) {
+        String path = album.getAlbumArt();
         if (path != null) {
             File file = new File(path);
             if (!file.exists()) {
-                return getCover(R.drawable.defalut_cover);
+                return getCoverBitmap(album.getAlbumName());
             }
             int key = path.hashCode();
-            Bitmap bitmap = mCoverCache.get(key);
+            Bitmap bitmap = mCoverCache.get(key).get();
             if (bitmap == null) {
                 bitmap = BitmapUtil.compressCenterCrop(path);
-                mCoverCache.put(key, bitmap);
+                WeakReference<Bitmap> bitmapWeakReference = new WeakReference<>(bitmap);
+                mCoverCache.put(key, bitmapWeakReference);
             }
             return bitmap;
         } else {
-            return getCover(R.drawable.defalut_cover);
+            return getCoverBitmap(album.getAlbumName());
         }
     }
 
-    public Bitmap getCover(int resId) {
-        if (resId != 0) {
-            String stringValue = resId + "";
-            Bitmap bitmap = mCoverCache.get(stringValue.hashCode());
-            if (bitmap == null) {
-                bitmap = BitmapUtil.createBitmapByResId(resId);
-                mCoverCache.put(stringValue.hashCode(), bitmap);
-            }
-            return bitmap;
-        } else {
-            return null;
-        }
+    private Bitmap getCoverBitmap(String albumName) {
+        final int width = 300;
+        final int height = 300;
+        TextDrawable textDrawable = TextDrawable.builder()
+                .beginConfig()
+                .textColor(0x44FFFFFF)
+                .useFont(Typeface.DEFAULT)
+                .bold()
+                .width(width)
+                .height(height)
+                .endConfig()
+                .buildRect(albumName.substring(0, albumName.length() >= 2 ? 2 : albumName.length()));
+        return BitmapUtil.drawableToBitmap(textDrawable);
     }
 
 }
