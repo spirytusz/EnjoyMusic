@@ -2,6 +2,5 @@
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="250dp"
-    android:foreground="?android:attr/selectableItemBackground"
     android:focusable="true"
-    android:src="@drawable/defalut_cover" />
+    android:foreground="?android:attr/selectableItemBackground" />

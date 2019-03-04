@@ -270,10 +270,10 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
             if (file.exists()) {
                 mBackground.setImagePath(imagePath);
             } else {
-                mBackground.setImageResource(R.drawable.defalut_cover);
+                mBackground.setImageResource(R.drawable.default_cover);
             }
         } else {
-            mBackground.setImageResource(R.drawable.defalut_cover);
+            mBackground.setImageResource(R.drawable.default_cover);
         }
     }
 
