@@ -13,7 +13,7 @@
         android:toYScale="1" />
 
     <alpha
-        android:fromAlpha="0"
+        android:fromAlpha="0.382"
         android:interpolator="@android:anim/decelerate_interpolator"
         android:toAlpha="1" />
 </set>
