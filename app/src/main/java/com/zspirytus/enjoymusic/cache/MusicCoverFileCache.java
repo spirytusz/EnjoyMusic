@@ -34,14 +34,13 @@ public class MusicCoverFileCache {
     public File getCoverFile(String path) {
         if (path != null) {
             int key = path.hashCode();
-            File file = mCoverFileCache.get(key).get();
-            if (file == null) {
+            WeakReference<File> weakReference = mCoverFileCache.get(key);
+            File file;
+            if (weakReference == null || (file = weakReference.get()) == null) {
                 file = new File(path);
                 if (file.exists()) {
                     WeakReference<File> fileWeakReference = new WeakReference<>(file);
                     mCoverFileCache.put(key, fileWeakReference);
-                } else {
-                    file = null;
                 }
             }
             return file;
@@ -58,8 +57,9 @@ public class MusicCoverFileCache {
                 return getCoverBitmap(album.getAlbumName());
             }
             int key = path.hashCode();
-            Bitmap bitmap = mCoverCache.get(key).get();
-            if (bitmap == null) {
+            WeakReference<Bitmap> weakReference = mCoverCache.get(key);
+            Bitmap bitmap;
+            if (weakReference == null || (bitmap = weakReference.get()) == null) {
                 bitmap = BitmapUtil.compressCenterCrop(path);
                 WeakReference<Bitmap> bitmapWeakReference = new WeakReference<>(bitmap);
                 mCoverCache.put(key, bitmapWeakReference);
