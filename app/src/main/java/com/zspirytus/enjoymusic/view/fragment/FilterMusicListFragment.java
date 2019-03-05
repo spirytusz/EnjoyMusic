@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.zspirytus.basesdk.annotations.LayoutIdInject;
 import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.basesdk.recyclerview.adapter.HeaderFooterViewWrapAdapter;
@@ -84,7 +85,7 @@ public class FilterMusicListFragment extends BaseFragment
                     }
                 }
                 String title = getArguments().getString(TITLE_KEY);
-                ImageLoader.load(holder.getView(R.id.big_music_preview_cover), path, title);
+                ImageLoader.load(holder.getView(R.id.big_music_preview_cover), path, title, new CenterCrop());
                 holder.setText(R.id.big_music_preview_text, mViewModel.createSpannableString(mViewModel.getPreviewTitle(title), mInnerAdapter.getList()));
             }
 
