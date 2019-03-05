@@ -149,6 +149,15 @@ public class FilterMusicListFragment extends BaseFragment
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        // 当本Fragment从hide转为show状态后，强制刷新headerView.
+        if (!hidden && mAdapter.getItemCount() != 0) {
+            mAdapter.notifyItemChanged(0);
+        }
+    }
+
+    @Override
     public int enterAnim() {
         return R.anim.anim_fragment_translate_show_up;
     }

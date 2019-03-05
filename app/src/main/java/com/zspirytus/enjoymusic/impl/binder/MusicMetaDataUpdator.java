@@ -21,6 +21,6 @@ public class MusicMetaDataUpdator extends IMusicMetaDataUpdator.Stub {
     @Override
     public void updateArtist(Artist artist) {
         ArtistArt artistArt = artist.peakArtistArt();
-        DBManager.getInstance().getDaoSession().getArtistArtDao().save(artistArt);
+        DBManager.getInstance().getDaoSession().getArtistArtDao().insertOrReplace(artistArt);
     }
 }
