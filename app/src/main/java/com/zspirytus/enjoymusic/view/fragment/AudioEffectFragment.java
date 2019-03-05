@@ -1,7 +1,6 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +21,6 @@ import com.zspirytus.enjoymusic.cache.viewmodels.AudioEffectViewModel;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.listitem.AudioEffectItem;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.view.widget.EqualizerView;
 
 @LayoutIdInject(R.layout.fragment_audio_effect)
@@ -74,13 +72,6 @@ public class AudioEffectFragment extends BaseFragment
         mBackBtn.setOnClickListener(v -> goBack());
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mPresetReverbAdapter);
-        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-                outRect.left = PixelsUtil.dp2px(getContext(), 22);
-            }
-        });
         mRecyclerView.addItemDecoration(new ItemSpacingNavBarFixer());
 
         mResetBtn.setOnClickListener(v -> mEqualizer.reset());
@@ -125,6 +116,17 @@ public class AudioEffectFragment extends BaseFragment
 
     @Override
     public void onItemClick(View view, int position) {
+        int oldChecked = 0;
+        for (int i = 0; i < mPresetReverbAdapter.getList().size(); i++) {
+            if (mPresetReverbAdapter.getList().get(i).isChecked()) {
+                mPresetReverbAdapter.getList().get(i).setChecked(false);
+                oldChecked = i;
+                break;
+            }
+        }
+        mPresetReverbAdapter.notifyItemChanged(oldChecked);
+        mPresetReverbAdapter.getList().get(position).setChecked(true);
+        mPresetReverbAdapter.notifyItemChanged(position);
         mViewModel.setPresetReverb(position);
     }
 

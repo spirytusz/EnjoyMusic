@@ -96,12 +96,9 @@ public class SettingListAdapter extends MultiItemAdapter<SettingItem> {
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 super.getItemOffsets(outRect, view, parent, state);
                 int position = parent.getChildAdapterPosition(view);
-                if (position == 0) {
-                    outRect.top = PixelsUtil.dp2px(parent.getContext(), 10);
-                }
-                if (!getData().get(position).isDividerLine()) {
+                if (getData().get(position).isTitle()) {
+                    outRect.top = PixelsUtil.dp2px(parent.getContext(), 8);
                     outRect.left = PixelsUtil.dp2px(parent.getContext(), 28);
-                    outRect.right = PixelsUtil.dp2px(parent.getContext(), 28);
                 }
             }
         });
