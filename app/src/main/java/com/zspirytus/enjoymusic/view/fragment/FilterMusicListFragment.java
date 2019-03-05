@@ -16,7 +16,7 @@ import com.zspirytus.basesdk.recyclerview.adapter.HeaderFooterViewWrapAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
+import com.zspirytus.enjoymusic.adapter.FilterMusicListAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.FilterMusicListFragmentViewModel;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
@@ -43,7 +43,6 @@ public class FilterMusicListFragment extends BaseFragment
     public static final int ALBUM_FLAG = 1;
     public static final int ARTIST_FLAG = 2;
     public static final int FOLDER_FLAG = 3;
-    public static final int SONG_LIST_FLAG = 4;
 
     private static final String TITLE_KEY = "title";
     private static final String MUSIC_LIST_EXTRA_KEY = "MusicListExtra";
@@ -60,14 +59,14 @@ public class FilterMusicListFragment extends BaseFragment
 
     private FilterMusicListFragmentViewModel mViewModel;
     private HeaderFooterViewWrapAdapter mAdapter;
-    private MusicListAdapter mInnerAdapter;
+    private FilterMusicListAdapter mInnerAdapter;
 
     @Override
     protected void initData() {
         int flag = getArguments().getInt(FLAG_KEY);
         mViewModel = ViewModelProviders.of(this).get(FilterMusicListFragmentViewModel.class);
         List<Music> musicList = getArguments().getParcelableArrayList(MUSIC_LIST_EXTRA_KEY);
-        mInnerAdapter = new MusicListAdapter();
+        mInnerAdapter = new FilterMusicListAdapter(flag);
         mInnerAdapter.setList(musicList);
         mInnerAdapter.setOnItemClickListener(this);
         mAdapter = new HeaderFooterViewWrapAdapter() {
@@ -104,32 +103,30 @@ public class FilterMusicListFragment extends BaseFragment
         });
         int flag = getArguments().getInt(FLAG_KEY);
         mTitle.setText(mViewModel.getToolbarTitle(flag));
-        if (flag != SONG_LIST_FLAG) {
-            mToolbar.inflateMenu(R.menu.filter_music_fragment_menu);
-            mToolbar.setOnMenuItemClickListener(item -> {
-                switch (item.getItemId()) {
-                    case R.id.menu_add_to_play_queue:
-                        List<Music> musicList = mInnerAdapter.getList();
-                        ForegroundMusicController.getInstance().addToPlayList(musicList);
-                        return true;
-                    case R.id.menu_new_song_list:
-                        SaveSongListDialog dialog = new SaveSongListDialog();
-                        dialog.setOnDialogButtonClickListener(content -> {
-                            if (content != null) {
-                                SongList songList = mViewModel.createNewSongList(content, mInnerAdapter.getList());
-                                ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class)
-                                        .getSongList().getValue().add(songList);
-                                dialog.dismiss();
-                            } else {
-                                ToastUtil.showToast(getContext(), R.string.please_enter_leagl_song_list);
-                            }
-                        });
-                        dialog.show(getChildFragmentManager(), dialog.getClass().getSimpleName());
-                        return true;
-                }
-                return false;
-            });
-        }
+        mToolbar.inflateMenu(R.menu.filter_music_fragment_menu);
+        mToolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menu_add_to_play_queue:
+                    List<Music> musicList = mInnerAdapter.getList();
+                    ForegroundMusicController.getInstance().addToPlayList(musicList);
+                    return true;
+                case R.id.menu_new_song_list:
+                    SaveSongListDialog dialog = new SaveSongListDialog();
+                    dialog.setOnDialogButtonClickListener(content -> {
+                        if (content != null) {
+                            SongList songList = mViewModel.createNewSongList(content, mInnerAdapter.getList());
+                            ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class)
+                                    .getSongList().getValue().add(songList);
+                            dialog.dismiss();
+                        } else {
+                            ToastUtil.showToast(getContext(), R.string.please_enter_leagl_song_list);
+                        }
+                    });
+                    dialog.show(getChildFragmentManager(), dialog.getClass().getSimpleName());
+                    return true;
+            }
+            return false;
+        });
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
         fixNavBarHeight(mRecyclerView);
