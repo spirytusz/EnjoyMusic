@@ -103,9 +103,11 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             List<Artist> artistList = viewModel.getArtistList().getValue();
             for (int i = 0; i < artistList.size(); i++) {
                 if (needUpdateArtist.getArtistId().equals(artistList.get(i).getArtistId())) {
-                    artistList.set(i, needUpdateArtist);
+                    artistList.get(i).setArtistArt(needUpdateArtist.peakArtistArt());
+                    break;
                 }
             }
+            viewModel.getArtistList().postValue(artistList);
 
             // update background data.
             IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_META_DATA_UPDATOR);

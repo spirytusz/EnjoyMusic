@@ -33,9 +33,9 @@ public class ArtistListAdapter extends CommonRecyclerViewAdapter<Artist> impleme
     @Override
     public void convert(CommonViewHolder holder, Artist artist, int position) {
         ArtistArt artistArt = QueryExecutor.findArtistArt(artist);
-        ImageLoader.load(holder.getView(R.id.item_cover), artistArt != null ? artistArt.getArtistArt() : null, artist.getArtistName());
+        String path = artistArt != null ? artistArt.getArtistArt() : null;
+        ImageLoader.load(holder.getView(R.id.item_cover), path, artist.getArtistName());
         holder.setText(R.id.item_title, artist.getArtistName());
-        ImageLoader.load(holder.getView(R.id.item_cover), null, artist.getArtistName());
         holder.setText(R.id.item_sub_title, artist.getNumberOfAlbums() + " 首歌曲");
         if (mListener != null) {
             holder.setOnItemClickListener(mListener);

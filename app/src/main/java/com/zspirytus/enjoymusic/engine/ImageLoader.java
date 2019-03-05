@@ -30,7 +30,7 @@ public class ImageLoader {
         }
         if (path != null) {
             File file = MusicCoverFileCache.getInstance().getCoverFile(path);
-            if (file != null) {
+            if (file != null && file.exists()) {
                 GlideApp.with(MainApplication.getForegroundContext())
                         .load(file)
                         .apply(options)
