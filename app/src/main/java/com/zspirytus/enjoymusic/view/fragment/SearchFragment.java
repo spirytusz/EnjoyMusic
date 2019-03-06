@@ -52,7 +52,7 @@ public class SearchFragment extends BaseFragment implements OnItemClickListener 
     @Override
     protected void initData() {
         mViewModel = ViewModelProviders.of(this).get(SearchFragmentViewModel.class);
-        mViewModel.init(getParentActivity());
+        mViewModel.init();
         mAdapter = new SearchResultListAdapter();
         mAdapter.setOnItemClickListener(this);
     }
@@ -136,7 +136,7 @@ public class SearchFragment extends BaseFragment implements OnItemClickListener 
 
     private void performSearch() {
         if (mEditText.getText().length() > 0) {
-            mViewModel.applyToSearch(mEditText.getText().toString());
+            mViewModel.applyToSearch(getParentActivity(), mEditText.getText().toString());
             closeSoftKeyBoard();
         } else {
             ToastUtil.showToast(getContext(), R.string.no_search_text);

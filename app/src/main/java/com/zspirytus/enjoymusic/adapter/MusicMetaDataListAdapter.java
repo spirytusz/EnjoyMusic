@@ -51,8 +51,12 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
             @Override
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
                 Artist artist = data.getArtist();
-                ArtistArt artistArt = artist.peakArtistArt();
+                ArtistArt artistArt = QueryExecutor.findArtistArt(artist);
                 String path = artistArt != null ? artistArt.getArtistArt() : null;
+                if (path == null) {
+                    artistArt = artist.peakArtistArt();
+                    path = artistArt != null ? artistArt.getArtistArt() : null;
+                }
                 ImageLoader.load((ImageView) holder.getItemView(), path, data.getArtist().getArtistName(), new CenterCrop());
                 holder.setOnItemClickListener((view, position) -> {
                 });

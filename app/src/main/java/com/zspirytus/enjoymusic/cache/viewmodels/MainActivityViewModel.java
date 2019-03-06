@@ -16,6 +16,7 @@ import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 
 import java.util.List;
 
+// TODO: 2019/3/7 XXXLiveData.getValue() == null ???
 public class MainActivityViewModel extends MusicPlayingStateViewModel {
 
     public void obtainMusicList() {
@@ -41,6 +42,26 @@ public class MainActivityViewModel extends MusicPlayingStateViewModel {
     public void applySongLists() {
         List<SongList> songLists = DBManager.getInstance().getDaoSession().getSongListDao().loadAll();
         setSongList(songLists);
+    }
+
+    void updateArtist(Artist needUpdateArtist) {
+        List<Artist> artistList = getArtistList().getValue();
+        if (artistList == null) {
+            try {
+                IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.GET_MUSIC_LIST);
+                IGetMusicList getMusicListBinder = IGetMusicList.Stub.asInterface(binder);
+                artistList = getMusicListBinder.getArtistList();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+        for (int i = 0; i < artistList.size(); i++) {
+            if (needUpdateArtist.getArtistId().equals(artistList.get(i).getArtistId())) {
+                artistList.get(i).setArtistArt(needUpdateArtist.peakArtistArt());
+                break;
+            }
+        }
+        getArtistList().postValue(artistList);
     }
 
 }

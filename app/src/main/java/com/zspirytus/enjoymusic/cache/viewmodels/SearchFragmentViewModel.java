@@ -17,23 +17,16 @@ public class SearchFragmentViewModel extends ViewModel {
 
     private MutableLiveData<List<SearchResult>> mSearchResultList;
 
-    private List<Music> allMusicList;
-    private List<Album> albumList;
-    private List<Artist> artistList;
-
-    public void init(BaseActivity parentActivity) {
+    public void init() {
         mSearchResultList = new MutableLiveData<>();
-        MainActivityViewModel viewModel = ViewModelProviders.of(parentActivity).get(MainActivityViewModel.class);
-        viewModel.getMusicList().observe(parentActivity, valuse -> allMusicList = valuse);
-        viewModel.getAlbumList().observe(parentActivity, values -> albumList = values);
-        viewModel.getArtistList().observe(parentActivity, values -> artistList = values);
     }
 
-    public void applyToSearch(String key) {
+    public void applyToSearch(BaseActivity activity, String key) {
+        MainActivityViewModel viewModel = ViewModelProviders.of(activity).get(MainActivityViewModel.class);
         List<SearchResult> results = new ArrayList<>();
         SearchResult result = new SearchResult();
 
-        List<SearchResult> musicResult = searchMusic(key);
+        List<SearchResult> musicResult = searchMusic(viewModel.getMusicList().getValue(), key);
         if (musicResult != null && !musicResult.isEmpty()) {
             result.setTitle(true);
             result.setTitle("曲目");
@@ -41,7 +34,7 @@ public class SearchFragmentViewModel extends ViewModel {
             results.addAll(musicResult);
         }
 
-        List<SearchResult> albumResult = searchAlbum(key);
+        List<SearchResult> albumResult = searchAlbum(viewModel.getAlbumList().getValue(), key);
         if (albumResult != null && !albumResult.isEmpty()) {
             result = new SearchResult();
             result.setDividerLine(true);
@@ -54,7 +47,7 @@ public class SearchFragmentViewModel extends ViewModel {
             results.addAll(albumResult);
         }
 
-        List<SearchResult> artistResult = searchArtist(key);
+        List<SearchResult> artistResult = searchArtist(viewModel.getArtistList().getValue(), key);
         if (artistResult != null && !artistResult.isEmpty()) {
             result = new SearchResult();
             result.setDividerLine(true);
@@ -74,9 +67,9 @@ public class SearchFragmentViewModel extends ViewModel {
         return mSearchResultList;
     }
 
-    private List<SearchResult> searchMusic(String key) {
+    private List<SearchResult> searchMusic(List<Music> musicList, String key) {
         List<SearchResult> results = new ArrayList<>();
-        for (Music music : allMusicList) {
+        for (Music music : musicList) {
             if (music.getMusicName().contains(key)) {
                 SearchResult result = new SearchResult();
                 result.setMusic(true);
@@ -87,7 +80,7 @@ public class SearchFragmentViewModel extends ViewModel {
         return results;
     }
 
-    private List<SearchResult> searchAlbum(String key) {
+    private List<SearchResult> searchAlbum(List<Album> albumList, String key) {
         List<SearchResult> results = new ArrayList<>();
         for (Album album : albumList) {
             if (album.getAlbumName().contains(key)) {
@@ -100,7 +93,7 @@ public class SearchFragmentViewModel extends ViewModel {
         return results;
     }
 
-    private List<SearchResult> searchArtist(String key) {
+    private List<SearchResult> searchArtist(List<Artist> artistList, String key) {
         List<SearchResult> results = new ArrayList<>();
         for (Artist artist : artistList) {
             if (artist.getArtistName().contains(key)) {

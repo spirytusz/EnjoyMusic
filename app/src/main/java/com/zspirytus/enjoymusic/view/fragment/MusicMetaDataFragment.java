@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zspirytus.basesdk.annotations.LayoutIdInject;
@@ -30,8 +31,11 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
     private ImageView mCancelBtn;
     @ViewInject(R.id.save_btn)
     private TextView mSaveBtn;
+    @ViewInject(R.id.progress_bar)
+    private ProgressBar mProgressBar;
 
     private MusicMetaDataFragmentViewModel mViewModel;
+    private MainActivityViewModel mainActivityViewModel;
     private MusicMetaDataListAdapter mAdapter;
 
     private ProgressDialog mProgressDialog;
@@ -39,8 +43,9 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
     @Override
     protected void initData() {
         mViewModel = ViewModelProviders.of(this).get(MusicMetaDataFragmentViewModel.class);
+        mainActivityViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
         Music music = getArguments().getParcelable("music");
-        mViewModel.obtainMusicMetaList(music);
+        mViewModel.applyMusicMetaList(music);
         mAdapter = new MusicMetaDataListAdapter();
         mAdapter.setOnDownloadBtnClickListener(() -> {
             mViewModel.applyArtistArt(getArguments().getParcelable("music"));
@@ -60,11 +65,11 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel.getMusicMetaList().observe(this, values -> {
+            mProgressBar.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
             mAdapter.setData(values);
         });
-        // 这里注册一个ArtistList的观察者，以便在没有初始化ArtistListFragment的情况下，getValue()拿到非空值。
-        ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class)
-                .getArtistList().observe(getParentActivity(), values -> {
+        mainActivityViewModel.getArtistList().observe(getParentActivity(), values -> {
         });
         mViewModel.getUpdateState().observe(this, values -> {
             if (values != null && values) {
@@ -84,9 +89,7 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.save_btn:
-                MainActivityViewModel viewModel = ViewModelProviders.of(getParentActivity())
-                        .get(MainActivityViewModel.class);
-                mViewModel.updateMusic(mAdapter.getData(), viewModel);
+                mViewModel.updateMusic(mAdapter.getData(), mainActivityViewModel);
                 FragmentVisibilityManager.getInstance().remove(this);
                 break;
             case R.id.cancel_btn:

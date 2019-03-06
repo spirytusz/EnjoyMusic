@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.engine.AudioEffectController;
 import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
 import com.zspirytus.enjoymusic.entity.listitem.AudioEffectItem;
@@ -32,18 +33,20 @@ public class AudioEffectViewModel extends ViewModel {
         return mBassBoastFlag;
     }
 
-    public void obtainDataByFlag(int flag) {
-        switch (flag) {
-            case AudioEffectFragment.FLAG_AUDIO_FILED:
-                obtainPresetReverbList();
-                break;
-            case AudioEffectFragment.FLAG_EQUALIZER:
-                obtainEqualizerMetaData();
-                break;
-            case AudioEffectFragment.FLAG_BASS_BOAST:
-                mBassBoastFlag.setValue(true);
-                break;
-        }
+    public void applyDataByFlag(int flag) {
+        ThreadPool.execute(() -> {
+            switch (flag) {
+                case AudioEffectFragment.FLAG_AUDIO_FILED:
+                    obtainPresetReverbList();
+                    break;
+                case AudioEffectFragment.FLAG_EQUALIZER:
+                    obtainEqualizerMetaData();
+                    break;
+                case AudioEffectFragment.FLAG_BASS_BOAST:
+                    mBassBoastFlag.postValue(true);
+                    break;
+            }
+        });
     }
 
     private void obtainPresetReverbList() {
@@ -56,13 +59,13 @@ public class AudioEffectViewModel extends ViewModel {
             item.setSingleEffect(true);
             audioEffectItems.add(item);
         }
-        mPresetReverbNameList.setValue(audioEffectItems);
+        mPresetReverbNameList.postValue(audioEffectItems);
     }
 
     private void obtainEqualizerMetaData() {
         AudioEffectController.getInstance().attachEqualizer((result, callbackId) -> {
             if (result != null) {
-                mEqualizerMetaData.setValue((EqualizerMetaData) result);
+                mEqualizerMetaData.postValue((EqualizerMetaData) result);
             }
         });
     }

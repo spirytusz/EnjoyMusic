@@ -64,7 +64,7 @@ public class AudioEffectFragment extends BaseFragment
             }
         };
         mViewModel = ViewModelProviders.of(this).get(AudioEffectViewModel.class);
-        mViewModel.obtainDataByFlag(getArguments().getInt(FLAG_KEY));
+        mViewModel.applyDataByFlag(getArguments().getInt(FLAG_KEY));
     }
 
     @Override

@@ -53,53 +53,55 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
         return hasUpdate;
     }
 
-    public void obtainMusicMetaList(Music music) {
-        Album album = QueryExecutor.findAlbum(music);
-        Artist artist = QueryExecutor.findArtist(music);
+    public void applyMusicMetaList(Music music) {
+        ThreadPool.execute(() -> {
+            Album album = QueryExecutor.findAlbum(music);
+            Artist artist = QueryExecutor.findArtist(music);
 
-        MusicMetaDataListItem item = new MusicMetaDataListItem();
-        item.setArtistArt(true);
-        item.setArtist(artist);
-        dataList.add(item);
+            MusicMetaDataListItem item = new MusicMetaDataListItem();
+            item.setArtistArt(true);
+            item.setArtist(artist);
+            dataList.add(item);
 
-        MusicMetaDataListItem item1 = new MusicMetaDataListItem();
-        item1.setMusic(true);
-        item1.setMusic(music);
-        dataList.add(item1);
+            MusicMetaDataListItem item1 = new MusicMetaDataListItem();
+            item1.setMusic(true);
+            item1.setMusic(music);
+            dataList.add(item1);
 
-        MusicMetaDataListItem item2 = new MusicMetaDataListItem();
-        item2.setTitle(true);
-        item2.setTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_download_music_info));
-        dataList.add(item2);
+            MusicMetaDataListItem item2 = new MusicMetaDataListItem();
+            item2.setTitle(true);
+            item2.setTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_download_music_info));
+            dataList.add(item2);
 
-        MusicMetaDataListItem item3 = new MusicMetaDataListItem();
-        item3.setDownloadAlbumArtView(true);
-        dataList.add(item3);
+            MusicMetaDataListItem item3 = new MusicMetaDataListItem();
+            item3.setDownloadAlbumArtView(true);
+            dataList.add(item3);
 
-        MusicMetaDataListItem item4 = new MusicMetaDataListItem();
-        item4.setTitle(true);
-        item4.setTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_edit_info));
-        dataList.add(item4);
+            MusicMetaDataListItem item4 = new MusicMetaDataListItem();
+            item4.setTitle(true);
+            item4.setTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_edit_info));
+            dataList.add(item4);
 
-        MusicMetaDataListItem item5 = new MusicMetaDataListItem();
-        item5.setSingleEditText(true);
-        item5.setEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_title));
-        item5.setEditTextDefaultText(music.getMusicName());
-        dataList.add(item5);
+            MusicMetaDataListItem item5 = new MusicMetaDataListItem();
+            item5.setSingleEditText(true);
+            item5.setEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_title));
+            item5.setEditTextDefaultText(music.getMusicName());
+            dataList.add(item5);
 
-        MusicMetaDataListItem item6 = new MusicMetaDataListItem();
-        item6.setSingleEditText(true);
-        item6.setEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_artist));
-        item6.setEditTextDefaultText(artist.getArtistName());
-        dataList.add(item6);
+            MusicMetaDataListItem item6 = new MusicMetaDataListItem();
+            item6.setSingleEditText(true);
+            item6.setEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_artist));
+            item6.setEditTextDefaultText(artist.getArtistName());
+            dataList.add(item6);
 
-        MusicMetaDataListItem item7 = new MusicMetaDataListItem();
-        item7.setSingleEditText(true);
-        item7.setEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_album));
-        item7.setEditTextDefaultText(album.getAlbumName());
-        dataList.add(item7);
+            MusicMetaDataListItem item7 = new MusicMetaDataListItem();
+            item7.setSingleEditText(true);
+            item7.setEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_album));
+            item7.setEditTextDefaultText(album.getAlbumName());
+            dataList.add(item7);
 
-        mMusicMetaList.setValue(dataList);
+            mMusicMetaList.postValue(dataList);
+        });
     }
 
     public void updateMusic(List<MusicMetaDataListItem> datas, MainActivityViewModel viewModel) {
@@ -109,17 +111,10 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             Artist needUpdateArtist = datas.get(0).getArtist();
 
             // update foreground data.
-            List<Artist> artistList = viewModel.getArtistList().getValue();
-            for (int i = 0; i < artistList.size(); i++) {
-                if (needUpdateArtist.getArtistId().equals(artistList.get(i).getArtistId())) {
-                    artistList.get(i).setArtistArt(needUpdateArtist.peakArtistArt());
-                    break;
-                }
-            }
-            viewModel.getArtistList().postValue(artistList);
+            viewModel.updateArtist(needUpdateArtist);
 
             // update background data.
-            if(needUpdateArtist.peakArtistArt() != null) {
+            if (needUpdateArtist.peakArtistArt() != null) {
                 IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_META_DATA_UPDATOR);
                 IMusicMetaDataUpdator updator = IMusicMetaDataUpdator.Stub.asInterface(binder);
                 try {
@@ -155,7 +150,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
                 String picUrl = null;
                 for (OnlineArtist onlineArtist : onlineArtists) {
                     if (onlineArtist.getName() != null) {
-                        double confidence = MinEditDistance.SimilarDegree(onlineArtist.getName(), artist.getArtistName());
+                        double confidence = MinEditDistance.SimilarDegree(onlineArtist.getName().toLowerCase(), artist.getArtistName().toLowerCase());
                         if (maxConfidence < confidence) {
                             maxConfidence = confidence;
                             picUrl = onlineArtist.getPicUrl();
