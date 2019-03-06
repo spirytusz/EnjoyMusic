@@ -44,6 +44,10 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
         return mMusicMetaList;
     }
 
+    public MutableLiveData<Boolean> getUpdateState() {
+        return updateState;
+    }
+
     public void obtainMusicMetaList(Music music) {
         Album album = QueryExecutor.findAlbum(music);
         Artist artist = QueryExecutor.findArtist(music);
@@ -112,6 +116,8 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             // update background data.
             IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_META_DATA_UPDATOR);
             IMusicMetaDataUpdator updator = IMusicMetaDataUpdator.Stub.asInterface(binder);
+            // TODO: 2019/3/6 check null.
+            // TODO: 2019/3/6 update if data has change.
             try {
                 updator.updateArtist(needUpdateArtist);
             } catch (RemoteException e) {

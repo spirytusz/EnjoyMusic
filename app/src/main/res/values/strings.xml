@@ -115,4 +115,8 @@
     <string name="cancel">取消</string>
     <!-- SaveSongListDialog Text end -->
 
+    <!-- ProgressDialog Text start -->
+    <string name="default_progress_text">请稍后…</string>
+    <!-- ProgressDialog Text end -->
+
 </resources>

@@ -18,6 +18,7 @@ import com.zspirytus.enjoymusic.cache.viewmodels.MusicMetaDataFragmentViewModel;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
+import com.zspirytus.enjoymusic.view.dialog.ProgressDialog;
 import com.zspirytus.enjoymusic.view.dialog.SaveMusicInfoDialog;
 
 @LayoutIdInject(R.layout.fragment_music_meta_data)
@@ -32,6 +33,8 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
 
     private MusicMetaDataFragmentViewModel mViewModel;
     private MusicMetaDataListAdapter mAdapter;
+
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void initData() {
@@ -62,6 +65,18 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
         // 这里注册一个ArtistList的观察者，以便在没有初始化ArtistListFragment的情况下，getValue()拿到非空值。
         ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class)
                 .getArtistList().observe(getParentActivity(), values -> {
+        });
+        mViewModel.getUpdateState().observe(this, values -> {
+            if (values != null && values) {
+                if (mProgressDialog == null) {
+                    mProgressDialog = ProgressDialog.getInstance();
+                }
+                FragmentVisibilityManager.getInstance().showDialogFragment(mProgressDialog);
+            } else {
+                if (mProgressDialog != null) {
+                    mProgressDialog.dismiss();
+                }
+            }
         });
     }
 
