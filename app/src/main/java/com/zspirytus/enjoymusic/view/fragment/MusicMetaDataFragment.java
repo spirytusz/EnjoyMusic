@@ -90,11 +90,7 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
                 FragmentVisibilityManager.getInstance().remove(this);
                 break;
             case R.id.cancel_btn:
-                if(mViewModel.hasUpdate()) {
-                    showDialog();
-                } else {
-                    FragmentVisibilityManager.getInstance().remove(MusicMetaDataFragment.this);
-                }
+                goBack();
                 break;
         }
     }
@@ -116,7 +112,11 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
 
     @Override
     public void goBack() {
-        showDialog();
+        if (mViewModel.hasUpdate()) {
+            showDialog();
+        } else {
+            FragmentVisibilityManager.getInstance().remove(MusicMetaDataFragment.this);
+        }
     }
 
     private void showDialog() {
