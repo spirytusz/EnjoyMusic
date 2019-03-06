@@ -39,6 +39,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
     private List<MusicMetaDataListItem> dataList = new ArrayList<>();
 
     private MutableLiveData<Boolean> updateState = new MutableLiveData<>();
+    private boolean hasUpdate = false;
 
     public MutableLiveData<List<MusicMetaDataListItem>> getMusicMetaList() {
         return mMusicMetaList;
@@ -46,6 +47,10 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> getUpdateState() {
         return updateState;
+    }
+
+    public boolean hasUpdate() {
+        return hasUpdate;
     }
 
     public void obtainMusicMetaList(Music music) {
@@ -114,16 +119,16 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             viewModel.getArtistList().postValue(artistList);
 
             // update background data.
-            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_META_DATA_UPDATOR);
-            IMusicMetaDataUpdator updator = IMusicMetaDataUpdator.Stub.asInterface(binder);
-            // TODO: 2019/3/6 check null.
-            // TODO: 2019/3/6 update if data has change.
-            try {
-                updator.updateArtist(needUpdateArtist);
-            } catch (RemoteException e) {
-                e.printStackTrace();
+            if(needUpdateArtist.peakArtistArt() != null) {
+                IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_META_DATA_UPDATOR);
+                IMusicMetaDataUpdator updator = IMusicMetaDataUpdator.Stub.asInterface(binder);
+                try {
+                    updator.updateArtist(needUpdateArtist);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                updateState.postValue(true);
             }
-            updateState.postValue(true);
         });
     }
 
@@ -175,6 +180,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
     @WorkerThread
     private void updateArtistInfo(String picUrl) {
         if (picUrl != null) {
+            hasUpdate = true;
             long artistId = dataList.get(0).getArtist().getArtistId();
             ArtistArt artistArt = new ArtistArt(artistId, picUrl);
             dataList.get(0).getArtist().setArtistArt(artistArt);
