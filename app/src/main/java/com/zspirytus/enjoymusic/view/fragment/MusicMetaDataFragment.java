@@ -68,7 +68,7 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
             mAdapter.setData(values);
         });
         mViewModel.getUpdateState().observe(this, values -> {
-            if (values != null && values) {
+            if (values != null && !values) {
                 if (mProgressDialog == null) {
                     mProgressDialog = ProgressDialog.getInstance();
                 }
@@ -77,6 +77,7 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
                 if (mProgressDialog != null) {
                     mProgressDialog.dismiss();
                 }
+                FragmentVisibilityManager.getInstance().remove(this);
             }
         });
     }
@@ -87,7 +88,6 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
             case R.id.save_btn:
                 MainActivityViewModel viewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
                 mViewModel.updateMusic(mAdapter.getData(), viewModel);
-                FragmentVisibilityManager.getInstance().remove(this);
                 break;
             case R.id.cancel_btn:
                 goBack();

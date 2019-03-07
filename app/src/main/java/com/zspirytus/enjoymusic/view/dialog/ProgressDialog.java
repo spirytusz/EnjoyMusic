@@ -42,8 +42,9 @@ public class ProgressDialog extends BaseDialogFragment {
 
     @Override
     protected void initView() {
-        String progressText = getArguments().getString(PROGRESS_TEXT_KEY);
-        if(progressText != null) {
+        Bundle bundle = getArguments();
+        if (bundle != null && bundle.getString(PROGRESS_TEXT_KEY) != null) {
+            String progressText = getArguments().getString(PROGRESS_TEXT_KEY);
             mProgressText.setText(progressText);
         } else {
             mProgressText.setText(R.string.default_progress_text);
@@ -66,7 +67,7 @@ public class ProgressDialog extends BaseDialogFragment {
 
     public static ProgressDialog getInstance(String progressText) {
         ProgressDialog dialog = new ProgressDialog();
-        if(progressText != null) {
+        if (progressText != null) {
             Bundle bundle = new Bundle();
             bundle.putString(PROGRESS_TEXT_KEY, progressText);
             dialog.setArguments(bundle);

@@ -122,8 +122,8 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-                updateState.postValue(true);
             }
+            updateState.postValue(true);
         });
     }
 
