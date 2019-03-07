@@ -144,7 +144,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         super.onActivityCreated(savedInstanceState);
         ViewModelProviders.of(getParentActivity())
                 .get(MainActivityViewModel.class)
-                .getMusicList().observe(getParentActivity(), (values) -> {
+                .getMusicList().observe(this, (values) -> {
             ViewModelProviders.of(this).get(HomePageFragmentViewModel.class)
                     .applyMusicList();
         });

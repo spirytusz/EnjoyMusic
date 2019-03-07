@@ -77,7 +77,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
         super.onActivityCreated(savedInstanceState);
         ViewModelProviders.of(getParentActivity())
                 .get(MainActivityViewModel.class)
-                .getArtistList().observe(getParentActivity(), (values) -> {
+                .getArtistList().observe(this, (values) -> {
             mLoadProgressBar.setVisibility(View.GONE);
             if (values != null && !values.isEmpty()) {
                 mAdapter.setList(values);

@@ -35,7 +35,6 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
     private ProgressBar mProgressBar;
 
     private MusicMetaDataFragmentViewModel mViewModel;
-    private MainActivityViewModel mainActivityViewModel;
     private MusicMetaDataListAdapter mAdapter;
 
     private ProgressDialog mProgressDialog;
@@ -43,7 +42,6 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
     @Override
     protected void initData() {
         mViewModel = ViewModelProviders.of(this).get(MusicMetaDataFragmentViewModel.class);
-        mainActivityViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
         Music music = getArguments().getParcelable("music");
         mViewModel.applyMusicMetaList(music);
         mAdapter = new MusicMetaDataListAdapter();
@@ -69,8 +67,6 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
             mRecyclerView.setVisibility(View.VISIBLE);
             mAdapter.setData(values);
         });
-        mainActivityViewModel.getArtistList().observe(getParentActivity(), values -> {
-        });
         mViewModel.getUpdateState().observe(this, values -> {
             if (values != null && values) {
                 if (mProgressDialog == null) {
@@ -89,7 +85,8 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.save_btn:
-                mViewModel.updateMusic(mAdapter.getData(), mainActivityViewModel);
+                MainActivityViewModel viewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
+                mViewModel.updateMusic(mAdapter.getData(), viewModel);
                 FragmentVisibilityManager.getInstance().remove(this);
                 break;
             case R.id.cancel_btn:

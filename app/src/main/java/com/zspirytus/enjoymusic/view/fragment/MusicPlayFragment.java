@@ -131,7 +131,6 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     @Override
     protected void initData() {
         mViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
-        mViewModel.init();
         mViewModel.obtainPlayMode(getContext());
         viewModel = ViewModelProviders.of(this).get(MusicPlayFragmentViewModel.class);
     }
@@ -177,23 +176,23 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel.getPlayProgress().observe(getParentActivity(), (values) -> {
+        mViewModel.getPlayProgress().observe(this, (values) -> {
             if (values != null) {
                 mSeekBar.setProgress(values / 1000);
                 mLyricView.onPlayProgressChange(values);
             }
         });
-        mViewModel.getPlayState().observe(getParentActivity(), (values) -> {
+        mViewModel.getPlayState().observe(this, (values) -> {
             if (values != null) {
                 setButtonSrc(values);
                 mCover.setRotating(values);
             }
         });
-        mViewModel.getCurrentPlayingMusic().observe(getParentActivity(), values -> {
+        mViewModel.getCurrentPlayingMusic().observe(this, values -> {
             setView(values);
             viewModel.applyLyricFromDB(values);
         });
-        mViewModel.getPlayMode().observe(getParentActivity(), (values) -> {
+        mViewModel.getPlayMode().observe(this, (values) -> {
             mPlayMode.setImageResource(mViewModel.getPlayModeResId().get(values));
             ForegroundMusicController.getInstance().setPlayMode(values);
         });
