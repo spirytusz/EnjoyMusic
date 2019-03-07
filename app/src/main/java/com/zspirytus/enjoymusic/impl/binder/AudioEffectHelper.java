@@ -78,6 +78,6 @@ public class AudioEffectHelper extends IAudioEffectHelper.Stub {
 
     @Override
     public int[] usePresetReverb(int position) throws RemoteException {
-        return PresetReverbHelper.usePresetReverb(position);
+        return PresetReverbHelper.getInstance().usePresetReverb(position);
     }
 }

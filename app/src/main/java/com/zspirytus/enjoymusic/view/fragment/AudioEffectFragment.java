@@ -112,21 +112,23 @@ public class AudioEffectFragment extends BaseFragment
             mTitle.setText(R.string.audio_effect_bass_boast);
             mBassBoaster.setVisibility(View.VISIBLE);
         });
+        mViewModel.getSelectAudioField().observe(this, values -> {
+            int oldChecked = 0;
+            for (int i = 0; i < mPresetReverbAdapter.getList().size(); i++) {
+                if (mPresetReverbAdapter.getList().get(i).isChecked()) {
+                    mPresetReverbAdapter.getList().get(i).setChecked(false);
+                    oldChecked = i;
+                    break;
+                }
+            }
+            mPresetReverbAdapter.getList().get(values).setChecked(true);
+            mPresetReverbAdapter.notifyItemChanged(oldChecked);
+            mPresetReverbAdapter.notifyItemChanged(values);
+        });
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        int oldChecked = 0;
-        for (int i = 0; i < mPresetReverbAdapter.getList().size(); i++) {
-            if (mPresetReverbAdapter.getList().get(i).isChecked()) {
-                mPresetReverbAdapter.getList().get(i).setChecked(false);
-                oldChecked = i;
-                break;
-            }
-        }
-        mPresetReverbAdapter.notifyItemChanged(oldChecked);
-        mPresetReverbAdapter.getList().get(position).setChecked(true);
-        mPresetReverbAdapter.notifyItemChanged(position);
         mViewModel.setPresetReverb(position);
     }
 

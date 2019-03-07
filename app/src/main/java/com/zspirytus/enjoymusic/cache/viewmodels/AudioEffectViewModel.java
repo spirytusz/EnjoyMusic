@@ -3,23 +3,28 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.engine.AudioEffectController;
 import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
 import com.zspirytus.enjoymusic.entity.listitem.AudioEffectItem;
 import com.zspirytus.enjoymusic.global.AudioEffectConfig;
+import com.zspirytus.enjoymusic.global.MainApplication;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.AudioFieldObserverManager;
+import com.zspirytus.enjoymusic.receivers.observer.AudioFieldChangeObserver;
 import com.zspirytus.enjoymusic.view.fragment.AudioEffectFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AudioEffectViewModel extends ViewModel {
+public class AudioEffectViewModel extends ViewModel implements AudioFieldChangeObserver {
 
     private static final String TAG = "AudioEffectViewModel";
 
     private MutableLiveData<List<AudioEffectItem>> mPresetReverbNameList = new MutableLiveData<>();
     private MutableLiveData<EqualizerMetaData> mEqualizerMetaData = new MutableLiveData<>();
     private MutableLiveData<Boolean> mBassBoastFlag = new MutableLiveData<>();
+    private MutableLiveData<Integer> mSelectAudioField = new MutableLiveData<>();
 
     public MutableLiveData<List<AudioEffectItem>> getPresetReverbNameList() {
         return mPresetReverbNameList;
@@ -31,6 +36,10 @@ public class AudioEffectViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> getBassBoastFlag() {
         return mBassBoastFlag;
+    }
+
+    public MutableLiveData<Integer> getSelectAudioField() {
+        return mSelectAudioField;
     }
 
     public void applyDataByFlag(int flag) {
@@ -50,13 +59,15 @@ public class AudioEffectViewModel extends ViewModel {
     }
 
     private void applyPresetReverbList() {
+        AudioFieldObserverManager.getInstance().register(this);
         ThreadPool.execute(() -> {
             List<String> nameList = AudioEffectConfig.getPresetReverbNameList();
             List<AudioEffectItem> audioEffectItems = new ArrayList<>();
-            for (String name : nameList) {
+            int selectPosition = MusicSharedPreferences.restoreAudioField(MainApplication.getForegroundContext());
+            for (int i = 0; i < nameList.size(); i++) {
                 AudioEffectItem item = new AudioEffectItem();
-                item.setTitle(name);
-                item.setChecked(false);
+                item.setTitle(nameList.get(i));
+                item.setChecked(i == selectPosition);
                 item.setSingleEffect(true);
                 audioEffectItems.add(item);
             }
@@ -83,5 +94,16 @@ public class AudioEffectViewModel extends ViewModel {
 
     public void setBassBoastStrength(int strength) {
         AudioEffectController.getInstance().setBassBoastStrength(strength);
+    }
+
+    @Override
+    public void onChange(int position) {
+        mSelectAudioField.postValue(position);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        AudioFieldObserverManager.getInstance().unregister(this);
     }
 }

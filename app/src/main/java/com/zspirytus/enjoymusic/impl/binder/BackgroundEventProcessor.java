@@ -6,12 +6,14 @@ import com.zspirytus.enjoymusic.IBackgroundEventProcessor;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.engine.PlayHistoryManager;
+import com.zspirytus.enjoymusic.foregroundobserver.IAudioFieldChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayHistoryChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayListChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayProgressChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayStateChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayedMusicChangeObserver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
+import com.zspirytus.enjoymusic.services.media.audioeffect.PresetReverbHelper;
 
 public class BackgroundEventProcessor extends IBackgroundEventProcessor.Stub {
 
@@ -41,6 +43,9 @@ public class BackgroundEventProcessor extends IBackgroundEventProcessor.Stub {
             case Constant.BinderCode.PLAY_HISTORY_OBSERVER:
                 PlayHistoryManager.getInstance().register(IPlayHistoryChangeObserver.Stub.asInterface(observer));
                 break;
+            case Constant.BinderCode.AUDIO_FIELD_OBSERVER:
+                PresetReverbHelper.register(IAudioFieldChangeObserver.Stub.asInterface(observer));
+                break;
         }
     }
 
@@ -62,6 +67,9 @@ public class BackgroundEventProcessor extends IBackgroundEventProcessor.Stub {
                 break;
             case Constant.BinderCode.PLAY_HISTORY_OBSERVER:
                 PlayHistoryManager.getInstance().unregister(IPlayHistoryChangeObserver.Stub.asInterface(observer));
+                break;
+            case Constant.BinderCode.AUDIO_FIELD_OBSERVER:
+                PresetReverbHelper.unregister(IAudioFieldChangeObserver.Stub.asInterface(observer));
                 break;
         }
     }
