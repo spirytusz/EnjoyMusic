@@ -179,7 +179,9 @@ public class MusicScanner {
                     mFolderList.add(folder);
                     array.put(dir[2].hashCode(), mFolderList.size() - 1);
                 }
-                JoinFolderToMusic joinFolderToMusic = new JoinFolderToMusic(fullPath.hashCode(), musicId);
+                JoinFolderToMusic joinFolderToMusic = new JoinFolderToMusic();
+                joinFolderToMusic.setFolderId(fullPath.hashCode());
+                joinFolderToMusic.setMusicId(musicId);
                 joinFolderToMusics.add(joinFolderToMusic);
             }
         }

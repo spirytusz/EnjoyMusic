@@ -2,10 +2,14 @@ package com.zspirytus.enjoymusic.db.table.jointable;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Index;
 
 import java.util.Objects;
 
-@Entity
+@Entity(indexes = {
+        @Index(value = "folderId ASC, musicId ASC", unique = true)
+})
 public class JoinFolderToMusic {
 
     @Override
@@ -19,15 +23,17 @@ public class JoinFolderToMusic {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(folderId, musicId);
     }
 
+    @Id
+    private Long id;
     private long folderId;
     private long musicId;
 
-    @Generated(hash = 2144676369)
-    public JoinFolderToMusic(long folderId, long musicId) {
+    @Generated(hash = 1636047669)
+    public JoinFolderToMusic(Long id, long folderId, long musicId) {
+        this.id = id;
         this.folderId = folderId;
         this.musicId = musicId;
     }
@@ -50,5 +56,13 @@ public class JoinFolderToMusic {
 
     public void setMusicId(long musicId) {
         this.musicId = musicId;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
