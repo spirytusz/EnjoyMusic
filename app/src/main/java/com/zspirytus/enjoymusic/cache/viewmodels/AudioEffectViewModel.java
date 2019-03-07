@@ -37,7 +37,7 @@ public class AudioEffectViewModel extends ViewModel {
         ThreadPool.execute(() -> {
             switch (flag) {
                 case AudioEffectFragment.FLAG_AUDIO_FILED:
-                    obtainPresetReverbList();
+                    applyPresetReverbList();
                     break;
                 case AudioEffectFragment.FLAG_EQUALIZER:
                     obtainEqualizerMetaData();
@@ -49,17 +49,19 @@ public class AudioEffectViewModel extends ViewModel {
         });
     }
 
-    private void obtainPresetReverbList() {
-        List<String> nameList = AudioEffectConfig.getPresetReverbNameList();
-        List<AudioEffectItem> audioEffectItems = new ArrayList<>();
-        for (String name : nameList) {
-            AudioEffectItem item = new AudioEffectItem();
-            item.setTitle(name);
-            item.setChecked(false);
-            item.setSingleEffect(true);
-            audioEffectItems.add(item);
-        }
-        mPresetReverbNameList.postValue(audioEffectItems);
+    private void applyPresetReverbList() {
+        ThreadPool.execute(() -> {
+            List<String> nameList = AudioEffectConfig.getPresetReverbNameList();
+            List<AudioEffectItem> audioEffectItems = new ArrayList<>();
+            for (String name : nameList) {
+                AudioEffectItem item = new AudioEffectItem();
+                item.setTitle(name);
+                item.setChecked(false);
+                item.setSingleEffect(true);
+                audioEffectItems.add(item);
+            }
+            mPresetReverbNameList.postValue(audioEffectItems);
+        });
     }
 
     private void obtainEqualizerMetaData() {
