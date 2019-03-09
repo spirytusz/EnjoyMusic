@@ -111,11 +111,13 @@ public class MusicPlayFragmentViewModel extends ViewModel {
     private void downloadLyric(Music music, String lyricUrl) {
         if (lyricUrl != null) {
             ThreadPool.execute(() -> {
+                List<LyricRow> lyricRows = null;
                 HttpURLConnection connection = null;
                 BufferedReader reader = null;
                 BufferedWriter writer = null;
                 File file = new File(MainApplication.getForegroundContext().getExternalFilesDir("/"), music.getMusicName());
                 if (file.exists()) {
+                    //noinspection ResultOfMethodCallIgnored
                     file.delete();
                 }
                 try {
@@ -134,7 +136,7 @@ public class MusicPlayFragmentViewModel extends ViewModel {
                         writer.write(line);
                         writer.newLine();
                     }
-                    List<LyricRow> lyricRows = LyricLoader.getInstance().load(rows);
+                    lyricRows = LyricLoader.getInstance().load(rows);
                     mLyricRows.postValue(lyricRows);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -158,7 +160,7 @@ public class MusicPlayFragmentViewModel extends ViewModel {
                     }
                 }
                 final int tip;
-                if (mLyricRows.getValue() != null && !mLyricRows.getValue().isEmpty()) {
+                if (lyricRows != null && !lyricRows.isEmpty()) {
                     tip = R.string.download_success;
                 } else {
                     tip = R.string.no_lyric_available;
