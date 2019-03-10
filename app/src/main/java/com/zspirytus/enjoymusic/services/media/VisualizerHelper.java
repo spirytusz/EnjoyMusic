@@ -10,6 +10,7 @@ public class VisualizerHelper extends FrequencyObservable implements Visualizer.
         static VisualizerHelper INSTANCE = new VisualizerHelper();
     }
 
+    private static final int STEP = 16;
     private Visualizer mVisualizer;
 
     private VisualizerHelper() {
@@ -32,12 +33,11 @@ public class VisualizerHelper extends FrequencyObservable implements Visualizer.
 
     @Override
     public void onFftDataCapture(Visualizer visualizer, byte[] fft, int samplingRate) {
-        int step = 16;
-        float[] magnitudes = new float[fft.length / step];
-        float[] phases = new float[fft.length / step];
-        for (int i = 0; i < fft.length; i += step) {
-            magnitudes[i / step] = (float) Math.hypot(fft[i], fft[i + 1]);
-            phases[i / step] = (float) Math.atan2(fft[i + 1], fft[i]);
+        float[] magnitudes = new float[fft.length / STEP];
+        float[] phases = new float[fft.length / STEP];
+        for (int i = 0; i < fft.length; i += STEP) {
+            magnitudes[i / STEP] = (float) Math.hypot(fft[i], fft[i + 1]);
+            phases[i / STEP] = (float) Math.atan2(fft[i + 1], fft[i]);
         }
         notifyAllObserverFrequencyChange(magnitudes, phases);
     }

@@ -123,6 +123,7 @@
         android:id="@+id/visualizer"
         android:layout_width="match_parent"
         android:layout_height="360dp"
+        android:focusable="false"
         app:anchorRadius="128dp"
         app:anchorMargin="6dp"
         app:strokenWidth="3"
