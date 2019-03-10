@@ -31,6 +31,7 @@
     <string name="album">专辑</string>
     <string name="artist">艺术家</string>
     <string name="folder">文件夹</string>
+    <string name="song_list">歌单</string>
     <string name="no_music_tip">该设备没有音乐…</string>
     <string name="no_album_tip">该设备没有专辑…</string>
     <string name="no_artist_tip">该设备没有艺术家…</string>
@@ -48,6 +49,18 @@
 
     <!-- About Text start -->
     <string name="about_fragment_title">关于</string>
+    <string name="about_enjoymusic">关于享乐</string>
+    <string name="current_version">当前版本</string>
+    <string name="current_version_value">v1.0</string>
+    <string name="share">分享</string>
+    <string name="like">点个赞呗</string>
+    <string name="go_to_repo">前往项目Star或者Fork鼓励作者</string>
+    <string name="repo_url">https://github.com/zkw012300/EnjoyMusic</string>
+    <string name="about_author">关于作者</string>
+    <string name="github">Github</string>
+    <string name="github_url">https://github.com/zkw012300</string>
+    <string name="blog">博客</string>
+    <string name="blog_url">http://www.zspirytus.com/</string>
     <!-- About Text end -->
 
     <!-- MusicMetaData Text start -->
@@ -76,6 +89,10 @@
     <!-- MusicPlay Text end -->
 
     <!-- AudioEffect Text start -->
+    <string name="audio_effect">音效</string>
+    <string name="audio_effect_acoustic_echo_canceler">回声消除</string>
+    <string name="audio_effect_automatic_gain_control">自动增益</string>
+    <string name="audio_effect_noise_suppressor">噪声抑制</string>
     <string name="audio_effect_audio_field">音场</string>
     <string name="audio_effect_equalizer">均衡器</string>
     <string name="audio_effect_bass_boast">重低音调节器</string>
@@ -85,7 +102,15 @@
     <!-- FilterMusicFragment Menu Text start -->
     <string name="add_to_play_queue">添加到播放队列</string>
     <string name="new_song_list">新建歌单</string>
+    <string name="_number_of_music">首歌曲</string>
+    <string name="_hour">小时</string>
+    <string name="_min">分钟</string>
     <!-- FilterMusicFragment Menu Text end -->
+
+    <!-- FilterAlbumListFragment start -->
+    <string name="album_list">专辑列表</string>
+    <string name="_number_of_album">张专辑</string>
+    <!-- FilterAlbumListFragment end -->
 
     <!-- Search Text start -->
     <string name="search">搜索</string>

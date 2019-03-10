@@ -1,10 +1,13 @@
 package com.zspirytus.enjoymusic.cache.viewmodels;
 
 import android.arch.lifecycle.ViewModel;
+import android.content.res.Resources;
 
+import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.entity.listitem.AudioEffectItem;
 import com.zspirytus.enjoymusic.entity.listitem.SettingItem;
 import com.zspirytus.enjoymusic.global.AudioEffectConfig;
+import com.zspirytus.enjoymusic.global.MainApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,16 +22,17 @@ public class SettingFragmentViewModel extends ViewModel {
     }
 
     public List<SettingItem> obtainListItem() {
+        Resources resources = MainApplication.getForegroundContext().getResources();
         List<SettingItem> settingItems = new ArrayList<>();
         SettingItem item = new SettingItem();
         item.setTitle(true);
-        item.setTitle("音效");
+        item.setTitle(resources.getString(R.string.audio_effect));
         settingItems.add(item);
 
         if (AudioEffectConfig.isIsAcousticEchoCancelerAvailable()) {
             item = new SettingItem();
             AudioEffectItem audioEffectItem = new AudioEffectItem();
-            audioEffectItem.setTitle("回声消除");
+            audioEffectItem.setTitle(resources.getString(R.string.audio_effect_acoustic_echo_canceler));
             audioEffectItem.setSingleEffect(true);
             audioEffectItem.setChecked(false);
             item.setAudioEffectItem(audioEffectItem);
@@ -38,7 +42,7 @@ public class SettingFragmentViewModel extends ViewModel {
         if (AudioEffectConfig.isIsAutomaticGainControlAvailable()) {
             item = new SettingItem();
             AudioEffectItem audioEffectItem = new AudioEffectItem();
-            audioEffectItem.setTitle("自动增益");
+            audioEffectItem.setTitle(resources.getString(R.string.audio_effect_automatic_gain_control));
             audioEffectItem.setSingleEffect(true);
             audioEffectItem.setChecked(false);
             item.setAudioEffectItem(audioEffectItem);
@@ -48,7 +52,7 @@ public class SettingFragmentViewModel extends ViewModel {
         if (AudioEffectConfig.isIsNoiseSuppressorAvailable()) {
             item = new SettingItem();
             AudioEffectItem audioEffectItem = new AudioEffectItem();
-            audioEffectItem.setTitle("噪声抑制");
+            audioEffectItem.setTitle(resources.getString(R.string.audio_effect_noise_suppressor));
             audioEffectItem.setSingleEffect(true);
             audioEffectItem.setChecked(false);
             item.setAudioEffectItem(audioEffectItem);
@@ -58,7 +62,7 @@ public class SettingFragmentViewModel extends ViewModel {
 
         item = new SettingItem();
         AudioEffectItem audioEffectItem = new AudioEffectItem();
-        audioEffectItem.setTitle("音场");
+        audioEffectItem.setTitle(resources.getString(R.string.audio_effect_audio_field));
         audioEffectItem.setSingleEffect(false);
         item.setAudioEffectItem(audioEffectItem);
         item.setAudioEffect(true);
@@ -66,7 +70,7 @@ public class SettingFragmentViewModel extends ViewModel {
 
         item = new SettingItem();
         audioEffectItem = new AudioEffectItem();
-        audioEffectItem.setTitle("均衡器");
+        audioEffectItem.setTitle(resources.getString(R.string.audio_effect_equalizer));
         audioEffectItem.setSingleEffect(false);
         item.setAudioEffectItem(audioEffectItem);
         item.setAudioEffect(true);
@@ -74,7 +78,7 @@ public class SettingFragmentViewModel extends ViewModel {
 
         /*item = new SettingItem();
         audioEffectItem = new AudioEffectItem();
-        audioEffectItem.setTitle("重低音调节器");
+        audioEffectItem.setTitle(resources.getString(R.string.audio_effect_bass_boast));
         audioEffectItem.setSingleEffect(false);
         item.setAudioEffectItem(audioEffectItem);
         item.setAudioEffect(true);

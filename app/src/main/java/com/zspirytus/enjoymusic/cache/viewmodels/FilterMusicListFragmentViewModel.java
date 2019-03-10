@@ -1,15 +1,18 @@
 package com.zspirytus.enjoymusic.cache.viewmodels;
 
 import android.arch.lifecycle.ViewModel;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 
+import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinMusicToSongList;
+import com.zspirytus.enjoymusic.global.MainApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,19 +44,20 @@ public class FilterMusicListFragmentViewModel extends ViewModel {
     }
 
     public SpannableString createSpannableString(String title, List<Music> musicList) {
+        Resources resources = MainApplication.getForegroundContext().getResources();
         long totalDuration = 0;
         for (Music music : musicList) {
             totalDuration += music.getMusicDuration();
         }
-        String countOfMusic = musicList.size() + "首曲目";
+        String countOfMusic = musicList.size() + resources.getString(R.string._number_of_music);
         long durationMinsValue = totalDuration / 1000 / 60;
         String duration;
         if (durationMinsValue > 60) {
             long min = durationMinsValue % 60;
             long hour = durationMinsValue / 60;
-            duration = hour + "小时" + min + "分钟";
+            duration = hour + resources.getString(R.string._hour) + min + resources.getString(R.string._min);
         } else {
-            duration = durationMinsValue + "分钟";
+            duration = durationMinsValue + resources.getString(R.string._min);
         }
         String content = title + "\n" + countOfMusic + "\n" + duration;
         SpannableString spannableString = new SpannableString(content);
@@ -71,15 +75,16 @@ public class FilterMusicListFragmentViewModel extends ViewModel {
     }
 
     public String getToolbarTitle(int flag) {
+        Resources resources = MainApplication.getForegroundContext().getResources();
         switch (flag) {
             case ALBUM_FLAG:
-                return "专辑";
+                return resources.getString(R.string.album);
             case ARTIST_FLAG:
-                return "艺术家";
+                return resources.getString(R.string.artist);
             case FOLDER_FLAG:
-                return "文件夹";
+                return resources.getString(R.string.folder);
             case SONG_LIST_FLAG:
-                return "歌单";
+                return resources.getString(R.string.song_list);
         }
         return "";
     }

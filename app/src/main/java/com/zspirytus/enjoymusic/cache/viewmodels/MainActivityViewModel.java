@@ -16,7 +16,6 @@ import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 
 import java.util.List;
 
-// TODO: 2019/3/7 XXXLiveData.getValue() == null ???
 public class MainActivityViewModel extends MusicPlayingStateViewModel {
 
     public void obtainMusicList() {

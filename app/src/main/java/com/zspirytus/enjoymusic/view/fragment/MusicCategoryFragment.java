@@ -114,7 +114,7 @@ public class MusicCategoryFragment extends CommonHeaderBaseFragment {
         mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getText(R.string.album)));
         mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getText(R.string.artist)));
         mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getText(R.string.folder)));
-        mTabLayout.addTab(mTabLayout.newTab().setText("歌单"));
+        mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getString(R.string.song_list)));
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

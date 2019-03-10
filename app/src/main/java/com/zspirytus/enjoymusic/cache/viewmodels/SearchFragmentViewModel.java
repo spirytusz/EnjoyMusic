@@ -3,12 +3,15 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.res.Resources;
 
+import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseActivity;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.entity.listitem.SearchResult;
+import com.zspirytus.enjoymusic.global.MainApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,7 @@ public class SearchFragmentViewModel extends ViewModel {
     }
 
     public void applyToSearch(BaseActivity activity, String key) {
+        Resources resources = MainApplication.getForegroundContext().getResources();
         MainActivityViewModel viewModel = ViewModelProviders.of(activity).get(MainActivityViewModel.class);
         List<SearchResult> results = new ArrayList<>();
         SearchResult result = new SearchResult();
@@ -29,7 +33,7 @@ public class SearchFragmentViewModel extends ViewModel {
         List<SearchResult> musicResult = searchMusic(viewModel.getMusicList().getValue(), key);
         if (musicResult != null && !musicResult.isEmpty()) {
             result.setTitle(true);
-            result.setTitle("曲目");
+            result.setTitle(resources.getString(R.string.all_music));
             results.add(result);
             results.addAll(musicResult);
         }
@@ -42,7 +46,7 @@ public class SearchFragmentViewModel extends ViewModel {
 
             result = new SearchResult();
             result.setTitle(true);
-            result.setTitle("专辑");
+            result.setTitle(resources.getString(R.string.album));
             results.add(result);
             results.addAll(albumResult);
         }
@@ -55,7 +59,7 @@ public class SearchFragmentViewModel extends ViewModel {
 
             result = new SearchResult();
             result.setTitle(true);
-            result.setTitle("艺术家");
+            result.setTitle(resources.getString(R.string.artist));
             results.add(result);
             results.addAll(artistResult);
         }

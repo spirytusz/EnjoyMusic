@@ -80,7 +80,7 @@ public class FilterAlbumListFragment extends BaseFragment {
 
     @Override
     protected void initView() {
-        mTitle.setText("专辑列表");
+        mTitle.setText(getResources().getString(R.string.album_list));
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
         mBackBtn.setOnClickListener(v -> goBack());
@@ -106,7 +106,7 @@ public class FilterAlbumListFragment extends BaseFragment {
         Artist artist = getArguments().getParcelable(ARTIST_KEY);
         int albumCount = mInnerAdapter.getItemCount();
         String title = artist.getArtistName();
-        String countOfMusic = albumCount + "张专辑";
+        String countOfMusic = albumCount + getResources().getString(R.string._number_of_album);
         String content = title + "\n" + countOfMusic;
         SpannableString spannableString = new SpannableString(content);
         int pointer = 0;

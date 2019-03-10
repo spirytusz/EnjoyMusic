@@ -61,7 +61,7 @@ public class SongListContentFragment extends CommonHeaderBaseFragment implements
         mToolbar.setNavigationOnClickListener(v -> goBack());
         mToolbar.setTitleTextColor(getResources().getColor(R.color.black));
 
-        mToolbar.setTitle("歌单");
+        mToolbar.setTitle(R.string.song_list);
         mRecyclerView.setLayoutManager(LayoutManagerFactory.createLinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
     }

@@ -37,7 +37,7 @@ public class SongListFragment extends BaseFragment implements OnItemClickListene
             @Override
             public void convertHeaderView(CommonViewHolder holder, int position) {
                 holder.setVisibility(R.id.header_title, View.VISIBLE);
-                holder.setText(R.id.header_title, "添加歌单");
+                holder.setText(R.id.header_title, R.string.create_new_song_list);
                 holder.setImageResource(R.id.img, R.drawable.ic_add_black_48dp);
                 holder.setOnItemClickListener(SongListFragment.this);
             }
