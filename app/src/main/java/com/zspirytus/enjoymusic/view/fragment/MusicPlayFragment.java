@@ -26,12 +26,15 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.FrequencyObserverManager;
 import com.zspirytus.enjoymusic.impl.glide.GlideApp;
+import com.zspirytus.enjoymusic.receivers.observer.OnFrequencyChangeListener;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
 import com.zspirytus.enjoymusic.view.dialog.PlayHistoryDialog;
 import com.zspirytus.enjoymusic.view.widget.AutoRotateCircleImage;
 import com.zspirytus.enjoymusic.view.widget.BlurImageView;
 import com.zspirytus.enjoymusic.view.widget.LyricView;
+import com.zspirytus.enjoymusic.view.widget.VisualizerView;
 
 import java.io.File;
 
@@ -41,7 +44,8 @@ import java.io.File;
  */
 
 @LayoutIdInject(R.layout.fragment_music_play_layout)
-public class MusicPlayFragment extends BaseFragment implements View.OnClickListener {
+public class MusicPlayFragment extends BaseFragment
+        implements View.OnClickListener, OnFrequencyChangeListener {
 
     @ViewInject(R.id.tool_bar)
     private Toolbar mToolbar;
@@ -76,6 +80,9 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     private ImageView mNextButton;
     @ViewInject(R.id.play_history)
     private ImageView mPlayHistoryBtn;
+
+    @ViewInject(R.id.visualizer)
+    private VisualizerView mVisualizer;
 
     private MainActivityViewModel mViewModel;
     private MusicPlayFragmentViewModel viewModel;
@@ -176,6 +183,7 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        FrequencyObserverManager.getInstance().register(this);
         mViewModel.getPlayProgress().observe(this, (values) -> {
             if (values != null) {
                 mSeekBar.setProgress(values / 1000);
@@ -213,6 +221,11 @@ public class MusicPlayFragment extends BaseFragment implements View.OnClickListe
     public void goBack() {
         FragmentVisibilityManager.getInstance().hide(this);
         getParentActivity().setDefaultNavBar();
+    }
+
+    @Override
+    public void onFrequencyChange(float[] magnitudes, float[] phases) {
+        mVisualizer.setFrequencies(magnitudes);
     }
 
     private void continueToPlay(Music currentPlayingMusic) {

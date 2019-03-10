@@ -2,9 +2,9 @@ package com.zspirytus.enjoymusic.services.media;
 
 import android.media.audiofx.Visualizer;
 
-import com.zspirytus.enjoymusic.utils.LogUtil;
+import com.zspirytus.enjoymusic.listeners.observable.FrequencyObservable;
 
-public class VisualizerHelper implements Visualizer.OnDataCaptureListener {
+public class VisualizerHelper extends FrequencyObservable implements Visualizer.OnDataCaptureListener {
 
     private static class Singleton {
         static VisualizerHelper INSTANCE = new VisualizerHelper();
@@ -18,7 +18,7 @@ public class VisualizerHelper implements Visualizer.OnDataCaptureListener {
         mVisualizer.setDataCaptureListener(this, Visualizer.getMaxCaptureRate() / 2, false, true);
     }
 
-    private static VisualizerHelper getInstance() {
+    public static VisualizerHelper getInstance() {
         return Singleton.INSTANCE;
     }
 
@@ -28,14 +28,17 @@ public class VisualizerHelper implements Visualizer.OnDataCaptureListener {
 
     @Override
     public void onWaveFormDataCapture(Visualizer visualizer, byte[] waveform, int samplingRate) {
-
     }
 
     @Override
     public void onFftDataCapture(Visualizer visualizer, byte[] fft, int samplingRate) {
-        for (byte fftData : fft) {
-            LogUtil.e(this.getClass().getSimpleName(), "fft = " + fftData);
+        int step = 16;
+        float[] magnitudes = new float[fft.length / step];
+        float[] phases = new float[fft.length / step];
+        for (int i = 0; i < fft.length; i += step) {
+            magnitudes[i / step] = (float) Math.hypot(fft[i], fft[i + 1]);
+            phases[i / step] = (float) Math.atan2(fft[i + 1], fft[i]);
         }
-        LogUtil.e(this.getClass().getSimpleName(), "\n\n\n\n");
+        notifyAllObserverFrequencyChange(magnitudes, phases);
     }
 }

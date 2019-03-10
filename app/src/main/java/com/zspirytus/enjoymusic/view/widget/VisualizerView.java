@@ -57,7 +57,7 @@ public class VisualizerView extends AppCompatImageView {
         paint.setStyle(Paint.Style.STROKE);
     }
 
-    public void setFrequencies(int[] frequencies) {
+    public void setFrequencies(float[] frequencies) {
         createPath(frequencies);
         invalidate();
     }
@@ -70,9 +70,9 @@ public class VisualizerView extends AppCompatImageView {
         this.strokenWidth = strokenWidth;
     }
 
-    private void createPath(int[] frequencies) {
+    private void createPath(float[] frequencies) {
         int offsetX = (getLeft() + getRight()) / 2;
-        int offsetY = (getTop() + getBottom()) / 2;
+        int offsetY = (getTop() + getBottom()) / 4;
         path.reset();
         double angle = 1.0 * Math.PI / frequencies.length;
         int valuess = PixelsUtil.dp2px(getContext(), frequencies[0] * 2);
@@ -84,7 +84,7 @@ public class VisualizerView extends AppCompatImageView {
                         (float) ((anchorRadius + margin) * Math.sin(angle * (i + 1))) + offsetY
                 );
             } else {
-                int value = PixelsUtil.dp2px(getContext(), frequencies[(i + 1) / 2]);
+                float value = PixelsUtil.dp2px(getContext(), frequencies[(i + 1) / 2]);
                 path.lineTo(
                         (float) ((anchorRadius + margin + value * 2) * Math.cos(angle * (i + 1))) + offsetX,
                         (float) ((anchorRadius + margin + value * 2) * Math.sin(angle * (i + 1))) + offsetY

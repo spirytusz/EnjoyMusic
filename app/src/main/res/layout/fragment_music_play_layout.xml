@@ -120,12 +120,13 @@
         app:layout_constraintTop_toBottomOf="@+id/tool_bar" />
 
     <com.zspirytus.enjoymusic.view.widget.VisualizerView
-        android:layout_width="360dp"
+        android:id="@+id/visualizer"
+        android:layout_width="match_parent"
         android:layout_height="360dp"
         app:anchorRadius="128dp"
         app:anchorMargin="6dp"
-        app:strokenWidth="1"
-        app:strokenColor="@color/black"
+        app:strokenWidth="3"
+        app:strokenColor="@color/white"
         app:layout_constraintStart_toStartOf="@id/cover"
         app:layout_constraintEnd_toEndOf="@id/cover"
         app:layout_constraintTop_toTopOf="@id/cover"
