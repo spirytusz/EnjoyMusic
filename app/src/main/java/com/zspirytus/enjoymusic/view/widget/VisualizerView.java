@@ -58,8 +58,10 @@ public class VisualizerView extends AppCompatImageView {
     }
 
     public void setFrequencies(float[] frequencies) {
-        createPath(frequencies);
-        invalidate();
+        if (getAlpha() != 0.0f) {
+            createPath(frequencies);
+            invalidate();
+        }
     }
 
     public void setStrokenColor(int strokenColor) {

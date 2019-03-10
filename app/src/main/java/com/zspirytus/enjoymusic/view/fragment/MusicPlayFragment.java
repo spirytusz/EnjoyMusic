@@ -115,9 +115,11 @@ public class MusicPlayFragment extends BaseFragment
             case R.id.lyricView:
                 if (mCover.getAlpha() == 1.0f && mLyricView.getAlpha() == 0.0f) {
                     mCover.animate().alpha(0).setDuration(618).setInterpolator(new DecelerateInterpolator()).start();
+                    mVisualizer.animate().alpha(0).setDuration(618).setInterpolator(new DecelerateInterpolator()).start();
                     mLyricView.animate().alpha(1).setDuration(618).setInterpolator(new DecelerateInterpolator()).start();
                 } else if (mCover.getAlpha() == 0.0f && mLyricView.getAlpha() == 1.0f) {
                     mCover.animate().alpha(1).setDuration(618).setInterpolator(new DecelerateInterpolator()).start();
+                    mVisualizer.animate().alpha(1).setDuration(618).setInterpolator(new DecelerateInterpolator()).start();
                     mLyricView.animate().alpha(0).setDuration(618).setInterpolator(new DecelerateInterpolator()).start();
                 }
                 break;
