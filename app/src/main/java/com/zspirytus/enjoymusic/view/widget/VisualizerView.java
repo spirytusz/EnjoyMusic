@@ -71,23 +71,25 @@ public class VisualizerView extends AppCompatImageView {
     }
 
     private void createPath(float[] frequencies) {
-        int offsetX = (getLeft() + getRight()) / 2;
-        int offsetY = (getTop() + getBottom()) / 4;
+        int offsetX = (getLeft() + getRight()) >> 1;
+        int offsetY = (getTop() + getBottom()) >> 2;
+        float radius = anchorRadius + margin;
         path.reset();
         double angle = 1.0 * Math.PI / frequencies.length;
         int valuess = PixelsUtil.dp2px(getContext(), frequencies[0] * 2);
-        path.moveTo((float) (offsetX + (anchorRadius + margin + valuess) * Math.cos(0.0)), (float) (offsetY + (anchorRadius + margin + valuess) * Math.sin(0.0)));
+        path.moveTo((float) (offsetX + (radius + valuess) * Math.cos(0.0)), (float) (offsetY + (radius + valuess) * Math.sin(0.0)));
         for (int i = 0; i < 2 * (frequencies.length - 1); i++) {
+            double currentAngle = angle * (i + 1);
             if (i % 2 == 0) {
                 path.lineTo(
-                        (float) ((anchorRadius + margin) * Math.cos(angle * (i + 1))) + offsetX,
-                        (float) ((anchorRadius + margin) * Math.sin(angle * (i + 1))) + offsetY
+                        (float) (radius * Math.cos(currentAngle)) + offsetX,
+                        (float) (radius * Math.sin(currentAngle)) + offsetY
                 );
             } else {
                 float value = PixelsUtil.dp2px(getContext(), frequencies[(i + 1) / 2]);
                 path.lineTo(
-                        (float) ((anchorRadius + margin + value * 2) * Math.cos(angle * (i + 1))) + offsetX,
-                        (float) ((anchorRadius + margin + value * 2) * Math.sin(angle * (i + 1))) + offsetY
+                        (float) ((radius + value * 2) * Math.cos(currentAngle)) + offsetX,
+                        (float) ((radius + value * 2) * Math.sin(currentAngle)) + offsetY
                 );
             }
         }
