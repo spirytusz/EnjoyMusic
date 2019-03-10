@@ -99,6 +99,10 @@ public class VisualizerView extends AppCompatImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawPath(path, paint);
+        if (!path.isEmpty()) {
+            canvas.drawPath(path, paint);
+        } else {
+            canvas.drawCircle((getLeft() + getRight()) / 2, (getTop() + getBottom()) / 4, anchorRadius + margin, paint);
+        }
     }
 }
