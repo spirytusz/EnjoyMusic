@@ -345,7 +345,7 @@ public class LyricView extends View {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            if (hasLyric()) {
+            if (hasLyric() && getAlpha() != 0.0f) {
                 isCenterLineVisible = true;
                 mOffset += -distanceY;
                 mOffset = Math.min(mOffset, getOffsetByRow(0));
@@ -358,7 +358,7 @@ public class LyricView extends View {
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (hasLyric()) {
+            if (hasLyric() && getAlpha() != 0.0f) {
                 mScroller.fling(0, (int) mOffset, 0, (int) velocityY, 0, 0, (int) getOffsetByRow(mLyricRows.size() - 1), (int) getOffsetByRow(0));
                 isFling = true;
                 return true;
@@ -368,7 +368,7 @@ public class LyricView extends View {
 
         @Override
         public boolean onDown(MotionEvent e) {
-            if (hasLyric()) {
+            if (hasLyric() && getAlpha() != 0.0f) {
                 mScroller.forceFinished(true);
                 removeCallbacks(mHideCenterLineTask);
                 isTouching = true;
