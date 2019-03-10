@@ -9,13 +9,13 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
-public class VisualizerView extends AppCompatImageView {
+public class VisualizerView extends View {
 
     private Path path;
     private Paint paint;
