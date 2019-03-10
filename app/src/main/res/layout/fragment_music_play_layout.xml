@@ -119,6 +119,18 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tool_bar" />
 
+    <com.zspirytus.enjoymusic.view.widget.VisualizerView
+        android:layout_width="360dp"
+        android:layout_height="360dp"
+        app:anchorRadius="128dp"
+        app:anchorMargin="6dp"
+        app:strokenWidth="1"
+        app:strokenColor="@color/black"
+        app:layout_constraintStart_toStartOf="@id/cover"
+        app:layout_constraintEnd_toEndOf="@id/cover"
+        app:layout_constraintTop_toTopOf="@id/cover"
+        app:layout_constraintBottom_toBottomOf="@id/cover" />
+
     <com.zspirytus.enjoymusic.view.widget.LyricView
         android:id="@+id/lyricView"
         android:layout_width="match_parent"

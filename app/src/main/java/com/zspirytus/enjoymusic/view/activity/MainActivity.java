@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.view.activity;
 
+import android.Manifest;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -207,6 +208,7 @@ public class MainActivity extends BaseActivity
                 .at(this)
                 .requestCode(123)
                 .permissions(PermissionGroup.STORAGE_GROUP)
+                .permission(Manifest.permission.RECORD_AUDIO)
                 .listenBy(this)
                 .request();
 

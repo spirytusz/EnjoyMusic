@@ -84,6 +84,7 @@ public class MediaPlayController extends MusicStateObservable
     @Override
     public void onCompletion(MediaPlayer mp) {
         setState(STATE_PLAYBACK_COMPLETED);
+        VisualizerHelper.setEnable(false);
         Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic(false);
         if (nextMusic != null) {
             play(nextMusic);
@@ -140,6 +141,7 @@ public class MediaPlayController extends MusicStateObservable
     @BinderThread
     public void pause() {
         if (state == STATE_STARTED) {
+            VisualizerHelper.setEnable(false);
             mediaPlayer.pause();
             setState(STATE_PAUSED);
             BackgroundMusicStateCache.getInstance().setPlaying(false);
@@ -188,6 +190,7 @@ public class MediaPlayController extends MusicStateObservable
         audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN);
         mediaPlayer.start();
+        VisualizerHelper.setEnable(true);
         setState(STATE_STARTED);
         BackgroundMusicStateCache.getInstance().setPlaying(true);
         mPlayingTimer.start();

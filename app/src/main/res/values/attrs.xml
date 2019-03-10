@@ -52,4 +52,13 @@
         <attr name="unProgressColor" format="color" />
     </declare-styleable>
     <!-- EqualizerView end -->
+
+    <!-- Visualizer start -->
+    <declare-styleable name="VisualizerView">
+        <attr name="strokenColor" format="color" />
+        <attr name="strokenWidth" format="float" />
+        <attr name="anchorRadius" format="dimension" />
+        <attr name="anchorMargin" format="dimension" />
+    </declare-styleable>
+    <!-- Visualizer end -->
 </resources>
