@@ -7,6 +7,7 @@
 ![均衡器](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/equalizer.png)
 ![所有音乐](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/all_music.png)
 ![专辑信息](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/album_detail.png)
+![艺术家信息](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/artist_detail.png)
 ![歌单列表](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/song_list.png)
 
 # License
