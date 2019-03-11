@@ -2,13 +2,13 @@
 毕设项目，待填Readme坑。
 
 # 界面截图
-![播放界面](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/play.png)
-![音场设置](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/audio_effect.png)
-![均衡器](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/equalizer.png)
-![所有音乐](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/all_music.png)
+![播放界面](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/play.webp)
+![音场设置](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/audio_effect.webp)
+![均衡器](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/equalizer.webp)
+![所有音乐](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/all_music.webp)
 ![专辑信息](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/album_detail.webp)
-![艺术家信息](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/artist_detail.png)
-![歌单列表](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/song_list.png)
+![艺术家信息](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/artist_detail.webp)
+![歌单列表](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/song_list.webp)
 
 # License
 ```
