@@ -1,5 +1,5 @@
 # 享乐
-毕设项目
+毕设项目，待填Readme坑。
 
 # 界面截图
 ![播放界面](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/play.png)
