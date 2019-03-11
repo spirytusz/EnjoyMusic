@@ -137,11 +137,11 @@ public class EqualizerView extends ConstraintLayout {
         }
 
         // set values
-        maxDBTextView.setText((maxDB / 10) + "dB");
+        maxDBTextView.setText((maxDB / 100) + "dB");
         maxDBTextView.setTextColor(mTextColor);
-        centerDBTextView.setText(((maxDB + minDB)) + "dB");
+        centerDBTextView.setText(((maxDB + minDB) / 100) + "dB");
         centerDBTextView.setTextColor(mTextColor);
-        minDBTextView.setText((minDB / 10) + "dB");
+        minDBTextView.setText((minDB / 100) + "dB");
         minDBTextView.setTextColor(mTextColor);
         for (int i = 0; i < bands; i++) {
             seekBars[i].setSelectColor(mProgressColor);
