@@ -1,3 +1,14 @@
+# 享乐
+毕设项目
+
+# 界面截图
+![播放界面](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/play.png)
+![音场设置](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/audio_effect.png)
+![均衡器](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/equalizer.png)
+![所有音乐](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/all_music.png)
+![专辑信息](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/album_detail.png)
+![歌单列表](https://github.com/zkw012300/EnjoyMusic/blob/master/artWork/song_list.png)
+
 # License
 ```
 Copyright (c) 2018 ZSpirytus
