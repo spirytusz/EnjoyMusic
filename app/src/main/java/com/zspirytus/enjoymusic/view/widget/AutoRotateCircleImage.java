@@ -54,11 +54,13 @@ public class AutoRotateCircleImage extends CircleImageView {
     }
 
     private void initAnim() {
+        setLayerType(LAYER_TYPE_HARDWARE, null);
         mRotateAnim = ObjectAnimator.ofFloat(this, View.ROTATION, 0f, 360f);
         mRotateAnim.setDuration(T);
         mRotateAnim.setInterpolator(new LinearInterpolator());
         mRotateAnim.setRepeatCount(ObjectAnimator.INFINITE);
         mRotateAnim.setRepeatMode(ObjectAnimator.RESTART);
+        mRotateAnim.addUpdateListener(animation -> setLayerType(LAYER_TYPE_NONE, null));
     }
 
     public void setRotating(boolean isRotating) {

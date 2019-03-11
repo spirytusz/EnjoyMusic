@@ -10,7 +10,7 @@ public class VisualizerHelper extends FrequencyObservable implements Visualizer.
         static VisualizerHelper INSTANCE = new VisualizerHelper();
     }
 
-    private static final int STEP = 16;
+    private static final int STEP = 1 << 5;
     private Visualizer mVisualizer;
 
     private VisualizerHelper() {
