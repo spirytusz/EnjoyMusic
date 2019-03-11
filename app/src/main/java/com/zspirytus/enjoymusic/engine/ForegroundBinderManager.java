@@ -31,6 +31,9 @@ public class ForegroundBinderManager implements AudioEffectController.OnResultLi
 
     public void init(IBinderPool binderPool) {
         mBinderPool = binderPool;
+    }
+
+    public void registerEvent() {
         try {
             IBinder iBinder = mBinderPool.queryBinder(Constant.BinderCode.BACKGROUND_EVENT_PROCESSOR);
             IBackgroundEventProcessor backgroundEventProcessor = IBackgroundEventProcessor.Stub.asInterface(iBinder);
