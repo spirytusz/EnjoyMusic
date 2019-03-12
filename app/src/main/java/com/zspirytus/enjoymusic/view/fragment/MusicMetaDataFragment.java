@@ -47,6 +47,7 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
         mAdapter = new MusicMetaDataListAdapter();
         mAdapter.setOnDownloadBtnClickListener(() -> {
             mViewModel.applyArtistArt(getArguments().getParcelable("music"));
+            mViewModel.applyAlbumArt(getArguments().getParcelable("music"));
         });
     }
 

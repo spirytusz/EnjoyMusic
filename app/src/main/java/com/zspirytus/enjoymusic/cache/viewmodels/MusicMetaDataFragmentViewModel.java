@@ -6,6 +6,8 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.WorkerThread;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
 import com.zspirytus.enjoymusic.IMusicMetaDataUpdator;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
@@ -20,13 +22,17 @@ import com.zspirytus.enjoymusic.engine.MinEditDistance;
 import com.zspirytus.enjoymusic.entity.listitem.MusicMetaDataListItem;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.online.RetrofitManager;
+import com.zspirytus.enjoymusic.online.entity.OnlineAlbum;
 import com.zspirytus.enjoymusic.online.entity.OnlineArtist;
 import com.zspirytus.enjoymusic.online.entity.OnlineArtistList;
+import com.zspirytus.enjoymusic.online.entity.response.SearchAlbumResponse;
 import com.zspirytus.enjoymusic.online.entity.response.SearchArtistResponse;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -66,6 +72,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             MusicMetaDataListItem item1 = new MusicMetaDataListItem();
             item1.setMusic(true);
             item1.setMusic(music);
+            item1.setAlbum(QueryExecutor.findAlbum(music));
             dataList.add(item1);
 
             MusicMetaDataListItem item2 = new MusicMetaDataListItem();
@@ -109,9 +116,11 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
         ThreadPool.execute(() -> {
             // wrap need update data.
             Artist needUpdateArtist = datas.get(0).getArtist();
+            Album needUpdateAlbum = datas.get(1).getAlbum();
 
             // update foreground data.
             viewModel.updateArtist(needUpdateArtist);
+            viewModel.updateAlbum(needUpdateAlbum);
 
             // update background data.
             if (needUpdateArtist.peakArtistArt() != null) {
@@ -119,6 +128,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
                 IMusicMetaDataUpdator updator = IMusicMetaDataUpdator.Stub.asInterface(binder);
                 try {
                     updator.updateArtist(needUpdateArtist);
+                    updator.updateAlbum(needUpdateAlbum);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -172,6 +182,44 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
         });
     }
 
+    public void applyAlbumArt(Music music) {
+        Album album = QueryExecutor.findAlbum(music);
+        RetrofitManager.searchAlbum(album.getAlbumName(), new Observer<SearchAlbumResponse>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+            }
+
+            @Override
+            public void onNext(SearchAlbumResponse searchAlbumResponse) {
+                List<OnlineAlbum> onlineAlbumList = searchAlbumResponse.getData();
+                if(onlineAlbumList == null || onlineAlbumList.isEmpty()) {
+                    ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.download_failed);
+                    return;
+                }
+                double maxConfidence = 0;
+                String picUrl = null;
+                for(OnlineAlbum onlineAlbum:onlineAlbumList) {
+                    double confidence = MinEditDistance.SimilarDegree(onlineAlbum.getAlbumName().toLowerCase(), album.getAlbumName().toLowerCase());
+                    if (maxConfidence < confidence) {
+                        maxConfidence = confidence;
+                        picUrl = onlineAlbum.getAlbumPic();
+                    }
+                }
+                updateAlbumArt(picUrl);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.download_failed);
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        });
+    }
+
     @WorkerThread
     private void updateArtistInfo(String picUrl) {
         if (picUrl != null) {
@@ -180,6 +228,18 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             ArtistArt artistArt = new ArtistArt(artistId, picUrl);
             dataList.get(0).getArtist().setArtistArt(artistArt);
             mMusicMetaList.postValue(dataList);
+        } else {
+            AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_artist_art_available));
+        }
+    }
+
+    @WorkerThread
+    private void updateAlbumArt(String picUrl) {
+        if(picUrl != null) {
+            hasUpdate = true;
+            Album album = dataList.get(1).getAlbum();
+            album.setAlbumArt(picUrl);
+            dataList.get(1).setAlbum(album);
         } else {
             AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_artist_art_available));
         }

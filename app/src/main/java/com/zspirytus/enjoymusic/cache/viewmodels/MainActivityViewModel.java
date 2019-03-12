@@ -63,4 +63,8 @@ public class MainActivityViewModel extends MusicPlayingStateViewModel {
         getArtistList().postValue(artistList);
     }
 
+    // TODO: 2019/3/12 update Album
+    void updateAlbum(Album album) {
+
+    }
 }

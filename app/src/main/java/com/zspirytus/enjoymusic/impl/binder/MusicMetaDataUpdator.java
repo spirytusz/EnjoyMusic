@@ -1,7 +1,10 @@
 package com.zspirytus.enjoymusic.impl.binder;
 
+import android.os.RemoteException;
+
 import com.zspirytus.enjoymusic.IMusicMetaDataUpdator;
 import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.ArtistArt;
 
@@ -22,5 +25,11 @@ public class MusicMetaDataUpdator extends IMusicMetaDataUpdator.Stub {
     public void updateArtist(Artist artist) {
         ArtistArt artistArt = artist.peakArtistArt();
         DBManager.getInstance().getDaoSession().getArtistArtDao().insertOrReplace(artistArt);
+    }
+
+    @Override
+    public void updateAlbum(Album album) throws RemoteException {
+        // TODO: 2019/3/12 update Album.
+        // 下载，嵌入，通知媒体扫描
     }
 }
