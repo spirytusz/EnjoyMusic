@@ -15,7 +15,6 @@ buildscript {
     ext.circle_image_version = '2.2.0'
     ext.item_animator_version = '2.3.0'
     ext.greendao_version = '3.2.2'
-    ext.ealvatag_version = '0.4.2'
 
     repositories {
         google()

@@ -80,7 +80,6 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation "org.greenrobot:greendao:$greendao_version"
-    implementation "com.ealva:ealvatag:$ealvatag_version"
 
     // unit test
     testImplementation 'junit:junit:4.12'
