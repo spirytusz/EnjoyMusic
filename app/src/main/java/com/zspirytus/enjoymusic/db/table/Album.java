@@ -27,6 +27,7 @@ public class Album implements Parcelable {
 
     private String albumName;
     private String albumArt;
+    private String customAlbumArt;
     private int albumSongCount;
 
     @ToOne
@@ -43,6 +44,7 @@ public class Album implements Parcelable {
                 "albumId=" + albumId +
                 ", albumName='" + albumName + '\'' +
                 ", albumArt='" + albumArt + '\'' +
+                ", customAlbumArt='" + customAlbumArt + '\'' +
                 ", albumSongCount=" + albumSongCount +
                 '}';
     }
@@ -57,6 +59,7 @@ public class Album implements Parcelable {
         dest.writeValue(this.albumId);
         dest.writeString(this.albumName);
         dest.writeString(this.albumArt);
+        dest.writeString(this.customAlbumArt);
         dest.writeInt(this.albumSongCount);
         dest.writeParcelable(this.artist, flags);
     }
@@ -165,6 +168,14 @@ public class Album implements Parcelable {
         myDao = daoSession != null ? daoSession.getAlbumDao() : null;
     }
 
+    public String getCustomAlbumArt() {
+        return this.customAlbumArt;
+    }
+
+    public void setCustomAlbumArt(String customAlbumArt) {
+        this.customAlbumArt = customAlbumArt;
+    }
+
     public Album() {
     }
 
@@ -172,11 +183,21 @@ public class Album implements Parcelable {
         this.albumId = (Long) in.readValue(Long.class.getClassLoader());
         this.albumName = in.readString();
         this.albumArt = in.readString();
+        this.customAlbumArt = in.readString();
         this.albumSongCount = in.readInt();
         this.artist = in.readParcelable(Artist.class.getClassLoader());
     }
 
-    @Generated(hash = 2122088805)
+    @Generated(hash = 943547104)
+    public Album(Long albumId, String albumName, String albumArt, String customAlbumArt,
+                 int albumSongCount) {
+        this.albumId = albumId;
+        this.albumName = albumName;
+        this.albumArt = albumArt;
+        this.customAlbumArt = customAlbumArt;
+        this.albumSongCount = albumSongCount;
+    }
+
     public Album(Long albumId, String albumName, String albumArt, int albumSongCount) {
         this.albumId = albumId;
         this.albumName = albumName;
