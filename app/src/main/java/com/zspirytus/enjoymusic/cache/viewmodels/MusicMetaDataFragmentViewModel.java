@@ -19,6 +19,7 @@ import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.engine.MinEditDistance;
 import com.zspirytus.enjoymusic.entity.listitem.MusicMetaDataListItem;
 import com.zspirytus.enjoymusic.global.MainApplication;
+import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 import com.zspirytus.enjoymusic.online.RetrofitManager;
 import com.zspirytus.enjoymusic.online.entity.OnlineAlbum;
 import com.zspirytus.enjoymusic.online.entity.OnlineArtist;
@@ -27,8 +28,10 @@ import com.zspirytus.enjoymusic.online.entity.response.SearchAlbumResponse;
 import com.zspirytus.enjoymusic.online.entity.response.SearchArtistResponse;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -233,8 +236,15 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
     private void updateAlbumArt(String picUrl) {
         if(picUrl != null) {
             hasUpdate = true;
+            String path = null;
+            try {
+                File file = GlideApp.with(MainApplication.getForegroundContext()).asFile().submit().get();
+                path = file.getAbsolutePath();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
             Album album = dataList.get(1).getAlbum();
-            album.setCustomAlbumArt(picUrl);
+            album.setCustomAlbumArt(path);
             dataList.get(1).setAlbum(album);
         } else {
             AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_artist_art_available));
