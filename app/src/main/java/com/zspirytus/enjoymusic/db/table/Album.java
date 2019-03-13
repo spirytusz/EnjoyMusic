@@ -96,7 +96,9 @@ public class Album implements Parcelable {
         this.albumSongCount = albumSongCount;
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 88144874)
     public Artist getArtist() {
         if (artist != null || !artist__refreshed) {
@@ -110,13 +112,17 @@ public class Album implements Parcelable {
         return artist;
     }
 
-    /** To-one relationship, returned entity is not refreshed and may carry only the PK property. */
+    /**
+     * To-one relationship, returned entity is not refreshed and may carry only the PK property.
+     */
     @Generated(hash = 782467558)
     public Artist peakArtist() {
         return artist;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 2128689463)
     public void setArtist(Artist artist) {
         synchronized (this) {
@@ -161,7 +167,9 @@ public class Album implements Parcelable {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1023911229)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
@@ -223,10 +231,20 @@ public class Album implements Parcelable {
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 172302968)
     private transient AlbumDao myDao;
 
     @Generated(hash = 1550754473)
     private transient boolean artist__refreshed;
+
+    /**
+     * get Album Art Path
+     * If downloaded AlbumArt exist, return it, else if return albumArt.
+     */
+    public String getArtPath() {
+        return customAlbumArt != null ? customAlbumArt : albumArt;
+    }
 }

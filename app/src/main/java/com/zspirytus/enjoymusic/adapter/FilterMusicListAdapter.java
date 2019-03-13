@@ -40,7 +40,7 @@ public class FilterMusicListAdapter extends CommonRecyclerViewAdapter<Music> imp
     @Override
     public void convert(CommonViewHolder holder, Music music, int position) {
         Album album = QueryExecutor.findAlbum(music);
-        String coverPath = album.getAlbumArt();
+        String coverPath = album.getArtPath();
         ImageLoader.load(holder.getView(R.id.item_cover), coverPath, music.getMusicName());
         holder.setText(R.id.item_title, music.getMusicName());
         holder.setText(R.id.item_sub_title, album.getAlbumName());

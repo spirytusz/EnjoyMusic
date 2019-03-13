@@ -75,7 +75,7 @@ public class FilterMusicListFragment extends BaseFragment
                 String path = null;
                 if (flag == ALBUM_FLAG) {
                     Album album = QueryExecutor.findAlbum(mInnerAdapter.getList().get(0));
-                    path = album.getAlbumArt();
+                    path = album.getArtPath();
                 } else if (flag == ARTIST_FLAG) {
                     Artist artist = QueryExecutor.findArtist(mInnerAdapter.getList().get(0));
                     ArtistArt artistArt = QueryExecutor.findArtistArt(artist);

@@ -271,7 +271,7 @@ public class MusicPlayFragment extends BaseFragment
     private void setView(Music music) {
         Album album = QueryExecutor.findAlbum(music);
         Artist artist = QueryExecutor.findArtist(music);
-        String musicThumbAlbumCoverPath = album.getAlbumArt();
+        String musicThumbAlbumCoverPath = album.getArtPath();
         ImageLoader.load(mCover, musicThumbAlbumCoverPath, music.getMusicName(), new CenterCrop());
         mTitle.setText(music.getMusicName());
         mSubTitle.setText(artist.getArtistName());
@@ -283,7 +283,7 @@ public class MusicPlayFragment extends BaseFragment
 
     private void setBackgroundBlur(Music music) {
         Album album = QueryExecutor.findAlbum(music);
-        String imagePath = album.getAlbumArt();
+        String imagePath = album.getArtPath();
         if (imagePath != null && !imagePath.isEmpty()) {
             File file = new File(imagePath);
             if (file.exists()) {

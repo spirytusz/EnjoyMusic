@@ -33,7 +33,7 @@ public class FolderListAdapter extends CommonRecyclerViewAdapter<Folder> impleme
         List<Music> musicList = QueryExecutor.findMusicList(folder);
         Music firstMusicInFolder = musicList.get(0);
         Album album = QueryExecutor.findAlbum(firstMusicInFolder);
-        String coverPath = album.getAlbumArt();
+        String coverPath = album.getArtPath();
         ImageLoader.load(holder.getView(R.id.item_cover), coverPath, folder.getFolderName());
         holder.setText(R.id.item_title, folder.getFolderName());
         holder.setText(R.id.item_sub_title, folder.getFolderDir());

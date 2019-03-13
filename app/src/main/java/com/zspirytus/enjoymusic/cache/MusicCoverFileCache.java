@@ -50,7 +50,7 @@ public class MusicCoverFileCache {
     }
 
     public Bitmap getCoverBitmap(Album album) {
-        String path = album.getAlbumArt();
+        String path = album.getArtPath();
         if (path != null) {
             File file = new File(path);
             if (!file.exists()) {

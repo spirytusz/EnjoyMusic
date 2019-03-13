@@ -57,7 +57,7 @@ public class FilterAlbumListFragment extends BaseFragment {
             @Override
             public void convert(CommonViewHolder holder, Album album, int position) {
                 Artist albumArtist = QueryExecutor.findArtist(album);
-                ImageLoader.load(holder.getView(R.id.item_cover), album.getAlbumArt(), album.getAlbumName());
+                ImageLoader.load(holder.getView(R.id.item_cover), album.getArtPath(), album.getAlbumName());
                 holder.setText(R.id.item_title, album.getAlbumName());
                 holder.setText(R.id.item_sub_title, albumArtist.getArtistName());
             }

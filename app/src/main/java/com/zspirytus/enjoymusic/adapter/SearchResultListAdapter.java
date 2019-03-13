@@ -60,7 +60,7 @@ public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
             @Override
             public void convert(CommonViewHolder holder, SearchResult data) {
                 Album album = QueryExecutor.findAlbum(data.getMusic());
-                ImageLoader.load(holder.getView(R.id.item_cover), album.getAlbumArt(), data.getMusic().getMusicName());
+                ImageLoader.load(holder.getView(R.id.item_cover), album.getArtPath(), data.getMusic().getMusicName());
                 holder.setText(R.id.item_title, data.getMusic().getMusicName());
                 holder.setText(R.id.item_sub_title, album.getAlbumName());
                 holder.setVisibility(R.id.item_more_info_button, View.GONE);
@@ -85,7 +85,7 @@ public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
             @Override
             public void convert(CommonViewHolder holder, SearchResult data) {
                 Artist artist = QueryExecutor.findArtist(data.getAlbum());
-                ImageLoader.load(holder.getView(R.id.item_cover), data.getAlbum().getAlbumArt(), data.getAlbum().getAlbumName());
+                ImageLoader.load(holder.getView(R.id.item_cover), data.getAlbum().getArtPath(), data.getAlbum().getAlbumName());
                 holder.setText(R.id.item_title, data.getAlbum().getAlbumName());
                 holder.setText(R.id.item_sub_title, artist.getArtistName());
                 holder.setVisibility(R.id.item_more_info_button, View.GONE);

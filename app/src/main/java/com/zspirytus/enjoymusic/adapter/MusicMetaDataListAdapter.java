@@ -82,7 +82,7 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
                 Music music = data.getMusic();
                 Album album = QueryExecutor.findAlbum(music);
                 Artist artist = QueryExecutor.findArtist(music);
-                String path = album.getAlbumArt();
+                String path = album.getArtPath();
                 ImageLoader.load(holder.getView(R.id.music_preview_cover), path, album.getAlbumName(), new CenterCrop());
                 MusicMetaData metaData = MusicMetaDataReader.getInstance().readMetaData(music);
                 String musicName = music.getMusicName();
