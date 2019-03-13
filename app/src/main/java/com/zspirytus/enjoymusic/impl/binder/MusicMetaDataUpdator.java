@@ -29,7 +29,6 @@ public class MusicMetaDataUpdator extends IMusicMetaDataUpdator.Stub {
 
     @Override
     public void updateAlbum(Album album) throws RemoteException {
-        // TODO: 2019/3/12 update Album.
-        // 下载，嵌入，通知媒体扫描
+        DBManager.getInstance().getDaoSession().getAlbumDao().insertOrReplace(album);
     }
 }

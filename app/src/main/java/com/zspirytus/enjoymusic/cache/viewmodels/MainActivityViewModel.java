@@ -63,8 +63,24 @@ public class MainActivityViewModel extends MusicPlayingStateViewModel {
         getArtistList().postValue(artistList);
     }
 
-    // TODO: 2019/3/12 update Album
     void updateAlbum(Album album) {
-
+        List<Album> albumList = getAlbumList().getValue();
+        if (albumList == null) {
+            try {
+                IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.GET_MUSIC_LIST);
+                IGetMusicList getMusicListBinder = IGetMusicList.Stub.asInterface(binder);
+                albumList = getMusicListBinder.getAlbumList();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+        for (int i = 0; i < albumList.size(); i++) {
+            if (album.getAlbumId().equals(albumList.get(i).getAlbumId())) {
+                albumList.get(i).setCustomAlbumArt(album.getCustomAlbumArt());
+                break;
+            }
+        }
+        getAlbumList().postValue(albumList);
+        getMusicList().postValue(getMusicList().getValue());
     }
 }

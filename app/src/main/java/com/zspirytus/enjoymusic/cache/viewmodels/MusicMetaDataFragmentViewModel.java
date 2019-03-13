@@ -6,8 +6,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.WorkerThread;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.FutureTarget;
 import com.zspirytus.enjoymusic.IMusicMetaDataUpdator;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
@@ -29,10 +27,8 @@ import com.zspirytus.enjoymusic.online.entity.response.SearchAlbumResponse;
 import com.zspirytus.enjoymusic.online.entity.response.SearchArtistResponse;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -238,7 +234,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
         if(picUrl != null) {
             hasUpdate = true;
             Album album = dataList.get(1).getAlbum();
-            album.setAlbumArt(picUrl);
+            album.setCustomAlbumArt(picUrl);
             dataList.get(1).setAlbum(album);
         } else {
             AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_artist_art_available));
