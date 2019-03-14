@@ -82,5 +82,11 @@ public class MainActivityViewModel extends MusicPlayingStateViewModel {
         }
         getAlbumList().postValue(albumList);
         getMusicList().postValue(getMusicList().getValue());
+
+        // force refresh currentPlayingMusic when its album equal to needUpdateAlbum.
+        Music currentPlayMusic = getCurrentPlayingMusic().getValue();
+        if (currentPlayMusic != null && currentPlayMusic.getAlbumId().equals(album.getAlbumId())) {
+            getCurrentPlayingMusic().postValue(getCurrentPlayingMusic().getValue());
+        }
     }
 }
