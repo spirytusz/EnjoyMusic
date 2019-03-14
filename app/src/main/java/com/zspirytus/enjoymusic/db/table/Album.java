@@ -3,8 +3,10 @@ package com.zspirytus.enjoymusic.db.table;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.greendao.AlbumDao;
 import com.zspirytus.enjoymusic.db.greendao.ArtistDao;
+import com.zspirytus.enjoymusic.db.greendao.CustomAlbumArtDao;
 import com.zspirytus.enjoymusic.db.greendao.DaoSession;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinAlbumToArtist;
 
@@ -27,8 +29,9 @@ public class Album implements Parcelable {
 
     private String albumName;
     private String albumArt;
-    private String customAlbumArt;
     private int albumSongCount;
+    @ToOne
+    private CustomAlbumArt customAlbumArt;
 
     @ToOne
     @JoinEntity(
@@ -38,30 +41,56 @@ public class Album implements Parcelable {
     )
     private Artist artist;
 
+    /**
+     * Used to resolve relations
+     */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /**
+     * Used for active entity operations.
+     */
+    @Generated(hash = 172302968)
+    private transient AlbumDao myDao;
+
+    @Generated(hash = 2122088805)
+    public Album(Long albumId, String albumName, String albumArt,
+                 int albumSongCount) {
+        this.albumId = albumId;
+        this.albumName = albumName;
+        this.albumArt = albumArt;
+        this.albumSongCount = albumSongCount;
+    }
+
+    @Generated(hash = 1609191978)
+    public Album() {
+    }
+
+    @Generated(hash = 38655181)
+    private transient boolean customAlbumArt__refreshed;
+
+    @Generated(hash = 1550754473)
+    private transient boolean artist__refreshed;
+
     @Override
     public String toString() {
         return "Album{" +
                 "albumId=" + albumId +
                 ", albumName='" + albumName + '\'' +
                 ", albumArt='" + albumArt + '\'' +
-                ", customAlbumArt='" + customAlbumArt + '\'' +
                 ", albumSongCount=" + albumSongCount +
                 '}';
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.albumId);
-        dest.writeString(this.albumName);
-        dest.writeString(this.albumArt);
-        dest.writeString(this.customAlbumArt);
-        dest.writeInt(this.albumSongCount);
-        dest.writeParcelable(this.artist, flags);
+    /**
+     * get Album Art Path
+     * If downloaded AlbumArt exist, return it, else if return albumArt.
+     */
+    public String getArtPath() {
+        if (customAlbumArt == null) {
+            customAlbumArt = QueryExecutor.findCustomAlbumArt(this);
+        }
+        return customAlbumArt != null ? customAlbumArt.getCustomAlbumArt() != null ? customAlbumArt.getCustomAlbumArt() : albumArt : albumArt;
     }
 
     public Long getAlbumId() {
@@ -94,6 +123,41 @@ public class Album implements Parcelable {
 
     public void setAlbumSongCount(int albumSongCount) {
         this.albumSongCount = albumSongCount;
+    }
+
+    /**
+     * To-one relationship, resolved on first access.
+     */
+    @Generated(hash = 41077165)
+    public CustomAlbumArt getCustomAlbumArt() {
+        if (customAlbumArt != null || !customAlbumArt__refreshed) {
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            CustomAlbumArtDao targetDao = daoSession.getCustomAlbumArtDao();
+            targetDao.refresh(customAlbumArt);
+            customAlbumArt__refreshed = true;
+        }
+        return customAlbumArt;
+    }
+
+    /**
+     * To-one relationship, returned entity is not refreshed and may carry only the PK property.
+     */
+    @Generated(hash = 1473816979)
+    public CustomAlbumArt peakCustomAlbumArt() {
+        return customAlbumArt;
+    }
+
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
+    @Generated(hash = 1846338207)
+    public void setCustomAlbumArt(CustomAlbumArt customAlbumArt) {
+        synchronized (this) {
+            this.customAlbumArt = customAlbumArt;
+            customAlbumArt__refreshed = true;
+        }
     }
 
     /**
@@ -176,41 +240,28 @@ public class Album implements Parcelable {
         myDao = daoSession != null ? daoSession.getAlbumDao() : null;
     }
 
-    public String getCustomAlbumArt() {
-        return this.customAlbumArt;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setCustomAlbumArt(String customAlbumArt) {
-        this.customAlbumArt = customAlbumArt;
-    }
-
-    public Album() {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.albumId);
+        dest.writeString(this.albumName);
+        dest.writeString(this.albumArt);
+        dest.writeInt(this.albumSongCount);
+        dest.writeParcelable(this.customAlbumArt, flags);
+        dest.writeParcelable(this.artist, flags);
     }
 
     protected Album(Parcel in) {
         this.albumId = (Long) in.readValue(Long.class.getClassLoader());
         this.albumName = in.readString();
         this.albumArt = in.readString();
-        this.customAlbumArt = in.readString();
         this.albumSongCount = in.readInt();
+        this.customAlbumArt = in.readParcelable(CustomAlbumArt.class.getClassLoader());
         this.artist = in.readParcelable(Artist.class.getClassLoader());
-    }
-
-    @Generated(hash = 943547104)
-    public Album(Long albumId, String albumName, String albumArt, String customAlbumArt,
-                 int albumSongCount) {
-        this.albumId = albumId;
-        this.albumName = albumName;
-        this.albumArt = albumArt;
-        this.customAlbumArt = customAlbumArt;
-        this.albumSongCount = albumSongCount;
-    }
-
-    public Album(Long albumId, String albumName, String albumArt, int albumSongCount) {
-        this.albumId = albumId;
-        this.albumName = albumName;
-        this.albumArt = albumArt;
-        this.albumSongCount = albumSongCount;
     }
 
     public static final Parcelable.Creator<Album> CREATOR = new Parcelable.Creator<Album>() {
@@ -224,27 +275,4 @@ public class Album implements Parcelable {
             return new Album[size];
         }
     };
-
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 172302968)
-    private transient AlbumDao myDao;
-
-    @Generated(hash = 1550754473)
-    private transient boolean artist__refreshed;
-
-    /**
-     * get Album Art Path
-     * If downloaded AlbumArt exist, return it, else if return albumArt.
-     */
-    public String getArtPath() {
-        return customAlbumArt != null ? customAlbumArt : albumArt;
-    }
 }

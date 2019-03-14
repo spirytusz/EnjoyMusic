@@ -7,6 +7,7 @@ import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.ArtistArt;
+import com.zspirytus.enjoymusic.db.table.CustomAlbumArt;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 
@@ -34,13 +35,15 @@ public class MusicMetaDataUpdator extends IMusicMetaDataUpdator.Stub {
 
     @Override
     public void updateAlbum(Album album) throws RemoteException {
-        String picUrl = album.getCustomAlbumArt();
-        try {
-            File file = GlideApp.with(MainApplication.getBackgroundContext()).asFile().load(picUrl).submit().get();
-            album.setCustomAlbumArt(file.getAbsolutePath());
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+        String picUrl = album.getAlbumArt();
+        if (picUrl.contains("http") || picUrl.contains("https")) {
+            try {
+                File file = GlideApp.with(MainApplication.getBackgroundContext()).asFile().load(picUrl).submit().get();
+                CustomAlbumArt customAlbumArt = new CustomAlbumArt(album.getAlbumId(), file.getAbsolutePath());
+                DBManager.getInstance().getDaoSession().getCustomAlbumArtDao().insertOrReplace(customAlbumArt);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         }
-        DBManager.getInstance().getDaoSession().getAlbumDao().insertOrReplace(album);
     }
 }

@@ -9,6 +9,7 @@ import com.zspirytus.enjoymusic.db.greendao.MusicDao;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.ArtistArt;
+import com.zspirytus.enjoymusic.db.table.CustomAlbumArt;
 import com.zspirytus.enjoymusic.db.table.Folder;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinAlbumToArtist;
@@ -61,6 +62,10 @@ public class QueryExecutor {
             music.setAlbum(album);
             return albumList.get(0);
         }
+    }
+
+    public static CustomAlbumArt findCustomAlbumArt(Album album) {
+        return DBManager.getInstance().getDaoSession().getCustomAlbumArtDao().load(album.getAlbumId());
     }
 
     public static List<Album> findAlbumList(Artist artist) {

@@ -76,7 +76,7 @@ public class MainActivityViewModel extends MusicPlayingStateViewModel {
         }
         for (int i = 0; i < albumList.size(); i++) {
             if (album.getAlbumId().equals(albumList.get(i).getAlbumId())) {
-                albumList.get(i).setCustomAlbumArt(album.getCustomAlbumArt());
+                albumList.set(i, album);
                 break;
             }
         }

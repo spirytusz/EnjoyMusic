@@ -234,7 +234,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
         if(picUrl != null) {
             hasUpdate = true;
             Album album = dataList.get(1).getAlbum();
-            album.setCustomAlbumArt(picUrl);
+            album.setAlbumArt(picUrl);
             dataList.get(1).setAlbum(album);
         } else {
             AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_artist_art_available));
