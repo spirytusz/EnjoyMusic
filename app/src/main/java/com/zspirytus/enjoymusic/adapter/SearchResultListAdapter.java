@@ -11,6 +11,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
+import com.zspirytus.enjoymusic.db.table.ArtistArt;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.listitem.SearchResult;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
@@ -109,7 +110,9 @@ public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
 
             @Override
             public void convert(CommonViewHolder holder, SearchResult data) {
-                ImageLoader.load(holder.getView(R.id.item_cover), null, data.getArtist().getArtistName());
+                ArtistArt artistArt = QueryExecutor.findArtistArt(data.getArtist());
+                String path = artistArt != null ? artistArt.getArtistArt() : null;
+                ImageLoader.load(holder.getView(R.id.item_cover), path, data.getArtist().getArtistName());
                 holder.setText(R.id.item_title, data.getArtist().getArtistName());
                 holder.setText(R.id.item_sub_title, data.getArtist().getMumberOfTracks() + "首歌曲");
                 holder.setVisibility(R.id.item_more_info_button, View.GONE);
