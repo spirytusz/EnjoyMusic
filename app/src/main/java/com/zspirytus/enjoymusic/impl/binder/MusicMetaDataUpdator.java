@@ -34,16 +34,18 @@ public class MusicMetaDataUpdator extends IMusicMetaDataUpdator.Stub {
     }
 
     @Override
-    public void updateAlbum(Album album) throws RemoteException {
+    public boolean updateAlbum(Album album) throws RemoteException {
         String picUrl = album.getAlbumArt();
         if (picUrl.contains("http") || picUrl.contains("https")) {
             try {
                 File file = GlideApp.with(MainApplication.getBackgroundContext()).asFile().load(picUrl).submit().get();
                 CustomAlbumArt customAlbumArt = new CustomAlbumArt(album.getAlbumId(), file.getAbsolutePath());
                 DBManager.getInstance().getDaoSession().getCustomAlbumArtDao().insertOrReplace(customAlbumArt);
+                return true;
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }
+        return false;
     }
 }

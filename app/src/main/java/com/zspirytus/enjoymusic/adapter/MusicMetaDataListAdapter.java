@@ -26,7 +26,7 @@ import com.zspirytus.enjoymusic.utils.TimeUtil;
 
 public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataListItem> {
 
-    private OnDownLoadBtnClickListener mListener;
+    private OnClickEventListener mListener;
 
     public MusicMetaDataListAdapter() {
         addArtistArtItemDelegate();
@@ -58,7 +58,10 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
                     path = artistArt != null ? artistArt.getArtistArt() : null;
                 }
                 ImageLoader.load((ImageView) holder.getItemView(), path, data.getArtist().getArtistName(), new CenterCrop());
-                holder.setOnItemClickListener((view, position) -> {
+                holder.setOnItemLongClickListener((view, position) -> {
+                    if (mListener != null) {
+                        mListener.onAritstArtLongClickListener();
+                    }
                 });
             }
         };
@@ -114,8 +117,10 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
                                 + "<font color='grey' style=\"line-height:150%;\">采样率: " + sampleRate + "kHz</font><br/>"
                 );
                 holder.setText(R.id.music_preview_text, previewText);
-
                 holder.setOnItemClickListener(R.id.music_preview_cover, view -> {
+                    if (mListener != null) {
+                        mListener.onAlbumArtClickListener();
+                    }
                 });
             }
         };
@@ -203,11 +208,15 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
         });
     }
 
-    public void setOnDownloadBtnClickListener(OnDownLoadBtnClickListener listener) {
+    public void setOnDownloadBtnClickListener(OnClickEventListener listener) {
         mListener = listener;
     }
 
-    public interface OnDownLoadBtnClickListener {
+    public interface OnClickEventListener {
+        void onAritstArtLongClickListener();
+
+        void onAlbumArtClickListener();
+
         void onDownLoadBtnClick();
     }
 }

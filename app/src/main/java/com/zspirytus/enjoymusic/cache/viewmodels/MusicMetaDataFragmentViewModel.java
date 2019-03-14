@@ -114,17 +114,18 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             Artist needUpdateArtist = datas.get(0).getArtist();
             Album needUpdateAlbum = datas.get(1).getAlbum();
 
-            // update foreground data.
-            viewModel.updateArtist(needUpdateArtist);
-            viewModel.updateAlbum(needUpdateAlbum);
-
             // update background data.
             if (needUpdateArtist.peakArtistArt() != null) {
                 IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_META_DATA_UPDATOR);
                 IMusicMetaDataUpdator updator = IMusicMetaDataUpdator.Stub.asInterface(binder);
                 try {
                     updator.updateArtist(needUpdateArtist);
-                    updator.updateAlbum(needUpdateAlbum);
+                    viewModel.updateArtist(needUpdateArtist);
+
+                    boolean isSuccess = updator.updateAlbum(needUpdateAlbum);
+                    if (isSuccess) {
+                        viewModel.updateAlbum(needUpdateAlbum);
+                    }
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -188,13 +189,13 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             @Override
             public void onNext(SearchAlbumResponse searchAlbumResponse) {
                 List<OnlineAlbum> onlineAlbumList = searchAlbumResponse.getData();
-                if(onlineAlbumList == null || onlineAlbumList.isEmpty()) {
+                if (onlineAlbumList == null || onlineAlbumList.isEmpty()) {
                     ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.download_failed);
                     return;
                 }
                 double maxConfidence = 0;
                 String picUrl = null;
-                for(OnlineAlbum onlineAlbum:onlineAlbumList) {
+                for (OnlineAlbum onlineAlbum : onlineAlbumList) {
                     double confidence = MinEditDistance.SimilarDegree(onlineAlbum.getAlbumName().toLowerCase(), album.getAlbumName().toLowerCase());
                     if (maxConfidence < confidence) {
                         maxConfidence = confidence;
@@ -231,7 +232,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
 
     @WorkerThread
     private void updateAlbumArt(String picUrl) {
-        if(picUrl != null) {
+        if (picUrl != null) {
             hasUpdate = true;
             Album album = dataList.get(1).getAlbum();
             album.setAlbumArt(picUrl);

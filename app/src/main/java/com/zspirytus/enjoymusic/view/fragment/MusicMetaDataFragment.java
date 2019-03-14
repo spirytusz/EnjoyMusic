@@ -45,9 +45,22 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
         Music music = getArguments().getParcelable("music");
         mViewModel.applyMusicMetaList(music);
         mAdapter = new MusicMetaDataListAdapter();
-        mAdapter.setOnDownloadBtnClickListener(() -> {
-            mViewModel.applyArtistArt(getArguments().getParcelable("music"));
-            mViewModel.applyAlbumArt(getArguments().getParcelable("music"));
+        mAdapter.setOnDownloadBtnClickListener(new MusicMetaDataListAdapter.OnClickEventListener() {
+            @Override
+            public void onAritstArtLongClickListener() {
+
+            }
+
+            @Override
+            public void onAlbumArtClickListener() {
+
+            }
+
+            @Override
+            public void onDownLoadBtnClick() {
+                mViewModel.applyArtistArt(getArguments().getParcelable("music"));
+                mViewModel.applyAlbumArt(getArguments().getParcelable("music"));
+            }
         });
     }
 

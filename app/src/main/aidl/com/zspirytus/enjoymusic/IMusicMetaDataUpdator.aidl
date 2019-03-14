@@ -6,5 +6,5 @@ import com.zspirytus.enjoymusic.db.table.Album;
 
 interface IMusicMetaDataUpdator {
     void updateArtist(in Artist artist);
-    void updateAlbum(in Album album);
+    boolean updateAlbum(in Album album);
 }
