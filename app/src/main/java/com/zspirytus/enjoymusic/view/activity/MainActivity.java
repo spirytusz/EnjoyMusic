@@ -33,16 +33,11 @@ import com.zspirytus.enjoymusic.global.AudioEffectConfig;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
-import com.zspirytus.enjoymusic.view.fragment.LaunchAnimationFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.enjoymusic.view.widget.CustomNavigationView;
 import com.zspirytus.enjoymusic.view.widget.MusicControlPane;
 import com.zspirytus.zspermission.PermissionGroup;
 import com.zspirytus.zspermission.ZSPermission;
-
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Activity: 控制显示、隐藏Fragment.
@@ -112,7 +107,7 @@ public class MainActivity extends BaseActivity
         super.onNewIntent(intent);
         Music action = intent.getParcelableExtra(Constant.NotificationEvent.EXTRA);
         if (action != null) {
-            if (!FragmentVisibilityManager.getInstance().getCurrentFragment().getClass().getSimpleName().equals("MusicPlayingFragment")) {
+            if (!FragmentVisibilityManager.getInstance().getCurrentFragmentName().equals("MusicPlayFragment")) {
                 MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
                 mViewModel.setCurrentPlayingMusic(action);
                 showFragment(fragment);
@@ -239,20 +234,5 @@ public class MainActivity extends BaseActivity
             }
         };
         bindService(startPlayMusicServiceIntent, conn, BIND_AUTO_CREATE);
-    }
-
-    private void showLaunchAnimation() {
-        setFullScreenOrNot(true);
-        final LaunchAnimationFragment fragment = new LaunchAnimationFragment();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.launch_animation_container, fragment)
-                .show(fragment)
-                .commitAllowingStateLoss();
-        AndroidSchedulers.mainThread().scheduleDirect(() -> {
-            getSupportFragmentManager().beginTransaction()
-                    .remove(fragment)
-                    .commitAllowingStateLoss();
-            setFullScreenOrNot(false);
-        }, 3, TimeUnit.SECONDS);
     }
 }

@@ -75,6 +75,10 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
         return mCurrentFragment;
     }
 
+    public String getCurrentFragmentName() {
+        return mCurrentFragment.getClass().getSimpleName();
+    }
+
     public void show(BaseFragment shouldShowFragment) {
         if (getCurrentFragment() == null || !shouldShowFragment.equals(getCurrentFragment())) {
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
