@@ -8,11 +8,12 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     signingConfigs {
-        config {
+        release {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
             storeFile file(keystoreProperties['storeFile'])
             storePassword keystoreProperties['storePassword']
+            v2SigningEnabled true
         }
     }
     compileSdkVersion 26
@@ -38,6 +39,7 @@ android {
             shrinkResources true
             useProguard true
             zipAlignEnabled true
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {

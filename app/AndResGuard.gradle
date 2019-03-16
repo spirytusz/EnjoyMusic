@@ -10,6 +10,7 @@ andResGuard {
             "*.jpg",
             "*.jpeg",
             "*.gif",
+            "*.webp",
             "resources.arsc"
     ]
     whiteList = [
