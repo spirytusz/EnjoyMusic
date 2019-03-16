@@ -5,6 +5,8 @@ import android.content.Context;
 import android.support.annotation.StringRes;
 import android.widget.Toast;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+
 /**
  * Toast工具类
  * Created by ZSpirytus on 2018/8/3.
@@ -36,6 +38,14 @@ public class ToastUtil {
             toast.setText(stringResId);
         }
         toast.show();
+    }
+
+    public static void postToShow(Context context, String message) {
+        AndroidSchedulers.mainThread().scheduleDirect(() -> showToast(context, message));
+    }
+
+    public static void postToShow(Context context, @StringRes int stringResId) {
+        AndroidSchedulers.mainThread().scheduleDirect(() -> showToast(context, stringResId));
     }
 
 }

@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
 public class MusicPlayFragmentViewModel extends ViewModel {
@@ -73,7 +72,7 @@ public class MusicPlayFragmentViewModel extends ViewModel {
                     Artist artist = QueryExecutor.findArtist(music);
                     getSuitableLyric(music, artist, searchMusicResponse.getData());
                 } else {
-                    AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_lyric_available));
+                    ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.no_lyric_available);
                 }
             }
 
@@ -165,7 +164,7 @@ public class MusicPlayFragmentViewModel extends ViewModel {
                 } else {
                     tip = R.string.no_lyric_available;
                 }
-                AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), tip));
+                ToastUtil.postToShow(MainApplication.getForegroundContext(), tip);
                 Lyric lyric = new Lyric(music.getMusicId(), file.getAbsolutePath());
                 DBManager.getInstance().getDaoSession().getLyricDao().insertOrReplace(lyric);
             });

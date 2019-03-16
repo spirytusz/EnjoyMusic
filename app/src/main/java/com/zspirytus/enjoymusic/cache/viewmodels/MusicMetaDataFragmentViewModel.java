@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
 public class MusicMetaDataFragmentViewModel extends ViewModel {
@@ -145,11 +144,11 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             public void onNext(SearchArtistResponse searchArtistResponse) {
                 OnlineArtistList onlineArtistList = searchArtistResponse.getData();
                 if (onlineArtistList == null) {
-                    AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.download_failed));
+                    ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.download_failed);
                     return;
                 }
                 if (onlineArtistList.getArtistCount() == 0) {
-                    AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_artist_art_available));
+                    ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.no_artist_art_available);
                     return;
                 }
                 List<OnlineArtist> onlineArtists = onlineArtistList.getArtists();
@@ -169,7 +168,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
 
             @Override
             public void onError(Throwable e) {
-                ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.download_failed);
+                ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.download_failed);
                 e.printStackTrace();
             }
 
@@ -207,7 +206,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
 
             @Override
             public void onError(Throwable e) {
-                ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.download_failed);
+                ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.download_failed);
                 e.printStackTrace();
             }
 
@@ -226,7 +225,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             dataList.get(0).getArtist().setArtistArt(artistArt);
             mMusicMetaList.postValue(dataList);
         } else {
-            AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_artist_art_available));
+            ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.no_artist_art_available);
         }
     }
 
@@ -238,7 +237,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             album.setAlbumArt(picUrl);
             dataList.get(1).setAlbum(album);
         } else {
-            AndroidSchedulers.mainThread().scheduleDirect(() -> ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_artist_art_available));
+            ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_artist_art_available);
         }
     }
 }
