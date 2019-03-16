@@ -43,31 +43,31 @@ public class CustomNavigationView extends NavigationView implements FragmentChan
     @Override
     public void onFragmentChange(String newFragmentName) {
         switch (newFragmentName) {
-            case Constant.FragmentName.homePageFragmentName:
+            case Constant.FragmentName.HOME_PAGE_FRAGMENT:
                 setCheckedItem(R.id.nav_home_page);
                 break;
-            case Constant.FragmentName.allMusicListFragmentName:
+            case Constant.FragmentName.ALL_MUSIC_LIST_FRAGMENT:
                 setCheckedItem(R.id.nav_music_all);
                 break;
-            case Constant.FragmentName.albumMusicListFragmentName:
+            case Constant.FragmentName.ALBUM_MUSIC_LIST_FRAGMENT:
                 setCheckedItem(R.id.nav_music_album);
                 break;
-            case Constant.FragmentName.artistMusicListFragmentName:
+            case Constant.FragmentName.ARTIST_MUSIC_LIST_FRAGMENT:
                 setCheckedItem(R.id.nav_music_artist);
                 break;
-            case Constant.FragmentName.folderSortedMusicListFragment:
+            case Constant.FragmentName.FOLDER_LIST_FRAGMENT:
                 setCheckedItem(R.id.nav_music_folder);
                 break;
             case "SongListFragment":
                 setCheckedItem(R.id.nav_song_list);
                 break;
-            case Constant.FragmentName.playListFragmentName:
+            case Constant.FragmentName.PLAY_LIST_FRAGMENT:
                 setCheckedItem(R.id.nav_play_list);
                 break;
-            case Constant.FragmentName.settingFragmentName:
+            case Constant.FragmentName.SETTINGS_FRAGMENT:
                 setCheckedItem(R.id.nav_settings);
                 break;
-            case Constant.FragmentName.aboutFragmentName:
+            case Constant.FragmentName.ABOUT_FRAGMENT:
                 setCheckedItem(R.id.nav_about);
                 break;
         }

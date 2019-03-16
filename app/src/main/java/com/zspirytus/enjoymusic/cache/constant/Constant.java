@@ -48,16 +48,16 @@ public interface Constant {
     }
 
     interface FragmentName {
-        String folderSortedMusicListFragment = "FolderListFragment";
-        String aboutFragmentName = "AboutFragment";
-        String albumMusicListFragmentName = "AlbumMusicListFragment";
-        String allMusicListFragmentName = "AllMusicListFragment";
-        String artistMusicListFragmentName = "ArtistMusicListFragment";
-        String homePageFragmentName = "HomePageFragment";
-        String musicCategoryFragmentName = "MusicCategoryFragment";
-        String musicPlayFragmentName = "MusicPlayFragment";
-        String playListFragmentName = "PlayListFragment";
-        String settingFragmentName = "SettingsFragment";
+        String FOLDER_LIST_FRAGMENT = "FolderListFragment";
+        String ABOUT_FRAGMENT = "AboutFragment";
+        String ALBUM_MUSIC_LIST_FRAGMENT = "AlbumMusicListFragment";
+        String ALL_MUSIC_LIST_FRAGMENT = "AllMusicListFragment";
+        String ARTIST_MUSIC_LIST_FRAGMENT = "ArtistMusicListFragment";
+        String HOME_PAGE_FRAGMENT = "HomePageFragment";
+        String MUSIC_CATEGORY_FRAGMENT = "MusicCategoryFragment";
+        String MUSIC_PLAY_FRAGMENT = "MusicPlayFragment";
+        String PLAY_LIST_FRAGMENT = "PlayListFragment";
+        String SETTINGS_FRAGMENT = "SettingsFragment";
     }
 
     interface PlayMode {

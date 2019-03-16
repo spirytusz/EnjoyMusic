@@ -107,7 +107,8 @@ public class MainActivity extends BaseActivity
         super.onNewIntent(intent);
         Music action = intent.getParcelableExtra(Constant.NotificationEvent.EXTRA);
         if (action != null) {
-            if (!FragmentVisibilityManager.getInstance().getCurrentFragmentName().equals("MusicPlayFragment")) {
+            String currentFragmentName = FragmentVisibilityManager.getInstance().getCurrentFragmentName();
+            if (!Constant.FragmentName.MUSIC_PLAY_FRAGMENT.equals(currentFragmentName)) {
                 MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
                 mViewModel.setCurrentPlayingMusic(action);
                 showFragment(fragment);
