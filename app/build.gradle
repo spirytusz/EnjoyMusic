@@ -14,6 +14,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        resConfigs "zh"
     }
     configurations.all {
         resolutionStrategy.force 'com.android.support:support-annotations:26.1.0'
@@ -26,6 +27,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             shrinkResources true
             useProguard true
+            zipAlignEnabled true
         }
     }
     compileOptions {
