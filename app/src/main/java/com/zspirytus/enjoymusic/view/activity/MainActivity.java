@@ -157,16 +157,6 @@ public class MainActivity extends BaseActivity
     @Override
     protected void initData() {
         FragmentVisibilityManager.getInstance().init(getSupportFragmentManager());
-        Music music = getIntent().getParcelableExtra("music");
-        if (music != null) {
-            mViewModel.setCurrentPlayingMusic(music);
-            MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
-            showFragment(fragment);
-            BaseFragment homeFragment = FragmentFactory.getInstance().get(HomePageFragment.class);
-            FragmentVisibilityManager.getInstance().addToBackStack(homeFragment);
-        } else {
-            showFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
-        }
     }
 
     @Override
@@ -226,6 +216,21 @@ public class MainActivity extends BaseActivity
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 ForegroundBinderManager.getInstance().init(IBinderPool.Stub.asInterface(service));
+                /*
+                 * MusicPlayFragment中LiveData变化的回调事件中带有binder的使用
+                 * 所以显示MusicPlayFragment必须在Binder初始化后才能执行
+                 */
+                Music music = getIntent().getParcelableExtra(Constant.NotificationEvent.EXTRA);
+                e("music = " + music);
+                if (music != null) {
+                    mViewModel.setCurrentPlayingMusic(music);
+                    MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
+                    showFragment(fragment);
+                    BaseFragment homeFragment = FragmentFactory.getInstance().get(HomePageFragment.class);
+                    FragmentVisibilityManager.getInstance().addToBackStack(homeFragment);
+                } else {
+                    showFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
+                }
                 requestPermission();
             }
 
