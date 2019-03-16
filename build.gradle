@@ -25,7 +25,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.greenrobot:greendao-gradle-plugin:$greendao_version"
         classpath "com.tencent.mm:AndResGuard-gradle-plugin:$AndResGuard_version"
 
