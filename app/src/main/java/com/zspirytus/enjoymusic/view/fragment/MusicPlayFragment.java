@@ -30,6 +30,7 @@ import com.zspirytus.enjoymusic.impl.binder.aidlobserver.FrequencyObserverManage
 import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 import com.zspirytus.enjoymusic.receivers.observer.OnFrequencyChangeListener;
 import com.zspirytus.enjoymusic.utils.TimeUtil;
+import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.dialog.PlayHistoryDialog;
 import com.zspirytus.enjoymusic.view.widget.AutoRotateCircleImage;
 import com.zspirytus.enjoymusic.view.widget.BlurImageView;
@@ -204,6 +205,7 @@ public class MusicPlayFragment extends BaseFragment
         });
         mViewModel.getPlayMode().observe(this, (values) -> {
             mPlayMode.setImageResource(mViewModel.getPlayModeResId().get(values));
+            ToastUtil.showToast(getContext(), mViewModel.getPlayModeText(values));
             ForegroundMusicController.getInstance().setPlayMode(values);
         });
         viewModel.getLyricRows().observe(this, values -> mLyricView.setLyricRows(values));

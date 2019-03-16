@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.util.SparseIntArray;
 
 import com.zspirytus.enjoymusic.R;
@@ -28,6 +29,7 @@ public class MusicPlayingStateViewModel extends MusicDataViewModel implements Pl
     private MutableLiveData<Integer> mPlayMode = new MutableLiveData<>();
 
     private SparseIntArray mPlayModeResId;
+    private SparseIntArray mPlayModeTextId;
 
     public void init() {
         super.init();
@@ -35,6 +37,11 @@ public class MusicPlayingStateViewModel extends MusicDataViewModel implements Pl
         mPlayModeResId.put(Constant.PlayMode.LIST_LOOP, R.drawable.ic_list_loop_pressed);
         mPlayModeResId.put(Constant.PlayMode.RANDOM, R.drawable.ic_random_pressed);
         mPlayModeResId.put(Constant.PlayMode.SINGLE_LOOP, R.drawable.ic_single_loop_pressed);
+
+        mPlayModeTextId = new SparseIntArray();
+        mPlayModeResId.put(Constant.PlayMode.LIST_LOOP, R.string.list_loop);
+        mPlayModeResId.put(Constant.PlayMode.RANDOM, R.string.random_play);
+        mPlayModeResId.put(Constant.PlayMode.SINGLE_LOOP, R.string.single_loop);
 
         PlayMusicObserverManager.getInstance().register(this);
         PlayStateObserverManager.getInstance().register(this);
@@ -149,5 +156,10 @@ public class MusicPlayingStateViewModel extends MusicDataViewModel implements Pl
 
     public void obtainPlayMode(Context context) {
         setPlayMode(MusicSharedPreferences.restorePlayMode(context));
+    }
+
+    @StringRes
+    public int getPlayModeText(int mode) {
+        return mPlayModeTextId.get(mode);
     }
 }

@@ -221,7 +221,6 @@ public class MainActivity extends BaseActivity
                  * 所以显示MusicPlayFragment必须在Binder初始化后才能执行
                  */
                 Music music = getIntent().getParcelableExtra(Constant.NotificationEvent.EXTRA);
-                e("music = " + music);
                 if (music != null) {
                     mViewModel.setCurrentPlayingMusic(music);
                     MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
