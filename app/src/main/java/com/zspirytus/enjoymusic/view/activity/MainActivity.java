@@ -32,11 +32,11 @@ import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.global.AudioEffectConfig;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
+import com.zspirytus.enjoymusic.view.dialog.PermissionDeniedDialog;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.enjoymusic.view.widget.CustomNavigationView;
 import com.zspirytus.enjoymusic.view.widget.MusicControlPane;
-import com.zspirytus.zspermission.PermissionGroup;
 import com.zspirytus.zspermission.ZSPermission;
 
 /**
@@ -172,7 +172,6 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onGranted() {
-        ForegroundBinderManager.getInstance().registerEvent();
         mViewModel.obtainMusicList();
         mViewModel.getCurrentPlayingMusic().observe(this, values -> {
             mBottomMusicControl.wrapMusic(values);
@@ -180,6 +179,47 @@ public class MainActivity extends BaseActivity
         mViewModel.getPlayState().observe(this, values -> {
             mBottomMusicControl.setPlayState(values);
         });
+    }
+
+    @Override
+    public void onDenied() {
+        PermissionDeniedDialog dialog = PermissionDeniedDialog.getInstance(R.string.permission_denied_tip_text);
+        dialog.setOnButtonClickListener(new PermissionDeniedDialog.OnButtonClickListener() {
+            @Override
+            public void onPositiveBtnClick() {
+                ZSPermission.getInstance().requestAgain();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onNegativeBtnClick() {
+                dialog.dismiss();
+            }
+        });
+        FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
+    }
+
+    @Override
+    public void onNeverAsk() {
+        PermissionDeniedDialog dialog = PermissionDeniedDialog.getInstance(R.string.permission_never_ask_tip_text);
+        dialog.setOnButtonClickListener(new PermissionDeniedDialog.OnButtonClickListener() {
+            @Override
+            public void onPositiveBtnClick() {
+                goToSettings();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onNegativeBtnClick() {
+                dialog.dismiss();
+            }
+        });
+        FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
+    }
+
+    @Override
+    protected void onGoToSettingsCallback() {
+        ZSPermission.getInstance().requestAgain();
     }
 
     private void showFragment(BaseFragment fragment) {
@@ -190,11 +230,16 @@ public class MainActivity extends BaseActivity
     }
 
     private void requestPermission() {
-        // request permissions, if it is granted, it will call onGranted()
+        /*
+         * request permissions.
+         * if it is granted, it will call onGranted();
+         * if it is denied, it will call onDenied();
+         * if it is denied and selected "NeverAsk", it will call onNeverAsk().
+         */
         ZSPermission.getInstance()
                 .at(this)
-                .requestCode(123)
-                .permissions(PermissionGroup.STORAGE_GROUP)
+                .requestCode(666)
+                .permission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .permission(Manifest.permission.RECORD_AUDIO)
                 .listenBy(this)
                 .request();

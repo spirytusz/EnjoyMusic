@@ -150,4 +150,10 @@
     <string name="random_play_mode">随机播放</string>
     <!-- PlayMode Text end -->
 
+    <!-- Permission Text start -->
+    <string name="permission_dialog_title">提示</string>
+    <string name="permission_denied_tip_text">享乐需要以下权限:\n\t1. 读写手机内置存储权限,以扫描音乐\n\t2. 录音权限,以实现音乐可视化.\n是否重新授权?</string>
+    <string name="permission_never_ask_tip_text">享乐需要以下权限:\n\t1. 读写手机内置存储权限,以扫描音乐\n\t2. 录音权限,以实现音乐可视化.\n是否前往设置重新授权?</string>
+    <!-- Permission Text end -->
+
 </resources>

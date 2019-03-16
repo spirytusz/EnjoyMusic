@@ -1,8 +1,11 @@
 package com.zspirytus.enjoymusic.base;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +30,8 @@ import java.lang.reflect.Field;
 
 public abstract class BaseActivity extends AppCompatActivity
         implements ZSPermission.OnPermissionListener {
+
+    protected static final int REQUEST_APP_SETTINGS = 233;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +68,14 @@ public abstract class BaseActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_APP_SETTINGS) {
+            onGoToSettingsCallback();
+        }
+    }
+
+    @Override
     public void onGranted() {
         // do nothing, processed by child activity if necessary
     }
@@ -74,6 +87,10 @@ public abstract class BaseActivity extends AppCompatActivity
 
     @Override
     public void onNeverAsk() {
+        // do nothing, processed by child activity if necessary
+    }
+
+    protected void onGoToSettingsCallback() {
         // do nothing, processed by child activity if necessary
     }
 
@@ -153,6 +170,17 @@ public abstract class BaseActivity extends AppCompatActivity
                 setContentView(layoutId);
             }
         }
+    }
+
+    protected void goToSettings() {
+        /*Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
+        myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
+        myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityForResult(myAppSettings, REQUEST_APP_SETTINGS);*/
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivityForResult(intent, REQUEST_APP_SETTINGS);
     }
 
     protected void initView() {
