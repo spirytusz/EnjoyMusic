@@ -26,6 +26,7 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
+import com.zspirytus.enjoymusic.entity.event.PlayModeEvent;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.FrequencyObserverManager;
 import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 import com.zspirytus.enjoymusic.receivers.observer.OnFrequencyChangeListener;
@@ -108,9 +109,10 @@ public class MusicPlayFragment extends BaseFragment
                 ForegroundMusicController.getInstance().playNext(true);
                 break;
             case R.id.play_mode:
-                int mode = mViewModel.getPlayMode().getValue() + 1;
+                int mode = mViewModel.getPlayMode().getValue().getPlayMode() + 1;
                 mode %= mViewModel.getPlayModeResId().size();
-                mViewModel.setPlayMode(mode);
+                PlayModeEvent event = new PlayModeEvent(mode, true);
+                mViewModel.setPlayMode(event);
                 break;
             case R.id.cover:
             case R.id.lyricView:
@@ -187,13 +189,13 @@ public class MusicPlayFragment extends BaseFragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         FrequencyObserverManager.getInstance().register(this);
-        mViewModel.getPlayProgress().observe(this, (values) -> {
+        mViewModel.getPlayProgress().observe(this, values -> {
             if (values != null) {
                 mSeekBar.setProgress(values / 1000);
                 mLyricView.onPlayProgressChange(values);
             }
         });
-        mViewModel.getPlayState().observe(this, (values) -> {
+        mViewModel.getPlayState().observe(this, values -> {
             if (values != null) {
                 setButtonSrc(values);
                 mCover.setRotating(values);
@@ -203,10 +205,12 @@ public class MusicPlayFragment extends BaseFragment
             setView(values);
             viewModel.applyLyricFromDB(values);
         });
-        mViewModel.getPlayMode().observe(this, (values) -> {
-            mPlayMode.setImageResource(mViewModel.getPlayModeResId().get(values));
-            ToastUtil.showToast(getContext(), mViewModel.getPlayModeText(values));
-            ForegroundMusicController.getInstance().setPlayMode(values);
+        mViewModel.getPlayMode().observe(this, values -> {
+            mPlayMode.setImageResource(mViewModel.getPlayModeResId(values.getPlayMode()));
+            if (values.isFromUser()) {
+                ToastUtil.showToast(getContext(), mViewModel.getPlayModeText(values.getPlayMode()));
+            }
+            ForegroundMusicController.getInstance().setPlayMode(values.getPlayMode());
         });
         viewModel.getLyricRows().observe(this, values -> mLyricView.setLyricRows(values));
     }

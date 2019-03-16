@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.util.SparseIntArray;
 
@@ -10,6 +11,7 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.table.Music;
+import com.zspirytus.enjoymusic.entity.event.PlayModeEvent;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayMusicObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayStateObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.ProgressObserverManager;
@@ -26,22 +28,22 @@ public class MusicPlayingStateViewModel extends MusicDataViewModel implements Pl
     private MutableLiveData<Boolean> mPlayState = new MutableLiveData<>();
     private MutableLiveData<Integer> mPlayProgress = new MutableLiveData<>();
     private MutableLiveData<Music> mCurrentPlayingMusic = new MutableLiveData<>();
-    private MutableLiveData<Integer> mPlayMode = new MutableLiveData<>();
+    private MutableLiveData<PlayModeEvent> mPlayMode = new MutableLiveData<>();
 
     private SparseIntArray mPlayModeResId;
     private SparseIntArray mPlayModeTextId;
 
     public void init() {
         super.init();
-        mPlayModeResId = new SparseIntArray();
+        mPlayModeResId = new SparseIntArray(3);
         mPlayModeResId.put(Constant.PlayMode.LIST_LOOP, R.drawable.ic_list_loop_pressed);
         mPlayModeResId.put(Constant.PlayMode.RANDOM, R.drawable.ic_random_pressed);
         mPlayModeResId.put(Constant.PlayMode.SINGLE_LOOP, R.drawable.ic_single_loop_pressed);
 
-        mPlayModeTextId = new SparseIntArray();
-        mPlayModeResId.put(Constant.PlayMode.LIST_LOOP, R.string.list_loop);
-        mPlayModeResId.put(Constant.PlayMode.RANDOM, R.string.random_play);
-        mPlayModeResId.put(Constant.PlayMode.SINGLE_LOOP, R.string.single_loop);
+        mPlayModeTextId = new SparseIntArray(3);
+        mPlayModeTextId.put(Constant.PlayMode.LIST_LOOP, R.string.list_loop_mode);
+        mPlayModeTextId.put(Constant.PlayMode.RANDOM, R.string.random_play_mode);
+        mPlayModeTextId.put(Constant.PlayMode.SINGLE_LOOP, R.string.single_loop_mode);
 
         PlayMusicObserverManager.getInstance().register(this);
         PlayStateObserverManager.getInstance().register(this);
@@ -138,16 +140,12 @@ public class MusicPlayingStateViewModel extends MusicDataViewModel implements Pl
         mCurrentPlayingMusic.postValue(currentPlayingMusic);
     }
 
-    public MutableLiveData<Integer> getPlayMode() {
+    public MutableLiveData<PlayModeEvent> getPlayMode() {
         return mPlayMode;
     }
 
-    public void setPlayMode(int playMode) {
-        mPlayMode.setValue(playMode);
-    }
-
-    public void postPlayMode(int playMode) {
-        mPlayMode.postValue(playMode);
+    public void setPlayMode(PlayModeEvent event) {
+        mPlayMode.setValue(event);
     }
 
     public SparseIntArray getPlayModeResId() {
@@ -155,11 +153,17 @@ public class MusicPlayingStateViewModel extends MusicDataViewModel implements Pl
     }
 
     public void obtainPlayMode(Context context) {
-        setPlayMode(MusicSharedPreferences.restorePlayMode(context));
+        PlayModeEvent event = new PlayModeEvent(MusicSharedPreferences.restorePlayMode(context), false);
+        setPlayMode(event);
     }
 
     @StringRes
     public int getPlayModeText(int mode) {
         return mPlayModeTextId.get(mode);
+    }
+
+    @DrawableRes
+    public int getPlayModeResId(int mode) {
+        return mPlayModeResId.get(mode);
     }
 }

@@ -145,9 +145,9 @@
     <!-- ProgressDialog Text end -->
 
     <!-- PlayMode Text start -->
-    <string name="list_loop">列表循环</string>
-    <string name="single_loop">单曲循环</string>
-    <string name="random_play">随机播放</string>
+    <string name="list_loop_mode">列表循环</string>
+    <string name="single_loop_mode">单曲循环</string>
+    <string name="random_play_mode">随机播放</string>
     <!-- PlayMode Text end -->
 
 </resources>
