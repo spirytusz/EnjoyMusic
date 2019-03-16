@@ -172,6 +172,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onGranted() {
+        ForegroundBinderManager.getInstance().registerEvent();
         mViewModel.obtainMusicList();
         mViewModel.getCurrentPlayingMusic().observe(this, values -> {
             mBottomMusicControl.wrapMusic(values);
