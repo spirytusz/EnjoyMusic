@@ -186,6 +186,10 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             mInfoTextView.setVisibility(View.VISIBLE);
             mInfoTextView.setText("No music in device!");
             mHomePageRecyclerView.setVisibility(View.GONE);
+            mToolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
+            mToolbar.setTitleTextColor(getResources().getColor(R.color.black));
+            mToolbar.setTitle(R.string.app_name);
+            getParentActivity().setLightStatusIconColor();
         }
     }
 

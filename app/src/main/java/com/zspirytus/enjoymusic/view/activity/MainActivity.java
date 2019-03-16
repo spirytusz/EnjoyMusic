@@ -193,6 +193,7 @@ public class MainActivity extends BaseActivity
 
             @Override
             public void onNegativeBtnClick() {
+                mViewModel.obtainEmptyData();
                 dialog.dismiss();
             }
         });
@@ -211,6 +212,7 @@ public class MainActivity extends BaseActivity
 
             @Override
             public void onNegativeBtnClick() {
+                mViewModel.obtainEmptyData();
                 dialog.dismiss();
             }
         });

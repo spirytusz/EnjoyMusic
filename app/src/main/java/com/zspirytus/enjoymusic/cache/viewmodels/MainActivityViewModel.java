@@ -14,6 +14,7 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivityViewModel extends MusicPlayingStateViewModel {
@@ -36,6 +37,13 @@ public class MainActivityViewModel extends MusicPlayingStateViewModel {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void obtainEmptyData() {
+        getMusicList().setValue(new ArrayList<>());
+        getAlbumList().setValue(new ArrayList<>());
+        getArtistList().setValue(new ArrayList<>());
+        getFolderList().setValue(new ArrayList<>());
     }
 
     public void applySongLists() {
