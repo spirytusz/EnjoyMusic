@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">EnjoyMusic</string>
+    <string name="app_name">享乐</string>
 
     <!-- test string start -->
-    <string name="music_name">Music Name</string>
-    <string name="music_artist">Music Artist</string>
-    <string name="no_lyric">No Lyric</string>
+    <string name="music_name">享乐</string>
+    <string name="music_artist">浸入音乐的世界</string>
+    <string name="no_lyric">无可用歌词</string>
     <!-- test string end -->
 
     <!-- NavigationView Text start -->
