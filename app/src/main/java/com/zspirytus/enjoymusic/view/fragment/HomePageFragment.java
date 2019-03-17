@@ -184,7 +184,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             }, 300);
         } else {
             mInfoTextView.setVisibility(View.VISIBLE);
-            mInfoTextView.setText("No music in device!");
+            mInfoTextView.setText(R.string.no_music_in_device);
             mHomePageRecyclerView.setVisibility(View.GONE);
             mToolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
             mToolbar.setTitleTextColor(getResources().getColor(R.color.black));

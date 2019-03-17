@@ -23,6 +23,7 @@
     <!-- HomePage Text start -->
     <string name="recent_added">近期添加</string>
     <string name="random_play">随机播放</string>
+    <string name="no_music_in_device">设备中没有音乐…</string>
     <!-- HomePage Text end -->
 
     <!-- MusicCategory Text start -->

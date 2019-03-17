@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -274,6 +275,7 @@ public class MusicPlayFragment extends BaseFragment
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void setView(Music music) {
         Album album = QueryExecutor.findAlbum(music);
         Artist artist = QueryExecutor.findArtist(music);
