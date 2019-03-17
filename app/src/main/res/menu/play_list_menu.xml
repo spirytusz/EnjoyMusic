@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/begin_to_play"
-        android:title="开始播放" />
+        android:title="@string/begin_playing" />
 
     <item
         android:id="@+id/clear_play_list"
-        android:title="清空播放列表" />
+        android:title="@string/clear_play_list" />
 
 </menu>

@@ -88,6 +88,15 @@
     <string name="music_play_menu_lyric_download">下载歌词</string>
     <!-- MusicPlay Text end -->
 
+    <!-- MusicPick Text start -->
+    <string name="choose_song">选择曲目</string>
+    <!-- MusicPick Text end -->
+
+    <!-- PlayList Text start -->
+    <string name="begin_playing">开始播放</string>
+    <string name="clear_play_list">清空播放列表</string>
+    <!-- PlayList Text end -->
+
     <!-- AudioEffect Text start -->
     <string name="audio_effect">音效</string>
     <string name="audio_effect_acoustic_echo_canceler">回声消除</string>
@@ -114,6 +123,7 @@
 
     <!-- Search Text start -->
     <string name="search">搜索</string>
+    <string name="no_search_result">未找到任何结果…</string>
     <!-- Search Text end -->
 
     <!-- PlayHistory Dialog Text start -->
