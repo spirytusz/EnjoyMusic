@@ -24,6 +24,7 @@ public interface Constant {
         int PLAY_HISTORY_OBSERVER = 0x84;
         int AUDIO_FIELD_OBSERVER = 0x88;
         int FREQUENCY_OBSERVER = 0x100;
+        int MUSIC_DELETE_OBSERVER = 0X101;
     }
 
     interface AnimationProperty {

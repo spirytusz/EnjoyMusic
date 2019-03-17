@@ -127,26 +127,6 @@ public class Music implements Parcelable {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Music music = (Music) o;
-        return musicDuration == music.musicDuration &&
-                musicAddDate == music.musicAddDate &&
-                Objects.equals(musicId, music.musicId) &&
-                Objects.equals(albumId, music.albumId) &&
-                Objects.equals(artistId, music.artistId) &&
-                Objects.equals(musicFilePath, music.musicFilePath) &&
-                Objects.equals(musicName, music.musicName);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(musicId, albumId, artistId, musicFilePath, musicName, musicDuration, musicAddDate);
-    }
-
     public Long getMusicId() {
         return this.musicId;
     }
@@ -316,5 +296,24 @@ public class Music implements Parcelable {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMusicDao() : null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Music music = (Music) o;
+        return musicDuration == music.musicDuration &&
+                musicAddDate == music.musicAddDate &&
+                Objects.equals(musicId, music.musicId) &&
+                Objects.equals(albumId, music.albumId) &&
+                Objects.equals(artistId, music.artistId) &&
+                Objects.equals(musicFilePath, music.musicFilePath) &&
+                Objects.equals(musicName, music.musicName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(musicId, albumId, artistId, musicFilePath, musicName, musicDuration, musicAddDate);
     }
 }

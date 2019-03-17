@@ -134,6 +134,7 @@
     <!-- Toast tip start -->
     <string name="no_net_work_tip">无网络连接…</string>
     <string name="success">成功</string>
+    <string name="failed">失败</string>
     <string name="please_enter_leagl_song_list">请输入歌单名称</string>
     <string name="no_artist_art_available">没有找到艺术家封面…</string>
     <string name="no_lyric_available">没有找到歌词…</string>

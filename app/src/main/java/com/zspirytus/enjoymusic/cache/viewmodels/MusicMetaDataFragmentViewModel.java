@@ -2,20 +2,16 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.support.annotation.WorkerThread;
 
-import com.zspirytus.enjoymusic.IMusicMetaDataUpdator;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
-import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.ArtistArt;
 import com.zspirytus.enjoymusic.db.table.Music;
-import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
+import com.zspirytus.enjoymusic.engine.ForegroundMusicUpdator;
 import com.zspirytus.enjoymusic.engine.MinEditDistance;
 import com.zspirytus.enjoymusic.entity.listitem.MusicMetaDataListItem;
 import com.zspirytus.enjoymusic.global.MainApplication;
@@ -114,26 +110,16 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             Artist needUpdateArtist = datas.get(0).getArtist();
             Album needUpdateAlbum = datas.get(1).getAlbum();
 
-            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_META_DATA_UPDATOR);
-            IMusicMetaDataUpdator updator = IMusicMetaDataUpdator.Stub.asInterface(binder);
             // update foreground & background data.
             if (needUpdateArtist.peakArtistArt() != null) {
-                try {
-                    updator.updateArtist(needUpdateArtist);
-                    viewModel.updateArtist(needUpdateArtist);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                ForegroundMusicUpdator.getInstance().updateArtist(needUpdateArtist);
+                viewModel.updateArtist(needUpdateArtist);
             }
             String albumArt = needUpdateAlbum.getAlbumArt();
             if (albumArt != null && (albumArt.contains("http") || albumArt.contains("https"))) {
-                try {
-                    boolean isSuccess = updator.updateAlbum(needUpdateAlbum);
-                    if (isSuccess) {
-                        viewModel.updateAlbum(needUpdateAlbum);
-                    }
-                } catch (RemoteException e) {
-                    e.printStackTrace();
+                boolean isSuccess = ForegroundMusicUpdator.getInstance().updateAlbum(needUpdateAlbum);
+                if (isSuccess) {
+                    viewModel.updateAlbum(needUpdateAlbum);
                 }
             }
             updateState.postValue(true);

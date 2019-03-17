@@ -43,19 +43,23 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
 
     public void onSaveInstanceState(Bundle outState) {
         // 保存FragmentVisibilityManager必要的数据
-        String[] fragmentBackStack = new String[backStack.size()];
-        for (int i = 0; i < fragmentBackStack.length; i++) {
-            fragmentBackStack[i] = backStack.elementAt(i).getClass().getSimpleName();
+        if (backStack != null && !backStack.isEmpty()) {
+            String[] fragmentBackStack = new String[backStack.size()];
+            for (int i = 0; i < fragmentBackStack.length; i++) {
+                fragmentBackStack[i] = backStack.elementAt(i).getClass().getSimpleName();
+            }
+            outState.putStringArray(FRAGMENT_BACK_STACK, fragmentBackStack);
         }
-        outState.putStringArray(FRAGMENT_BACK_STACK, fragmentBackStack);
-        String currentFragment = getCurrentFragment().getClass().getSimpleName();
-        outState.putString(CURRENT_FRAGMENT, currentFragment);
+        String currentFragment = getCurrentFragmentName();
+        if (currentFragment != null) {
+            outState.putString(CURRENT_FRAGMENT, currentFragment);
+        }
     }
 
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         // 恢复FragmentVisibilityManager必要的数据
         String[] fragmentBackStack = savedInstanceState.getStringArray(FRAGMENT_BACK_STACK);
-        if (fragmentBackStack != null && fragmentBackStack.length > 0) {
+        if (fragmentBackStack != null) {
             for (String fragmentName : fragmentBackStack) {
                 BaseFragment fragment = (BaseFragment) mFragmentManager.findFragmentByTag(fragmentName);
                 addToBackStack(fragment);
@@ -76,7 +80,7 @@ public class FragmentVisibilityManager extends FragmentChangeObservable {
     }
 
     public String getCurrentFragmentName() {
-        return mCurrentFragment.getClass().getSimpleName();
+        return mCurrentFragment != null ? mCurrentFragment.getClass().getSimpleName() : null;
     }
 
     public void show(BaseFragment shouldShowFragment) {

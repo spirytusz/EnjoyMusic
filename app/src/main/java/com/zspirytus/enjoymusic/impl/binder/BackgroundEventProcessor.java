@@ -8,6 +8,7 @@ import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.engine.PlayHistoryManager;
 import com.zspirytus.enjoymusic.foregroundobserver.IAudioFieldChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IFrequencyObserver;
+import com.zspirytus.enjoymusic.foregroundobserver.IMusicDeleteObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayHistoryChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayListChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayProgressChangeObserver;
@@ -51,6 +52,9 @@ public class BackgroundEventProcessor extends IBackgroundEventProcessor.Stub {
             case Constant.BinderCode.FREQUENCY_OBSERVER:
                 VisualizerHelper.getInstance().register(IFrequencyObserver.Stub.asInterface(observer));
                 break;
+            case Constant.BinderCode.MUSIC_DELETE_OBSERVER:
+                MusicMetaDataUpdator.getInstance().register(IMusicDeleteObserver.Stub.asInterface(observer));
+                break;
         }
     }
 
@@ -78,6 +82,9 @@ public class BackgroundEventProcessor extends IBackgroundEventProcessor.Stub {
                 break;
             case Constant.BinderCode.FREQUENCY_OBSERVER:
                 VisualizerHelper.getInstance().unregister(IFrequencyObserver.Stub.asInterface(observer));
+                break;
+            case Constant.BinderCode.MUSIC_DELETE_OBSERVER:
+                MusicMetaDataUpdator.getInstance().unregister(IMusicDeleteObserver.Stub.asInterface(observer));
                 break;
         }
     }

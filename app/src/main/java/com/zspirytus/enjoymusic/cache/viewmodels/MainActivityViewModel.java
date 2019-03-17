@@ -13,11 +13,35 @@ import com.zspirytus.enjoymusic.db.table.Folder;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.MusicDeleteObserverManager;
+import com.zspirytus.enjoymusic.receivers.observer.MusicDeleteObserver;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivityViewModel extends MusicPlayingStateViewModel {
+public class MainActivityViewModel extends MusicPlayingStateViewModel implements MusicDeleteObserver {
+
+
+    @Override
+    public void init() {
+        super.init();
+        MusicDeleteObserverManager.getInstance().register(this);
+    }
+
+    @Override
+    public void onMusicDelete(Music music) {
+        List<Music> musicList = getMusicList().getValue();
+        if (musicList != null) {
+            boolean b = musicList.remove(music);
+        }
+        getMusicList().postValue(musicList);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        MusicDeleteObserverManager.getInstance().unregister(this);
+    }
 
     public void obtainMusicList() {
         ThreadPool.execute(() -> {

@@ -51,28 +51,28 @@ public class MusicScanner {
         return SingletonHolder.INSTANCE;
     }
 
-    public List<Music> getAllMusicList() {
+    public synchronized List<Music> getAllMusicList() {
         if (mAllMusicList.isEmpty() || mAlbumList.isEmpty() || mArtistList.isEmpty() || mFolderList.isEmpty()) {
             scan();
         }
         return mAllMusicList;
     }
 
-    public List<Album> getAlbumList() {
+    public synchronized List<Album> getAlbumList() {
         if (mAllMusicList.isEmpty() || mAlbumList.isEmpty() || mArtistList.isEmpty() || mFolderList.isEmpty()) {
             scan();
         }
         return mAlbumList;
     }
 
-    public List<Artist> getArtistList() {
+    public synchronized List<Artist> getArtistList() {
         if (mAllMusicList.isEmpty() || mAlbumList.isEmpty() || mArtistList.isEmpty() || mFolderList.isEmpty()) {
             scan();
         }
         return mArtistList;
     }
 
-    public List<Folder> getFolderSortedMusicList() {
+    public synchronized List<Folder> getFolderSortedMusicList() {
         if (mAllMusicList.isEmpty() || mAlbumList.isEmpty() || mArtistList.isEmpty() || mFolderList.isEmpty()) {
             scan();
         }

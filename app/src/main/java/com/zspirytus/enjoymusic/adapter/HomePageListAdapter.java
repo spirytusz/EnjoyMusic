@@ -12,6 +12,7 @@ import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
+import com.zspirytus.enjoymusic.engine.ForegroundMusicUpdator;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.global.MainApplication;
@@ -66,7 +67,7 @@ public class HomePageListAdapter extends CommonRecyclerViewAdapter<Music> implem
                 ToastUtil.showToast(MainApplication.getAppContext(), R.string.success);
                 break;
             case 1:
-                ToastUtil.showToast(MainApplication.getAppContext(), "delete it.");
+                ForegroundMusicUpdator.getInstance().deleteMusic(targetMusic);
                 break;
             case 2:
                 Album album = QueryExecutor.findAlbum(targetMusic);

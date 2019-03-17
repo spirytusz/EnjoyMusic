@@ -9,6 +9,7 @@ import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.global.AudioEffectConfig;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.AudioFieldObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.FrequencyObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.MusicDeleteObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayHistoryObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayListObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayMusicObserverManager;
@@ -44,6 +45,7 @@ public class ForegroundBinderManager implements AudioEffectController.OnResultLi
             backgroundEventProcessor.registerObserver(PlayHistoryObserverManager.getInstance(), Constant.BinderCode.PLAY_HISTORY_OBSERVER);
             backgroundEventProcessor.registerObserver(AudioFieldObserverManager.getInstance(), Constant.BinderCode.AUDIO_FIELD_OBSERVER);
             backgroundEventProcessor.registerObserver(FrequencyObserverManager.getInstance(), Constant.BinderCode.FREQUENCY_OBSERVER);
+            backgroundEventProcessor.registerObserver(MusicDeleteObserverManager.getInstance(), Constant.BinderCode.MUSIC_DELETE_OBSERVER);
             initGlobalData();
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -97,6 +99,7 @@ public class ForegroundBinderManager implements AudioEffectController.OnResultLi
             backgroundEventProcessor.unregisterObserver(PlayHistoryObserverManager.getInstance(), Constant.BinderCode.PLAY_HISTORY_OBSERVER);
             backgroundEventProcessor.unregisterObserver(AudioFieldObserverManager.getInstance(), Constant.BinderCode.AUDIO_FIELD_OBSERVER);
             backgroundEventProcessor.unregisterObserver(FrequencyObserverManager.getInstance(), Constant.BinderCode.FREQUENCY_OBSERVER);
+            backgroundEventProcessor.unregisterObserver(MusicDeleteObserverManager.getInstance(), Constant.BinderCode.MUSIC_DELETE_OBSERVER);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
