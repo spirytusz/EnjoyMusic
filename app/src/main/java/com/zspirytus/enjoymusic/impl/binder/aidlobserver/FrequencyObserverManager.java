@@ -1,7 +1,5 @@
 package com.zspirytus.enjoymusic.impl.binder.aidlobserver;
 
-import android.os.RemoteException;
-
 import com.zspirytus.enjoymusic.foregroundobserver.IFrequencyObserver;
 import com.zspirytus.enjoymusic.receivers.observer.OnFrequencyChangeListener;
 
@@ -25,7 +23,7 @@ public class FrequencyObserverManager extends IFrequencyObserver.Stub {
     }
 
     @Override
-    public void onFrequencyChange(float[] magnitudes, float[] phases) throws RemoteException {
+    public void onFrequencyChange(float[] magnitudes, float[] phases) {
         for (OnFrequencyChangeListener observer : observers) {
             observer.onFrequencyChange(magnitudes, phases);
         }

@@ -24,8 +24,7 @@
         <ImageView
             android:id="@+id/music_preview_cover"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:src="@drawable/defalut_cover" />
+            android:layout_height="match_parent" />
 
     </android.support.v7.widget.CardView>
 

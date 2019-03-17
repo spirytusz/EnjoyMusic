@@ -1,7 +1,5 @@
 package com.zspirytus.enjoymusic.impl.binder;
 
-import android.os.RemoteException;
-
 import com.zspirytus.enjoymusic.IMusicMetaDataUpdator;
 import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Album;
@@ -34,7 +32,7 @@ public class MusicMetaDataUpdator extends IMusicMetaDataUpdator.Stub {
     }
 
     @Override
-    public boolean updateAlbum(Album album) throws RemoteException {
+    public boolean updateAlbum(Album album) {
         String picUrl = album.getAlbumArt();
         try {
             File file = GlideApp.with(MainApplication.getAppContext()).asFile().load(picUrl).submit().get();

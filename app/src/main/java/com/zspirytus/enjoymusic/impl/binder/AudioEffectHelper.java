@@ -1,7 +1,5 @@
 package com.zspirytus.enjoymusic.impl.binder;
 
-import android.os.RemoteException;
-
 import com.zspirytus.enjoymusic.IAudioEffectHelper;
 import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
 import com.zspirytus.enjoymusic.services.media.audioeffect.AcousticEchoCanceler;
@@ -27,57 +25,57 @@ public class AudioEffectHelper extends IAudioEffectHelper.Stub {
     }
 
     @Override
-    public EqualizerMetaData addEqualizerSupport() throws RemoteException {
+    public EqualizerMetaData addEqualizerSupport() {
         return EqualizerController.attachToMediaPlayer();
     }
 
     @Override
-    public void setBandLevel(int band, int level) throws RemoteException {
+    public void setBandLevel(int band, int level) {
         EqualizerController.setBandLevel((short) band, (short) level);
     }
 
     @Override
-    public boolean isAcousticEchoCancelerAvailable() throws RemoteException {
+    public boolean isAcousticEchoCancelerAvailable() {
         return AcousticEchoCanceler.isAcousticEchoCancelerAvailable();
     }
 
     @Override
-    public void setAcousticEchoCancelerEnable(boolean enable) throws RemoteException {
+    public void setAcousticEchoCancelerEnable(boolean enable) {
         AcousticEchoCanceler.setAcousticEchoCancelerEnable(enable);
     }
 
     @Override
-    public boolean isAutomaticGainControlAvailable() throws RemoteException {
+    public boolean isAutomaticGainControlAvailable() {
         return AutomaticGainControl.isAutomaticGainControlAvailable();
     }
 
     @Override
-    public void setAutomaticGainControlEnable(boolean enable) throws RemoteException {
+    public void setAutomaticGainControlEnable(boolean enable) {
         AutomaticGainControl.setAutomaticGainControlEnable(enable);
     }
 
     @Override
-    public boolean isNoiseSuppressorAvailable() throws RemoteException {
+    public boolean isNoiseSuppressorAvailable() {
         return NoiseSuppressor.isNoiseSuppressorAvailable();
     }
 
     @Override
-    public void setNoiseSuppressorEnable(boolean enable) throws RemoteException {
+    public void setNoiseSuppressorEnable(boolean enable) {
         NoiseSuppressor.setNoiseSuppressorEnable(enable);
     }
 
     @Override
-    public void setBassBoostStrength(int strength) throws RemoteException {
+    public void setBassBoostStrength(int strength) {
         BassBoostHelper.setStrength((short) strength);
     }
 
     @Override
-    public List<String> getPresetReverbNameList() throws RemoteException {
+    public List<String> getPresetReverbNameList() {
         return PresetReverbHelper.getPresetReverbNameList();
     }
 
     @Override
-    public int[] usePresetReverb(int position) throws RemoteException {
+    public int[] usePresetReverb(int position) {
         return PresetReverbHelper.getInstance().usePresetReverb(position);
     }
 }

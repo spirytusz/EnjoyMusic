@@ -1,7 +1,5 @@
 package com.zspirytus.enjoymusic.impl.binder.aidlobserver;
 
-import android.os.RemoteException;
-
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayListChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeDirectlyObserver;
@@ -27,7 +25,7 @@ public class PlayListObserverManager extends IPlayListChangeObserver.Stub {
     }
 
     @Override
-    public void onPlayListChange(List<Music> playList) throws RemoteException {
+    public void onPlayListChange(List<Music> playList) {
         mEvent1 = playList;
         for (com.zspirytus.enjoymusic.receivers.observer.PlayListChangeDirectlyObserver observer : observers) {
             observer.onPlayListChangeDirectly(playList);

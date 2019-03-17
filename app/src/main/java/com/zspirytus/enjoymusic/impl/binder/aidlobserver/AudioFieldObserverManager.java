@@ -1,7 +1,5 @@
 package com.zspirytus.enjoymusic.impl.binder.aidlobserver;
 
-import android.os.RemoteException;
-
 import com.zspirytus.enjoymusic.foregroundobserver.IAudioFieldChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.AudioFieldChangeObserver;
 
@@ -25,7 +23,7 @@ public class AudioFieldObserverManager extends IAudioFieldChangeObserver.Stub {
     }
 
     @Override
-    public void onChange(int position) throws RemoteException {
+    public void onChange(int position) {
         for (AudioFieldChangeObserver observer : mObservers) {
             observer.onChange(position);
         }

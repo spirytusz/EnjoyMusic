@@ -40,6 +40,7 @@ public class VerticalSeekBar extends View {
     private int mInnerProgressWidth = 4;
     private int mInnerProgressWidthPx;
 
+    private Paint mPaint;
     private int unSelectColor;
     private RectF mDestRect;
     /**
@@ -155,6 +156,8 @@ public class VerticalSeekBar extends View {
      * @param defStyleAttr
      */
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
+        mPaint = new Paint();
+
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.VerticalSeekBar);
         int thumbId = array.getResourceId(R.styleable.VerticalSeekBar_seekBarThumb, R.drawable.seekbar_thumb);
         selectColor = array.getColor(R.styleable.VerticalSeekBar_progressColor, 0xaa0980ED);
@@ -257,7 +260,7 @@ public class VerticalSeekBar extends View {
         canvas.drawRect(width / 2 - mInnerProgressWidthPx / 2, locationY, width / 2 + mInnerProgressWidthPx / 2, height - mDestRect.height() / 2, paint);
         canvas.save();
         canvas.translate(width / 2 - mDestRect.width() / 2, locationY - mDestRect.height() / 2);
-        canvas.drawBitmap(mThumb, null, mDestRect, new Paint());
+        canvas.drawBitmap(mThumb, null, mDestRect, mPaint);
         canvas.restore();
         super.onDraw(canvas);
     }

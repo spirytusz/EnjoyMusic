@@ -36,12 +36,9 @@ public class RetrofitManager {
 
     private RetrofitManager() {
 
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-            @Override
-            public void log(String message) {
-                //打印retrofit日志
-                LogUtil.e("RetrofitLog", "retrofitBack = " + message);
-            }
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(message -> {
+            //打印retrofit日志
+            LogUtil.e("RetrofitLog", "retrofitBack = " + message);
         });
 
         OkHttpClient client = new OkHttpClient.Builder()
