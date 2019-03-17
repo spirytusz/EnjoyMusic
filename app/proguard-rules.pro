@@ -163,3 +163,4 @@
 -dontwarn com.dkorobtsov.**
 -dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
 -dontwarn org.apache.**
+-keep class com.zspirytus.enjoymusic.online.entity.** { *; }

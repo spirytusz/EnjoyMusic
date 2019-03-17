@@ -113,14 +113,19 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             Artist needUpdateArtist = datas.get(0).getArtist();
             Album needUpdateAlbum = datas.get(1).getAlbum();
 
-            // update background data.
+            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_META_DATA_UPDATOR);
+            IMusicMetaDataUpdator updator = IMusicMetaDataUpdator.Stub.asInterface(binder);
+            // update foreground & background data.
             if (needUpdateArtist.peakArtistArt() != null) {
-                IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_META_DATA_UPDATOR);
-                IMusicMetaDataUpdator updator = IMusicMetaDataUpdator.Stub.asInterface(binder);
                 try {
                     updator.updateArtist(needUpdateArtist);
                     viewModel.updateArtist(needUpdateArtist);
-
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (needUpdateAlbum.peakCustomAlbumArt() != null) {
+                try {
                     boolean isSuccess = updator.updateAlbum(needUpdateAlbum);
                     if (isSuccess) {
                         viewModel.updateAlbum(needUpdateAlbum);
@@ -189,7 +194,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             public void onNext(SearchAlbumResponse searchAlbumResponse) {
                 List<OnlineAlbum> onlineAlbumList = searchAlbumResponse.getData();
                 if (onlineAlbumList == null || onlineAlbumList.isEmpty()) {
-                    ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.download_failed);
+                    ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.download_failed);
                     return;
                 }
                 double maxConfidence = 0;
