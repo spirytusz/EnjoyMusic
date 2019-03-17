@@ -25,6 +25,7 @@ import com.zspirytus.enjoymusic.online.entity.OnlineArtist;
 import com.zspirytus.enjoymusic.online.entity.OnlineArtistList;
 import com.zspirytus.enjoymusic.online.entity.response.SearchAlbumResponse;
 import com.zspirytus.enjoymusic.online.entity.response.SearchArtistResponse;
+import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -124,7 +125,8 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
                     e.printStackTrace();
                 }
             }
-            if (needUpdateAlbum.peakCustomAlbumArt() != null) {
+            String albumArt = needUpdateAlbum.getAlbumArt();
+            if (albumArt != null && (albumArt.contains("http") || albumArt.contains("https"))) {
                 try {
                     boolean isSuccess = updator.updateAlbum(needUpdateAlbum);
                     if (isSuccess) {
@@ -174,7 +176,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             @Override
             public void onError(Throwable e) {
                 ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.download_failed);
-                e.printStackTrace();
+                LogUtil.log("log.txt", e);
             }
 
             @Override
@@ -212,7 +214,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             @Override
             public void onError(Throwable e) {
                 ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.download_failed);
-                e.printStackTrace();
+                LogUtil.log("log.txt", e);
             }
 
             @Override

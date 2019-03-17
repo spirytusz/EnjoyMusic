@@ -1,6 +1,11 @@
 package com.zspirytus.enjoymusic.utils;
 
+import android.os.Environment;
 import android.util.Log;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 
 /**
  * 日志工具类
@@ -32,6 +37,38 @@ public class LogUtil {
     public static void err(Object message) {
         if (LEVEL == DEBUG) {
             System.err.println(message);
+        }
+    }
+
+    public static void log(String fileName, String msg) {
+        PrintStream stream;
+        try {
+            File file = new File(Environment.getExternalStorageDirectory(), fileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            stream = new PrintStream(file);
+            stream.append(msg);
+            stream.flush();
+            stream.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    public static void log(String fileName, Throwable e) {
+        PrintStream stream;
+        try {
+            File file = new File(Environment.getExternalStorageDirectory(), fileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            stream = new PrintStream(file);
+            e.printStackTrace(stream);
+            stream.flush();
+            stream.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 
