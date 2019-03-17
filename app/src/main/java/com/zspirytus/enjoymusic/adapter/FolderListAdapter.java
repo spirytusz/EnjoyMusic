@@ -62,7 +62,7 @@ public class FolderListAdapter extends CommonRecyclerViewAdapter<Folder> impleme
             case 0:
                 List<Music> musicList = QueryExecutor.findMusicList(targetFolder);
                 ForegroundMusicController.getInstance().addToPlayList(musicList);
-                ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.success);
+                ToastUtil.showToast(MainApplication.getAppContext(), R.string.success);
                 break;
             case 1:
                 SaveSongListDialog dialog = new SaveSongListDialog();
@@ -70,7 +70,7 @@ public class FolderListAdapter extends CommonRecyclerViewAdapter<Folder> impleme
                     if (content != null) {
                         dialog.dismiss();
                     } else {
-                        ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.please_enter_leagl_song_list);
+                        ToastUtil.showToast(MainApplication.getAppContext(), R.string.please_enter_leagl_song_list);
                     }
                 });
                 FragmentVisibilityManager.getInstance().showDialogFragment(dialog);

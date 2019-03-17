@@ -24,7 +24,7 @@ public class AboutFragmentViewModel extends ViewModel {
     }
 
     public void obtainListItem() {
-        Resources resources = MainApplication.getForegroundContext().getResources();
+        Resources resources = MainApplication.getAppContext().getResources();
         List<AboutItem> aboutItems = new ArrayList<>();
 
         AboutItem item = new AboutItem();

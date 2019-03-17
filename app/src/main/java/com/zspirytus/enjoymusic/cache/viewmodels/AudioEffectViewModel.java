@@ -63,7 +63,7 @@ public class AudioEffectViewModel extends ViewModel implements AudioFieldChangeO
         ThreadPool.execute(() -> {
             List<String> nameList = AudioEffectConfig.getPresetReverbNameList();
             List<AudioEffectItem> audioEffectItems = new ArrayList<>();
-            int selectPosition = MusicSharedPreferences.restoreAudioField(MainApplication.getForegroundContext());
+            int selectPosition = MusicSharedPreferences.restoreAudioField(MainApplication.getAppContext());
             for (int i = 0; i < nameList.size(); i++) {
                 AudioEffectItem item = new AudioEffectItem();
                 item.setTitle(nameList.get(i));

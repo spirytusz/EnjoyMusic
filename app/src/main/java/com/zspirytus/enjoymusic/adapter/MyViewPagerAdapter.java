@@ -44,13 +44,13 @@ public class MyViewPagerAdapter extends LazyFragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return MainApplication.getForegroundContext().getResources().getText(R.string.all_music);
+                return MainApplication.getAppContext().getResources().getText(R.string.all_music);
             case 1:
-                return MainApplication.getForegroundContext().getResources().getText(R.string.album);
+                return MainApplication.getAppContext().getResources().getText(R.string.album);
             case 2:
-                return MainApplication.getForegroundContext().getResources().getText(R.string.artist);
+                return MainApplication.getAppContext().getResources().getText(R.string.artist);
             case 3:
-                return MainApplication.getForegroundContext().getResources().getText(R.string.folder);
+                return MainApplication.getAppContext().getResources().getText(R.string.folder);
             case 4:
                 return "歌单";
         }

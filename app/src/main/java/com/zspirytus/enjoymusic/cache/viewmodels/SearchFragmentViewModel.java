@@ -25,7 +25,7 @@ public class SearchFragmentViewModel extends ViewModel {
     }
 
     public void applyToSearch(BaseActivity activity, String key) {
-        Resources resources = MainApplication.getForegroundContext().getResources();
+        Resources resources = MainApplication.getAppContext().getResources();
         MainActivityViewModel viewModel = ViewModelProviders.of(activity).get(MainActivityViewModel.class);
         List<SearchResult> results = new ArrayList<>();
         SearchResult result = new SearchResult();

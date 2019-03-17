@@ -27,7 +27,7 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
     private int mPlayMode;
 
     private MusicPlayOrderManager() {
-        int restorePlayMode = MusicSharedPreferences.restorePlayMode(MainApplication.getBackgroundContext());
+        int restorePlayMode = MusicSharedPreferences.restorePlayMode(MainApplication.getAppContext());
         if (restorePlayMode != -1) {
             setPlayMode(restorePlayMode);
         }

@@ -75,10 +75,10 @@ public class FilterMusicListAdapter extends CommonRecyclerViewAdapter<Music> imp
         switch (menuText) {
             case "添加到播放队列":
                 ForegroundMusicController.getInstance().addToPlayList(targetMusic);
-                ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.success);
+                ToastUtil.showToast(MainApplication.getAppContext(), R.string.success);
                 break;
             case "从本机中删除":
-                ToastUtil.showToast(MainApplication.getForegroundContext(), "delete it.");
+                ToastUtil.showToast(MainApplication.getAppContext(), "delete it.");
                 break;
             case "专辑":
                 Album album = QueryExecutor.findAlbum(targetMusic);

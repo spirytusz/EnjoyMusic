@@ -72,14 +72,14 @@ public class MusicPlayFragmentViewModel extends ViewModel {
                     Artist artist = QueryExecutor.findArtist(music);
                     getSuitableLyric(music, artist, searchMusicResponse.getData());
                 } else {
-                    ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.no_lyric_available);
+                    ToastUtil.postToShow(MainApplication.getAppContext(), R.string.no_lyric_available);
                 }
             }
 
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.download_failed);
+                ToastUtil.showToast(MainApplication.getAppContext(), R.string.download_failed);
             }
 
             @Override
@@ -114,7 +114,7 @@ public class MusicPlayFragmentViewModel extends ViewModel {
                 HttpURLConnection connection = null;
                 BufferedReader reader = null;
                 BufferedWriter writer = null;
-                File file = new File(MainApplication.getForegroundContext().getExternalFilesDir("/"), music.getMusicName());
+                File file = new File(MainApplication.getAppContext().getExternalFilesDir("/"), music.getMusicName());
                 if (file.exists()) {
                     //noinspection ResultOfMethodCallIgnored
                     file.delete();
@@ -164,12 +164,12 @@ public class MusicPlayFragmentViewModel extends ViewModel {
                 } else {
                     tip = R.string.no_lyric_available;
                 }
-                ToastUtil.postToShow(MainApplication.getForegroundContext(), tip);
+                ToastUtil.postToShow(MainApplication.getAppContext(), tip);
                 Lyric lyric = new Lyric(music.getMusicId(), file.getAbsolutePath());
                 DBManager.getInstance().getDaoSession().getLyricDao().insertOrReplace(lyric);
             });
         } else {
-            ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_lyric_available);
+            ToastUtil.showToast(MainApplication.getAppContext(), R.string.no_lyric_available);
         }
     }
 }

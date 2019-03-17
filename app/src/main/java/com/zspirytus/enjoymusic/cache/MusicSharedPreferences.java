@@ -25,7 +25,7 @@ public class MusicSharedPreferences {
 
     // save playMode
     public static void savePlayMode(int playMode) {
-        SharedPreferences.Editor editor = MainApplication.getBackgroundContext().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = MainApplication.getAppContext().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
         editor.putInt(PLAY_MODE_KEY, playMode);
         editor.apply();
     }
@@ -36,7 +36,7 @@ public class MusicSharedPreferences {
     }
 
     public static void saveAudioField(int position) {
-        SharedPreferences.Editor editor = MainApplication.getBackgroundContext().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = MainApplication.getAppContext().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
         editor.putInt(AUDIO_FIELD_KEY, position);
         editor.apply();
     }

@@ -45,7 +45,7 @@ public class ColorUtils {
     }
 
     public static void setCurrentColor(int id, ImageView imageView) {
-        Drawable drawable = MainApplication.getForegroundContext().getDrawable(id);
+        Drawable drawable = MainApplication.getAppContext().getDrawable(id);
         drawable = DrawableUtil.setColor(drawable, mCurrentColor);
         imageView.setImageDrawable(drawable);
     }

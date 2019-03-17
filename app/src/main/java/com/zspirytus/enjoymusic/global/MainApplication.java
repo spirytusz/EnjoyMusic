@@ -1,6 +1,6 @@
 package com.zspirytus.enjoymusic.global;
 
-import android.app.ActivityManager;
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 
@@ -12,37 +12,22 @@ import com.zspirytus.enjoymusic.db.DBManager;
 
 public class MainApplication extends Application {
 
-    private static final String MAIN_PROCESS_NAME = "com.zspirytus.enjoymusic";
-
-    private static Context mForegroundContext;
-    private static Context mBackgroundContext;
+    @SuppressLint("StaticFieldLeak")
+    private static Context mContext;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        if (MAIN_PROCESS_NAME.equals(getProcessNameByPid(this, android.os.Process.myPid()))) {
-            mForegroundContext = getApplicationContext();
-        } else {
-            mBackgroundContext = getApplicationContext();
-        }
+        /*
+         * 两个进程都会初始化context.
+         * 在不同的进程获得的context是不一样且非空的.
+         * 如果想要获取当前进程的ApplicationContext,只需要MainApplication.getAppContext()即可获取.
+         */
+        mContext = this;
         DBManager.getInstance().init(this);
     }
 
-    private String getProcessNameByPid(Context context, int pid) {
-        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (android.app.ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
-            if (processInfo.pid == pid) {
-                return processInfo.processName;
-            }
-        }
-        return "";
-    }
-
-    public static Context getForegroundContext() {
-        return mForegroundContext;
-    }
-
-    public static Context getBackgroundContext() {
-        return mBackgroundContext;
+    public static Context getAppContext() {
+        return mContext;
     }
 }

@@ -31,12 +31,12 @@ public class ImageLoader {
         if (path != null) {
             File file = MusicCoverFileCache.getInstance().getCoverFile(path);
             if (file != null && file.exists()) {
-                GlideApp.with(MainApplication.getForegroundContext())
+                GlideApp.with(MainApplication.getAppContext())
                         .load(file)
                         .apply(options)
                         .into(imageView);
             } else if (path.contains("http") || path.contains("https")) {
-                GlideApp.with(MainApplication.getForegroundContext())
+                GlideApp.with(MainApplication.getAppContext())
                         .load(path)
                         .apply(options)
                         .into(imageView);
@@ -49,7 +49,7 @@ public class ImageLoader {
     }
 
     public static void load(ImageView imageView, int imageResourceId) {
-        GlideApp.with(MainApplication.getForegroundContext())
+        GlideApp.with(MainApplication.getAppContext())
                 .load(imageResourceId)
                 .into(imageView);
     }
@@ -58,7 +58,7 @@ public class ImageLoader {
     public static void load(ImageView imageView, int imageResourceId, BitmapTransformation... transformations) {
         MultiTransformation multiTransformation = new MultiTransformation(transformations);
         RequestOptions options = new RequestOptions().transform(multiTransformation);
-        GlideApp.with(MainApplication.getForegroundContext())
+        GlideApp.with(MainApplication.getAppContext())
                 .load(imageResourceId)
                 .apply(options)
                 .into(imageView);

@@ -1,7 +1,8 @@
 package com.zspirytus.enjoymusic.utils;
 
-import android.os.Environment;
 import android.util.Log;
+
+import com.zspirytus.enjoymusic.global.MainApplication;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,10 +44,7 @@ public class LogUtil {
     public static void log(String fileName, String msg) {
         PrintStream stream;
         try {
-            File file = new File(Environment.getExternalStorageDirectory(), fileName);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
+            File file = createLogFile(fileName);
             stream = new PrintStream(file);
             stream.append(msg);
             stream.flush();
@@ -59,10 +57,7 @@ public class LogUtil {
     public static void log(String fileName, Throwable e) {
         PrintStream stream;
         try {
-            File file = new File(Environment.getExternalStorageDirectory(), fileName);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
+            File file = createLogFile(fileName);
             stream = new PrintStream(file);
             e.printStackTrace(stream);
             stream.flush();
@@ -70,6 +65,16 @@ public class LogUtil {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private static File createLogFile(String fileName) throws IOException {
+        File dataFile = MainApplication.getAppContext().getExternalCacheDir();
+        File logFileDir = new File(dataFile, "log");
+        logFileDir.mkdir();
+        File logFile = new File(logFileDir, fileName);
+        logFile.createNewFile();
+        return logFile;
     }
 
 }

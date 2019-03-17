@@ -37,7 +37,7 @@ public class MusicMetaDataUpdator extends IMusicMetaDataUpdator.Stub {
     public boolean updateAlbum(Album album) throws RemoteException {
         String picUrl = album.getAlbumArt();
         try {
-            File file = GlideApp.with(MainApplication.getBackgroundContext()).asFile().load(picUrl).submit().get();
+            File file = GlideApp.with(MainApplication.getAppContext()).asFile().load(picUrl).submit().get();
             CustomAlbumArt customAlbumArt = new CustomAlbumArt(album.getAlbumId(), file.getAbsolutePath());
             DBManager.getInstance().getDaoSession().getCustomAlbumArtDao().insertOrReplace(customAlbumArt);
             return true;

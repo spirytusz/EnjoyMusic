@@ -46,7 +46,7 @@ public class BitmapUtil {
     }
 
     public static Bitmap createBitmapByResId(int resId) {
-        return BitmapFactory.decodeResource(MainApplication.getBackgroundContext().getResources(), resId);
+        return BitmapFactory.decodeResource(MainApplication.getAppContext().getResources(), resId);
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
@@ -80,11 +80,11 @@ public class BitmapUtil {
 
     private static int computeInSampleSize(int width, int height) {
         if (width == height) {
-            return width / PixelsUtil.dp2px(MainApplication.getBackgroundContext(), TARGET_WIDTH_DP);
+            return width / PixelsUtil.dp2px(MainApplication.getAppContext(), TARGET_WIDTH_DP);
         } else if (width > height) {
-            return height / PixelsUtil.dp2px(MainApplication.getBackgroundContext(), TARGET_HEIGHT_DP);
+            return height / PixelsUtil.dp2px(MainApplication.getAppContext(), TARGET_HEIGHT_DP);
         } else {
-            return width / PixelsUtil.dp2px(MainApplication.getBackgroundContext(), TARGET_WIDTH_DP);
+            return width / PixelsUtil.dp2px(MainApplication.getAppContext(), TARGET_WIDTH_DP);
         }
     }
 

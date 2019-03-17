@@ -14,7 +14,7 @@ public class NetWorkUtil {
 
     public static boolean isNetWorkReady() {
         ConnectivityManager cm =
-                (ConnectivityManager) MainApplication.getForegroundContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) MainApplication.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();

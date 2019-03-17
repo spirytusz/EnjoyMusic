@@ -17,7 +17,7 @@ public class PresetReverbHelper extends PresetReverbObservable {
     }
 
     private PresetReverbHelper() {
-        usePresetReverb(MusicSharedPreferences.restoreAudioField(MainApplication.getBackgroundContext()));
+        usePresetReverb(MusicSharedPreferences.restoreAudioField(MainApplication.getAppContext()));
     }
 
     public static PresetReverbHelper getInstance() {

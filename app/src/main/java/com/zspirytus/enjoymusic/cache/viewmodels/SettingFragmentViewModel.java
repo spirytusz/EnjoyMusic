@@ -22,7 +22,7 @@ public class SettingFragmentViewModel extends ViewModel {
     }
 
     public List<SettingItem> obtainListItem() {
-        Resources resources = MainApplication.getForegroundContext().getResources();
+        Resources resources = MainApplication.getAppContext().getResources();
         List<SettingItem> settingItems = new ArrayList<>();
         SettingItem item = new SettingItem();
         item.setTitle(true);

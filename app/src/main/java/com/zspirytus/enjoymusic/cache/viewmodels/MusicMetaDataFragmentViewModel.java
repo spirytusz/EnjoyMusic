@@ -73,7 +73,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
 
             MusicMetaDataListItem item2 = new MusicMetaDataListItem();
             item2.setTitle(true);
-            item2.setTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_download_music_info));
+            item2.setTitle(MainApplication.getAppContext().getResources().getString(R.string.music_meta_data_download_music_info));
             dataList.add(item2);
 
             MusicMetaDataListItem item3 = new MusicMetaDataListItem();
@@ -82,24 +82,24 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
 
             MusicMetaDataListItem item4 = new MusicMetaDataListItem();
             item4.setTitle(true);
-            item4.setTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_edit_info));
+            item4.setTitle(MainApplication.getAppContext().getResources().getString(R.string.music_meta_data_edit_info));
             dataList.add(item4);
 
             MusicMetaDataListItem item5 = new MusicMetaDataListItem();
             item5.setSingleEditText(true);
-            item5.setEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_title));
+            item5.setEditTextTitle(MainApplication.getAppContext().getResources().getString(R.string.music_meta_data_title));
             item5.setEditTextDefaultText(music.getMusicName());
             dataList.add(item5);
 
             MusicMetaDataListItem item6 = new MusicMetaDataListItem();
             item6.setSingleEditText(true);
-            item6.setEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_artist));
+            item6.setEditTextTitle(MainApplication.getAppContext().getResources().getString(R.string.music_meta_data_artist));
             item6.setEditTextDefaultText(artist.getArtistName());
             dataList.add(item6);
 
             MusicMetaDataListItem item7 = new MusicMetaDataListItem();
             item7.setSingleEditText(true);
-            item7.setEditTextTitle(MainApplication.getForegroundContext().getResources().getString(R.string.music_meta_data_album));
+            item7.setEditTextTitle(MainApplication.getAppContext().getResources().getString(R.string.music_meta_data_album));
             item7.setEditTextDefaultText(album.getAlbumName());
             dataList.add(item7);
 
@@ -151,11 +151,11 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             public void onNext(SearchArtistResponse searchArtistResponse) {
                 OnlineArtistList onlineArtistList = searchArtistResponse.getData();
                 if (onlineArtistList == null) {
-                    ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.download_failed);
+                    ToastUtil.postToShow(MainApplication.getAppContext(), R.string.download_failed);
                     return;
                 }
                 if (onlineArtistList.getArtistCount() == 0) {
-                    ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.no_artist_art_available);
+                    ToastUtil.postToShow(MainApplication.getAppContext(), R.string.no_artist_art_available);
                     return;
                 }
                 List<OnlineArtist> onlineArtists = onlineArtistList.getArtists();
@@ -175,8 +175,8 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
 
             @Override
             public void onError(Throwable e) {
-                ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.download_failed);
-                LogUtil.log("log.txt", e);
+                ToastUtil.postToShow(MainApplication.getAppContext(), R.string.download_failed);
+                LogUtil.log("download_artist.log", e);
             }
 
             @Override
@@ -196,7 +196,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             public void onNext(SearchAlbumResponse searchAlbumResponse) {
                 List<OnlineAlbum> onlineAlbumList = searchAlbumResponse.getData();
                 if (onlineAlbumList == null || onlineAlbumList.isEmpty()) {
-                    ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.download_failed);
+                    ToastUtil.postToShow(MainApplication.getAppContext(), R.string.download_failed);
                     return;
                 }
                 double maxConfidence = 0;
@@ -213,8 +213,8 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
 
             @Override
             public void onError(Throwable e) {
-                ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.download_failed);
-                LogUtil.log("log.txt", e);
+                ToastUtil.postToShow(MainApplication.getAppContext(), R.string.download_failed);
+                LogUtil.log("download_album.log", e);
             }
 
             @Override
@@ -232,7 +232,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             dataList.get(0).getArtist().setArtistArt(artistArt);
             mMusicMetaList.postValue(dataList);
         } else {
-            ToastUtil.postToShow(MainApplication.getForegroundContext(), R.string.no_artist_art_available);
+            ToastUtil.postToShow(MainApplication.getAppContext(), R.string.no_artist_art_available);
         }
     }
 
@@ -244,7 +244,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             album.setAlbumArt(picUrl);
             dataList.get(1).setAlbum(album);
         } else {
-            ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_artist_art_available);
+            ToastUtil.showToast(MainApplication.getAppContext(), R.string.no_artist_art_available);
         }
     }
 }

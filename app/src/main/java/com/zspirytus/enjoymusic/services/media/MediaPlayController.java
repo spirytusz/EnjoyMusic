@@ -50,8 +50,8 @@ public class MediaPlayController extends MusicStateObservable
     private MediaPlayController() {
         // init MediaPlayer
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setWakeMode(MainApplication.getBackgroundContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        audioManager = (AudioManager) MainApplication.getBackgroundContext().getSystemService(Service.AUDIO_SERVICE);
+        mediaPlayer.setWakeMode(MainApplication.getAppContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        audioManager = (AudioManager) MainApplication.getAppContext().getSystemService(Service.AUDIO_SERVICE);
         // set listeners
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.setOnErrorListener(this);

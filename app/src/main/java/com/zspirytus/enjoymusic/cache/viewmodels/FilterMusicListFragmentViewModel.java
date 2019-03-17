@@ -44,7 +44,7 @@ public class FilterMusicListFragmentViewModel extends ViewModel {
     }
 
     public SpannableString createSpannableString(String title, List<Music> musicList) {
-        Resources resources = MainApplication.getForegroundContext().getResources();
+        Resources resources = MainApplication.getAppContext().getResources();
         long totalDuration = 0;
         for (Music music : musicList) {
             totalDuration += music.getMusicDuration();
@@ -75,7 +75,7 @@ public class FilterMusicListFragmentViewModel extends ViewModel {
     }
 
     public String getToolbarTitle(int flag) {
-        Resources resources = MainApplication.getForegroundContext().getResources();
+        Resources resources = MainApplication.getAppContext().getResources();
         switch (flag) {
             case ALBUM_FLAG:
                 return resources.getString(R.string.album);

@@ -64,10 +64,10 @@ public class MusicListAdapter extends CommonRecyclerViewAdapter<Music>
         switch (pos) {
             case 0:
                 ForegroundMusicController.getInstance().addToPlayList(targetMusic);
-                ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.success);
+                ToastUtil.showToast(MainApplication.getAppContext(), R.string.success);
                 break;
             case 1:
-                ToastUtil.showToast(MainApplication.getForegroundContext(), "delete it.");
+                ToastUtil.showToast(MainApplication.getAppContext(), "delete it.");
                 break;
             case 2:
                 Album album = QueryExecutor.findAlbum(targetMusic);

@@ -127,7 +127,7 @@ public class MusicScanner {
         final String selection = MediaStore.Audio.AudioColumns.IS_MUSIC + " != ? And "
                 + MediaStore.Audio.AudioColumns.DURATION + " >= ?";
         final String[] selectionArgs = new String[]{"0", "60000"};
-        Cursor cursor = MainApplication.getBackgroundContext().getContentResolver().query(
+        Cursor cursor = MainApplication.getAppContext().getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 musicProjection,
                 selection,
@@ -198,7 +198,7 @@ public class MusicScanner {
                 MediaStore.Audio.Albums.ALBUM_ART,
                 MediaStore.Audio.Albums.NUMBER_OF_SONGS,
         };
-        Cursor cursor = MainApplication.getBackgroundContext().getContentResolver().query(
+        Cursor cursor = MainApplication.getAppContext().getContentResolver().query(
                 MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                 projection,
                 null,
@@ -225,7 +225,7 @@ public class MusicScanner {
                 MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
                 MediaStore.Audio.Artists.NUMBER_OF_TRACKS,
         };
-        Cursor cursor = MainApplication.getBackgroundContext().getContentResolver().query(
+        Cursor cursor = MainApplication.getAppContext().getContentResolver().query(
                 MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
                 projection,
                 null,

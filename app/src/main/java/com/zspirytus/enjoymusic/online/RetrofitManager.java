@@ -83,7 +83,7 @@ public class RetrofitManager {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(observer);
         } else {
-            ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_net_work_tip);
+            ToastUtil.showToast(MainApplication.getAppContext(), R.string.no_net_work_tip);
         }
     }
 
@@ -94,7 +94,7 @@ public class RetrofitManager {
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .subscribe(observer);
         } else {
-            ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_net_work_tip);
+            ToastUtil.showToast(MainApplication.getAppContext(), R.string.no_net_work_tip);
         }
     }
 
@@ -105,7 +105,7 @@ public class RetrofitManager {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(observer);
         } else {
-            ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_net_work_tip);
+            ToastUtil.showToast(MainApplication.getAppContext(), R.string.no_net_work_tip);
         }
     }
 
@@ -116,7 +116,7 @@ public class RetrofitManager {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(observer);
         } else {
-            ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_net_work_tip);
+            ToastUtil.showToast(MainApplication.getAppContext(), R.string.no_net_work_tip);
         }
     }
 
@@ -127,7 +127,7 @@ public class RetrofitManager {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(observer);
         } else {
-            ToastUtil.showToast(MainApplication.getForegroundContext(), R.string.no_net_work_tip);
+            ToastUtil.showToast(MainApplication.getAppContext(), R.string.no_net_work_tip);
         }
     }
 
