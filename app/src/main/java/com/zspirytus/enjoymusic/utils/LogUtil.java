@@ -46,7 +46,10 @@ public class LogUtil {
         try {
             File file = createLogFile(fileName);
             stream = new PrintStream(file);
+            String nowDate = TimeUtil.getNowDate();
+            stream.append("-------------------------------------").append(nowDate).append("-------------------------------------\n");
             stream.append(msg);
+            stream.append("-------------------------------------").append(nowDate).append("-------------------------------------\n");
             stream.flush();
             stream.close();
         } catch (IOException ioe) {
@@ -59,7 +62,10 @@ public class LogUtil {
         try {
             File file = createLogFile(fileName);
             stream = new PrintStream(file);
+            String nowDate = TimeUtil.getNowDate();
+            stream.append("-------------------------------------").append(nowDate).append("-------------------------------------\n");
             e.printStackTrace(stream);
+            stream.append("-------------------------------------").append(nowDate).append("-------------------------------------\n\n\n");
             stream.flush();
             stream.close();
         } catch (IOException ioe) {

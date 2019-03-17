@@ -6,6 +6,10 @@ def keystorePropertiesFile =file("keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
+def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
+
 android {
     signingConfigs {
         release {
@@ -41,6 +45,11 @@ android {
             zipAlignEnabled true
             signingConfig signingConfigs.release
             debuggable false
+        }
+    }
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "enjoymusic-${variant.versionName}-${variant.name}-${releaseTime()}.apk"
         }
     }
     compileOptions {

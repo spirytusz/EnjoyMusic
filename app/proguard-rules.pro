@@ -27,6 +27,7 @@
   **[] $VALUES;
   public *;
 }
+-dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
 ############################################# Glide proguard end #############################################
 
 
@@ -161,7 +162,8 @@
 
 
 -dontwarn com.dkorobtsov.**
--dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
 -dontwarn org.apache.**
 -keep class com.zspirytus.enjoymusic.online.entity.** { *; }
 -keep class com.zspirytus.enjoymusic.db.table.** { *; }
+-keep class com.zspirytus.enjoymusic.entity.LyricRow
+-keep class com.zspirytus.enjoymusic.entity.WrapLyricRow
