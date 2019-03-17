@@ -40,6 +40,7 @@ android {
             useProguard true
             zipAlignEnabled true
             signingConfig signingConfigs.release
+            debuggable false
         }
     }
     compileOptions {
