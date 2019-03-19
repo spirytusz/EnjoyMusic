@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.zspirytus.enjoymusic.db.DBManager;
+import com.zspirytus.enjoymusic.engine.CrashHandler;
 
 /**
  * Created by ZSpirytus on 2018/9/10.
@@ -24,6 +25,7 @@ public class MainApplication extends Application {
          * 如果想要获取当前进程的ApplicationContext,只需要MainApplication.getAppContext()即可获取.
          */
         mContext = this;
+        CrashHandler.init(this);
         DBManager.getInstance().init(this);
     }
 
