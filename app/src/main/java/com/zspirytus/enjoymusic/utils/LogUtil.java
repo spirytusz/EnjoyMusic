@@ -46,7 +46,7 @@ public class LogUtil {
         try {
             File file = createLogFile(fileName);
             stream = new PrintStream(file);
-            String nowDate = TimeUtil.getNowDate();
+            String nowDate = TimeUtil.getNowDateTime();
             stream.append("-------------------------------------").append(nowDate).append("-------------------------------------\n");
             stream.append(msg);
             stream.append("-------------------------------------").append(nowDate).append("-------------------------------------\n");
@@ -62,7 +62,7 @@ public class LogUtil {
         try {
             File file = createLogFile(fileName);
             stream = new PrintStream(file);
-            String nowDate = TimeUtil.getNowDate();
+            String nowDate = TimeUtil.getNowDateTime();
             stream.append("-------------------------------------").append(nowDate).append("-------------------------------------\n");
             e.printStackTrace(stream);
             stream.append("-------------------------------------").append(nowDate).append("-------------------------------------\n\n\n");

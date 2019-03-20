@@ -6,11 +6,14 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 
 import com.zspirytus.enjoymusic.global.MainApplication;
+import com.zspirytus.enjoymusic.utils.TimeUtil;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -105,37 +108,55 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     /**
      * 保存错误信息到文件中
      *
-     * @param ex 异常
+     * @param throwable 异常
      */
-    private void saveCrashInfo2File(Throwable ex) {
-        StringBuilder sb = new StringBuilder();
-        if (infos == null) {
-            collectDeviceInfo(MainApplication.getAppContext());
-        }
-        for (Map.Entry<String, String> entry : infos.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            sb.append(key).append("=").append(value).append("\n");
-        }
-        sb.append("\n").append("\n").append("\n");
+    private void saveCrashInfo2File(Throwable throwable) {
         File logFile = new File(MainApplication.getAppContext().getCacheDir(), LOG_FILE_NAME);
-        if (!logFile.exists()) {
-            try {
+        FileWriter fw = null;
+        BufferedWriter bw = null;
+        PrintWriter out = null;
+        try {
+            fw = new FileWriter(logFile, true);
+            bw = new BufferedWriter(fw);
+            out = new PrintWriter(bw);
+            if (!logFile.exists() || logFile.length() == 0) {
+                //noinspection ResultOfMethodCallIgnored
                 logFile.createNewFile();
+                if (infos == null) {
+                    collectDeviceInfo(MainApplication.getAppContext());
+                }
+                for (Map.Entry<String, String> entry : infos.entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    out.println(key + " = " + value);
+                }
+                out.println("\n\n\n");
+            }
+
+            out.println("####################### " + TimeUtil.getNowDateTime() + " #######################");
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            throwable.printStackTrace(pw);
+            String sStackTrace = sw.toString();
+            out.println(sStackTrace);
+            out.print("####################### " + TimeUtil.getNowDateTime() + " #######################\n\n\n");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            try {
+                if (bw != null) {
+                    bw.close();
+                }
+                if (fw != null) {
+                    fw.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        try (PrintWriter printWriter = new PrintWriter(logFile)) {
-            printWriter.write(sb.toString());
-            ex.printStackTrace(printWriter);
-            Throwable cause = ex.getCause();
-            while (cause != null) {
-                cause.printStackTrace(printWriter);
-                cause = cause.getCause();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
     }
 

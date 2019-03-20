@@ -11,7 +11,7 @@ import java.util.Locale;
 public class TimeUtil {
 
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss", Locale.CHINA);
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd", Locale.CHINA);
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd hh:mm:ss", Locale.CHINA);
 
     public static String convertIntToMinsSec(int milli) {
         return convertLongToMinsSec(milli);
@@ -21,7 +21,7 @@ public class TimeUtil {
         return simpleDateFormat.format(new Date(milli));
     }
 
-    public static String getNowDate() {
+    public static String getNowDateTime() {
         return sdf.format(new Date());
     }
 }
