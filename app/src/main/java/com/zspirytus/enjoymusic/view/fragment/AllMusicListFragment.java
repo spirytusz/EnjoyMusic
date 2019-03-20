@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.view.fragment;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -16,12 +17,14 @@ import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
+import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
+import com.zspirytus.enjoymusic.utils.RandomUtil;
 
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
@@ -40,6 +43,8 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     private ProgressBar mMusicListLoadProgressBar;
     @ViewInject(R.id.all_music_list_fragment_info_tv)
     private TextView mInfoTextView;
+    @ViewInject(R.id.fab)
+    private FloatingActionButton mFab;
 
     private MusicListAdapter mAdapter;
     private AlphaInAnimationAdapter mAnimationWrapAdapter;
@@ -70,6 +75,23 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
         mMusicRecyclerView.setHasFixedSize(true);
         mMusicRecyclerView.setNestedScrollingEnabled(false);
         mMusicRecyclerView.setAdapter(mAnimationWrapAdapter);
+        mMusicRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && mFab.getVisibility() == View.VISIBLE) {
+                    mFab.hide();
+                } else {
+                    mFab.show();
+                }
+            }
+        });
+        mFab.setOnClickListener(view -> {
+            ForegroundMusicController.getInstance().setPlayList(mAdapter.getList());
+            ForegroundMusicController.getInstance().setPlayMode(Constant.PlayMode.RANDOM);
+            ForegroundMusicController.getInstance().play(mAdapter.getList().get(RandomUtil.rand(mAdapter.getItemCount())));
+        });
+        mFab.show();
     }
 
     @Override
