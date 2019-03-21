@@ -46,6 +46,7 @@ public interface Constant {
         String NEXT = "next";
         String PREVIOUS = "previous";
         String SINGLE_CLICK = "singleClick";
+        String DELETE = "delete";
     }
 
     interface FragmentName {

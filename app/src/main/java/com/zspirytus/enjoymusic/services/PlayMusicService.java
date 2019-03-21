@@ -105,15 +105,13 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
          * @see #startForeground(int, Notification)
          */
         startForeground(notificationNotifyId, currentNotification);
-        NotificationHelper.getInstance().setClear(false);
+        NotificationHelper.getInstance().setCancelable(false);
     }
 
     @Override
     public void onPause() {
-        if (mBinderPool == null) {
-            stopForeground(false);
-            NotificationHelper.getInstance().setClear(true);
-        }
+        stopForeground(false);
+        NotificationHelper.getInstance().setCancelable(true);
     }
 
     private void handleStatusBarEvent(Intent intent) {

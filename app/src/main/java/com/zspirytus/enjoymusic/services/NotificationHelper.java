@@ -1,6 +1,5 @@
 package com.zspirytus.enjoymusic.services;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -21,9 +20,6 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
 import com.zspirytus.enjoymusic.utils.DeviceUtils;
-import com.zspirytus.enjoymusic.utils.LogUtil;
-
-import java.lang.reflect.Field;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -39,6 +35,7 @@ public class NotificationHelper {
     private static final int PAUSE = 2;
     private static final int NEXT = 3;
     private static final int SINGLE_CLICK = 4;
+    private static final int DELETE = 5;
 
     private static final long AUTO_CANCEL_DELAY = 10 * 60 * 1000;
 
@@ -48,6 +45,7 @@ public class NotificationHelper {
 
     private static final int NOTIFICATION_MANAGER_NOTIFY_ID = 233;
 
+    private NotificationCompat.Builder mBuilder;
     private final NotificationManager mNotificationManager;
 
     private Notification mCurrentNotification;
@@ -95,17 +93,14 @@ public class NotificationHelper {
         }
     }
 
-    public int getNotificationNotifyId() {
+    int getNotificationNotifyId() {
         return NOTIFICATION_MANAGER_NOTIFY_ID;
     }
 
-    public void setClear(boolean canClear) {
+    void setCancelable(boolean canClear) {
         if (mCurrentNotification != null) {
-            if (canClear) {
-                mCurrentNotification.flags = Notification.FLAG_AUTO_CANCEL;
-            } else {
-                mCurrentNotification.flags = Notification.FLAG_NO_CLEAR;
-            }
+            mCurrentNotification = mBuilder.setAutoCancel(canClear).build();
+            mNotificationManager.notify(NOTIFICATION_MANAGER_NOTIFY_ID, mCurrentNotification);
         }
     }
 
@@ -125,36 +120,41 @@ public class NotificationHelper {
     }
 
     private void createNotification(Music music) {
-        MediaStyle mediaStyle = new MediaStyle();
-        mediaStyle.setMediaSession(MyMediaSession.getInstance().getSessionToken());
-        mediaStyle.setShowCancelButton(true);
-        NotificationCompat.Builder builder = getDefaultBuilder(music);
-        builder.setStyle(mediaStyle);
-        builder = createNotificationAction(builder);
+        NotificationCompat.Builder builder = createNotificationAction(getDefaultBuilder(music));
         mCurrentNotification = builder.build();
-        /*String osName = DeviceUtils.getOSName();
-        if (osName != null && osName.equals("MIUI")) {
-            prepareNotificationForMIUI(mCurrentNotification);
-        }*/
     }
 
     private NotificationCompat.Builder getDefaultBuilder(Music music) {
+        MediaStyle mediaStyle = new MediaStyle();
+        mediaStyle.setMediaSession(MyMediaSession.getInstance().getSessionToken())
+                .setShowActionsInCompactView(1, 2);
+        mediaStyle.setShowCancelButton(true);
+
         Album album = QueryExecutor.findAlbum(music);
         Artist artist = QueryExecutor.findArtist(music);
+
         Intent intent = new Intent(MainApplication.getAppContext(), PlayMusicService.class);
         PendingIntent startActivity = createPendingIntentByExtra(intent, SINGLE_CLICK, Constant.NotificationEvent.SINGLE_CLICK);
-        return new NotificationCompat.Builder(MainApplication.getAppContext(), mChannelId)
+        Intent deleteIntent = new Intent(MainApplication.getAppContext(), PlayMusicService.class);
+        PendingIntent deletePendingIntent = createPendingIntentByExtra(deleteIntent, DELETE, Constant.NotificationEvent.DELETE);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainApplication.getAppContext(), mChannelId)
                 .setSmallIcon(R.drawable.ic_music_note_white_24dp)
                 .setLargeIcon(MusicCoverFileCache.getInstance().getCoverBitmap(album))
                 .setContentTitle(music.getMusicName())
                 .setContentText(artist.getArtistName())
+                .setStyle(mediaStyle)
                 .setChannelId(mChannelId)
                 .setAutoCancel(false)
-                .setOngoing(true)
+                .setDeleteIntent(deletePendingIntent)
                 .setColorized(true)
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
                 .setOnlyAlertOnce(true)
                 .setContentIntent(startActivity);
+
+        mBuilder = createNotificationAction(builder);
+
+        return mBuilder;
     }
 
     private NotificationCompat.Builder createNotificationAction(NotificationCompat.Builder builder) {
@@ -162,6 +162,7 @@ public class NotificationHelper {
         PendingIntent previous = createPendingIntentByExtra(intent, PREVIOUS, Constant.NotificationEvent.PREVIOUS);
         PendingIntent pause = createPendingIntentByExtra(intent, PAUSE, Constant.NotificationEvent.PAUSE);
         PendingIntent next = createPendingIntentByExtra(intent, NEXT, Constant.NotificationEvent.NEXT);
+        builder.mActions.clear();
         builder.addAction(new NotificationCompat.Action(R.drawable.ic_skip_previous_black_48dp, "previous", previous))
                 .addAction(new NotificationCompat.Action(R.drawable.ic_pause_black_48dp, "pause", pause))
                 .addAction(new NotificationCompat.Action(R.drawable.ic_skip_next_black_48dp, "next", next));
@@ -171,22 +172,6 @@ public class NotificationHelper {
     private PendingIntent createPendingIntentByExtra(Intent intent, int requestCode, String value) {
         intent.putExtra(Constant.NotificationEvent.EXTRA, value);
         return PendingIntent.getService(MainApplication.getAppContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    private void prepareNotificationForMIUI(Notification notification) {
-        try {
-            @SuppressLint("PrivateApi")
-            Object miuiNotification = Class.forName("android.app.MiuiNotification").newInstance();
-            Field customizedIconField = miuiNotification.getClass().getDeclaredField("customizedIcon");
-            customizedIconField.setAccessible(true);
-            customizedIconField.set(miuiNotification, true);
-
-            Field extraNotificationField = notification.getClass().getField("extraNotification");
-            extraNotificationField.setAccessible(true);
-            extraNotificationField.set(notification, miuiNotification);
-        } catch (Exception e) {
-            LogUtil.e(this.getClass().getSimpleName(), "OS is not MIUI");
-        }
     }
 
 }
