@@ -92,8 +92,10 @@ public class PlayListFragment extends CommonHeaderBaseFragment
                 mInfoTextView.setVisibility(View.VISIBLE);
             }
         });
-        mViewModel.getCurrentPlayMusic()
-                .observe(this, values -> mAdapter.setSelected(values));
+        mViewModel.getCurrentPlayMusic().observe(
+                this,
+                values -> mAdapter.setSelected(values, "partial update")
+        );
     }
 
     @Override
