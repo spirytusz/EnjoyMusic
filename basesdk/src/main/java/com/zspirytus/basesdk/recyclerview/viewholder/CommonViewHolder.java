@@ -1,6 +1,7 @@
 package com.zspirytus.basesdk.recyclerview.viewholder;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
@@ -90,6 +91,11 @@ public class CommonViewHolder extends RecyclerView.ViewHolder {
     public void setTextColor(@IdRes int id, @ColorRes int color) {
         TextView textView = getView(id);
         textView.setTextColor(mContext.getResources().getColor(color));
+    }
+
+    public void setTypeface(@IdRes int id, Typeface typeface) {
+        TextView textView = getView(id);
+        textView.setTypeface(typeface);
     }
 
     public void setOnItemClickListener(final OnItemClickListener listener) {

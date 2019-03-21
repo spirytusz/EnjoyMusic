@@ -32,7 +32,6 @@ import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.utils.PixelsUtil;
-import com.zspirytus.enjoymusic.utils.RandomUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +63,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     private volatile HomePageListAdapter mInnerAdapter;
     private volatile HeaderFooterViewWrapAdapter mHeaderWrapAdapter;
     private ScaleInAnimationAdapter mAnimationAdapter;
+    private HomePageFragmentViewModel mViewModel;
 
     @Override
     protected void initData() {
@@ -75,8 +75,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
                 holder.setOnItemClickListener(R.id.random_play_text, (view) -> {
                     ForegroundMusicController.getInstance().setPlayMode(Constant.PlayMode.RANDOM);
                     List<Music> musicList = mInnerAdapter.getList();
-                    Music randomMusic = musicList.get(RandomUtil.rand(musicList.size()));
-                    ForegroundMusicController.getInstance().play(randomMusic);
+                    mViewModel.setPlayList(musicList);
                 });
             }
 
@@ -89,6 +88,8 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         mAnimationAdapter.setInterpolator(new DecelerateInterpolator());
         mAnimationAdapter.setDuration(618);
         mItemHeightCache = new SparseIntArray();
+        mViewModel = ViewModelProviders.of(this).get(HomePageFragmentViewModel.class);
+        mViewModel.init();
     }
 
     @Override
@@ -145,11 +146,13 @@ public class HomePageFragment extends CommonHeaderBaseFragment
         ViewModelProviders.of(getParentActivity())
                 .get(MainActivityViewModel.class)
                 .getMusicList().observe(this, values -> {
-            ViewModelProviders.of(this).get(HomePageFragmentViewModel.class)
-                    .applyMusicList(values);
+            mViewModel.applyMusicList(values);
         });
-        ViewModelProviders.of(this).get(HomePageFragmentViewModel.class)
-                .getMusicList().observe(this, this::loadDataToView);
+        mViewModel.getPlayListFirstMusic().observe(
+                this,
+                values -> ForegroundMusicController.getInstance().play(values)
+        );
+        mViewModel.getMusicList().observe(this, this::loadDataToView);
     }
 
     @Override

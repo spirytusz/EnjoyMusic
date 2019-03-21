@@ -1,5 +1,7 @@
 package com.zspirytus.enjoymusic.impl.binder;
 
+import android.os.RemoteException;
+
 import com.zspirytus.enjoymusic.ISetPlayList;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
@@ -27,5 +29,16 @@ public class PlayListSetter extends ISetPlayList.Stub {
     @Override
     public void appendMusicList(List<Music> musicList) {
         MusicPlayOrderManager.getInstance().addMusicListToPlayList(musicList);
+    }
+
+    @Override
+    public Music setPlayListAndGetFirstMusic(List<Music> playList) throws RemoteException {
+        MusicPlayOrderManager.getInstance().setPlayList(playList);
+        List<Music> settlePlayList = MusicPlayOrderManager.getInstance().getPlayList();
+        if (settlePlayList != null && !settlePlayList.isEmpty()) {
+            return settlePlayList.get(0);
+        } else {
+            return null;
+        }
     }
 }

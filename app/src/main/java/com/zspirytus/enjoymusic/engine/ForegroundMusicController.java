@@ -2,6 +2,7 @@ package com.zspirytus.enjoymusic.engine;
 
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.WorkerThread;
 
 import com.zspirytus.enjoymusic.IMusicControl;
 import com.zspirytus.enjoymusic.IMusicProgressControl;
@@ -125,6 +126,22 @@ public class ForegroundMusicController {
                 }
             });
         }
+    }
+
+    @WorkerThread
+    public Music setPlayListAndGetFirstMusic(List<Music> musicList) {
+        if (musicList != null) {
+            if (mISetPlayList == null) {
+                IBinder setPlayListBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
+                mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
+            }
+            try {
+                return mISetPlayList.setPlayListAndGetFirstMusic(musicList);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     public void addToPlayList(final List<Music> musicList) {

@@ -92,15 +92,15 @@ public class PlayListFragment extends CommonHeaderBaseFragment
                 mInfoTextView.setVisibility(View.VISIBLE);
             }
         });
+        mViewModel.getCurrentPlayMusic()
+                .observe(this, values -> mAdapter.setSelected(values));
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
-            //getParentActivity().setLightStatusIconColor();
             playShadowAnimator();
         } else {
-            //getParentActivity().setDefaultStatusIconColor();
             if (mAnim.isRunning()) {
                 mAnim.cancel();
             }

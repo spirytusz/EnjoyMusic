@@ -18,13 +18,13 @@ import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.MusicListAdapter;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
+import com.zspirytus.enjoymusic.cache.viewmodels.AllMusicListFragmentViewModel;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.utils.RandomUtil;
 
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 
@@ -47,6 +47,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     private FloatingActionButton mFab;
 
     private MusicListAdapter mAdapter;
+    private AllMusicListFragmentViewModel mViewModel;
     private AlphaInAnimationAdapter mAnimationWrapAdapter;
 
     @Override
@@ -65,6 +66,8 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
+        mViewModel = ViewModelProviders.of(this).get(AllMusicListFragmentViewModel.class);
+        mViewModel.init();
     }
 
     @Override
@@ -87,9 +90,8 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
             }
         });
         mFab.setOnClickListener(view -> {
-            ForegroundMusicController.getInstance().setPlayList(mAdapter.getList());
             ForegroundMusicController.getInstance().setPlayMode(Constant.PlayMode.RANDOM);
-            ForegroundMusicController.getInstance().play(mAdapter.getList().get(RandomUtil.rand(mAdapter.getItemCount())));
+            mViewModel.setPlayList(mAdapter.getList());
         });
         mFab.show();
     }
@@ -110,6 +112,10 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
                 mInfoTextView.setText(R.string.no_music_tip);
             }
         });
+        mViewModel.getPlayListFirstMusic().observe(
+                this,
+                values -> ForegroundMusicController.getInstance().play(values)
+        );
     }
 
     @Override

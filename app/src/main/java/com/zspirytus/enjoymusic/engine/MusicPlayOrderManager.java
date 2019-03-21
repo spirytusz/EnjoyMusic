@@ -43,6 +43,10 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
         return SingletonHolder.INSTANCE;
     }
 
+    public List<Music> getPlayList() {
+        return mPlayList;
+    }
+
     public void setPlayList(List<Music> playList) {
         orderPlayList(playList);
         notifyAllObserverPlayListChange(mPlayList);
