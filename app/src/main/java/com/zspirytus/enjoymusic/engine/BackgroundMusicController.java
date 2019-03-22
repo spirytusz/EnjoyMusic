@@ -32,4 +32,8 @@ public class BackgroundMusicController {
     public boolean isPlaying() {
         return MediaPlayController.getInstance().isPlaying();
     }
+
+    public void release() {
+        MediaPlayController.getInstance().release();
+    }
 }

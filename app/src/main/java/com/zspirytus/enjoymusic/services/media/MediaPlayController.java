@@ -39,6 +39,7 @@ public class MediaPlayController extends MusicStateObservable
     private static final int STATE_STARTED = 4;
     private static final int STATE_PAUSED = 5;
     private static final int STATE_PLAYBACK_COMPLETED = 6;
+    private static final int STATE_STOP = 7;
 
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
@@ -128,7 +129,7 @@ public class MediaPlayController extends MusicStateObservable
     public synchronized void play(Music music) {
         try {
             Music currentMusic = BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic();
-            if (currentMusic == null || !music.equals(currentMusic) || state != STATE_PAUSED) {
+            if (currentMusic == null || !music.equals(currentMusic) || state != STATE_PAUSED || state != STATE_STOP) {
                 reset();
                 prepareMusic(music);
             }
@@ -139,13 +140,16 @@ public class MediaPlayController extends MusicStateObservable
     }
 
     @BinderThread
-    public void pause() {
+    public synchronized void pause() {
         if (state == STATE_STARTED) {
             VisualizerHelper.setEnable(false);
             mediaPlayer.pause();
             setState(STATE_PAUSED);
             BackgroundMusicStateCache.getInstance().setPlaying(false);
             mPlayingTimer.pause();
+            if (mOnPauseListener != null) {
+                mOnPauseListener.onPause();
+            }
             NotificationHelper.getInstance().updateNotification(false);
             notifyAllObserverPlayStateChange(false);
             MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PAUSED);
@@ -202,6 +206,11 @@ public class MediaPlayController extends MusicStateObservable
         notifyAllObserverPlayStateChange(true);
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
         PlayHistoryManager.getInstance().add(currentPlayingMusic);
+    }
+
+    public void release() {
+        mediaPlayer.stop();
+        setState(STATE_STOP);
     }
 
     /**

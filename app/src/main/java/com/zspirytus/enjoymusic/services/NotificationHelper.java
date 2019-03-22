@@ -30,6 +30,8 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class NotificationHelper {
 
+    private static final String TAG = "NotificationHelper";
+
     private static final int PREVIOUS = 0;
     private static final int PLAY = 1;
     private static final int PAUSE = 2;
@@ -54,7 +56,7 @@ public class NotificationHelper {
     private Notification.Action playAction;
     private Notification.Action pauseAction;
 
-    protected Notification getCurrentNotification() {
+    Notification getCurrentNotification() {
         return mCurrentNotification;
     }
 
@@ -84,6 +86,10 @@ public class NotificationHelper {
 
     public void updateNotification(boolean isPlaying) {
         if (mCurrentNotification != null) {
+            /*
+             * 这里直接替换第二个action即可，
+             * 因为只有中间的按钮(播放、暂停)的响应Intent和ResId有变化
+             */
             if (isPlaying) {
                 mCurrentNotification.actions[1] = pauseAction;
             } else {
@@ -127,7 +133,10 @@ public class NotificationHelper {
     private NotificationCompat.Builder getDefaultBuilder(Music music) {
         MediaStyle mediaStyle = new MediaStyle();
         mediaStyle.setMediaSession(MyMediaSession.getInstance().getSessionToken())
-                .setShowActionsInCompactView(1, 2);
+                /*
+                 * 当折叠的时候，显示第1, 2, 3个按钮
+                 */
+                .setShowActionsInCompactView(0, 1, 2);
         mediaStyle.setShowCancelButton(true);
 
         Album album = QueryExecutor.findAlbum(music);

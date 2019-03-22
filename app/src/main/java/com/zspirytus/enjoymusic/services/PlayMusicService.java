@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
-import android.os.Handler;
 import android.os.IBinder;
 
 import com.zspirytus.enjoymusic.base.BaseService;
@@ -18,7 +17,6 @@ import com.zspirytus.enjoymusic.listeners.OnRemotePauseListener;
 import com.zspirytus.enjoymusic.listeners.OnRemotePlayListener;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
-import com.zspirytus.enjoymusic.receivers.MyNotificationAlarm;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
 import com.zspirytus.enjoymusic.utils.StatusBarUtil;
@@ -35,8 +33,6 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
     private static final String TAG = "PlayMusicService";
 
     private BinderPool mBinderPool;
-    private Handler mHandler;
-    private MyNotificationAlarm mAlarm;
 
     private MyHeadSetPlugOutReceiver myHeadSetPlugOutReceiver;
     private MyHeadSetButtonClickBelowLReceiver myHeadSetButtonClickBelowLReceiver;
@@ -46,7 +42,8 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
         super.onCreate();
         MyMediaSession.getInstance().initMediaSession(this);
         MediaPlayController.getInstance().setOnPlayListener(this);
-        BackgroundMusicStateCache.getInstance();
+        MediaPlayController.getInstance().setOnPauseListener(this);
+        BackgroundMusicStateCache.getInstance().init();
     }
 
     @Override
@@ -57,9 +54,6 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
 
     @Override
     public IBinder onBind(Intent intent) {
-        if (mHandler == null) {
-            mHandler = new Handler();
-        }
         if (mBinderPool == null) {
             mBinderPool = new BinderPool();
         }
@@ -135,9 +129,18 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
                     case Constant.NotificationEvent.NEXT:
                         BackgroundMusicController.getInstance().play(MusicPlayOrderManager.getInstance().getNextMusic(true));
                         break;
+                    case Constant.NotificationEvent.DELETE:
+                        if (!isActivityInForeground()) {
+                            BackgroundMusicController.getInstance().release();
+                        }
+                        break;
                 }
             }
         }
+    }
+
+    private boolean isActivityInForeground() {
+        return mBinderPool != null;
     }
 
     private void startActivity() {

@@ -19,6 +19,9 @@ public class BackgroundMusicStateCache {
     }
 
     private BackgroundMusicStateCache() {
+    }
+
+    public void init() {
         currentPlayingMusic = QueryExecutor.getLastestPlayMusic();
     }
 
