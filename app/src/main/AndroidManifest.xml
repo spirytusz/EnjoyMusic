@@ -44,14 +44,26 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receivers.MyNotificationAlarm" />
+        <receiver
+            android:name=".receivers.MyAlarm"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="com.zspirytus.enjoymusic.RECEIVE_ALARM"
+            android:process=".playmusicprocess">
+            <intent-filter>
+                <action android:name="com.zspirytus.enjoymusic.MY_ALARM" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".services.PlayMusicService"
             android:enabled="true"
             android:exported="true"
             android:process=".playmusicprocess"
-            android:stopWithTask="false" />
+            android:stopWithTask="false"
+            android:permission="com.zspirytus.enjoymusic.RECEIVE_ALARM">
+
+        </service>
 
     </application>
 

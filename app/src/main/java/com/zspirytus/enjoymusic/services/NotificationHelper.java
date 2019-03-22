@@ -99,6 +99,10 @@ public class NotificationHelper {
         }
     }
 
+    void cancel() {
+        mNotificationManager.cancelAll();
+    }
+
     int getNotificationNotifyId() {
         return NOTIFICATION_MANAGER_NOTIFY_ID;
     }

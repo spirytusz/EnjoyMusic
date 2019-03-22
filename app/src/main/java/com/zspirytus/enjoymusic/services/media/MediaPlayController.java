@@ -129,7 +129,7 @@ public class MediaPlayController extends MusicStateObservable
     public synchronized void play(Music music) {
         try {
             Music currentMusic = BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic();
-            if (currentMusic == null || !music.equals(currentMusic) || state != STATE_PAUSED || state != STATE_STOP) {
+            if (currentMusic == null || !music.equals(currentMusic) || state != STATE_PAUSED || state == STATE_STOP) {
                 reset();
                 prepareMusic(music);
             }

@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.IBinder;
 
+import com.zspirytus.basesdk.utils.LogUtil;
 import com.zspirytus.enjoymusic.base.BaseService;
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
@@ -15,12 +16,15 @@ import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.impl.binder.BinderPool;
 import com.zspirytus.enjoymusic.listeners.OnRemotePauseListener;
 import com.zspirytus.enjoymusic.listeners.OnRemotePlayListener;
+import com.zspirytus.enjoymusic.receivers.MyAlarm;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
 import com.zspirytus.enjoymusic.utils.StatusBarUtil;
 import com.zspirytus.enjoymusic.view.activity.MainActivity;
+
+import java.util.Calendar;
 
 /**
  * Service: 负责播放、暂停音乐、发送Notification相关事件
@@ -100,12 +104,28 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
          */
         startForeground(notificationNotifyId, currentNotification);
         NotificationHelper.getInstance().setCancelable(false);
+
+        MyAlarm.getInstance().cancelAlarm(this, "autoRemoveNotification");
     }
 
     @Override
     public void onPause() {
         stopForeground(false);
         NotificationHelper.getInstance().setCancelable(true);
+
+        if (!isActivityInForeground()) {
+            MyAlarm.getInstance().setAlarm(
+                    this,
+                    "autoRemoveNotification",
+                    Calendar.SECOND,
+                    5,
+                    () -> {
+                        LogUtil.e(TAG, "receive msg.");
+                        stopForeground(false);
+                        NotificationHelper.getInstance().cancel();
+                    }
+            );
+        }
     }
 
     private void handleStatusBarEvent(Intent intent) {
@@ -139,6 +159,7 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isActivityInForeground() {
         return mBinderPool != null;
     }
