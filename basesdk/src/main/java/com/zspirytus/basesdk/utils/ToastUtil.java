@@ -1,11 +1,11 @@
-package com.zspirytus.enjoymusic.utils;
+package com.zspirytus.basesdk.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.StringRes;
 import android.widget.Toast;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import com.zspirytus.basesdk.thread.UIThreadSwitcher;
 
 /**
  * Toast工具类
@@ -40,12 +40,22 @@ public class ToastUtil {
         toast.show();
     }
 
-    public static void postToShow(Context context, String message) {
-        AndroidSchedulers.mainThread().scheduleDirect(() -> showToast(context, message));
+    public static void postToShow(final Context context, final String message) {
+        UIThreadSwitcher.runOnMainThreadSync(new Runnable() {
+            @Override
+            public void run() {
+                showToast(context, message);
+            }
+        });
     }
 
-    public static void postToShow(Context context, @StringRes int stringResId) {
-        AndroidSchedulers.mainThread().scheduleDirect(() -> showToast(context, stringResId));
+    public static void postToShow(final Context context, @StringRes final int stringResId) {
+        UIThreadSwitcher.runOnMainThreadSync(new Runnable() {
+            @Override
+            public void run() {
+                showToast(context, stringResId);
+            }
+        });
     }
 
 }

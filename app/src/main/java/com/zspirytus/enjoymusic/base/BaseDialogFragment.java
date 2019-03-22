@@ -11,8 +11,8 @@ import android.view.Window;
 
 import com.zspirytus.basesdk.annotations.LayoutIdInject;
 import com.zspirytus.basesdk.annotations.ViewInject;
-import com.zspirytus.enjoymusic.utils.LogUtil;
-import com.zspirytus.enjoymusic.utils.ToastUtil;
+import com.zspirytus.basesdk.utils.LogUtil;
+import com.zspirytus.basesdk.utils.ToastUtil;
 
 import java.lang.reflect.Field;
 

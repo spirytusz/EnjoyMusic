@@ -3,6 +3,7 @@ package com.zspirytus.enjoymusic.engine;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+import com.zspirytus.basesdk.thread.UIThreadSwitcher;
 import com.zspirytus.enjoymusic.IAudioEffectHelper;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
@@ -10,8 +11,6 @@ import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class AudioEffectController {
 
@@ -56,7 +55,7 @@ public class AudioEffectController {
                 e.printStackTrace();
             }
             final boolean result = available;
-            AndroidSchedulers.mainThread().scheduleDirect(() -> {
+            UIThreadSwitcher.runOnMainThreadSync(() -> {
                 if (l != null) {
                     l.onResult(result, callbackId);
                 }
@@ -74,7 +73,7 @@ public class AudioEffectController {
                 e.printStackTrace();
             }
             final boolean result = available;
-            AndroidSchedulers.mainThread().scheduleDirect(() -> {
+            UIThreadSwitcher.runOnMainThreadSync(() -> {
                 if (l != null) {
                     l.onResult(result, callbackId);
                 }
@@ -92,7 +91,7 @@ public class AudioEffectController {
                 e.printStackTrace();
             }
             final boolean result = available;
-            AndroidSchedulers.mainThread().scheduleDirect(() -> {
+            UIThreadSwitcher.runOnMainThreadSync(() -> {
                 if (l != null) {
                     l.onResult(result, callbackId);
                 }
@@ -110,7 +109,7 @@ public class AudioEffectController {
                 e.printStackTrace();
             }
             final List<String> result = nameList;
-            AndroidSchedulers.mainThread().scheduleDirect(() -> {
+            UIThreadSwitcher.runOnMainThreadSync(() -> {
                 if (l != null) {
                     l.onResult(result, callbackId);
                 }
@@ -172,9 +171,7 @@ public class AudioEffectController {
                 e.printStackTrace();
             }
             final int[] result = bandLevel;
-            AndroidSchedulers.mainThread().scheduleDirect(() -> {
-                l.onResult(result, callbackId);
-            });
+            UIThreadSwitcher.runOnMainThreadSync(() -> l.onResult(result, callbackId));
         });
     }
 
@@ -188,9 +185,7 @@ public class AudioEffectController {
                 e.printStackTrace();
             }
             final EqualizerMetaData result = metaData;
-            AndroidSchedulers.mainThread().scheduleDirect(() -> {
-                l.onResult(result, 0);
-            });
+            UIThreadSwitcher.runOnMainThreadSync(() -> l.onResult(result, 0));
         });
     }
 

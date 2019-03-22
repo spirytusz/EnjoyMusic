@@ -11,6 +11,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.zspirytus.basesdk.recyclerview.ItemViewDelegate;
 import com.zspirytus.basesdk.recyclerview.adapter.MultiItemAdapter;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
+import com.zspirytus.basesdk.utils.PixelsUtil;
+import com.zspirytus.basesdk.utils.TimeUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
@@ -21,8 +23,6 @@ import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.engine.MusicMetaDataReader;
 import com.zspirytus.enjoymusic.entity.listitem.MusicMetaData;
 import com.zspirytus.enjoymusic.entity.listitem.MusicMetaDataListItem;
-import com.zspirytus.enjoymusic.utils.PixelsUtil;
-import com.zspirytus.enjoymusic.utils.TimeUtil;
 
 public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataListItem> {
 
@@ -91,7 +91,7 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
                 String musicName = music.getMusicName();
                 String artistName = artist.getArtistName();
                 String albumName = album.getAlbumName();
-                String duration = TimeUtil.convertLongToMinsSec(music.getMusicDuration());
+                String duration = TimeUtil.timestamp2Time(music.getMusicDuration());
                 String mimeType = metaData.getMime();
                 // 计算比特率及其单位
                 Integer bitrate = Integer.parseInt(metaData.getBitrate());

@@ -7,7 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.zspirytus.enjoymusic.utils.LogUtil;
+import com.zspirytus.basesdk.utils.LogUtil;
 
 import java.util.Calendar;
 

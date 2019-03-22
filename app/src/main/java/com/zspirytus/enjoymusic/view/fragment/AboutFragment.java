@@ -15,12 +15,12 @@ import android.view.animation.DecelerateInterpolator;
 import com.zspirytus.basesdk.annotations.LayoutIdInject;
 import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
+import com.zspirytus.basesdk.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.AboutListAdapter;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.AboutFragmentViewModel;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 /**
  * Created by ZSpirytus on 2018/9/14.

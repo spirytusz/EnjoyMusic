@@ -5,6 +5,7 @@ import android.os.RemoteException;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 
+import com.zspirytus.basesdk.utils.ToastUtil;
 import com.zspirytus.enjoymusic.IMusicMetaDataUpdator;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
@@ -13,7 +14,6 @@ import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.global.MainApplication;
-import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 public class ForegroundMusicUpdator {
 

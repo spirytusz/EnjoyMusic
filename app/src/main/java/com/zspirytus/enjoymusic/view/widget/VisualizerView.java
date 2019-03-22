@@ -12,8 +12,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.zspirytus.basesdk.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 public class VisualizerView extends View {
 

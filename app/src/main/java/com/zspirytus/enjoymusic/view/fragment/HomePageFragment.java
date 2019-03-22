@@ -21,6 +21,7 @@ import com.zspirytus.basesdk.recyclerview.ItemSpacingDecoration;
 import com.zspirytus.basesdk.recyclerview.adapter.HeaderFooterViewWrapAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
+import com.zspirytus.basesdk.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.HomePageListAdapter;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
@@ -31,7 +32,6 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,6 +4,8 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.WorkerThread;
 
+import com.zspirytus.basesdk.utils.LogUtil;
+import com.zspirytus.basesdk.utils.ToastUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
@@ -21,8 +23,6 @@ import com.zspirytus.enjoymusic.online.entity.OnlineArtist;
 import com.zspirytus.enjoymusic.online.entity.OnlineArtistList;
 import com.zspirytus.enjoymusic.online.entity.response.SearchAlbumResponse;
 import com.zspirytus.enjoymusic.online.entity.response.SearchArtistResponse;
-import com.zspirytus.enjoymusic.utils.LogUtil;
-import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,7 +162,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             @Override
             public void onError(Throwable e) {
                 ToastUtil.postToShow(MainApplication.getAppContext(), R.string.download_failed);
-                LogUtil.log("download_artist.log", e);
+                LogUtil.log(MainApplication.getAppContext(), "download_artist.log", e);
             }
 
             @Override
@@ -200,7 +200,7 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             @Override
             public void onError(Throwable e) {
                 ToastUtil.postToShow(MainApplication.getAppContext(), R.string.download_failed);
-                LogUtil.log("download_album.log", e);
+                LogUtil.log(MainApplication.getAppContext(), "download_album.log", e);
             }
 
             @Override

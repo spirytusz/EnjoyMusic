@@ -1,8 +1,7 @@
-package com.zspirytus.enjoymusic.utils;
+package com.zspirytus.basesdk.utils;
 
+import android.content.Context;
 import android.util.Log;
-
-import com.zspirytus.enjoymusic.global.MainApplication;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,10 +40,10 @@ public class LogUtil {
         }
     }
 
-    public static void log(String fileName, String msg) {
+    public static void log(Context context, String fileName, String msg) {
         PrintStream stream;
         try {
-            File file = createLogFile(fileName);
+            File file = createLogFile(context, fileName);
             stream = new PrintStream(file);
             String nowDate = TimeUtil.getNowDateTime();
             stream.append("-------------------------------------").append(nowDate).append("-------------------------------------\n");
@@ -57,10 +56,10 @@ public class LogUtil {
         }
     }
 
-    public static void log(String fileName, Throwable e) {
+    public static void log(Context context, String fileName, Throwable e) {
         PrintStream stream;
         try {
-            File file = createLogFile(fileName);
+            File file = createLogFile(context, fileName);
             stream = new PrintStream(file);
             String nowDate = TimeUtil.getNowDateTime();
             stream.append("-------------------------------------").append(nowDate).append("-------------------------------------\n");
@@ -74,9 +73,8 @@ public class LogUtil {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private static File createLogFile(String fileName) throws IOException {
-        File dataFile = MainApplication.getAppContext().getExternalCacheDir();
-        File logFileDir = new File(dataFile, "log");
+    private static File createLogFile(Context context, String fileName) throws IOException {
+        File logFileDir = new File(context.getFilesDir(), "log");
         logFileDir.mkdir();
         File logFile = new File(logFileDir, fileName);
         logFile.createNewFile();

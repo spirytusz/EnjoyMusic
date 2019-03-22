@@ -5,8 +5,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import com.zspirytus.basesdk.utils.TimeUtil;
 import com.zspirytus.enjoymusic.global.MainApplication;
-import com.zspirytus.enjoymusic.utils.TimeUtil;
 
 import java.io.BufferedWriter;
 import java.io.File;

@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.zspirytus.basesdk.annotations.LayoutIdInject;
 import com.zspirytus.basesdk.annotations.ViewInject;
+import com.zspirytus.basesdk.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseDialogFragment;
-import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 @LayoutIdInject(R.layout.dialog_save_song_list)
 public class SaveSongListDialog extends BaseDialogFragment implements View.OnClickListener {

@@ -11,6 +11,7 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 
+import com.zspirytus.basesdk.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.global.MainApplication;
 
 /**

@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.WorkerThread;
 
+import com.zspirytus.basesdk.utils.ToastUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.db.DBManager;
@@ -19,7 +20,6 @@ import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.online.RetrofitManager;
 import com.zspirytus.enjoymusic.online.entity.OnlineMusic;
 import com.zspirytus.enjoymusic.online.entity.response.SearchMusicResponse;
-import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

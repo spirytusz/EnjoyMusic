@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.zspirytus.basesdk.annotations.LayoutIdInject;
 import com.zspirytus.basesdk.annotations.ViewInject;
+import com.zspirytus.basesdk.utils.TimeUtil;
+import com.zspirytus.basesdk.utils.ToastUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
@@ -31,8 +33,6 @@ import com.zspirytus.enjoymusic.entity.event.PlayModeEvent;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.FrequencyObserverManager;
 import com.zspirytus.enjoymusic.impl.glide.GlideApp;
 import com.zspirytus.enjoymusic.receivers.observer.OnFrequencyChangeListener;
-import com.zspirytus.enjoymusic.utils.TimeUtil;
-import com.zspirytus.enjoymusic.utils.ToastUtil;
 import com.zspirytus.enjoymusic.view.dialog.PlayHistoryDialog;
 import com.zspirytus.enjoymusic.view.widget.AutoRotateCircleImage;
 import com.zspirytus.enjoymusic.view.widget.BlurImageView;
@@ -258,7 +258,7 @@ public class MusicPlayFragment extends BaseFragment
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 int milliseconds = progress * 1000;
-                String millisecondsString = TimeUtil.convertIntToMinsSec(milliseconds);
+                String millisecondsString = TimeUtil.timestamp2Time(milliseconds);
                 mNowTime.setText(millisecondsString);
                 if (fromUser) {
                     ForegroundMusicController.getInstance().seekTo(milliseconds);
@@ -284,7 +284,7 @@ public class MusicPlayFragment extends BaseFragment
         mTitle.setText(music.getMusicName());
         mSubTitle.setText(artist.getArtistName());
         mNowTime.setText("00:00");
-        mTotalTime.setText(TimeUtil.convertLongToMinsSec(music.getMusicDuration()));
+        mTotalTime.setText(TimeUtil.timestamp2Time(music.getMusicDuration()));
         setupSeekBar(music);
         setBackgroundBlur(music);
     }

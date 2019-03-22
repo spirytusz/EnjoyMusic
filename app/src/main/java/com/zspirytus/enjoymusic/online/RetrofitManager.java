@@ -1,5 +1,7 @@
 package com.zspirytus.enjoymusic.online;
 
+import com.zspirytus.basesdk.utils.LogUtil;
+import com.zspirytus.basesdk.utils.ToastUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.online.entity.response.ObtainSongListResponse;
@@ -9,9 +11,7 @@ import com.zspirytus.enjoymusic.online.entity.response.SearchMusicResponse;
 import com.zspirytus.enjoymusic.online.entity.response.SearchSongListResponse;
 import com.zspirytus.enjoymusic.online.methods.ObtainMethod;
 import com.zspirytus.enjoymusic.online.methods.SearchMethod;
-import com.zspirytus.enjoymusic.utils.LogUtil;
 import com.zspirytus.enjoymusic.utils.NetWorkUtil;
-import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;

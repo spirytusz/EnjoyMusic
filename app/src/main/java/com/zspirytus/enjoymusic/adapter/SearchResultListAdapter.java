@@ -7,6 +7,7 @@ import android.view.View;
 import com.zspirytus.basesdk.recyclerview.ItemViewDelegate;
 import com.zspirytus.basesdk.recyclerview.adapter.MultiItemAdapter;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
+import com.zspirytus.basesdk.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
@@ -14,7 +15,6 @@ import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.ArtistArt;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.listitem.SearchResult;
-import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 public class SearchResultListAdapter extends MultiItemAdapter<SearchResult> {
 

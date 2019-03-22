@@ -1,4 +1,4 @@
-package com.zspirytus.enjoymusic.utils;
+package com.zspirytus.basesdk.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,11 +13,7 @@ public class TimeUtil {
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss", Locale.CHINA);
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd hh:mm:ss", Locale.CHINA);
 
-    public static String convertIntToMinsSec(int milli) {
-        return convertLongToMinsSec(milli);
-    }
-
-    public static String convertLongToMinsSec(long milli) {
+    public static String timestamp2Time(long milli) {
         return simpleDateFormat.format(new Date(milli));
     }
 

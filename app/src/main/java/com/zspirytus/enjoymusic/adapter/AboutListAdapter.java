@@ -8,9 +8,9 @@ import com.zspirytus.basesdk.recyclerview.ItemViewDelegate;
 import com.zspirytus.basesdk.recyclerview.adapter.MultiItemAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
+import com.zspirytus.basesdk.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.entity.listitem.AboutItem;
-import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 public class AboutListAdapter extends MultiItemAdapter<AboutItem> {
 

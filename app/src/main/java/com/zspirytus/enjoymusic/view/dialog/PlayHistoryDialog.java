@@ -16,6 +16,8 @@ import com.zspirytus.basesdk.annotations.LayoutIdInject;
 import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
+import com.zspirytus.basesdk.utils.PixelsUtil;
+import com.zspirytus.basesdk.utils.TimeUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseDialogFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
@@ -24,8 +26,6 @@ import com.zspirytus.enjoymusic.entity.listitem.PlayHistoryItem;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayHistoryObserverManager;
 import com.zspirytus.enjoymusic.receivers.observer.PlayHistoryObserver;
-import com.zspirytus.enjoymusic.utils.PixelsUtil;
-import com.zspirytus.enjoymusic.utils.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,7 @@ public class PlayHistoryDialog extends BaseDialogFragment implements PlayHistory
                 TextView info = holder.getView(R.id.item_info);
                 holder.setText(R.id.item_no, String.valueOf(position + 1));
                 holder.setText(R.id.item_title, playHistoryItem.getMusicName());
-                holder.setText(R.id.item_info, TimeUtil.convertLongToMinsSec(playHistoryItem.getMusicDuration()));
+                holder.setText(R.id.item_info, TimeUtil.timestamp2Time(playHistoryItem.getMusicDuration()));
                 if (playHistoryItem.isSelected()) {
                     no.setTextColor(getResources().getColor(R.color.colorPrimary));
                     title.setTextColor(getResources().getColor(R.color.colorPrimary));

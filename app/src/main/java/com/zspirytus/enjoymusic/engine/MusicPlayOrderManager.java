@@ -9,7 +9,7 @@ import com.zspirytus.enjoymusic.db.table.PlayList;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinPlayListToMusic;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.listeners.observable.PlayListChangeObservable;
-import com.zspirytus.enjoymusic.utils.RandomUtil;
+import com.zspirytus.enjoymusic.utils.RamdomNumberGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,7 +137,7 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
         } else if (mPlayMode == Constant.PlayMode.RANDOM) {
             List<Music> musicList = new ArrayList<>();
             while (!playList.isEmpty()) {
-                int randomIndex = RandomUtil.rand(playList.size());
+                int randomIndex = RamdomNumberGenerator.rand(playList.size());
                 musicList.add(playList.get(randomIndex));
                 playList.remove(randomIndex);
             }

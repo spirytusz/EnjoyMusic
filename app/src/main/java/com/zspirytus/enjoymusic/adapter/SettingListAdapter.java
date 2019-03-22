@@ -8,9 +8,9 @@ import android.widget.Switch;
 import com.zspirytus.basesdk.recyclerview.ItemViewDelegate;
 import com.zspirytus.basesdk.recyclerview.adapter.MultiItemAdapter;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
+import com.zspirytus.basesdk.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.entity.listitem.SettingItem;
-import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 public class SettingListAdapter extends MultiItemAdapter<SettingItem> {
 

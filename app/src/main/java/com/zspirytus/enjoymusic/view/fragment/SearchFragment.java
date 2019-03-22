@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.zspirytus.basesdk.annotations.LayoutIdInject;
 import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
+import com.zspirytus.basesdk.utils.ToastUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.SearchResultListAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
@@ -28,7 +29,6 @@ import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.listitem.SearchResult;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
-import com.zspirytus.enjoymusic.utils.ToastUtil;
 
 @LayoutIdInject(R.layout.fragment_search_layout)
 public class SearchFragment extends BaseFragment implements OnItemClickListener {

@@ -8,8 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
+import com.zspirytus.basesdk.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.utils.PixelsUtil;
 
 /**
  * Created by ZSpirytus on 2018/8/3.
