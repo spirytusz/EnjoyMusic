@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 
-import com.zspirytus.enjoymusic.services.media.MediaPlayController;
+import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
 
 /**
  * 耳机拔出事件接收广播
@@ -18,8 +18,8 @@ public class MyHeadSetPlugOutReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(action)) {
-            if (MediaPlayController.getInstance().isPlaying()) {
-                MediaPlayController.getInstance().pause();
+            if (BackgroundMusicController.getInstance().isPlaying()) {
+                BackgroundMusicController.getInstance().pause();
             }
         }
     }
