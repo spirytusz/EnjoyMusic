@@ -197,12 +197,12 @@ public class MediaPlayController extends MusicStateObservable
         VisualizerHelper.setEnable(true);
         setState(STATE_STARTED);
         BackgroundMusicStateCache.getInstance().setPlaying(true);
-        mPlayingTimer.start();
         NotificationHelper.getInstance().showNotification(currentPlayingMusic);
         NotificationHelper.getInstance().updateNotification(true);
         if (mOnPlayListener != null) {
-            mOnPlayListener.onPlay();
+            mOnPlayListener.onPlay(music);
         }
+        mPlayingTimer.start();
         notifyAllObserverPlayStateChange(true);
         MyMediaSession.getInstance().setPlaybackState(PlaybackStateCompat.STATE_PLAYING);
         PlayHistoryManager.getInstance().add(currentPlayingMusic);
@@ -230,8 +230,9 @@ public class MediaPlayController extends MusicStateObservable
             mTimerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    int currentPlayingSeconds = INSTANCE.getCurrentPosition();
-                    INSTANCE.notifyAllObserverMusicPlayProgressChange(currentPlayingSeconds);
+                    long milliseconds = INSTANCE.getCurrentPosition();
+                    INSTANCE.notifyAllObserverMusicPlayProgressChange((int) milliseconds);
+                    INSTANCE.notifyAllRemoteObserverPlayProgresChange(milliseconds);
                 }
             };
             mTimer.schedule(mTimerTask, 0, T);

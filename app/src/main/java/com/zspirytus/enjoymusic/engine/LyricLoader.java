@@ -80,6 +80,12 @@ public class LyricLoader {
         return load(rows);
     }
 
+    public List<LyricRow> loadEmpty() {
+        List<String> rows = new ArrayList<>();
+        rows.add("[00:00.00]无可用歌词");
+        return load(rows);
+    }
+
     public List<LyricRow> load(List<String> rows) {
         SparseIntArray indexMapper = new SparseIntArray();
         List<LyricRow> lyricRows = new ArrayList<>();

@@ -17,6 +17,7 @@ import com.zspirytus.enjoymusic.listeners.OnRemotePauseListener;
 import com.zspirytus.enjoymusic.listeners.OnRemotePlayListener;
 import com.zspirytus.enjoymusic.receivers.MyAlarm;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
+import com.zspirytus.enjoymusic.receivers.observer.OnRemoteProgressListener;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
 import com.zspirytus.enjoymusic.utils.StatusBarUtil;
@@ -29,7 +30,7 @@ import java.util.Calendar;
  * Created by ZSpirytus on 2018/8/2.
  */
 
-public class PlayMusicService extends BaseService implements OnRemotePlayListener, OnRemotePauseListener {
+public class PlayMusicService extends BaseService implements OnRemotePlayListener, OnRemotePauseListener, OnRemoteProgressListener {
 
     private static final String TAG = "PlayMusicService";
 
@@ -44,6 +45,7 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
         MyMediaSession.getInstance().initMediaSession(this);
         MediaPlayController.getInstance().setOnPlayListener(this);
         MediaPlayController.getInstance().setOnPauseListener(this);
+        MediaPlayController.getInstance().registerRemotePlayProgressObserver(this);
         BackgroundMusicStateCache.getInstance().init();
 
         myAlarm = new MyAlarm();
@@ -88,7 +90,7 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
     }
 
     @Override
-    public void onPlay() {
+    public void onPlay(Music music) {
         Notification currentNotification = NotificationHelper.getInstance().getCurrentNotification();
         int notificationNotifyId = NotificationHelper.getInstance().getNotificationNotifyId();
         /*
@@ -97,6 +99,11 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
          */
         startForeground(notificationNotifyId, currentNotification);
         NotificationHelper.getInstance().setCancelable(false);
+        /*UIThreadSwitcher.runOnMainThreadSync(() -> {
+            Lyric lyric = DBManager.getInstance().getDaoSession().getLyricDao().load(music.getMusicId());
+            String lyricFilePath = lyric != null ? lyric.getLyricFilePath() : null;
+            LyricWidgetManager.getInstance().loadLyric(lyricFilePath);
+        });*/
 
         if (!isActivityInForeground()) {
             myAlarm.cancelAlarm(this);
@@ -113,6 +120,11 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
             final int amount = 5;
             myAlarm.setAlarm(this, field, amount);
         }
+    }
+
+    @Override
+    public void onProgressChange(long milliseconds) {
+        //UIThreadSwitcher.runOnMainThreadSync(() -> LyricWidgetManager.getInstance().onProgressChange(milliseconds));
     }
 
     private void handleStatusBarEvent(Intent intent) {

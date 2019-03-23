@@ -8,12 +8,18 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayProgressChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayStateChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayedMusicChangeObserver;
+import com.zspirytus.enjoymusic.receivers.observer.OnRemoteProgressListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MusicStateObservable {
 
     private RemoteCallbackList<IPlayStateChangeObserver> mPlayStateObservers = new RemoteCallbackList<>();
     private RemoteCallbackList<IPlayProgressChangeObserver> mPlayProgressObservers = new RemoteCallbackList<>();
     private RemoteCallbackList<IPlayedMusicChangeObserver> mPlayMusicChangeObservers = new RemoteCallbackList<>();
+
+    private List<OnRemoteProgressListener> mObservers = new ArrayList<>();
 
     /**
      * register
@@ -40,6 +46,12 @@ public class MusicStateObservable {
         }
     }
 
+    public synchronized void registerRemotePlayProgressObserver(OnRemoteProgressListener observer) {
+        if (!mObservers.contains(observer)) {
+            mObservers.add(observer);
+        }
+    }
+
     /**
      * unregister
      */
@@ -53,6 +65,10 @@ public class MusicStateObservable {
 
     public synchronized void unregisterMusicPlayCompleteObserver(IPlayedMusicChangeObserver observer) {
         mPlayMusicChangeObservers.unregister(observer);
+    }
+
+    public synchronized void unregisterRemotePlayProgressObserver(OnRemoteProgressListener observer) {
+        mObservers.remove(observer);
     }
 
     /**
@@ -92,6 +108,12 @@ public class MusicStateObservable {
             }
         }
         mPlayMusicChangeObservers.finishBroadcast();
+    }
+
+    protected synchronized void notifyAllRemoteObserverPlayProgresChange(long milliseconds) {
+        for (OnRemoteProgressListener observer : mObservers) {
+            observer.onProgressChange(milliseconds);
+        }
     }
 
 }

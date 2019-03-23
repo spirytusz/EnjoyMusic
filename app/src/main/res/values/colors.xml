@@ -16,4 +16,6 @@
     <color name="translucent_scrim_bottom_center">#22AAAAAA</color>
 
     <color name="translucent_grey">#88AAAAAA</color>
+    <color name="translucent_black">#9A000000</color>
+    <color name="yellow">#ffeb3b</color>
 </resources>
