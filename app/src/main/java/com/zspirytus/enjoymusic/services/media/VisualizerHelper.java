@@ -10,7 +10,7 @@ public class VisualizerHelper extends FrequencyObservable implements Visualizer.
         static VisualizerHelper INSTANCE = new VisualizerHelper();
     }
 
-    private static final int STEP = 1 << 5;
+    private static final int STEP = 1 << 6;
     private Visualizer mVisualizer;
 
     private VisualizerHelper() {
@@ -23,7 +23,11 @@ public class VisualizerHelper extends FrequencyObservable implements Visualizer.
         return Singleton.INSTANCE;
     }
 
-    public static void setEnable(boolean enable) {
+    public static int getCaptureSize() {
+        return Visualizer.getCaptureSizeRange()[1] / STEP;
+    }
+
+    static void setEnable(boolean enable) {
         getInstance().mVisualizer.setEnabled(enable);
     }
 

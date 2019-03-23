@@ -2,7 +2,6 @@ package com.zspirytus.enjoymusic.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.graphics.Palette;
@@ -22,6 +21,7 @@ import com.zspirytus.basesdk.utils.TimeUtil;
 import com.zspirytus.basesdk.utils.ToastUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
+import com.zspirytus.enjoymusic.cache.MusicCoverFileCache;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.cache.viewmodels.MusicPlayFragmentViewModel;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
@@ -286,7 +286,7 @@ public class MusicPlayFragment extends BaseFragment
         mSubTitle.setText(artist.getArtistName());
         mNowTime.setText("00:00");
         mTotalTime.setText(TimeUtil.timestamp2Time(music.getMusicDuration()));
-        Palette.from(BitmapFactory.decodeFile(musicThumbAlbumCoverPath)).generate(palette -> {
+        Palette.from(MusicCoverFileCache.getInstance().getCoverBitmap(album)).generate(palette -> {
             int progresColor = palette.getMutedColor(getResources().getColor(R.color.white));
             mSeekBar.getProgressDrawable().setColorFilter(
                     progresColor,

@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.view.widget;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -14,6 +15,7 @@ import android.view.View;
 
 import com.zspirytus.basesdk.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.services.media.VisualizerHelper;
 
 public class VisualizerView extends View {
 
@@ -25,6 +27,11 @@ public class VisualizerView extends View {
     private float strokenWidth;
     private float anchorRadius;
     private float margin;
+
+    private ValueAnimator mPathShapeAnim;
+    private float[] rearFrequencies;
+    private float[] currentFrequencies;
+    private float[] diff;
 
     public VisualizerView(Context context) {
         this(context, null);
@@ -51,16 +58,33 @@ public class VisualizerView extends View {
 
         paint = new Paint();
         paint.setColor(strokenColor);
-        paint.setPathEffect(new CornerPathEffect(20));
+        paint.setPathEffect(new CornerPathEffect(36));
         paint.setStrokeWidth(strokenWidth);
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
+
+        rearFrequencies = new float[VisualizerHelper.getCaptureSize()];
+        currentFrequencies = new float[VisualizerHelper.getCaptureSize()];
+        diff = new float[VisualizerHelper.getCaptureSize()];
+
+        mPathShapeAnim = ValueAnimator.ofFloat(0.0f, 1.0f);
+        mPathShapeAnim.setDuration(100);
+        mPathShapeAnim.addUpdateListener(animation -> {
+            float progress = (float) animation.getAnimatedValue();
+            setShapeProgress(progress);
+            invalidate();
+        });
     }
 
     public void setFrequencies(float[] frequencies) {
         if (getAlpha() != 0.0f) {
-            createPath(frequencies);
-            invalidate();
+            rearFrequencies = currentFrequencies;
+            currentFrequencies = frequencies;
+            computeDiff();
+            if (mPathShapeAnim.isRunning()) {
+                mPathShapeAnim.end();
+            }
+            mPathShapeAnim.start();
         }
     }
 
@@ -72,15 +96,15 @@ public class VisualizerView extends View {
         this.strokenWidth = strokenWidth;
     }
 
-    private void createPath(float[] frequencies) {
+    private void createPath(float progress) {
         int offsetX = (getLeft() + getRight()) >> 1;
         int offsetY = getTop() + getHeight() >> 1;
         float radius = anchorRadius + margin;
         path.reset();
-        double angle = 1.0 * Math.PI / frequencies.length;
-        int valuess = PixelsUtil.dp2px(getContext(), frequencies[0] * 2);
+        double angle = 1.0 * Math.PI / rearFrequencies.length;
+        int valuess = PixelsUtil.dp2px(getContext(), rearFrequencies[0] + diff[0] * progress);
         path.moveTo((float) (offsetX + (radius + valuess) * Math.cos(0.0)), (float) (offsetY + (radius + valuess) * Math.sin(0.0)));
-        for (int i = 0; i < 2 * (frequencies.length - 1); i++) {
+        for (int i = 0; i < 2 * (rearFrequencies.length - 1); i++) {
             double currentAngle = angle * (i + 1);
             if (i % 2 == 0) {
                 path.lineTo(
@@ -88,7 +112,7 @@ public class VisualizerView extends View {
                         (float) (radius * Math.sin(currentAngle)) + offsetY
                 );
             } else {
-                float value = PixelsUtil.dp2px(getContext(), frequencies[(i + 1) / 2]);
+                float value = PixelsUtil.dp2px(getContext(), rearFrequencies[(i + 1) / 2] + diff[(i + 1) / 2] * progress);
                 path.lineTo(
                         (float) ((radius + value * 2) * Math.cos(currentAngle)) + offsetX,
                         (float) ((radius + value * 2) * Math.sin(currentAngle)) + offsetY
@@ -96,6 +120,16 @@ public class VisualizerView extends View {
             }
         }
         path.close();
+    }
+
+    private void setShapeProgress(float progress) {
+        createPath(progress);
+    }
+
+    private void computeDiff() {
+        for (int i = 0; i < rearFrequencies.length; i++) {
+            diff[i] = currentFrequencies[i] - rearFrequencies[i];
+        }
     }
 
     @Override
