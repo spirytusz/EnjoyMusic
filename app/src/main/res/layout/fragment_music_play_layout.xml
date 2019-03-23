@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/grey">
 
     <View
@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="25dp"
         android:background="@android:color/transparent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.Toolbar
@@ -20,8 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@android:color/transparent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/status_bar">
 
         <android.support.constraint.ConstraintLayout
@@ -39,11 +39,11 @@
                 android:id="@+id/back_btn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:focusable="true"
                 android:background="?selectableItemBackgroundBorderless"
+                android:focusable="true"
                 android:src="@drawable/ic_arrow_back_white_24dp"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="@id/guideline"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/guideline" />
 
             <android.support.v7.widget.AppCompatTextView
@@ -52,11 +52,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
+                android:ellipsize="end"
                 android:maxEms="10"
                 android:singleLine="true"
-                android:ellipsize="end"
-                app:layout_constraintStart_toEndOf="@+id/back_btn"
                 app:layout_constraintBottom_toTopOf="@id/guideline"
+                app:layout_constraintStart_toEndOf="@+id/back_btn"
                 tools:text="Alternative Title" />
 
             <android.support.v7.widget.AppCompatTextView
@@ -65,11 +65,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="2dp"
-                android:textColor="#747474"
-                android:textSize="14sp"
+                android:ellipsize="end"
                 android:maxEms="12"
                 android:singleLine="true"
-                android:ellipsize="end"
+                android:textColor="#747474"
+                android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@+id/back_btn"
                 app:layout_constraintTop_toBottomOf="@id/guideline"
                 tools:text="Alternative Sub Title" />
@@ -104,34 +104,39 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <com.zspirytus.enjoymusic.view.widget.AutoRotateCircleImage
-        android:id="@+id/cover"
-        android:layout_width="256dp"
-        android:layout_height="256dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:focusable="true"
-        app:civ_border_color="@color/translucent_grey"
-        app:civ_border_width="4dp"
-        app:cycle_seconds="24"
-        app:layout_constraintBottom_toTopOf="@+id/include2"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tool_bar" />
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/cover_visualizer_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.zspirytus.enjoymusic.view.widget.VisualizerView
-        android:id="@+id/visualizer"
-        android:layout_width="match_parent"
-        android:layout_height="360dp"
-        android:focusable="false"
-        app:anchorRadius="128dp"
-        app:anchorMargin="6dp"
-        app:strokenWidth="3"
-        app:strokenColor="@color/white"
-        app:layout_constraintStart_toStartOf="@id/cover"
-        app:layout_constraintEnd_toEndOf="@id/cover"
-        app:layout_constraintTop_toTopOf="@id/cover"
-        app:layout_constraintBottom_toBottomOf="@id/cover" />
+        <com.zspirytus.enjoymusic.view.widget.AutoRotateCircleImage
+            android:id="@+id/cover"
+            android:layout_width="280dp"
+            android:layout_height="280dp"
+            android:layout_gravity="center"
+            android:focusable="true"
+            app:civ_border_color="@color/translucent_grey"
+            app:civ_border_width="4dp"
+            app:cycle_seconds="24" />
+
+        <com.zspirytus.enjoymusic.view.widget.VisualizerView
+            android:id="@+id/visualizer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="false"
+            app:anchorMargin="8dp"
+            app:anchorRadius="140dp"
+            app:layout_anchorGravity="center"
+            app:strokenColor="@color/white"
+            app:strokenWidth="3" />
+
+    </android.support.design.widget.CoordinatorLayout>
 
     <com.zspirytus.enjoymusic.view.widget.LyricView
         android:id="@+id/lyricView"
@@ -140,14 +145,14 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         app:centerLineMainColor="@color/white"
-        app:diverLineHeight="16dp"
-        app:currentRowColor="@color/white"
         app:centerRowColor="#BBFFFFFF"
-        app:rowColor="@color/grey"
-        app:layout_constraintBottom_toTopOf="@+id/include2"
-        app:layout_constraintTop_toBottomOf="@id/divider_line"
+        app:currentRowColor="@color/white"
+        app:diverLineHeight="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/cover_visualizer_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/cover_visualizer_view"
+        app:rowColor="@color/grey" />
 
     <ImageView
         android:id="@+id/play_pause"
@@ -202,22 +207,49 @@
         android:layout_height="32dp"
         android:layout_marginEnd="12dp"
         android:src="@drawable/ic_history_white_48dp"
-        app:layout_constraintStart_toEndOf="@id/next"
+        app:layout_constraintBottom_toBottomOf="@id/next"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/next"
-        app:layout_constraintBottom_toBottomOf="@id/next" />
+        app:layout_constraintStart_toEndOf="@id/next"
+        app:layout_constraintTop_toTopOf="@id/next" />
 
-    <include
-        android:id="@+id/include2"
-        layout="@layout/seekbar_with_timestamp"
+    <TextView
+        android:id="@+id/now_time"
+        style="@style/LightFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="4dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/music_seekbar"
+        app:layout_constraintEnd_toStartOf="@id/music_seekbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/music_seekbar"
+        tools:text="00:00" />
+
+    <SeekBar
+        android:id="@+id/music_seekbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/play_pause"
+        android:layout_marginBottom="24dp"
+        android:layout_weight="1"
+        android:progressTint="@color/white"
+        android:thumbTint="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/play_pause"
+        app:layout_constraintEnd_toStartOf="@id/total_time"
+        app:layout_constraintStart_toEndOf="@id/now_time" />
+
+    <TextView
+        android:id="@+id/total_time"
+        style="@style/LightFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="12dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/music_seekbar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/music_seekbar"
+        app:layout_constraintTop_toTopOf="@id/music_seekbar"
+        tools:text="00:00" />
 
 </android.support.constraint.ConstraintLayout>

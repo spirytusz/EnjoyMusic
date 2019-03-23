@@ -74,7 +74,7 @@ public class VisualizerView extends View {
 
     private void createPath(float[] frequencies) {
         int offsetX = (getLeft() + getRight()) >> 1;
-        int offsetY = (getTop() + getBottom()) >> 2;
+        int offsetY = getTop() + getHeight() >> 1;
         float radius = anchorRadius + margin;
         path.reset();
         double angle = 1.0 * Math.PI / frequencies.length;
@@ -104,7 +104,9 @@ public class VisualizerView extends View {
         if (!path.isEmpty()) {
             canvas.drawPath(path, paint);
         } else {
-            canvas.drawCircle((getLeft() + getRight()) / 2, (getTop() + getBottom()) / 4, anchorRadius + margin, paint);
+            int x = (getLeft() + getRight()) >> 1;
+            int y = getTop() + getHeight() >> 1;
+            canvas.drawCircle(x, y, anchorRadius + margin, paint);
         }
     }
 }
