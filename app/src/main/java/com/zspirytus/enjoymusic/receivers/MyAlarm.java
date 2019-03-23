@@ -5,84 +5,67 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.SparseArray;
 
-import java.lang.ref.WeakReference;
+import com.zspirytus.enjoymusic.services.NotificationHelper;
+
 import java.util.Calendar;
 
+/**
+ * 定时任务
+ * 使用方法:
+ * 启动: object1.setAlarm(context, field, amount)
+ * 取消: object2.cancel(context)
+ * object1, object2可以相同，也可以不同
+ */
 public class MyAlarm extends BroadcastReceiver {
-
-    private static class Singleton {
-        static MyAlarm INSTANCE = new MyAlarm();
-    }
 
     private static final String TAG = "MyAlarm";
 
-    private static final String ALARM_NAME_KEY = "alarmName";
-
-    private SparseArray<WeakReference<PendingIntent>> mPendingIntentCache;
-    private SparseArray<Runnable> mTaskCache;
-
-    public MyAlarm() {
-        mPendingIntentCache = new SparseArray<>();
-        mTaskCache = new SparseArray<>();
-    }
-
-    public static MyAlarm getInstance() {
-        return Singleton.INSTANCE;
-    }
-
     @Override
     public void onReceive(Context context, Intent intent) {
-        String alarmName = intent.getStringExtra(ALARM_NAME_KEY);
-        Runnable task = mTaskCache.get(alarmName.hashCode());
-        if (task != null) {
-            task.run();
-        }
+        NotificationHelper.getInstance().cancel();
     }
 
-    public void setAlarm(Context context, String alarmName, int field, int amount, Runnable runnable) {
+    /**
+     * 启动定时任务
+     *
+     * @param context context
+     * @param field   单位
+     * @param amount  值
+     */
+    public void setAlarm(Context context, int field, int amount) {
         /*
          * create new timer task.
          */
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent i = new Intent(context, MyAlarm.class);
-        i.putExtra(ALARM_NAME_KEY, alarmName);
-        PendingIntent pi = PendingIntent.getBroadcast(context, alarmName.hashCode(), i, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent(context, MyAlarm.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(System.currentTimeMillis());
         time.add(field, amount);
-        am.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pi);
-
-        /*
-         * cache PendingIntent for reusing.
-         * cache Runnable for delay execute.
-         */
-        WeakReference<PendingIntent> weakReference = new WeakReference<>(pi);
-        mPendingIntentCache.put(alarmName.hashCode(), weakReference);
-        mTaskCache.put(alarmName.hashCode(), runnable);
+        am.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pendingIntent);
     }
 
-    public void cancelAlarm(Context context, String alarmName) {
+    /**
+     * 取消定时任务
+     *
+     * @param context context
+     */
+    public void cancelAlarm(Context context) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         /*
-         * obtain pendingIntent from cache.
-         * if it is null, create new one.
+         * create PendingIntent for canceling task
          */
-        WeakReference<PendingIntent> weakReference = mPendingIntentCache.get(alarmName.hashCode());
-        if (weakReference == null) {
-            return;
-        }
-        PendingIntent pendingIntent = weakReference.get();
-        if (pendingIntent == null) {
-            Intent intent = new Intent(context, MyAlarm.class);
-            pendingIntent = PendingIntent.getBroadcast(context, alarmName.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        }
         /*
-         * delete cache.
+         * 这里的Intent，只需要保证setAlarm中的intent1和这里的intent是相同的
+         * 即intent.filterEqual(intent1) == true 即可
+         * PendingIntent的requestCode无所谓
          */
-        mPendingIntentCache.remove(alarmName.hashCode());
-        mTaskCache.remove(alarmName.hashCode());
+        Intent intent = new Intent(context, MyAlarm.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        /*
+         * cancel task.
+         */
         am.cancel(pendingIntent);
     }
 }

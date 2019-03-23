@@ -99,7 +99,7 @@ public class NotificationHelper {
         }
     }
 
-    void cancel() {
+    public void cancel() {
         mNotificationManager.cancelAll();
     }
 

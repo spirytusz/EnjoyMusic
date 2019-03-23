@@ -6,7 +6,6 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.IBinder;
 
-import com.zspirytus.basesdk.utils.LogUtil;
 import com.zspirytus.enjoymusic.base.BaseService;
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
@@ -40,6 +39,7 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
 
     private MyHeadSetPlugOutReceiver myHeadSetPlugOutReceiver;
     private MyHeadSetButtonClickBelowLReceiver myHeadSetButtonClickBelowLReceiver;
+    private MyAlarm myAlarm;
 
     @Override
     public void onCreate() {
@@ -48,6 +48,8 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
         MediaPlayController.getInstance().setOnPlayListener(this);
         MediaPlayController.getInstance().setOnPauseListener(this);
         BackgroundMusicStateCache.getInstance().init();
+
+        myAlarm = new MyAlarm();
     }
 
     @Override
@@ -105,7 +107,9 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
         startForeground(notificationNotifyId, currentNotification);
         NotificationHelper.getInstance().setCancelable(false);
 
-        MyAlarm.getInstance().cancelAlarm(this, "autoRemoveNotification");
+        if (!isActivityInForeground()) {
+            myAlarm.cancelAlarm(this);
+        }
     }
 
     @Override
@@ -114,17 +118,9 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
         NotificationHelper.getInstance().setCancelable(true);
 
         if (!isActivityInForeground()) {
-            MyAlarm.getInstance().setAlarm(
-                    this,
-                    "autoRemoveNotification",
-                    Calendar.SECOND,
-                    5,
-                    () -> {
-                        LogUtil.e(TAG, "receive msg.");
-                        stopForeground(false);
-                        NotificationHelper.getInstance().cancel();
-                    }
-            );
+            final int field = Calendar.MINUTE;
+            final int amount = 5;
+            myAlarm.setAlarm(this, field, amount);
         }
     }
 
