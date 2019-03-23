@@ -16,7 +16,6 @@ import com.zspirytus.enjoymusic.impl.binder.BinderPool;
 import com.zspirytus.enjoymusic.listeners.OnRemotePauseListener;
 import com.zspirytus.enjoymusic.listeners.OnRemotePlayListener;
 import com.zspirytus.enjoymusic.receivers.MyAlarm;
-import com.zspirytus.enjoymusic.receivers.MyHeadSetButtonClickBelowLReceiver;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
@@ -38,7 +37,6 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
     private BinderPool mBinderPool;
 
     private MyHeadSetPlugOutReceiver myHeadSetPlugOutReceiver;
-    private MyHeadSetButtonClickBelowLReceiver myHeadSetButtonClickBelowLReceiver;
     private MyAlarm myAlarm;
 
     @Override
@@ -83,17 +81,11 @@ public class PlayMusicService extends BaseService implements OnRemotePlayListene
         IntentFilter headsetPlugOutFilter = new IntentFilter();
         headsetPlugOutFilter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
         registerReceiver(myHeadSetPlugOutReceiver, headsetPlugOutFilter);
-
-        myHeadSetButtonClickBelowLReceiver = new MyHeadSetButtonClickBelowLReceiver();
-        IntentFilter headsetButtonClickFilter = new IntentFilter();
-        headsetButtonClickFilter.addAction(Intent.ACTION_MEDIA_BUTTON);
-        registerReceiver(myHeadSetButtonClickBelowLReceiver, headsetButtonClickFilter);
     }
 
     @Override
     protected void unregisterEvent() {
         unregisterReceiver(myHeadSetPlugOutReceiver);
-        unregisterReceiver(myHeadSetButtonClickBelowLReceiver);
     }
 
     @Override

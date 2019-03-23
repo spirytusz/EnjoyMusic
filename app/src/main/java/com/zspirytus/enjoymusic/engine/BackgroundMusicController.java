@@ -21,8 +21,9 @@ public class BackgroundMusicController {
     }
 
     public void play(Music music) {
-        if (music != null)
+        if (music != null) {
             MediaPlayController.getInstance().play(music);
+        }
     }
 
     public void pause() {
