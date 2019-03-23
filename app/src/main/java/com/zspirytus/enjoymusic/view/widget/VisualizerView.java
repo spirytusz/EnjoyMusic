@@ -80,7 +80,7 @@ public class VisualizerView extends View {
         if (getAlpha() != 0.0f) {
             rearFrequencies = currentFrequencies;
             currentFrequencies = frequencies;
-            computeDiff();
+            calculateDiff();
             if (mPathShapeAnim.isRunning()) {
                 mPathShapeAnim.end();
             }
@@ -126,7 +126,7 @@ public class VisualizerView extends View {
         createPath(progress);
     }
 
-    private void computeDiff() {
+    private void calculateDiff() {
         for (int i = 0; i < rearFrequencies.length; i++) {
             diff[i] = currentFrequencies[i] - rearFrequencies[i];
         }
