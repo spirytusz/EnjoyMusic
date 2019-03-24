@@ -169,7 +169,6 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void unregisterEvent() {
-        ForegroundMusicController.getInstance().release();
         mCustomNavigationView.unregisterFragmentChangeListener();
     }
 
@@ -276,8 +275,11 @@ public class MainActivity extends BaseActivity
                  */
                 ForegroundBinderManager.getInstance().init(IBinderPool.Stub.asInterface(service), deathRecipient);
                 /*
-                 * MusicPlayFragment中LiveData变化的回调事件中带有binder的使用
-                 * 所以显示MusicPlayFragment必须在Binder初始化后才能执行
+                 * MusicPlayFragment中LiveData变化的回调事件中带有binder的使用,
+                 * 所以显示MusicPlayFragment必须在Binder初始化后才能执行.
+                 *
+                 * Note: 死亡重连也会调用也会这里
+                 *
                  */
                 Music music = getIntent().getParcelableExtra(Constant.NotificationEvent.EXTRA);
                 if (music != null) {
@@ -294,7 +296,6 @@ public class MainActivity extends BaseActivity
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
-                ForegroundBinderManager.getInstance().release();
             }
         };
         bindService(startPlayMusicServiceIntent, conn, BIND_AUTO_CREATE);

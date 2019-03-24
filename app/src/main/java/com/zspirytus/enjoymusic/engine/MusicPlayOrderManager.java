@@ -95,8 +95,8 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
                 // 否则，继续播放当前音乐
                 if (!fromUser) {
                     nextMusic = BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic();
+                    break;
                 }
-                break;
             case Constant.PlayMode.LIST_LOOP:
             case Constant.PlayMode.RANDOM:
                 // 随机播放

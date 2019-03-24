@@ -12,6 +12,7 @@ import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.impl.binder.MusicController;
 import com.zspirytus.enjoymusic.impl.binder.MusicProgressControl;
+import com.zspirytus.enjoymusic.impl.binder.PlayListSetter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +23,6 @@ import java.util.List;
  */
 
 public class ForegroundMusicController {
-
-    private IMusicControl mIMusicControl;
-    private IMusicProgressControl mIMusicProgressControl;
-    private ISetPlayList mISetPlayList;
-
-    private boolean isPlaying = false;
 
     private static class SingletonHolder {
         private static ForegroundMusicController INSTANCE = new ForegroundMusicController();
@@ -43,10 +38,8 @@ public class ForegroundMusicController {
     public void play(final Music music) {
         if (music != null) {
             ThreadPool.execute(() -> {
-                if (mIMusicControl == null) {
-                    IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                    mIMusicControl = MusicController.asInterface(musicControlBinder);
-                }
+                IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
+                IMusicControl mIMusicControl = MusicController.asInterface(musicControlBinder);
                 try {
                     mIMusicControl.play(music);
                 } catch (RemoteException e) {
@@ -58,10 +51,8 @@ public class ForegroundMusicController {
 
     public void playPrevious() {
         ThreadPool.execute(() -> {
-            if (mIMusicControl == null) {
-                IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                mIMusicControl = MusicController.asInterface(musicControlBinder);
-            }
+            IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
+            IMusicControl mIMusicControl = MusicController.asInterface(musicControlBinder);
             try {
                 mIMusicControl.playPrevious();
             } catch (RemoteException e) {
@@ -72,10 +63,8 @@ public class ForegroundMusicController {
 
     public void playNext(boolean fromUser) {
         ThreadPool.execute(() -> {
-            if (mIMusicControl == null) {
-                IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                mIMusicControl = MusicController.asInterface(musicControlBinder);
-            }
+            IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
+            IMusicControl mIMusicControl = MusicController.asInterface(musicControlBinder);
             try {
                 mIMusicControl.playNext(fromUser);
             } catch (RemoteException e) {
@@ -86,10 +75,8 @@ public class ForegroundMusicController {
 
     public void pause() {
         ThreadPool.execute(() -> {
-            if (mIMusicControl == null) {
-                IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                mIMusicControl = MusicController.asInterface(musicControlBinder);
-            }
+            IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
+            IMusicControl mIMusicControl = MusicController.asInterface(musicControlBinder);
             try {
                 mIMusicControl.pause();
             } catch (RemoteException e) {
@@ -100,10 +87,8 @@ public class ForegroundMusicController {
 
     public void seekTo(final int milliseconds) {
         ThreadPool.execute(() -> {
-            if (mIMusicProgressControl == null) {
-                IBinder musicProgressControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_PROGRESS_CONTROL);
-                mIMusicProgressControl = MusicProgressControl.asInterface(musicProgressControlBinder);
-            }
+            IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_PROGRESS_CONTROL);
+            IMusicProgressControl mIMusicProgressControl = MusicProgressControl.asInterface(musicControlBinder);
             try {
                 mIMusicProgressControl.seekTo(milliseconds);
             } catch (RemoteException e) {
@@ -115,10 +100,8 @@ public class ForegroundMusicController {
     public void setPlayList(final List<Music> musicList) {
         if (musicList != null) {
             ThreadPool.execute(() -> {
-                if (mISetPlayList == null) {
-                    IBinder setPlayListBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
-                    mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
-                }
+                IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
+                ISetPlayList mISetPlayList = PlayListSetter.asInterface(musicControlBinder);
                 try {
                     mISetPlayList.setPlayList(musicList);
                 } catch (RemoteException e) {
@@ -131,10 +114,8 @@ public class ForegroundMusicController {
     @WorkerThread
     public Music setPlayListAndGetFirstMusic(List<Music> musicList) {
         if (musicList != null) {
-            if (mISetPlayList == null) {
-                IBinder setPlayListBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
-                mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
-            }
+            IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
+            ISetPlayList mISetPlayList = PlayListSetter.asInterface(musicControlBinder);
             try {
                 return mISetPlayList.setPlayListAndGetFirstMusic(musicList);
             } catch (RemoteException e) {
@@ -147,10 +128,8 @@ public class ForegroundMusicController {
     public void addToPlayList(final List<Music> musicList) {
         if (musicList != null) {
             ThreadPool.execute(() -> {
-                if (mISetPlayList == null) {
-                    IBinder setPlayListBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
-                    mISetPlayList = ISetPlayList.Stub.asInterface(setPlayListBinder);
-                }
+                IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.SET_PLAY_LIST);
+                ISetPlayList mISetPlayList = PlayListSetter.asInterface(musicControlBinder);
                 try {
                     mISetPlayList.appendMusicList(musicList);
                 } catch (RemoteException e) {
@@ -171,10 +150,8 @@ public class ForegroundMusicController {
     public void setPlayMode(final int playMode) {
         if (playMode >= 0 && playMode < 4) {
             ThreadPool.execute(() -> {
-                if (mIMusicControl == null) {
-                    IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
-                    mIMusicControl = MusicController.asInterface(musicControlBinder);
-                }
+                IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
+                IMusicControl mIMusicControl = MusicController.asInterface(musicControlBinder);
                 try {
                     mIMusicControl.setPlayMode(playMode);
                 } catch (RemoteException e) {
@@ -182,11 +159,6 @@ public class ForegroundMusicController {
                 }
             });
         }
-    }
-
-    public void release() {
-        mIMusicControl = null;
-        mIMusicProgressControl = null;
     }
 
 }

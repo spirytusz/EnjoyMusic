@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.impl.binder;
 
+import com.zspirytus.basesdk.utils.LogUtil;
 import com.zspirytus.enjoymusic.IMusicControl;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
@@ -31,6 +32,7 @@ public class MusicController extends IMusicControl.Stub {
     @Override
     public void playNext(boolean fromUser) {
         Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic(fromUser);
+        LogUtil.e(this.getClass().getSimpleName(), "fromUser = " + fromUser + "\tmusic = " + nextMusic.getMusicName());
         if (nextMusic != null) {
             play(nextMusic);
         }
