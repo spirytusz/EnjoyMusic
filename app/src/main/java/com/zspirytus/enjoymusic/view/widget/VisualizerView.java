@@ -12,12 +12,20 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 
 import com.zspirytus.basesdk.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.services.media.VisualizerHelper;
 
 public class VisualizerView extends View {
+
+    private static final float DEFAULT_STROKEN_WIDTH = 1.0f;
+    private static final int DEFAULT_STROKEN_COLOR = Color.WHITE;
+    private static final int DEFAULT_ANCHOR_RADIUS = 100;
+    private static final int DEFAULT_MARGIN = 6;
+    private static final int DEFAULT_CORNER_RADIUS = 36;
+    private static final int DEFAULT_TO_ZERO_DURATION = 300;
 
     private Path path;
     private Paint paint;
@@ -27,7 +35,13 @@ public class VisualizerView extends View {
     private float strokenWidth;
     private float anchorRadius;
     private float margin;
+    private int cornerRadius;
+    private int toZeroDuration;
 
+    /*
+     * captureRate, Visualizer每100ms取样一次频率.
+     */
+    private int captureRate = 100;
     private ValueAnimator mPathShapeAnim;
     private float[] rearFrequencies;
     private float[] currentFrequencies;
@@ -48,17 +62,19 @@ public class VisualizerView extends View {
 
     private void init(Context context, AttributeSet attrs) {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.VisualizerView);
-        strokenColor = array.getColor(R.styleable.VisualizerView_strokenColor, Color.WHITE);
-        strokenWidth = array.getFloat(R.styleable.VisualizerView_strokenWidth, 1.0f);
-        anchorRadius = array.getDimension(R.styleable.VisualizerView_anchorRadius, PixelsUtil.dp2px(context, 100));
-        margin = array.getDimension(R.styleable.VisualizerView_anchorMargin, PixelsUtil.dp2px(context, 6));
+        strokenColor = array.getColor(R.styleable.VisualizerView_strokenColor, DEFAULT_STROKEN_COLOR);
+        strokenWidth = array.getFloat(R.styleable.VisualizerView_strokenWidth, DEFAULT_STROKEN_WIDTH);
+        anchorRadius = array.getDimension(R.styleable.VisualizerView_anchorRadius, PixelsUtil.dp2px(context, DEFAULT_ANCHOR_RADIUS));
+        margin = array.getDimension(R.styleable.VisualizerView_anchorMargin, PixelsUtil.dp2px(context, DEFAULT_MARGIN));
+        cornerRadius = array.getInteger(R.styleable.VisualizerView_cornerRadius, DEFAULT_CORNER_RADIUS);
+        toZeroDuration = array.getInteger(R.styleable.VisualizerView_toZeroDuration, DEFAULT_TO_ZERO_DURATION);
         array.recycle();
 
         path = new Path();
 
         paint = new Paint();
         paint.setColor(strokenColor);
-        paint.setPathEffect(new CornerPathEffect(36));
+        paint.setPathEffect(new CornerPathEffect(cornerRadius));
         paint.setStrokeWidth(strokenWidth);
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
@@ -68,7 +84,8 @@ public class VisualizerView extends View {
         diff = new float[VisualizerHelper.getCaptureSize()];
 
         mPathShapeAnim = ValueAnimator.ofFloat(0.0f, 1.0f);
-        mPathShapeAnim.setDuration(100);
+        mPathShapeAnim.setDuration(captureRate);
+        mPathShapeAnim.setInterpolator(new DecelerateInterpolator());
         mPathShapeAnim.addUpdateListener(animation -> {
             float progress = (float) animation.getAnimatedValue();
             setShapeProgress(progress);
@@ -85,9 +102,9 @@ public class VisualizerView extends View {
                 mPathShapeAnim.end();
             }
             if (isPaused) {
-                mPathShapeAnim.setDuration(300);
+                mPathShapeAnim.setDuration(toZeroDuration);
             } else {
-                mPathShapeAnim.setDuration(100);
+                mPathShapeAnim.setDuration(captureRate);
             }
             mPathShapeAnim.start();
         }
@@ -103,6 +120,16 @@ public class VisualizerView extends View {
         paint.setStrokeWidth(strokenWidth);
     }
 
+    public void setCornerRadius(int cornerRadius) {
+        this.cornerRadius = cornerRadius;
+        paint.setPathEffect(new CornerPathEffect(cornerRadius));
+    }
+
+    /**
+     * 极坐标法绘制示波器
+     *
+     * @param progress 从rearFrequencies变化到currentFrequencies的百分比
+     */
     private void createPath(float progress) {
         int offsetX = (getLeft() + getRight()) >> 1;
         int offsetY = getTop() + getHeight() >> 1;
@@ -121,8 +148,8 @@ public class VisualizerView extends View {
             } else {
                 float value = PixelsUtil.dp2px(getContext(), rearFrequencies[(i + 1) / 2] + diff[(i + 1) / 2] * progress);
                 path.lineTo(
-                        (float) ((radius + value * 2) * Math.cos(currentAngle)) + offsetX,
-                        (float) ((radius + value * 2) * Math.sin(currentAngle)) + offsetY
+                        (float) ((radius + value) * Math.cos(currentAngle)) + offsetX,
+                        (float) ((radius + value) * Math.sin(currentAngle)) + offsetY
                 );
             }
         }

@@ -59,6 +59,8 @@
         <attr name="strokenWidth" format="float" />
         <attr name="anchorRadius" format="dimension" />
         <attr name="anchorMargin" format="dimension" />
+        <attr name="cornerRadius" format="integer" />
+        <attr name="toZeroDuration" format="integer" />
     </declare-styleable>
     <!-- Visualizer end -->
 </resources>
