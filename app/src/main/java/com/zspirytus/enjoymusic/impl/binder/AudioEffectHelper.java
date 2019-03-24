@@ -1,6 +1,5 @@
 package com.zspirytus.enjoymusic.impl.binder;
 
-import com.zspirytus.basesdk.utils.LogUtil;
 import com.zspirytus.enjoymusic.IAudioEffectHelper;
 import com.zspirytus.enjoymusic.cache.AudioConfigSharedPreferences;
 import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
@@ -93,6 +92,5 @@ public class AudioEffectHelper extends IAudioEffectHelper.Stub {
     @Override
     public void usePresetReverb(int position) {
         PresetReverbHelper.getInstance().usePresetReverb(position);
-        LogUtil.e(this.getClass().getSimpleName(), "remote pos = " + position);
     }
 }

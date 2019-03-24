@@ -4,7 +4,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 import com.zspirytus.basesdk.thread.UIThreadSwitcher;
-import com.zspirytus.basesdk.utils.LogUtil;
 import com.zspirytus.enjoymusic.IAudioEffectHelper;
 import com.zspirytus.enjoymusic.cache.AudioConfigSharedPreferences;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
@@ -149,7 +148,6 @@ public class AudioEffectController {
     }
 
     public void usePresetReverb(int position) {
-        LogUtil.e(this.getClass().getSimpleName(), "pos = " + position);
         ThreadPool.execute(() -> {
             IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.AUDIO_EFFECT);
             IAudioEffectHelper audioEffectHelper = IAudioEffectHelper.Stub.asInterface(binder);
