@@ -61,6 +61,18 @@ public class MainActivity extends BaseActivity
     private MainActivityViewModel mViewModel;
     private ServiceConnection conn;
 
+    private IBinder.DeathRecipient deathRecipient = new IBinder.DeathRecipient() {
+        @Override
+        public void binderDied() {
+            /*
+             * Server意外死亡，先释放资源
+             * 然后重新绑定
+             */
+            ForegroundBinderManager.getInstance().releaseDead(this);
+            bindPlayMusicService();
+        }
+    };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -252,14 +264,17 @@ public class MainActivity extends BaseActivity
     private void bindPlayMusicService() {
         Intent startPlayMusicServiceIntent = new Intent(this, PlayMusicService.class);
         /*
-         * 先启动Service，走onStartCommand并返回START_STICKY.
+         * 先启动Service，走onStartCommand并返回START_STICKY,
          * 这样Service就一直是粘性的.
          */
         startService(startPlayMusicServiceIntent);
         conn = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-                ForegroundBinderManager.getInstance().init(IBinderPool.Stub.asInterface(service));
+                /*
+                 * 为Server设置死亡代理, 意外死亡时重新连接并绑定。
+                 */
+                ForegroundBinderManager.getInstance().init(IBinderPool.Stub.asInterface(service), deathRecipient);
                 /*
                  * MusicPlayFragment中LiveData变化的回调事件中带有binder的使用
                  * 所以显示MusicPlayFragment必须在Binder初始化后才能执行

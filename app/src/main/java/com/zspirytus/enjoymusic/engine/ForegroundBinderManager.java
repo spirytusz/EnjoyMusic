@@ -3,10 +3,12 @@ package com.zspirytus.enjoymusic.engine;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+import com.zspirytus.basesdk.utils.LogUtil;
 import com.zspirytus.enjoymusic.IBackgroundEventProcessor;
 import com.zspirytus.enjoymusic.IBinderPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.global.AudioEffectConfig;
+import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.AudioFieldObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.FrequencyObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.MusicDeleteObserverManager;
@@ -30,8 +32,13 @@ public class ForegroundBinderManager implements AudioEffectController.OnResultLi
         return SingletonHolder.INSTANCE;
     }
 
-    public void init(IBinderPool binderPool) {
+    public void init(IBinderPool binderPool, IBinder.DeathRecipient deathRecipient) {
         mBinderPool = binderPool;
+        try {
+            mBinderPool.asBinder().linkToDeath(deathRecipient, 0);
+        } catch (RemoteException e) {
+            LogUtil.log(MainApplication.getAppContext(), "catch_ex.log", e);
+        }
     }
 
     public void registerEvent() {
@@ -105,6 +112,13 @@ public class ForegroundBinderManager implements AudioEffectController.OnResultLi
         }
         mBinderPool = null;
         SingletonHolder.INSTANCE = null;
+    }
+
+    public void releaseDead(IBinder.DeathRecipient deathRecipient) {
+        if (mBinderPool != null) {
+            mBinderPool.asBinder().unlinkToDeath(deathRecipient, 0);
+            mBinderPool = null;
+        }
     }
 
 }
