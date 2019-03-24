@@ -2,8 +2,7 @@ package com.zspirytus.enjoymusic.services.media.audioeffect;
 
 import android.media.audiofx.PresetReverb;
 
-import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
-import com.zspirytus.enjoymusic.global.MainApplication;
+import com.zspirytus.enjoymusic.cache.AudioConfigSharedPreferences;
 import com.zspirytus.enjoymusic.listeners.observable.PresetReverbObservable;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
@@ -17,7 +16,7 @@ public class PresetReverbHelper extends PresetReverbObservable {
     }
 
     private PresetReverbHelper() {
-        usePresetReverb(MusicSharedPreferences.restoreAudioField(MainApplication.getAppContext()));
+        usePresetReverb(AudioConfigSharedPreferences.restoreAudioField());
     }
 
     public static PresetReverbHelper getInstance() {
@@ -31,7 +30,7 @@ public class PresetReverbHelper extends PresetReverbObservable {
             int audioSessionId = MediaPlayController.getInstance().getAudioSessionId();
             mPresetReverb = new PresetReverb(0, audioSessionId);
         }
-        MusicSharedPreferences.saveAudioField(position);
+        AudioConfigSharedPreferences.saveAudioField(position);
         notifyAllObserverAudioFieldChange(position);
         return EqualizerController.usePresetReverb(position);
     }

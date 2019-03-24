@@ -8,6 +8,7 @@ import com.zspirytus.enjoymusic.IAudioEffectHelper;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
+import com.zspirytus.enjoymusic.global.AudioEffectConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class AudioEffectController {
         });
     }
 
-    public void isAcousticEchoCancelerAvailable(OnResultListener l, int callbackId) {
+    public void isAcousticEchoCancelerAvailable() {
         ThreadPool.execute(() -> {
             initBinder();
             boolean available = false;
@@ -54,16 +55,11 @@ public class AudioEffectController {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-            final boolean result = available;
-            UIThreadSwitcher.runOnMainThreadSync(() -> {
-                if (l != null) {
-                    l.onResult(result, callbackId);
-                }
-            });
+            AudioEffectConfig.setIsAcousticEchoCancelerAvailable(available);
         });
     }
 
-    public void isAutomaticGainControlAvailable(OnResultListener l, int callbackId) {
+    public void isAutomaticGainControlAvailable() {
         ThreadPool.execute(() -> {
             initBinder();
             boolean available = false;
@@ -72,16 +68,11 @@ public class AudioEffectController {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-            final boolean result = available;
-            UIThreadSwitcher.runOnMainThreadSync(() -> {
-                if (l != null) {
-                    l.onResult(result, callbackId);
-                }
-            });
+            AudioEffectConfig.setIsAutomaticGainControlAvailable(available);
         });
     }
 
-    public void isNoiseSuppressorAvailable(OnResultListener l, int callbackId) {
+    public void isNoiseSuppressorAvailable() {
         ThreadPool.execute(() -> {
             initBinder();
             boolean available = false;
@@ -90,16 +81,11 @@ public class AudioEffectController {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-            final boolean result = available;
-            UIThreadSwitcher.runOnMainThreadSync(() -> {
-                if (l != null) {
-                    l.onResult(result, callbackId);
-                }
-            });
+            AudioEffectConfig.setIsNoiseSuppressorAvailable(available);
         });
     }
 
-    public void getPresetReverbNameList(OnResultListener l, int callbackId) {
+    public void getPresetReverbNameList() {
         ThreadPool.execute(() -> {
             initBinder();
             List<String> nameList = new ArrayList<>();
@@ -108,12 +94,7 @@ public class AudioEffectController {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-            final List<String> result = nameList;
-            UIThreadSwitcher.runOnMainThreadSync(() -> {
-                if (l != null) {
-                    l.onResult(result, callbackId);
-                }
-            });
+            AudioEffectConfig.setPresetReverbNameList(nameList);
         });
     }
 
@@ -161,21 +142,18 @@ public class AudioEffectController {
         });
     }
 
-    public void usePresetReverb(OnResultListener l, int position, int callbackId) {
+    public void usePresetReverb(int position) {
         ThreadPool.execute(() -> {
             initBinder();
-            int[] bandLevel = new int[0];
             try {
-                bandLevel = mAudioEffectHelper.usePresetReverb(position);
+                mAudioEffectHelper.usePresetReverb(position);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-            final int[] result = bandLevel;
-            UIThreadSwitcher.runOnMainThreadSync(() -> l.onResult(result, callbackId));
         });
     }
 
-    public void attachEqualizer(OnResultListener l) {
+    public void attachEqualizer(OnFetchEqualizerMetaData l) {
         ThreadPool.execute(() -> {
             initBinder();
             EqualizerMetaData metaData = null;
@@ -185,7 +163,7 @@ public class AudioEffectController {
                 e.printStackTrace();
             }
             final EqualizerMetaData result = metaData;
-            UIThreadSwitcher.runOnMainThreadSync(() -> l.onResult(result, 0));
+            UIThreadSwitcher.runOnMainThreadSync(() -> l.onResult(result));
         });
     }
 
@@ -200,8 +178,8 @@ public class AudioEffectController {
         });
     }
 
-    public interface OnResultListener {
-        void onResult(Object result, int callbackId);
+    public interface OnFetchEqualizerMetaData {
+        void onResult(EqualizerMetaData equalizerMetaData);
     }
 
 }

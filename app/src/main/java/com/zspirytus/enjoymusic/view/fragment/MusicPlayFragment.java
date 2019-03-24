@@ -145,7 +145,7 @@ public class MusicPlayFragment extends BaseFragment
     @Override
     protected void initData() {
         mViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
-        mViewModel.obtainPlayMode(getContext());
+        mViewModel.obtainPlayMode();
         viewModel = ViewModelProviders.of(this).get(MusicPlayFragmentViewModel.class);
     }
 

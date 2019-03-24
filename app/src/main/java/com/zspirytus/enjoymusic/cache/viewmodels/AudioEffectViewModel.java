@@ -3,13 +3,12 @@ package com.zspirytus.enjoymusic.cache.viewmodels;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.zspirytus.enjoymusic.cache.MusicSharedPreferences;
+import com.zspirytus.enjoymusic.cache.AudioConfigSharedPreferences;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.engine.AudioEffectController;
 import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
 import com.zspirytus.enjoymusic.entity.listitem.AudioEffectItem;
 import com.zspirytus.enjoymusic.global.AudioEffectConfig;
-import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.AudioFieldObserverManager;
 import com.zspirytus.enjoymusic.receivers.observer.AudioFieldChangeObserver;
 import com.zspirytus.enjoymusic.view.fragment.AudioEffectFragment;
@@ -63,7 +62,7 @@ public class AudioEffectViewModel extends ViewModel implements AudioFieldChangeO
         ThreadPool.execute(() -> {
             List<String> nameList = AudioEffectConfig.getPresetReverbNameList();
             List<AudioEffectItem> audioEffectItems = new ArrayList<>();
-            int selectPosition = MusicSharedPreferences.restoreAudioField(MainApplication.getAppContext());
+            int selectPosition = AudioConfigSharedPreferences.restoreAudioField();
             for (int i = 0; i < nameList.size(); i++) {
                 AudioEffectItem item = new AudioEffectItem();
                 item.setTitle(nameList.get(i));
@@ -76,16 +75,15 @@ public class AudioEffectViewModel extends ViewModel implements AudioFieldChangeO
     }
 
     private void obtainEqualizerMetaData() {
-        AudioEffectController.getInstance().attachEqualizer((result, callbackId) -> {
-            if (result != null) {
-                mEqualizerMetaData.postValue((EqualizerMetaData) result);
+        AudioEffectController.getInstance().attachEqualizer(equalizerMetaData -> {
+            if (equalizerMetaData != null) {
+                mEqualizerMetaData.postValue(equalizerMetaData);
             }
         });
     }
 
     public void setPresetReverb(int position) {
-        AudioEffectController.getInstance().usePresetReverb((result, callbackId) -> {
-        }, position, 0);
+        AudioEffectController.getInstance().usePresetReverb(position);
     }
 
     public void setBandLevel(int band, int level) {

@@ -1,7 +1,6 @@
 package com.zspirytus.enjoymusic.cache.viewmodels;
 
 import android.arch.lifecycle.MutableLiveData;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
@@ -152,8 +151,8 @@ public class MusicPlayingStateViewModel extends MusicDataViewModel implements Pl
         return mPlayModeResId;
     }
 
-    public void obtainPlayMode(Context context) {
-        PlayModeEvent event = new PlayModeEvent(MusicSharedPreferences.restorePlayMode(context), false);
+    public void obtainPlayMode() {
+        PlayModeEvent event = new PlayModeEvent(MusicSharedPreferences.restorePlayMode(), false);
         setPlayMode(event);
     }
 

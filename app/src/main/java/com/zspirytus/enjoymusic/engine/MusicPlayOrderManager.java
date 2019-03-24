@@ -7,7 +7,6 @@ import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.PlayList;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinPlayListToMusic;
-import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.listeners.observable.PlayListChangeObservable;
 import com.zspirytus.enjoymusic.utils.RamdomNumberGenerator;
 
@@ -27,7 +26,7 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
     private int mPlayMode;
 
     private MusicPlayOrderManager() {
-        int restorePlayMode = MusicSharedPreferences.restorePlayMode(MainApplication.getAppContext());
+        int restorePlayMode = MusicSharedPreferences.restorePlayMode();
         if (restorePlayMode != -1) {
             setPlayMode(restorePlayMode);
         }
