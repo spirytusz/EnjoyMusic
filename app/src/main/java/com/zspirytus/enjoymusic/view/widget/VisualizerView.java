@@ -80,9 +80,14 @@ public class VisualizerView extends View {
         if (getAlpha() != 0.0f) {
             rearFrequencies = currentFrequencies;
             currentFrequencies = frequencies;
-            calculateDiff();
+            boolean isPaused = calculateDiff();
             if (mPathShapeAnim.isRunning()) {
                 mPathShapeAnim.end();
+            }
+            if (isPaused) {
+                mPathShapeAnim.setDuration(300);
+            } else {
+                mPathShapeAnim.setDuration(100);
             }
             mPathShapeAnim.start();
         }
@@ -126,10 +131,16 @@ public class VisualizerView extends View {
         createPath(progress);
     }
 
-    private void calculateDiff() {
+    private boolean calculateDiff() {
+        /*
+         * 如果是暂停状态, 那么currentFrequencies就应该全为0
+         */
+        float f = 0f;
         for (int i = 0; i < rearFrequencies.length; i++) {
             diff[i] = currentFrequencies[i] - rearFrequencies[i];
+            f += currentFrequencies[i];
         }
+        return f == 0f;
     }
 
     @Override
