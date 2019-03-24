@@ -1,6 +1,8 @@
 package com.zspirytus.enjoymusic.impl.binder;
 
+import com.zspirytus.basesdk.utils.LogUtil;
 import com.zspirytus.enjoymusic.IAudioEffectHelper;
+import com.zspirytus.enjoymusic.cache.AudioConfigSharedPreferences;
 import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
 import com.zspirytus.enjoymusic.services.media.audioeffect.AcousticEchoCanceler;
 import com.zspirytus.enjoymusic.services.media.audioeffect.AutomaticGainControl;
@@ -18,6 +20,16 @@ public class AudioEffectHelper extends IAudioEffectHelper.Stub {
     }
 
     private AudioEffectHelper() {
+        if (AutomaticGainControl.isAutomaticGainControlAvailable()) {
+            AcousticEchoCanceler.setAcousticEchoCancelerEnable(AudioConfigSharedPreferences.obtainAcousticEchoCancelerEnable());
+        }
+        if (AcousticEchoCanceler.isAcousticEchoCancelerAvailable()) {
+            AutomaticGainControl.setAutomaticGainControlEnable(AudioConfigSharedPreferences.obtainAutomaticGainControlEnable());
+        }
+        if (NoiseSuppressor.isNoiseSuppressorAvailable()) {
+            NoiseSuppressor.setNoiseSuppressorEnable(AudioConfigSharedPreferences.obtainNoiseSuppressorEnable());
+        }
+        /*BassBoostHelper.setStrength(AudioConfigSharedPreferences.obtainBassBoastStrength());*/
     }
 
     public static AudioEffectHelper getInstance() {
@@ -42,6 +54,7 @@ public class AudioEffectHelper extends IAudioEffectHelper.Stub {
     @Override
     public void setAcousticEchoCancelerEnable(boolean enable) {
         AcousticEchoCanceler.setAcousticEchoCancelerEnable(enable);
+        AudioConfigSharedPreferences.saveAcousticEchoCancelerEnable(enable);
     }
 
     @Override
@@ -52,6 +65,7 @@ public class AudioEffectHelper extends IAudioEffectHelper.Stub {
     @Override
     public void setAutomaticGainControlEnable(boolean enable) {
         AutomaticGainControl.setAutomaticGainControlEnable(enable);
+        AudioConfigSharedPreferences.saveAutomaticGainControlEnable(enable);
     }
 
     @Override
@@ -62,11 +76,13 @@ public class AudioEffectHelper extends IAudioEffectHelper.Stub {
     @Override
     public void setNoiseSuppressorEnable(boolean enable) {
         NoiseSuppressor.setNoiseSuppressorEnable(enable);
+        AudioConfigSharedPreferences.saveNoiseSuppressorEnable(enable);
     }
 
     @Override
     public void setBassBoostStrength(int strength) {
         BassBoostHelper.setStrength((short) strength);
+        AudioConfigSharedPreferences.saveBassBoastStrength((short) strength);
     }
 
     @Override
@@ -75,7 +91,8 @@ public class AudioEffectHelper extends IAudioEffectHelper.Stub {
     }
 
     @Override
-    public int[] usePresetReverb(int position) {
-        return PresetReverbHelper.getInstance().usePresetReverb(position);
+    public void usePresetReverb(int position) {
+        PresetReverbHelper.getInstance().usePresetReverb(position);
+        LogUtil.e(this.getClass().getSimpleName(), "remote pos = " + position);
     }
 }

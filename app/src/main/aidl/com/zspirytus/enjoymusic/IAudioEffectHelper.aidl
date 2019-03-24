@@ -16,5 +16,5 @@ interface IAudioEffectHelper {
     void setNoiseSuppressorEnable(boolean enable);
     void setBassBoostStrength(int strength);
     List<String> getPresetReverbNameList();
-    int[] usePresetReverb(int position);
+    void usePresetReverb(int position);
 }

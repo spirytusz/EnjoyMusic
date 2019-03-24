@@ -4,18 +4,17 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 import com.zspirytus.basesdk.thread.UIThreadSwitcher;
+import com.zspirytus.basesdk.utils.LogUtil;
 import com.zspirytus.enjoymusic.IAudioEffectHelper;
+import com.zspirytus.enjoymusic.cache.AudioConfigSharedPreferences;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.entity.EqualizerMetaData;
 import com.zspirytus.enjoymusic.global.AudioEffectConfig;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AudioEffectController {
-
-    private IAudioEffectHelper mAudioEffectHelper;
 
     private static class Singleton {
         static AudioEffectController INSTANCE = new AudioEffectController();
@@ -28,81 +27,85 @@ public class AudioEffectController {
         return Singleton.INSTANCE;
     }
 
-    private void initBinder() {
-        if (mAudioEffectHelper == null) {
-            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.AUDIO_EFFECT);
-            mAudioEffectHelper = IAudioEffectHelper.Stub.asInterface(binder);
-        }
-    }
-
     public void setBandLevel(short band, short level) {
         ThreadPool.execute(() -> {
-            initBinder();
+            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.AUDIO_EFFECT);
+            IAudioEffectHelper audioEffectHelper = IAudioEffectHelper.Stub.asInterface(binder);
             try {
-                mAudioEffectHelper.setBandLevel((int) band, (int) level);
+                audioEffectHelper.setBandLevel((int) band, (int) level);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         });
     }
 
-    public void isAcousticEchoCancelerAvailable() {
+    void isAcousticEchoCancelerAvailable() {
         ThreadPool.execute(() -> {
-            initBinder();
-            boolean available = false;
+            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.AUDIO_EFFECT);
+            IAudioEffectHelper audioEffectHelper = IAudioEffectHelper.Stub.asInterface(binder);
             try {
-                available = mAudioEffectHelper.isAcousticEchoCancelerAvailable();
+                boolean available = audioEffectHelper.isAcousticEchoCancelerAvailable();
+                AudioEffectConfig.setIsAcousticEchoCancelerAvailable(available);
+                if (available) {
+                    AudioEffectConfig.setIsAcousticEchoCancelerEnable(AudioConfigSharedPreferences.obtainAcousticEchoCancelerEnable());
+                }
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-            AudioEffectConfig.setIsAcousticEchoCancelerAvailable(available);
         });
     }
 
-    public void isAutomaticGainControlAvailable() {
+    void isAutomaticGainControlAvailable() {
         ThreadPool.execute(() -> {
-            initBinder();
-            boolean available = false;
+            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.AUDIO_EFFECT);
+            IAudioEffectHelper audioEffectHelper = IAudioEffectHelper.Stub.asInterface(binder);
             try {
-                available = mAudioEffectHelper.isAutomaticGainControlAvailable();
+                boolean available = audioEffectHelper.isAutomaticGainControlAvailable();
+                AudioEffectConfig.setIsAutomaticGainControlAvailable(available);
+                if (available) {
+                    AudioEffectConfig.setIsAutomaticGainControlEnable(AudioConfigSharedPreferences.obtainAutomaticGainControlEnable());
+                }
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-            AudioEffectConfig.setIsAutomaticGainControlAvailable(available);
         });
     }
 
-    public void isNoiseSuppressorAvailable() {
+    void isNoiseSuppressorAvailable() {
         ThreadPool.execute(() -> {
-            initBinder();
-            boolean available = false;
+            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.AUDIO_EFFECT);
+            IAudioEffectHelper audioEffectHelper = IAudioEffectHelper.Stub.asInterface(binder);
             try {
-                available = mAudioEffectHelper.isNoiseSuppressorAvailable();
+                boolean available = audioEffectHelper.isNoiseSuppressorAvailable();
+                AudioEffectConfig.setIsNoiseSuppressorAvailable(available);
+                if (available) {
+                    AudioEffectConfig.setIsNoiseSuppressorEnable(AudioConfigSharedPreferences.obtainNoiseSuppressorEnable());
+                }
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-            AudioEffectConfig.setIsNoiseSuppressorAvailable(available);
         });
     }
 
     public void getPresetReverbNameList() {
         ThreadPool.execute(() -> {
-            initBinder();
-            List<String> nameList = new ArrayList<>();
+            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.AUDIO_EFFECT);
+            IAudioEffectHelper audioEffectHelper = IAudioEffectHelper.Stub.asInterface(binder);
             try {
-                nameList = mAudioEffectHelper.getPresetReverbNameList();
+                List<String> nameList = audioEffectHelper.getPresetReverbNameList();
+                AudioEffectConfig.setPresetReverbNameList(nameList);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-            AudioEffectConfig.setPresetReverbNameList(nameList);
         });
     }
 
     public void setAcousticEchoCancelerEnable(boolean enable) {
         ThreadPool.execute(() -> {
-            initBinder();
+            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.AUDIO_EFFECT);
+            IAudioEffectHelper audioEffectHelper = IAudioEffectHelper.Stub.asInterface(binder);
             try {
-                mAudioEffectHelper.setAcousticEchoCancelerEnable(enable);
+                audioEffectHelper.setAcousticEchoCancelerEnable(enable);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -111,9 +114,10 @@ public class AudioEffectController {
 
     public void setAutomaticGainControlEnable(boolean enable) {
         ThreadPool.execute(() -> {
-            initBinder();
+            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.AUDIO_EFFECT);
+            IAudioEffectHelper audioEffectHelper = IAudioEffectHelper.Stub.asInterface(binder);
             try {
-                mAudioEffectHelper.setAutomaticGainControlEnable(enable);
+                audioEffectHelper.setAutomaticGainControlEnable(enable);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -122,9 +126,10 @@ public class AudioEffectController {
 
     public void setNoiseSuppressorEnable(boolean enable) {
         ThreadPool.execute(() -> {
-            initBinder();
+            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.AUDIO_EFFECT);
+            IAudioEffectHelper audioEffectHelper = IAudioEffectHelper.Stub.asInterface(binder);
             try {
-                mAudioEffectHelper.setNoiseSuppressorEnable(enable);
+                audioEffectHelper.setNoiseSuppressorEnable(enable);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -133,9 +138,10 @@ public class AudioEffectController {
 
     public void setBassBoostStrength(int strength) {
         ThreadPool.execute(() -> {
-            initBinder();
+            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.AUDIO_EFFECT);
+            IAudioEffectHelper audioEffectHelper = IAudioEffectHelper.Stub.asInterface(binder);
             try {
-                mAudioEffectHelper.setBassBoostStrength(strength);
+                audioEffectHelper.setBassBoostStrength(strength);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -143,10 +149,12 @@ public class AudioEffectController {
     }
 
     public void usePresetReverb(int position) {
+        LogUtil.e(this.getClass().getSimpleName(), "pos = " + position);
         ThreadPool.execute(() -> {
-            initBinder();
+            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.AUDIO_EFFECT);
+            IAudioEffectHelper audioEffectHelper = IAudioEffectHelper.Stub.asInterface(binder);
             try {
-                mAudioEffectHelper.usePresetReverb(position);
+                audioEffectHelper.usePresetReverb(position);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -155,23 +163,24 @@ public class AudioEffectController {
 
     public void attachEqualizer(OnFetchEqualizerMetaData l) {
         ThreadPool.execute(() -> {
-            initBinder();
-            EqualizerMetaData metaData = null;
+            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.AUDIO_EFFECT);
+            IAudioEffectHelper audioEffectHelper = IAudioEffectHelper.Stub.asInterface(binder);
+            final EqualizerMetaData metaData;
             try {
-                metaData = mAudioEffectHelper.addEqualizerSupport();
+                metaData = audioEffectHelper.addEqualizerSupport();
+                UIThreadSwitcher.runOnMainThreadSync(() -> l.onResult(metaData));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-            final EqualizerMetaData result = metaData;
-            UIThreadSwitcher.runOnMainThreadSync(() -> l.onResult(result));
         });
     }
 
     public void setBassBoastStrength(int strength) {
         ThreadPool.execute(() -> {
-            initBinder();
+            IBinder binder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.AUDIO_EFFECT);
+            IAudioEffectHelper audioEffectHelper = IAudioEffectHelper.Stub.asInterface(binder);
             try {
-                mAudioEffectHelper.setBassBoostStrength(strength);
+                audioEffectHelper.setBassBoostStrength(strength);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel;
 import android.content.res.Resources;
 
 import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.engine.AudioEffectController;
 import com.zspirytus.enjoymusic.entity.listitem.AudioEffectItem;
 import com.zspirytus.enjoymusic.entity.listitem.SettingItem;
 import com.zspirytus.enjoymusic.global.AudioEffectConfig;
@@ -34,7 +35,8 @@ public class SettingFragmentViewModel extends ViewModel {
             AudioEffectItem audioEffectItem = new AudioEffectItem();
             audioEffectItem.setTitle(resources.getString(R.string.audio_effect_acoustic_echo_canceler));
             audioEffectItem.setSingleEffect(true);
-            audioEffectItem.setChecked(false);
+            audioEffectItem.setFlag(0);
+            audioEffectItem.setChecked(AudioEffectConfig.isAcousticEchoCancelerEnable());
             item.setAudioEffectItem(audioEffectItem);
             item.setAudioEffect(true);
             settingItems.add(item);
@@ -44,7 +46,8 @@ public class SettingFragmentViewModel extends ViewModel {
             AudioEffectItem audioEffectItem = new AudioEffectItem();
             audioEffectItem.setTitle(resources.getString(R.string.audio_effect_automatic_gain_control));
             audioEffectItem.setSingleEffect(true);
-            audioEffectItem.setChecked(false);
+            audioEffectItem.setFlag(1);
+            audioEffectItem.setChecked(AudioEffectConfig.isAutomaticGainControlEnable());
             item.setAudioEffectItem(audioEffectItem);
             item.setAudioEffect(true);
             settingItems.add(item);
@@ -54,7 +57,8 @@ public class SettingFragmentViewModel extends ViewModel {
             AudioEffectItem audioEffectItem = new AudioEffectItem();
             audioEffectItem.setTitle(resources.getString(R.string.audio_effect_noise_suppressor));
             audioEffectItem.setSingleEffect(true);
-            audioEffectItem.setChecked(false);
+            audioEffectItem.setFlag(2);
+            audioEffectItem.setChecked(AudioEffectConfig.isNoiseSuppressorEnable());
             item.setAudioEffectItem(audioEffectItem);
             item.setAudioEffect(true);
             settingItems.add(item);
@@ -89,5 +93,19 @@ public class SettingFragmentViewModel extends ViewModel {
         settingItems.add(item);
 
         return settingItems;
+    }
+
+    public void setSingleEffect(AudioEffectItem audioEffectItem) {
+        switch (audioEffectItem.getFlag()) {
+            case 0:
+                AudioEffectController.getInstance().setAcousticEchoCancelerEnable(audioEffectItem.isChecked());
+                break;
+            case 1:
+                AudioEffectController.getInstance().setAutomaticGainControlEnable(audioEffectItem.isChecked());
+                break;
+            case 2:
+                AudioEffectController.getInstance().setNoiseSuppressorEnable(audioEffectItem.isChecked());
+                break;
+        }
     }
 }

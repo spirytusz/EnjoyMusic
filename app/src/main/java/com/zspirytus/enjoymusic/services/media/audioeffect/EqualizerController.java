@@ -52,7 +52,7 @@ public class EqualizerController {
         return bandAndLevel;
     }
 
-    protected static List<String> getPresetNameList() {
+    static List<String> getPresetNameList() {
         int size = Singleton.INSTANCE.mEqualizer.getNumberOfPresets();
         List<String> nameList = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
@@ -61,9 +61,8 @@ public class EqualizerController {
         return nameList;
     }
 
-    protected static int[] usePresetReverb(int position) {
+    static void usePresetReverb(int position) {
         Singleton.INSTANCE.mEqualizer.usePreset((short) position);
-        return getBandLevel();
     }
 
 }

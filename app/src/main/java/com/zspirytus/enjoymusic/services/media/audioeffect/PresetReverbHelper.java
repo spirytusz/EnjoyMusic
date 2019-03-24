@@ -25,14 +25,14 @@ public class PresetReverbHelper extends PresetReverbObservable {
 
     private PresetReverb mPresetReverb;
 
-    public int[] usePresetReverb(int position) {
+    public void usePresetReverb(int position) {
         if (mPresetReverb == null) {
             int audioSessionId = MediaPlayController.getInstance().getAudioSessionId();
             mPresetReverb = new PresetReverb(0, audioSessionId);
         }
         AudioConfigSharedPreferences.saveAudioField(position);
         notifyAllObserverAudioFieldChange(position);
-        return EqualizerController.usePresetReverb(position);
+        EqualizerController.usePresetReverb(position);
     }
 
     public static List<String> getPresetReverbNameList() {

@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Switch;
 
 import com.zspirytus.basesdk.annotations.LayoutIdInject;
 import com.zspirytus.basesdk.annotations.ViewInject;
@@ -68,7 +69,11 @@ public class SettingsFragment extends CommonHeaderBaseFragment implements OnItem
         if (item.isAudioEffect()) {
             AudioEffectItem audioEffectItem = item.getAudioEffectItem();
             if (audioEffectItem.isSingleEffect()) {
-
+                audioEffectItem.setChecked(!audioEffectItem.isChecked());
+                item.setAudioEffectItem(audioEffectItem);
+                mAdapter.getData().set(position, item);
+                ((Switch) view.findViewById(R.id.item_switch)).setChecked(audioEffectItem.isChecked());
+                mViewModel.setSingleEffect(audioEffectItem);
             } else {
                 showAudioEffectFragment(audioEffectItem);
             }
