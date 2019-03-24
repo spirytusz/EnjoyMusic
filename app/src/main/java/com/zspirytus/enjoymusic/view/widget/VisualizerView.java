@@ -95,10 +95,12 @@ public class VisualizerView extends View {
 
     public void setStrokenColor(int strokenColor) {
         this.strokenColor = strokenColor;
+        paint.setColor(strokenColor);
     }
 
     public void setStrokenWidth(int strokenWidth) {
         this.strokenWidth = strokenWidth;
+        paint.setStrokeWidth(strokenWidth);
     }
 
     private void createPath(float progress) {
