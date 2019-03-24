@@ -7,6 +7,7 @@ import android.os.RemoteException;
 import android.provider.MediaStore;
 
 import com.zspirytus.enjoymusic.IMusicMetaDataUpdator;
+import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
 import com.zspirytus.enjoymusic.cache.MusicScanner;
 import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Album;
@@ -17,6 +18,7 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.foregroundobserver.IMusicDeleteObserver;
 import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.impl.glide.GlideApp;
+import com.zspirytus.enjoymusic.services.NotificationHelper;
 
 import java.io.File;
 import java.util.concurrent.ExecutionException;
@@ -70,6 +72,13 @@ public class MusicMetaDataUpdator extends IMusicMetaDataUpdator.Stub {
             File file = GlideApp.with(MainApplication.getAppContext()).asFile().load(picUrl).submit().get();
             CustomAlbumArt customAlbumArt = new CustomAlbumArt(album.getAlbumId(), file.getAbsolutePath());
             DBManager.getInstance().getDaoSession().getCustomAlbumArtDao().insertOrReplace(customAlbumArt);
+            /*
+             * 更新Notification
+             */
+            Music music = BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic();
+            if (music != null && album.getAlbumId().equals(music.getAlbumId())) {
+                NotificationHelper.getInstance().showNotification(music);
+            }
             return true;
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();

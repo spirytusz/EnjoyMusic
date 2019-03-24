@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.engine;
 
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.WorkerThread;
@@ -33,6 +34,20 @@ public class ForegroundMusicController {
 
     public static ForegroundMusicController getInstance() {
         return SingletonHolder.INSTANCE;
+    }
+
+    public void play(final Uri uri) {
+        if (uri != null) {
+            ThreadPool.execute(() -> {
+                IBinder musicControlBinder = ForegroundBinderManager.getInstance().getBinderByBinderCode(Constant.BinderCode.MUSIC_CONTROL);
+                IMusicControl mIMusicControl = MusicController.asInterface(musicControlBinder);
+                try {
+                    mIMusicControl.playUri(uri);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     public void play(final Music music) {

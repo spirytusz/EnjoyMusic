@@ -144,6 +144,7 @@
     <string name="download_failed">下载失败, 请稍后重试…</string>
     <string name="duplicate_song_list_name">重复歌单名称…</string>
     <string name="no_search_text">请输入需要搜索的文本…</string>
+    <string name="invalid_file">无效文件…</string>
     <!-- Toast tip end -->
 
     <!-- SaveSongListDialog Text start -->

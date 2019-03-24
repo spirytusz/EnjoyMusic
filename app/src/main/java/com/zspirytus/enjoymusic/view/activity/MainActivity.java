@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -117,6 +118,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        setIntent(intent);
         Music action = intent.getParcelableExtra(Constant.NotificationEvent.EXTRA);
         if (action != null) {
             String currentFragmentName = FragmentVisibilityManager.getInstance().getCurrentFragmentName();
@@ -126,6 +128,7 @@ public class MainActivity extends BaseActivity
                 showFragment(fragment);
             }
         }
+        processExternalRequest();
     }
 
     @SuppressWarnings("all")
@@ -292,6 +295,7 @@ public class MainActivity extends BaseActivity
                     showFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
                 }
                 requestPermission();
+                processExternalRequest();
             }
 
             @Override
@@ -299,5 +303,16 @@ public class MainActivity extends BaseActivity
             }
         };
         bindService(startPlayMusicServiceIntent, conn, BIND_AUTO_CREATE);
+    }
+
+    private void processExternalRequest() {
+        if (Intent.ACTION_VIEW.equals(getIntent().getAction())) {
+            Uri uri = getIntent().getData();
+            if (uri != null) {
+                ForegroundMusicController.getInstance().play(uri);
+                MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
+                showFragment(fragment);
+            }
+        }
     }
 }
