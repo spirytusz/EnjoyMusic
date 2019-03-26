@@ -1,31 +1,16 @@
 package com.zspirytus.enjoymusic.listeners.observable;
 
 import android.os.RemoteCallbackList;
-import android.os.RemoteException;
 
 import com.zspirytus.enjoymusic.foregroundobserver.IFrequencyObserver;
 
-public class FrequencyObservable {
+public abstract class FrequencyObservable {
 
-    private RemoteCallbackList<IFrequencyObserver> callbackList = new RemoteCallbackList<>();
+    protected RemoteCallbackList<IFrequencyObserver> callbackList = new RemoteCallbackList<>();
 
-    public void register(IFrequencyObserver observer) {
-        callbackList.register(observer);
-    }
+    public abstract void register(IFrequencyObserver observer);
 
-    public void unregister(IFrequencyObserver observer) {
-        callbackList.unregister(observer);
-    }
+    public abstract void unregister(IFrequencyObserver observer);
 
-    public void notifyAllObserverFrequencyChange(float[] magnitudes, float[] phases) {
-        int size = callbackList.beginBroadcast();
-        for (int i = 0; i < size; i++) {
-            try {
-                callbackList.getBroadcastItem(i).onFrequencyChange(magnitudes, phases);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-        callbackList.finishBroadcast();
-    }
+    public abstract void notifyAllObserverFrequencyChange(float[] magnitudes, float[] phases);
 }

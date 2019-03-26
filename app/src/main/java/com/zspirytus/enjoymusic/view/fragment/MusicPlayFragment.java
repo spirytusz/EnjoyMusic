@@ -234,7 +234,7 @@ public class MusicPlayFragment extends BaseFragment
     }
 
     @Override
-    public void onFrequencyChange(float[] magnitudes, float[] phases) {
+    public void onFrequencyChange(float[] magnitudes) {
         mVisualizer.post(() -> mVisualizer.setFrequencies(magnitudes));
     }
 

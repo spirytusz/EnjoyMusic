@@ -23,9 +23,9 @@ public class FrequencyObserverManager extends IFrequencyObserver.Stub {
     }
 
     @Override
-    public void onFrequencyChange(float[] magnitudes, float[] phases) {
+    public void onFrequencyChange(float[] magnitudes) {
         for (OnFrequencyChangeListener observer : observers) {
-            observer.onFrequencyChange(magnitudes, phases);
+            observer.onFrequencyChange(magnitudes);
         }
     }
 

@@ -1,7 +1,9 @@
 package com.zspirytus.enjoymusic.services.media;
 
 import android.media.audiofx.Visualizer;
+import android.os.RemoteException;
 
+import com.zspirytus.enjoymusic.foregroundobserver.IFrequencyObserver;
 import com.zspirytus.enjoymusic.listeners.observable.FrequencyObservable;
 
 public class VisualizerHelper extends FrequencyObservable implements Visualizer.OnDataCaptureListener {
@@ -17,6 +19,29 @@ public class VisualizerHelper extends FrequencyObservable implements Visualizer.
         mVisualizer = new Visualizer(MediaPlayController.getInstance().getAudioSessionId());
         mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
         mVisualizer.setDataCaptureListener(this, Visualizer.getMaxCaptureRate() / 2, false, true);
+    }
+
+    @Override
+    public void register(IFrequencyObserver observer) {
+        callbackList.register(observer);
+    }
+
+    @Override
+    public void unregister(IFrequencyObserver observer) {
+        callbackList.unregister(observer);
+    }
+
+    @Override
+    public void notifyAllObserverFrequencyChange(float[] magnitudes, float[] phases) {
+        int size = callbackList.beginBroadcast();
+        for (int i = 0; i < size; i++) {
+            try {
+                callbackList.getBroadcastItem(i).onFrequencyChange(magnitudes);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+        callbackList.finishBroadcast();
     }
 
     public static VisualizerHelper getInstance() {
