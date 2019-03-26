@@ -13,6 +13,7 @@ import com.zspirytus.enjoymusic.db.table.CustomAlbumArt;
 import com.zspirytus.enjoymusic.db.table.Folder;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.PlayHistory;
+import com.zspirytus.enjoymusic.db.table.PlayList;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinAlbumToArtist;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinFolderToMusic;
 
@@ -109,6 +110,15 @@ public class QueryExecutor {
         List<Music> musicList = new ArrayList<>();
         for (PlayHistory playHistory : playHistories) {
             musicList.add(DBManager.getInstance().getDaoSession().getMusicDao().load(playHistory.getMusicId()));
+        }
+        return musicList;
+    }
+
+    public static List<Music> getPlayList() {
+        List<PlayList> playLists = DBManager.getInstance().getDaoSession().loadAll(PlayList.class);
+        List<Music> musicList = new ArrayList<>();
+        for (PlayList playList : playLists) {
+            musicList.add(DBManager.getInstance().getDaoSession().getMusicDao().load(playList.getMusicId()));
         }
         return musicList;
     }
