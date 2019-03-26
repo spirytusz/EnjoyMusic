@@ -5,13 +5,13 @@ import android.os.RemoteException;
 
 import com.zspirytus.enjoymusic.cache.AudioConfigSharedPreferences;
 import com.zspirytus.enjoymusic.foregroundobserver.IAudioFieldChangeObserver;
-import com.zspirytus.enjoymusic.listeners.observable.PresetReverbObservable;
+import com.zspirytus.enjoymusic.listeners.observable.RemoteObservable;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
 import java.util.List;
 
 // 预设音场控制器
-public class PresetReverbHelper extends PresetReverbObservable {
+public class PresetReverbHelper extends RemoteObservable<IAudioFieldChangeObserver, Integer> {
 
     private static class Singleton {
         static PresetReverbHelper INSTANCE = new PresetReverbHelper();
@@ -23,25 +23,25 @@ public class PresetReverbHelper extends PresetReverbObservable {
 
     @Override
     public void register(IAudioFieldChangeObserver observer) {
-        mRemoteCallbackList.register(observer);
+        getCallbackList().register(observer);
     }
 
     @Override
     public void unregister(IAudioFieldChangeObserver observer) {
-        mRemoteCallbackList.unregister(observer);
+        getCallbackList().unregister(observer);
     }
 
     @Override
-    public void notifyAllObserverAudioFieldChange(int position) {
-        int size = mRemoteCallbackList.beginBroadcast();
+    protected void notifyChange(Integer position) {
+        int size = getCallbackList().beginBroadcast();
         for (int i = 0; i < size; i++) {
             try {
-                mRemoteCallbackList.getBroadcastItem(i).onChange(position);
+                getCallbackList().getBroadcastItem(i).onChange(position);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         }
-        mRemoteCallbackList.finishBroadcast();
+        getCallbackList().finishBroadcast();
     }
 
     public static PresetReverbHelper getInstance() {
@@ -56,7 +56,7 @@ public class PresetReverbHelper extends PresetReverbObservable {
             mPresetReverb = new PresetReverb(0, audioSessionId);
         }
         AudioConfigSharedPreferences.saveAudioField(position);
-        notifyAllObserverAudioFieldChange(position);
+        notifyChange(position);
         EqualizerController.usePresetReverb(position);
     }
 

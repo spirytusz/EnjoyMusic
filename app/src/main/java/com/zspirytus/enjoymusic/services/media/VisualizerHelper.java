@@ -4,9 +4,9 @@ import android.media.audiofx.Visualizer;
 import android.os.RemoteException;
 
 import com.zspirytus.enjoymusic.foregroundobserver.IFrequencyObserver;
-import com.zspirytus.enjoymusic.listeners.observable.FrequencyObservable;
+import com.zspirytus.enjoymusic.listeners.observable.RemoteObservable;
 
-public class VisualizerHelper extends FrequencyObservable implements Visualizer.OnDataCaptureListener {
+public class VisualizerHelper extends RemoteObservable<IFrequencyObserver, Float[]> implements Visualizer.OnDataCaptureListener {
 
     private static class Singleton {
         static VisualizerHelper INSTANCE = new VisualizerHelper();
@@ -23,25 +23,29 @@ public class VisualizerHelper extends FrequencyObservable implements Visualizer.
 
     @Override
     public void register(IFrequencyObserver observer) {
-        callbackList.register(observer);
+        getCallbackList().register(observer);
     }
 
     @Override
     public void unregister(IFrequencyObserver observer) {
-        callbackList.unregister(observer);
+        getCallbackList().unregister(observer);
     }
 
     @Override
-    public void notifyAllObserverFrequencyChange(float[] magnitudes, float[] phases) {
-        int size = callbackList.beginBroadcast();
+    protected void notifyChange(Float[] magnitudes) {
+        float[] unboxing = new float[magnitudes.length];
+        for (int i = 0; i < magnitudes.length; i++) {
+            unboxing[i] = magnitudes[i];
+        }
+        int size = getCallbackList().beginBroadcast();
         for (int i = 0; i < size; i++) {
             try {
-                callbackList.getBroadcastItem(i).onFrequencyChange(magnitudes);
+                getCallbackList().getBroadcastItem(i).onFrequencyChange(unboxing);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         }
-        callbackList.finishBroadcast();
+        getCallbackList().finishBroadcast();
     }
 
     public static VisualizerHelper getInstance() {
@@ -62,12 +66,12 @@ public class VisualizerHelper extends FrequencyObservable implements Visualizer.
 
     @Override
     public void onFftDataCapture(Visualizer visualizer, byte[] fft, int samplingRate) {
-        float[] magnitudes = new float[fft.length / STEP];
+        Float[] magnitudes = new Float[fft.length / STEP];
         float[] phases = new float[fft.length / STEP];
         for (int i = 0; i < fft.length; i += STEP) {
             magnitudes[i / STEP] = (float) Math.hypot(fft[i], fft[i + 1]);
-            phases[i / STEP] = (float) Math.atan2(fft[i + 1], fft[i]);
+            //phases[i / STEP] = (float) Math.atan2(fft[i + 1], fft[i]);
         }
-        notifyAllObserverFrequencyChange(magnitudes, phases);
+        notifyChange(magnitudes);
     }
 }

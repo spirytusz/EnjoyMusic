@@ -10,7 +10,7 @@ import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.PlayList;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayListChangeObserver;
-import com.zspirytus.enjoymusic.listeners.observable.PlayListChangeObservable;
+import com.zspirytus.enjoymusic.listeners.observable.RemoteObservable;
 import com.zspirytus.enjoymusic.utils.RamdomNumberGenerator;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
  * Created by ZSpirytus on 2018/9/5.
  */
 
-public class MusicPlayOrderManager extends PlayListChangeObservable {
+public class MusicPlayOrderManager extends RemoteObservable<IPlayListChangeObserver, List<Music>> {
 
     private List<Music> mPlayList;
 
@@ -40,7 +40,7 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
 
     @Override
     public void register(IPlayListChangeObserver observer) {
-        mObservers.register(observer);
+        getCallbackList().register(observer);
         try {
             observer.onPlayListChange(mPlayList);
         } catch (RemoteException e) {
@@ -50,20 +50,20 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
 
     @Override
     public void unregister(IPlayListChangeObserver observer) {
-        mObservers.unregister(observer);
+        getCallbackList().unregister(observer);
     }
 
     @Override
-    public void notifyAllObserverPlayListChange(List<Music> playList) {
-        int size = mObservers.beginBroadcast();
+    protected void notifyChange(List<Music> musicList) {
+        int size = getCallbackList().beginBroadcast();
         for (int i = 0; i < size; i++) {
             try {
-                mObservers.getBroadcastItem(i).onPlayListChange(playList);
+                getCallbackList().getBroadcastItem(i).onPlayListChange(musicList);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         }
-        mObservers.finishBroadcast();
+        getCallbackList().finishBroadcast();
     }
 
     public static MusicPlayOrderManager getInstance() {
@@ -76,7 +76,7 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
 
     public void setPlayList(List<Music> playList) {
         orderPlayList(playList);
-        notifyAllObserverPlayListChange(mPlayList);
+        notifyChange(mPlayList);
 
         DBManager.getInstance().getDaoSession().getPlayListDao().deleteAll();
         List<PlayList> playLists = new ArrayList<>();
@@ -99,8 +99,7 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
             mPlayList = new ArrayList<>();
             orderPlayList(musicList);
         }
-        notifyAllObserverPlayListChange(mPlayList);
-        /**/
+        notifyChange(mPlayList);
         List<PlayList> playLists = new ArrayList<>();
         for (Music music : mPlayList) {
             playLists.add(new PlayList(music.getMusicId()));
@@ -148,7 +147,7 @@ public class MusicPlayOrderManager extends PlayListChangeObservable {
         if (mPlayList != null) {
             List<Music> musicList = new ArrayList<>(mPlayList);
             orderPlayList(musicList);
-            notifyAllObserverPlayListChange(mPlayList);
+            notifyChange(mPlayList);
         }
     }
 
