@@ -6,7 +6,6 @@ import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.PlayHistory;
-import com.zspirytus.enjoymusic.db.table.jointable.JoinPlayHistoryToMusic;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayHistoryChangeObserver;
 import com.zspirytus.enjoymusic.listeners.observable.PlayHistoryObservable;
 
@@ -14,7 +13,6 @@ import java.util.List;
 
 public class PlayHistoryManager extends PlayHistoryObservable {
 
-    private static final long PLAY_HISTORY_PRIMARY_KEY = 6666;
     private static final int PLAY_HISTORY_LIMIT_SIZE = 100;
 
     private List<Music> mPlayHistory;
@@ -71,11 +69,7 @@ public class PlayHistoryManager extends PlayHistoryObservable {
     }
 
     private void insertToDB(Music music) {
-        PlayHistory playHistory = DBManager.getInstance().getDaoSession().load(PlayHistory.class, PLAY_HISTORY_PRIMARY_KEY);
-        if (playHistory == null) {
-            DBManager.getInstance().getDaoSession().getPlayHistoryDao().insert(new PlayHistory(PLAY_HISTORY_PRIMARY_KEY));
-        }
-        JoinPlayHistoryToMusic joinPlayHistoryToMusic = new JoinPlayHistoryToMusic(PLAY_HISTORY_PRIMARY_KEY, music.getMusicId(), System.currentTimeMillis());
-        DBManager.getInstance().getDaoSession().getJoinPlayHistoryToMusicDao().insertOrReplace(joinPlayHistoryToMusic);
+        PlayHistory playHistory = new PlayHistory(music.getMusicId(), System.currentTimeMillis());
+        DBManager.getInstance().getDaoSession().getPlayHistoryDao().insertOrReplace(playHistory);
     }
 }

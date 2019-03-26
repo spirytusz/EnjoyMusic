@@ -8,22 +8,31 @@ import org.greenrobot.greendao.annotation.Id;
 public class PlayHistory {
 
     @Id
-    private Long playHistoryId;
+    private Long musicId;
+    private Long timestamp;
 
-    @Generated(hash = 1714027898)
-    public PlayHistory(Long playHistoryId) {
-        this.playHistoryId = playHistoryId;
+    @Generated(hash = 964369655)
+    public PlayHistory(Long musicId, Long timestamp) {
+        this.musicId = musicId;
+        this.timestamp = timestamp;
     }
-
     @Generated(hash = 2145518983)
     public PlayHistory() {
     }
 
-    public Long getPlayHistoryId() {
-        return this.playHistoryId;
+    public Long getMusicId() {
+        return this.musicId;
     }
 
-    public void setPlayHistoryId(Long playHistoryId) {
-        this.playHistoryId = playHistoryId;
+    public void setMusicId(Long musicId) {
+        this.musicId = musicId;
+    }
+
+    public Long getTimestamp() {
+        return this.timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 }

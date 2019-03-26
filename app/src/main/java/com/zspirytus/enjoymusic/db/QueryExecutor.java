@@ -4,17 +4,17 @@ import com.zspirytus.enjoymusic.db.greendao.AlbumDao;
 import com.zspirytus.enjoymusic.db.greendao.ArtistDao;
 import com.zspirytus.enjoymusic.db.greendao.JoinAlbumToArtistDao;
 import com.zspirytus.enjoymusic.db.greendao.JoinFolderToMusicDao;
-import com.zspirytus.enjoymusic.db.greendao.JoinPlayHistoryToMusicDao;
 import com.zspirytus.enjoymusic.db.greendao.MusicDao;
+import com.zspirytus.enjoymusic.db.greendao.PlayHistoryDao;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.ArtistArt;
 import com.zspirytus.enjoymusic.db.table.CustomAlbumArt;
 import com.zspirytus.enjoymusic.db.table.Folder;
 import com.zspirytus.enjoymusic.db.table.Music;
+import com.zspirytus.enjoymusic.db.table.PlayHistory;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinAlbumToArtist;
 import com.zspirytus.enjoymusic.db.table.jointable.JoinFolderToMusic;
-import com.zspirytus.enjoymusic.db.table.jointable.JoinPlayHistoryToMusic;
 
 import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.query.Query;
@@ -102,13 +102,13 @@ public class QueryExecutor {
     }
 
     public static List<Music> getPlayHistory(int limit) {
-        List<JoinPlayHistoryToMusic> joinPlayHistoryToMusicList = DBManager.getInstance()
-                .getDaoSession().queryBuilder(JoinPlayHistoryToMusic.class)
-                .orderDesc(JoinPlayHistoryToMusicDao.Properties.TimeStamp)
-                .limit(limit).list();
+        List<PlayHistory> playHistories = DBManager.getInstance().getDaoSession().queryBuilder(PlayHistory.class)
+                .orderAsc(PlayHistoryDao.Properties.Timestamp)
+                .limit(limit)
+                .list();
         List<Music> musicList = new ArrayList<>();
-        for (JoinPlayHistoryToMusic joinPlayHistoryToMusic : joinPlayHistoryToMusicList) {
-            musicList.add(DBManager.getInstance().getDaoSession().load(Music.class, joinPlayHistoryToMusic.getMusicId()));
+        for (PlayHistory playHistory : playHistories) {
+            musicList.add(DBManager.getInstance().getDaoSession().getMusicDao().load(playHistory.getMusicId()));
         }
         return musicList;
     }
