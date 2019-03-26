@@ -1,31 +1,16 @@
 package com.zspirytus.enjoymusic.listeners.observable;
 
 import android.os.RemoteCallbackList;
-import android.os.RemoteException;
 
 import com.zspirytus.enjoymusic.foregroundobserver.IAudioFieldChangeObserver;
 
-public class PresetReverbObservable {
+public abstract class PresetReverbObservable {
 
-    private static RemoteCallbackList<IAudioFieldChangeObserver> mRemoteCallbackList = new RemoteCallbackList<>();
+    protected RemoteCallbackList<IAudioFieldChangeObserver> mRemoteCallbackList = new RemoteCallbackList<>();
 
-    public static void register(IAudioFieldChangeObserver observer) {
-        mRemoteCallbackList.register(observer);
-    }
+    public abstract void register(IAudioFieldChangeObserver observer);
 
-    public static void unregister(IAudioFieldChangeObserver observer) {
-        mRemoteCallbackList.unregister(observer);
-    }
+    public abstract void unregister(IAudioFieldChangeObserver observer);
 
-    public static void notifyAllObserverAudioFieldChange(int position) {
-        int size = mRemoteCallbackList.beginBroadcast();
-        for (int i = 0; i < size; i++) {
-            try {
-                mRemoteCallbackList.getBroadcastItem(i).onChange(position);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-        mRemoteCallbackList.finishBroadcast();
-    }
+    public abstract void notifyAllObserverAudioFieldChange(int position);
 }

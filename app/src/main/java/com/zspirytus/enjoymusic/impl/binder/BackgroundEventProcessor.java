@@ -47,7 +47,7 @@ public class BackgroundEventProcessor extends IBackgroundEventProcessor.Stub {
                 PlayHistoryManager.getInstance().register(IPlayHistoryChangeObserver.Stub.asInterface(observer));
                 break;
             case Constant.BinderCode.AUDIO_FIELD_OBSERVER:
-                PresetReverbHelper.register(IAudioFieldChangeObserver.Stub.asInterface(observer));
+                PresetReverbHelper.getInstance().register(IAudioFieldChangeObserver.Stub.asInterface(observer));
                 break;
             case Constant.BinderCode.FREQUENCY_OBSERVER:
                 VisualizerHelper.getInstance().register(IFrequencyObserver.Stub.asInterface(observer));
@@ -78,7 +78,7 @@ public class BackgroundEventProcessor extends IBackgroundEventProcessor.Stub {
                 PlayHistoryManager.getInstance().unregister(IPlayHistoryChangeObserver.Stub.asInterface(observer));
                 break;
             case Constant.BinderCode.AUDIO_FIELD_OBSERVER:
-                PresetReverbHelper.unregister(IAudioFieldChangeObserver.Stub.asInterface(observer));
+                PresetReverbHelper.getInstance().unregister(IAudioFieldChangeObserver.Stub.asInterface(observer));
                 break;
             case Constant.BinderCode.FREQUENCY_OBSERVER:
                 VisualizerHelper.getInstance().unregister(IFrequencyObserver.Stub.asInterface(observer));
