@@ -20,7 +20,7 @@ public abstract class MyTimer {
         mTimerTask = new TimerTask() {
             @Override
             public void run() {
-
+                onTime();
             }
         };
         mTimer.schedule(mTimerTask, 0, period);
