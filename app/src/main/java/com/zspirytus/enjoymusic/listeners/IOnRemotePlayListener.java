@@ -2,6 +2,6 @@ package com.zspirytus.enjoymusic.listeners;
 
 import com.zspirytus.enjoymusic.db.table.Music;
 
-public interface OnRemotePlayListener {
+public interface IOnRemotePlayListener {
     void onPlay(Music music);
 }

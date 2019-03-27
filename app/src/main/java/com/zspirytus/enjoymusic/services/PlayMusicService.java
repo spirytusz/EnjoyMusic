@@ -13,11 +13,11 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.impl.binder.BinderPool;
-import com.zspirytus.enjoymusic.listeners.OnRemotePauseListener;
-import com.zspirytus.enjoymusic.listeners.OnRemotePlayListener;
+import com.zspirytus.enjoymusic.listeners.IOnRemotePauseListener;
+import com.zspirytus.enjoymusic.listeners.IOnRemotePlayListener;
+import com.zspirytus.enjoymusic.listeners.IOnRemoteProgressListener;
 import com.zspirytus.enjoymusic.receivers.MyAlarm;
 import com.zspirytus.enjoymusic.receivers.MyHeadSetPlugOutReceiver;
-import com.zspirytus.enjoymusic.receivers.observer.OnRemoteProgressListener;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.MyMediaSession;
 import com.zspirytus.enjoymusic.utils.StatusBarUtil;
@@ -30,7 +30,7 @@ import java.util.Calendar;
  * Created by ZSpirytus on 2018/8/2.
  */
 
-public class PlayMusicService extends BaseService implements OnRemotePlayListener, OnRemotePauseListener, OnRemoteProgressListener {
+public class PlayMusicService extends BaseService implements IOnRemotePlayListener, IOnRemotePauseListener, IOnRemoteProgressListener {
 
     private static final String TAG = "PlayMusicService";
 

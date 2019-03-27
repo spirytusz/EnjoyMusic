@@ -6,13 +6,13 @@ import android.arch.lifecycle.ViewModel;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayListObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayMusicObserverManager;
-import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeDirectlyObserver;
+import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeObserver;
 import com.zspirytus.enjoymusic.receivers.observer.PlayedMusicChangeObserver;
 
 import java.util.List;
 
 public class PlayListFragmentViewModel extends ViewModel
-        implements PlayListChangeDirectlyObserver, PlayedMusicChangeObserver {
+        implements PlayListChangeObserver, PlayedMusicChangeObserver {
 
     private MutableLiveData<List<Music>> mPlayList;
     private MutableLiveData<Music> mCurrentPlayMusic;

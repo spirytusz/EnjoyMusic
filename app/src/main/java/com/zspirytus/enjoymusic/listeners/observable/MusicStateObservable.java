@@ -8,7 +8,7 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayProgressChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayStateChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayedMusicChangeObserver;
-import com.zspirytus.enjoymusic.receivers.observer.OnRemoteProgressListener;
+import com.zspirytus.enjoymusic.listeners.IOnRemoteProgressListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class MusicStateObservable {
     private RemoteCallbackList<IPlayProgressChangeObserver> mPlayProgressObservers = new RemoteCallbackList<>();
     private RemoteCallbackList<IPlayedMusicChangeObserver> mPlayMusicChangeObservers = new RemoteCallbackList<>();
 
-    private List<OnRemoteProgressListener> mObservers = new ArrayList<>();
+    private List<IOnRemoteProgressListener> mObservers = new ArrayList<>();
 
     /**
      * register
@@ -46,7 +46,7 @@ public class MusicStateObservable {
         }
     }
 
-    public synchronized void registerRemotePlayProgressObserver(OnRemoteProgressListener observer) {
+    public synchronized void registerRemotePlayProgressObserver(IOnRemoteProgressListener observer) {
         if (!mObservers.contains(observer)) {
             mObservers.add(observer);
         }
@@ -67,7 +67,7 @@ public class MusicStateObservable {
         mPlayMusicChangeObservers.unregister(observer);
     }
 
-    public synchronized void unregisterRemotePlayProgressObserver(OnRemoteProgressListener observer) {
+    public synchronized void unregisterRemotePlayProgressObserver(IOnRemoteProgressListener observer) {
         mObservers.remove(observer);
     }
 
@@ -111,7 +111,7 @@ public class MusicStateObservable {
     }
 
     protected synchronized void notifyAllRemoteObserverPlayProgresChange(long milliseconds) {
-        for (OnRemoteProgressListener observer : mObservers) {
+        for (IOnRemoteProgressListener observer : mObservers) {
             observer.onProgressChange(milliseconds);
         }
     }

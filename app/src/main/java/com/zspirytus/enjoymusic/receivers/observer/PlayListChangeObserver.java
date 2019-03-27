@@ -4,6 +4,6 @@ import com.zspirytus.enjoymusic.db.table.Music;
 
 import java.util.List;
 
-public interface PlayListChangeDirectlyObserver {
+public interface PlayListChangeObserver {
     void onPlayListChangeDirectly(List<Music> playList);
 }

@@ -1,5 +1,5 @@
 package com.zspirytus.enjoymusic.receivers.observer;
 
-public interface OnFrequencyChangeListener {
+public interface FrequencyChangeObsercer {
     void onFrequencyChange(float[] magnitudes);
 }

@@ -16,8 +16,8 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.engine.PlayHistoryManager;
 import com.zspirytus.enjoymusic.global.MainApplication;
-import com.zspirytus.enjoymusic.listeners.OnRemotePauseListener;
-import com.zspirytus.enjoymusic.listeners.OnRemotePlayListener;
+import com.zspirytus.enjoymusic.listeners.IOnRemotePauseListener;
+import com.zspirytus.enjoymusic.listeners.IOnRemotePlayListener;
 import com.zspirytus.enjoymusic.listeners.observable.MusicStateObservable;
 import com.zspirytus.enjoymusic.services.MyTimer;
 import com.zspirytus.enjoymusic.services.NotificationHelper;
@@ -48,8 +48,8 @@ public class MediaPlayController extends MusicStateObservable
     private AudioManager audioManager;
     private MyTimer mPlayingTimer;
     private int state;
-    private OnRemotePlayListener mOnPlayListener;
-    private OnRemotePauseListener mOnPauseListener;
+    private IOnRemotePlayListener mOnPlayListener;
+    private IOnRemotePauseListener mOnPauseListener;
 
     private MediaPlayController() {
         // init MediaPlayer
@@ -80,11 +80,11 @@ public class MediaPlayController extends MusicStateObservable
         }
     }
 
-    public void setOnPlayListener(OnRemotePlayListener listener) {
+    public void setOnPlayListener(IOnRemotePlayListener listener) {
         mOnPlayListener = listener;
     }
 
-    public void setOnPauseListener(OnRemotePauseListener listener) {
+    public void setOnPauseListener(IOnRemotePauseListener listener) {
         mOnPauseListener = listener;
     }
 

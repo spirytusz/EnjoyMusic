@@ -1,5 +1,5 @@
 package com.zspirytus.enjoymusic.listeners;
 
-public interface OnRemotePauseListener {
+public interface IOnRemotePauseListener {
     void onPause();
 }

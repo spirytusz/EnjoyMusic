@@ -2,7 +2,7 @@ package com.zspirytus.enjoymusic.impl.binder.aidlobserver;
 
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayListChangeObserver;
-import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeDirectlyObserver;
+import com.zspirytus.enjoymusic.receivers.observer.PlayListChangeObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class PlayListObserverManager extends IPlayListChangeObserver.Stub {
         static PlayListObserverManager INSTANCE = new PlayListObserverManager();
     }
 
-    private List<PlayListChangeDirectlyObserver> observers = new ArrayList<>();
+    private List<PlayListChangeObserver> observers = new ArrayList<>();
 
     private PlayListObserverManager() {
     }
@@ -27,12 +27,12 @@ public class PlayListObserverManager extends IPlayListChangeObserver.Stub {
     @Override
     public void onPlayListChange(List<Music> playList) {
         mEvent1 = playList;
-        for (com.zspirytus.enjoymusic.receivers.observer.PlayListChangeDirectlyObserver observer : observers) {
+        for (PlayListChangeObserver observer : observers) {
             observer.onPlayListChangeDirectly(playList);
         }
     }
 
-    public void register(PlayListChangeDirectlyObserver observer) {
+    public void register(PlayListChangeObserver observer) {
         if (!observers.contains(observer)) {
             observers.add(observer);
             if (mEvent1 != null) {
@@ -41,7 +41,7 @@ public class PlayListObserverManager extends IPlayListChangeObserver.Stub {
         }
     }
 
-    public void unregister(PlayListChangeDirectlyObserver observer) {
+    public void unregister(PlayListChangeObserver observer) {
         observers.remove(observer);
     }
 }

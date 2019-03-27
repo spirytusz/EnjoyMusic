@@ -33,7 +33,7 @@ import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
 import com.zspirytus.enjoymusic.entity.event.PlayModeEvent;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.FrequencyObserverManager;
-import com.zspirytus.enjoymusic.receivers.observer.OnFrequencyChangeListener;
+import com.zspirytus.enjoymusic.receivers.observer.FrequencyChangeObsercer;
 import com.zspirytus.enjoymusic.view.dialog.PlayHistoryDialog;
 import com.zspirytus.enjoymusic.view.widget.AutoRotateCircleImage;
 import com.zspirytus.enjoymusic.view.widget.BlurImageView;
@@ -49,7 +49,7 @@ import java.io.File;
 
 @LayoutIdInject(R.layout.fragment_music_play_layout)
 public class MusicPlayFragment extends BaseFragment
-        implements View.OnClickListener, OnFrequencyChangeListener {
+        implements View.OnClickListener, FrequencyChangeObsercer {
 
     @ViewInject(R.id.tool_bar)
     private Toolbar mToolbar;
