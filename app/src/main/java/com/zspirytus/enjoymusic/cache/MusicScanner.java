@@ -75,6 +75,7 @@ public class MusicScanner {
                     selectionArgs,
                     null);
         } else if ("content".equals(schema)) {
+            // TODO: 2019/3/27 add or remove content support.
             cursor = MainApplication.getAppContext().getContentResolver().query(
                     uri,
                     musicProjection,

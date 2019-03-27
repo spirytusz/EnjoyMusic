@@ -207,6 +207,7 @@ public class MusicPlayFragment extends BaseFragment
             setView(values);
             viewModel.applyLyricFromDB(values);
         });
+        // TODO: 2019/3/27 NPE
         mViewModel.getPlayMode().observe(this, values -> {
             mPlayMode.setImageResource(mViewModel.getPlayModeResId(values.getPlayMode()));
             if (values.isFromUser()) {
