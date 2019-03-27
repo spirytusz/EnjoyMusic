@@ -115,6 +115,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         FileWriter fw = null;
         BufferedWriter bw = null;
         PrintWriter out = null;
+        //noinspection TryFinallyCanBeTryWithResources
         try {
             fw = new FileWriter(logFile, true);
             bw = new BufferedWriter(fw);
