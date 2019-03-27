@@ -19,11 +19,10 @@ import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.listeners.OnRemotePauseListener;
 import com.zspirytus.enjoymusic.listeners.OnRemotePlayListener;
 import com.zspirytus.enjoymusic.listeners.observable.MusicStateObservable;
+import com.zspirytus.enjoymusic.services.MyTimer;
 import com.zspirytus.enjoymusic.services.NotificationHelper;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * 音乐播放暂停控制类
@@ -47,7 +46,7 @@ public class MediaPlayController extends MusicStateObservable
 
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
-    private PlayTimer mPlayingTimer;
+    private MyTimer mPlayingTimer;
     private int state;
     private OnRemotePlayListener mOnPlayListener;
     private OnRemotePauseListener mOnPauseListener;
@@ -61,7 +60,14 @@ public class MediaPlayController extends MusicStateObservable
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.setOnErrorListener(this);
         // init timer
-        mPlayingTimer = new PlayTimer();
+        mPlayingTimer = new MyTimer(200) {
+            @Override
+            public void onTime() {
+                long milliseconds = INSTANCE.getCurrentPosition();
+                notifyAllObserverMusicPlayProgressChange((int) milliseconds);
+                notifyAllRemoteObserverPlayProgresChange(milliseconds);
+            }
+        };
         // set MediaPlayer State
         setState(STATE_IDLE);
     }
@@ -225,45 +231,5 @@ public class MediaPlayController extends MusicStateObservable
     public void release() {
         mediaPlayer.stop();
         setState(STATE_STOP);
-    }
-
-    /**
-     * Timer
-     */
-    private static class PlayTimer {
-
-        private static Timer mTimer;
-        private static TimerTask mTimerTask;
-
-        private boolean isTiming = false;
-
-        void start() {
-            isTiming = true;
-            final int T = 200;
-            mTimer = new Timer();
-            mTimerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    long milliseconds = INSTANCE.getCurrentPosition();
-                    INSTANCE.notifyAllObserverMusicPlayProgressChange((int) milliseconds);
-                    INSTANCE.notifyAllRemoteObserverPlayProgresChange(milliseconds);
-                }
-            };
-            mTimer.schedule(mTimerTask, 0, T);
-        }
-
-        void pause() {
-            if (isTiming()) {
-                mTimer.cancel();
-                mTimer = null;
-                mTimerTask.cancel();
-                mTimerTask = null;
-                isTiming = false;
-            }
-        }
-
-        boolean isTiming() {
-            return isTiming;
-        }
     }
 }
