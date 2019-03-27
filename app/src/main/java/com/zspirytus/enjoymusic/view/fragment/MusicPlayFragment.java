@@ -193,7 +193,7 @@ public class MusicPlayFragment extends BaseFragment
         FrequencyObserverManager.getInstance().register(this);
         mViewModel.getPlayProgress().observe(this, values -> {
             if (values != null) {
-                mSeekBar.setProgress(values / 1000);
+                mSeekBar.setProgress((int) (values / 1000));
                 mLyricView.onPlayProgressChange(values);
             }
         });

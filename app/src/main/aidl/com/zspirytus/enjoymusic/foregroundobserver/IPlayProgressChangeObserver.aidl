@@ -4,5 +4,5 @@ package com.zspirytus.enjoymusic.foregroundobserver;
 // Declare any non-default types here with import statements
 
 interface IPlayProgressChangeObserver {
-    void onProgressChange(int progress);
+    void onProgressChange(long progress);
 }

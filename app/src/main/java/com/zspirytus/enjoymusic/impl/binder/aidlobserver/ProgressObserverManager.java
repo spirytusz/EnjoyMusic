@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ProgressObserverManager extends IPlayProgressChangeObserver.Stub {
 
-    private int mEvent = -1;
+    private long mEvent = -1;
 
     private static class SingletonHolder {
         static ProgressObserverManager INSTANCE = new ProgressObserverManager();
@@ -20,7 +20,7 @@ public class ProgressObserverManager extends IPlayProgressChangeObserver.Stub {
     private List<MusicPlayProgressObserver> observers = new ArrayList<>();
 
     @Override
-    public void onProgressChange(int milliseconds) {
+    public void onProgressChange(long milliseconds) {
         mEvent = milliseconds;
         for (MusicPlayProgressObserver observer : observers) {
             observer.onProgressChanged(milliseconds);

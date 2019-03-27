@@ -25,7 +25,7 @@ public class MusicPlayingStateViewModel extends MusicDataViewModel implements Pl
     private static final String PLAY_STATE_KEY = "isPlaying";
 
     private MutableLiveData<Boolean> mPlayState = new MutableLiveData<>();
-    private MutableLiveData<Integer> mPlayProgress = new MutableLiveData<>();
+    private MutableLiveData<Long> mPlayProgress = new MutableLiveData<>();
     private MutableLiveData<Music> mCurrentPlayingMusic = new MutableLiveData<>();
     private MutableLiveData<PlayModeEvent> mPlayMode = new MutableLiveData<>();
 
@@ -62,8 +62,8 @@ public class MusicPlayingStateViewModel extends MusicDataViewModel implements Pl
     }
 
     @Override
-    public void onProgressChanged(int progress) {
-        postPlayProgress(progress);
+    public void onProgressChanged(long milliseconds) {
+        postPlayProgress(milliseconds);
     }
 
     public void onSaveInstanceState(Bundle outState) {
@@ -115,16 +115,16 @@ public class MusicPlayingStateViewModel extends MusicDataViewModel implements Pl
         mPlayState.postValue(isPlaying);
     }
 
-    public MutableLiveData<Integer> getPlayProgress() {
+    public MutableLiveData<Long> getPlayProgress() {
         return mPlayProgress;
     }
 
-    public void setPlayProgress(int progress) {
-        mPlayProgress.setValue(progress);
+    public void setPlayProgress(long milliseconds) {
+        mPlayProgress.setValue(milliseconds);
     }
 
-    public void postPlayProgress(int progress) {
-        mPlayProgress.postValue(progress);
+    public void postPlayProgress(long milliseconds) {
+        mPlayProgress.postValue(milliseconds);
     }
 
     public MutableLiveData<Music> getCurrentPlayingMusic() {

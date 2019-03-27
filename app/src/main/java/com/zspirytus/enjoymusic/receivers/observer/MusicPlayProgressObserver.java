@@ -7,5 +7,5 @@ package com.zspirytus.enjoymusic.receivers.observer;
 
 public interface MusicPlayProgressObserver {
 
-    void onProgressChanged(int progress);
+    void onProgressChanged(long progress);
 }
