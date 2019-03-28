@@ -131,6 +131,10 @@ public class MusicScanner {
         return mFolderList;
     }
 
+    public Music scanAddedMusic() {
+        return null;
+    }
+
     private void scan() {
         /*List<Music> musicList = DBManager.getInstance().getDaoSession().loadAll(Music.class);
         if (musicList != null && !musicList.isEmpty()) {

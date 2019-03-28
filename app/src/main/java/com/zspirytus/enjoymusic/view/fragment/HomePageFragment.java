@@ -27,7 +27,6 @@ import com.zspirytus.enjoymusic.adapter.HomePageListAdapter;
 import com.zspirytus.enjoymusic.base.CommonHeaderBaseFragment;
 import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.cache.viewmodels.HomePageFragmentViewModel;
-import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
@@ -143,11 +142,7 @@ public class HomePageFragment extends CommonHeaderBaseFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ViewModelProviders.of(getParentActivity())
-                .get(MainActivityViewModel.class)
-                .getMusicList().observe(this, values -> {
-            mViewModel.applyMusicList(values);
-        });
+        mViewModel.applyMusicList();
         mViewModel.getPlayListFirstMusic().observe(
                 this,
                 values -> ForegroundMusicController.getInstance().play(values)
