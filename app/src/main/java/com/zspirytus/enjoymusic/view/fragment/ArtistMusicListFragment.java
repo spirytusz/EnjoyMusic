@@ -44,6 +44,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
     private TextView mInfoTextView;
 
     private ArtistListAdapter mAdapter;
+    private MainActivityViewModel mMainViewModel;
     private AlphaInAnimationAdapter mAnimationWrapAdapter;
 
     @Override
@@ -62,6 +63,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
+        mMainViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
     }
 
     @Override
@@ -75,9 +77,7 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ViewModelProviders.of(getParentActivity())
-                .get(MainActivityViewModel.class)
-                .getArtistList().observe(this, (values) -> {
+        mMainViewModel.getArtistList().observe(this, values -> {
             mLoadProgressBar.setVisibility(View.GONE);
             if (values != null && !values.isEmpty()) {
                 mAdapter.setList(values);
@@ -87,6 +87,10 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
                 mInfoTextView.setVisibility(View.VISIBLE);
                 mInfoTextView.setText(R.string.no_artist_tip);
             }
+        });
+        mMainViewModel.getNewArtist().observe(this, values -> {
+            mAdapter.getList().add(0, values);
+            mAdapter.notifyItemInserted(0);
         });
     }
 

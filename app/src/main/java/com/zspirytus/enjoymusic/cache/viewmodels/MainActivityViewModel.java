@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.cache.viewmodels;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.os.IBinder;
 import android.os.RemoteException;
 
@@ -23,10 +24,17 @@ import java.util.List;
 
 public class MainActivityViewModel extends MusicPlayingStateViewModel implements MusicDeleteObserver, NewAudioFileObserver {
 
+    private MutableLiveData<Music> mNewMusic;
+    private MutableLiveData<Album> mNewAlbum;
+    private MutableLiveData<Artist> mNewArtist;
 
     @Override
     public void init() {
         super.init();
+        mNewMusic = new MutableLiveData<>();
+        mNewAlbum = new MutableLiveData<>();
+        mNewArtist = new MutableLiveData<>();
+
         MusicDeleteObserverManager.getInstance().register(this);
         NewAudioFileObserverManager.getInstance().register(this);
     }
@@ -35,30 +43,24 @@ public class MainActivityViewModel extends MusicPlayingStateViewModel implements
     public void onMusicDelete(Music music) {
         List<Music> musicList = getMusicList().getValue();
         if (musicList != null) {
-            boolean b = musicList.remove(music);
+            musicList.remove(music);
         }
         getMusicList().postValue(musicList);
     }
 
     @Override
     public void onNewMusic(Music music) {
-        List<Music> currentMusicList = getMusicList().getValue();
-        currentMusicList.add(music);
-        getMusicList().postValue(currentMusicList);
+        mNewMusic.postValue(music);
     }
 
     @Override
     public void onNewAlbum(Album album) {
-        List<Album> currentAlbumList = getAlbumList().getValue();
-        currentAlbumList.add(album);
-        getAlbumList().postValue(currentAlbumList);
+        mNewAlbum.postValue(album);
     }
 
     @Override
     public void onNewArtist(Artist artist) {
-        List<Artist> currentArtistList = getArtistList().getValue();
-        currentArtistList.add(artist);
-        getArtistList().postValue(currentArtistList);
+        mNewArtist.postValue(artist);
     }
 
     @Override
@@ -66,6 +68,18 @@ public class MainActivityViewModel extends MusicPlayingStateViewModel implements
         super.onCleared();
         MusicDeleteObserverManager.getInstance().unregister(this);
         NewAudioFileObserverManager.getInstance().unregister(this);
+    }
+
+    public MutableLiveData<Music> getNewMusic() {
+        return mNewMusic;
+    }
+
+    public MutableLiveData<Album> getNewAlbum() {
+        return mNewAlbum;
+    }
+
+    public MutableLiveData<Artist> getNewArtist() {
+        return mNewArtist;
     }
 
     public void obtainMusicList() {

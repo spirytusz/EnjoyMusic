@@ -47,6 +47,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     private FloatingActionButton mFab;
 
     private MusicListAdapter mAdapter;
+    private MainActivityViewModel mMainViewModel;
     private AllMusicListFragmentViewModel mViewModel;
     private AlphaInAnimationAdapter mAnimationWrapAdapter;
 
@@ -68,6 +69,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
         mViewModel = ViewModelProviders.of(this).get(AllMusicListFragmentViewModel.class);
         mViewModel.init();
+        mMainViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
     }
 
     @Override
@@ -99,9 +101,7 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ViewModelProviders.of(getParentActivity())
-                .get(MainActivityViewModel.class)
-                .getMusicList().observe(this, (values) -> {
+        mMainViewModel.getMusicList().observe(this, values -> {
             mMusicListLoadProgressBar.setVisibility(View.GONE);
             if (values != null && !values.isEmpty()) {
                 mAdapter.setList(values);
@@ -111,6 +111,10 @@ public class AllMusicListFragment extends LazyLoadBaseFragment
                 mInfoTextView.setVisibility(View.VISIBLE);
                 mInfoTextView.setText(R.string.no_music_tip);
             }
+        });
+        mMainViewModel.getNewMusic().observe(this, values -> {
+            mAdapter.getList().add(0, values);
+            mAdapter.notifyItemInserted(0);
         });
         mViewModel.getPlayListFirstMusic().observe(
                 this,

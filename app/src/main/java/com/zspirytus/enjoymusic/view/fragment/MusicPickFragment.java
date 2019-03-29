@@ -107,7 +107,7 @@ public class MusicPickFragment extends BaseFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel.getMusicList().observe(getParentActivity(), values -> {
+        mViewModel.getMusicList().observe(this, values -> {
             List<MusicPickItem> musicPickItems = new ArrayList<>();
             for (Music music : values) {
                 musicPickItems.add(MusicPickItem.create(music));

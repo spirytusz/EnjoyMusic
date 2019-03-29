@@ -46,6 +46,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     @ViewInject(R.id.album_music_list_fragment_info_tv)
     private TextView mInfoTextView;
 
+    private MainActivityViewModel mMainViewModel;
     private AlbumListAdapter mAdapter;
     private AlphaInAnimationAdapter mAnimationWrapAdapter;
 
@@ -65,6 +66,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
+        mMainViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
     }
 
     @Override
@@ -96,9 +98,7 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ViewModelProviders.of(getParentActivity())
-                .get(MainActivityViewModel.class)
-                .getAlbumList().observe(this, (values) -> {
+        mMainViewModel.getAlbumList().observe(this, values -> {
             mLoadProgressBar.setVisibility(View.GONE);
             if (values != null && !values.isEmpty()) {
                 mAdapter.setList(values);
@@ -108,6 +108,10 @@ public class AlbumMusicListFragment extends LazyLoadBaseFragment
                 mInfoTextView.setVisibility(View.VISIBLE);
                 mInfoTextView.setText(R.string.no_album_tip);
             }
+        });
+        mMainViewModel.getNewAlbum().observe(this, values -> {
+            mAdapter.getList().add(0, values);
+            mAdapter.notifyItemInserted(0);
         });
     }
 
