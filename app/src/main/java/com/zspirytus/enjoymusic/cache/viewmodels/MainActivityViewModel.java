@@ -14,18 +14,21 @@ import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundBinderManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.MusicDeleteObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.NewAudioFileObserverManager;
 import com.zspirytus.enjoymusic.receivers.observer.MusicDeleteObserver;
+import com.zspirytus.enjoymusic.receivers.observer.NewAudioFileObserver;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivityViewModel extends MusicPlayingStateViewModel implements MusicDeleteObserver {
+public class MainActivityViewModel extends MusicPlayingStateViewModel implements MusicDeleteObserver, NewAudioFileObserver {
 
 
     @Override
     public void init() {
         super.init();
         MusicDeleteObserverManager.getInstance().register(this);
+        NewAudioFileObserverManager.getInstance().register(this);
     }
 
     @Override
@@ -38,9 +41,31 @@ public class MainActivityViewModel extends MusicPlayingStateViewModel implements
     }
 
     @Override
+    public void onNewMusic(Music music) {
+        List<Music> currentMusicList = getMusicList().getValue();
+        currentMusicList.add(music);
+        getMusicList().postValue(currentMusicList);
+    }
+
+    @Override
+    public void onNewAlbum(Album album) {
+        List<Album> currentAlbumList = getAlbumList().getValue();
+        currentAlbumList.add(album);
+        getAlbumList().postValue(currentAlbumList);
+    }
+
+    @Override
+    public void onNewArtist(Artist artist) {
+        List<Artist> currentArtistList = getArtistList().getValue();
+        currentArtistList.add(artist);
+        getArtistList().postValue(currentArtistList);
+    }
+
+    @Override
     protected void onCleared() {
         super.onCleared();
         MusicDeleteObserverManager.getInstance().unregister(this);
+        NewAudioFileObserverManager.getInstance().unregister(this);
     }
 
     public void obtainMusicList() {

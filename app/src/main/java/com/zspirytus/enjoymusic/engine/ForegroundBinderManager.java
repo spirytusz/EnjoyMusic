@@ -11,6 +11,7 @@ import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.AudioFieldObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.FrequencyObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.MusicDeleteObserverManager;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.NewAudioFileObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayHistoryObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayListObserverManager;
 import com.zspirytus.enjoymusic.impl.binder.aidlobserver.PlayMusicObserverManager;
@@ -51,6 +52,7 @@ public class ForegroundBinderManager {
             backgroundEventProcessor.registerObserver(AudioFieldObserverManager.getInstance(), Constant.BinderCode.AUDIO_FIELD_OBSERVER);
             backgroundEventProcessor.registerObserver(FrequencyObserverManager.getInstance(), Constant.BinderCode.FREQUENCY_OBSERVER);
             backgroundEventProcessor.registerObserver(MusicDeleteObserverManager.getInstance(), Constant.BinderCode.MUSIC_DELETE_OBSERVER);
+            backgroundEventProcessor.registerObserver(NewAudioFileObserverManager.getInstance(), Constant.BinderCode.NEW_AUDIO_FILE_OBSERVER);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

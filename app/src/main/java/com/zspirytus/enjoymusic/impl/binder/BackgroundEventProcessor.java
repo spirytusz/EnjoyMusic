@@ -9,11 +9,13 @@ import com.zspirytus.enjoymusic.engine.PlayHistoryManager;
 import com.zspirytus.enjoymusic.foregroundobserver.IAudioFieldChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IFrequencyObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IMusicDeleteObserver;
+import com.zspirytus.enjoymusic.foregroundobserver.INewAudioFileObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayHistoryChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayListChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayProgressChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayStateChangeObserver;
 import com.zspirytus.enjoymusic.foregroundobserver.IPlayedMusicChangeObserver;
+import com.zspirytus.enjoymusic.receivers.NewAudioFileReceiver;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 import com.zspirytus.enjoymusic.services.media.VisualizerHelper;
 import com.zspirytus.enjoymusic.services.media.audioeffect.PresetReverbHelper;
@@ -55,6 +57,9 @@ public class BackgroundEventProcessor extends IBackgroundEventProcessor.Stub {
             case Constant.BinderCode.MUSIC_DELETE_OBSERVER:
                 MusicMetaDataUpdator.getInstance().register(IMusicDeleteObserver.Stub.asInterface(observer));
                 break;
+            case Constant.BinderCode.NEW_AUDIO_FILE_OBSERVER:
+                NewAudioFileReceiver.getInstance().register(INewAudioFileObserver.Stub.asInterface(observer));
+                break;
         }
     }
 
@@ -85,6 +90,9 @@ public class BackgroundEventProcessor extends IBackgroundEventProcessor.Stub {
                 break;
             case Constant.BinderCode.MUSIC_DELETE_OBSERVER:
                 MusicMetaDataUpdator.getInstance().unregister(IMusicDeleteObserver.Stub.asInterface(observer));
+                break;
+            case Constant.BinderCode.NEW_AUDIO_FILE_OBSERVER:
+                NewAudioFileReceiver.getInstance().unregister();
                 break;
         }
     }

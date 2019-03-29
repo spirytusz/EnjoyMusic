@@ -1,7 +1,5 @@
 package com.zspirytus.enjoymusic.db;
 
-import com.zspirytus.enjoymusic.db.greendao.AlbumDao;
-import com.zspirytus.enjoymusic.db.greendao.ArtistDao;
 import com.zspirytus.enjoymusic.db.greendao.JoinAlbumToArtistDao;
 import com.zspirytus.enjoymusic.db.greendao.JoinFolderToMusicDao;
 import com.zspirytus.enjoymusic.db.greendao.MusicDao;
@@ -56,12 +54,9 @@ public class QueryExecutor {
         if (music.peakAlbum() != null) {
             return music.peakAlbum();
         } else {
-            List<Album> albumList = DBManager.getInstance().getDaoSession().queryBuilder(Album.class)
-                    .where(AlbumDao.Properties.AlbumId.eq(music.getAlbumId()))
-                    .list();
-            Album album = albumList.get(0);
+            Album album = DBManager.getInstance().getDaoSession().getAlbumDao().load(music.getAlbumId());
             music.setAlbum(album);
-            return albumList.get(0);
+            return album;
         }
     }
 
@@ -78,9 +73,7 @@ public class QueryExecutor {
         if (music.peakArtist() != null) {
             return music.peakArtist();
         } else {
-            List<Artist> artistList = DBManager.getInstance().getDaoSession().queryBuilder(Artist.class)
-                    .where(ArtistDao.Properties.ArtistId.eq(music.getArtistId())).list();
-            Artist artist = artistList.get(0);
+            Artist artist = DBManager.getInstance().getDaoSession().getArtistDao().load(music.getArtistId());
             music.setArtist(artist);
             return artist;
         }

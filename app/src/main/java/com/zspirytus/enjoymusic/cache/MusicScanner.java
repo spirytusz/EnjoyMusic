@@ -131,7 +131,7 @@ public class MusicScanner {
         return mFolderList;
     }
 
-    public Music scanAddedMusic(Uri uri) {
+    public Music scanAddedMusicAndAdd(Uri uri) {
         Cursor cursor = MainApplication.getAppContext().getContentResolver().query(
                 uri,
                 new String[]{
@@ -147,7 +147,7 @@ public class MusicScanner {
                 null,
                 null
         );
-        if (cursor.moveToNext()) {
+        if (cursor != null && cursor.moveToNext()) {
             long musicId = cursor.getLong(0);
             long albumId = cursor.getLong(1);
             long artistId = cursor.getLong(2);
@@ -155,7 +155,62 @@ public class MusicScanner {
             String musicName = cursor.getString(4);
             long duration = cursor.getLong(5);
             String musicAddDate = cursor.getString(6);
-            return new Music(musicId, albumId, artistId, musicFilePath, musicName, duration, Long.valueOf(musicAddDate));
+            Music music = new Music(musicId, albumId, artistId, musicFilePath, musicName, duration, Long.valueOf(musicAddDate));
+            DBManager.getInstance().getDaoSession().getMusicDao().insertOrReplace(music);
+            mAllMusicList.add(music);
+            return music;
+        }
+        return null;
+    }
+
+    public Album scanAddedAlbumAndAdd(Uri uri) {
+        Cursor cursor = MainApplication.getAppContext().getContentResolver().query(
+                uri,
+                new String[]{
+                        MediaStore.Audio.Albums._ID,
+                        MediaStore.Audio.Albums.ALBUM,
+                        MediaStore.Audio.Albums.ALBUM_ART,
+                        MediaStore.Audio.Albums.NUMBER_OF_SONGS,
+                },
+                null,
+                null,
+                null
+        );
+        if (cursor != null && cursor.moveToNext()) {
+            long albumId = cursor.getLong(0);
+            String albumName = cursor.getString(1);
+            String albumArt = cursor.getString(2);
+            int numberOfSong = cursor.getInt(3);
+            Album album = new Album(albumId, albumName, albumArt, numberOfSong);
+            DBManager.getInstance().getDaoSession().getAlbumDao().insertOrReplace(album);
+            mAlbumList.add(album);
+            return album;
+        }
+        return null;
+    }
+
+    public Artist scanAddedArtistAndAdd(Uri uri) {
+        Cursor cursor = MainApplication.getAppContext().getContentResolver().query(
+                uri,
+                new String[]{
+                        MediaStore.Audio.Artists._ID,
+                        MediaStore.Audio.Artists.ARTIST,
+                        MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
+                        MediaStore.Audio.Artists.NUMBER_OF_TRACKS,
+                },
+                null,
+                null,
+                null
+        );
+        if (cursor != null && cursor.moveToNext()) {
+            long artistId = cursor.getLong(0);
+            String artistName = cursor.getString(1);
+            int numberOfAlbums = cursor.getInt(2);
+            int numberOfTracks = cursor.getInt(3);
+            Artist artist = new Artist(artistId, artistName, numberOfAlbums, numberOfTracks);
+            DBManager.getInstance().getDaoSession().getArtistDao().insertOrReplace(artist);
+            mArtistList.add(artist);
+            return artist;
         }
         return null;
     }

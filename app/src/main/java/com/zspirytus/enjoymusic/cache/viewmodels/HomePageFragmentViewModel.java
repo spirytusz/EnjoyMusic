@@ -6,18 +6,23 @@ import android.arch.lifecycle.ViewModel;
 import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.greendao.MusicDao;
+import com.zspirytus.enjoymusic.db.table.Album;
+import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
+import com.zspirytus.enjoymusic.impl.binder.aidlobserver.NewAudioFileObserverManager;
+import com.zspirytus.enjoymusic.receivers.observer.NewAudioFileObserver;
 
 import java.util.List;
 
-public class HomePageFragmentViewModel extends ViewModel {
+public class HomePageFragmentViewModel extends ViewModel implements NewAudioFileObserver {
 
     private static final int LIMIT_SIZE = 50;
     private MutableLiveData<List<Music>> mMusicList;
     private MutableLiveData<Music> mPlayListFirstMusic;
 
     public void init() {
+        NewAudioFileObserverManager.getInstance().register(this);
         mMusicList = new MutableLiveData<>();
         mPlayListFirstMusic = new MutableLiveData<>();
     }
@@ -28,6 +33,29 @@ public class HomePageFragmentViewModel extends ViewModel {
 
     public MutableLiveData<Music> getPlayListFirstMusic() {
         return mPlayListFirstMusic;
+    }
+
+    @Override
+    public void onNewMusic(Music music) {
+        List<Music> currentMusicList = mMusicList.getValue();
+        currentMusicList.add(0, music);
+        mMusicList.postValue(currentMusicList);
+    }
+
+    @Override
+    public void onNewAlbum(Album album) {
+        // do nothing
+    }
+
+    @Override
+    public void onNewArtist(Artist artist) {
+        // do nothing
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        NewAudioFileObserverManager.getInstance().unregister(this);
     }
 
     public void applyMusicList() {
