@@ -20,11 +20,13 @@ public class HomePageFragmentViewModel extends ViewModel implements NewAudioFile
     private static final int LIMIT_SIZE = 50;
     private MutableLiveData<List<Music>> mMusicList;
     private MutableLiveData<Music> mPlayListFirstMusic;
+    private MutableLiveData<Music> mNewMusic;
 
     public void init() {
         NewAudioFileObserverManager.getInstance().register(this);
         mMusicList = new MutableLiveData<>();
         mPlayListFirstMusic = new MutableLiveData<>();
+        mNewMusic = new MutableLiveData<>();
     }
 
     public MutableLiveData<List<Music>> getMusicList() {
@@ -35,11 +37,13 @@ public class HomePageFragmentViewModel extends ViewModel implements NewAudioFile
         return mPlayListFirstMusic;
     }
 
+    public MutableLiveData<Music> getNewMusic() {
+        return mNewMusic;
+    }
+
     @Override
     public void onNewMusic(Music music) {
-        List<Music> currentMusicList = mMusicList.getValue();
-        currentMusicList.add(0, music);
-        mMusicList.postValue(currentMusicList);
+        mNewMusic.postValue(music);
     }
 
     @Override

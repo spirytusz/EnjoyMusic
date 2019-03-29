@@ -147,6 +147,13 @@ public class HomePageFragment extends CommonHeaderBaseFragment
                 this,
                 values -> ForegroundMusicController.getInstance().play(values)
         );
+        mViewModel.getNewMusic().observe(this, values -> {
+            mInnerAdapter.getList().add(0, values);
+            mInnerAdapter.getList().remove(mInnerAdapter.getList().size() - 1);
+            //noinspection PointlessArithmeticExpression
+            mAnimationAdapter.notifyItemInserted(mHeaderWrapAdapter.getHeaderViewCount() + 0);
+            mAnimationAdapter.notifyItemRemoved(mInnerAdapter.getList().size() + mHeaderWrapAdapter.getHeaderViewCount());
+        });
         mViewModel.getMusicList().observe(this, this::loadDataToView);
     }
 
