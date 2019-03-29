@@ -1,6 +1,7 @@
 package com.zspirytus.enjoymusic.receivers;
 
 import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.Handler;
 import android.provider.MediaStore;
 
@@ -13,12 +14,15 @@ public abstract class NewAudioFileReceiver {
     private static final String TAG = "NewAudioFileReceiver";
 
     public NewAudioFileReceiver() {
-        MainApplication.getAppContext().getContentResolver().registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true,
+        MainApplication.getAppContext().getContentResolver().registerContentObserver(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                true,
                 new ContentObserver(new Handler()) {
+
                     @Override
-                    public void onChange(boolean selfChange) {
-                        super.onChange(selfChange);
-                        onNewMusicAdd(MusicScanner.getInstance().scanAddedMusic());
+                    public void onChange(boolean selfChange, Uri uri) {
+                        super.onChange(selfChange, uri);
+                        onNewMusicAdd(MusicScanner.getInstance().scanAddedMusic(uri));
                     }
                 }
         );

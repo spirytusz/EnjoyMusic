@@ -131,7 +131,32 @@ public class MusicScanner {
         return mFolderList;
     }
 
-    public Music scanAddedMusic() {
+    public Music scanAddedMusic(Uri uri) {
+        Cursor cursor = MainApplication.getAppContext().getContentResolver().query(
+                uri,
+                new String[]{
+                        MediaStore.Audio.AudioColumns._ID,
+                        MediaStore.Audio.AudioColumns.ALBUM_ID,
+                        MediaStore.Audio.AudioColumns.ARTIST_ID,
+                        MediaStore.Audio.AudioColumns.DATA,
+                        MediaStore.Audio.Media.TITLE,
+                        MediaStore.Audio.Media.DURATION,
+                        MediaStore.Audio.Media.DATE_ADDED
+                },
+                null,
+                null,
+                null
+        );
+        if (cursor.moveToNext()) {
+            long musicId = cursor.getLong(0);
+            long albumId = cursor.getLong(1);
+            long artistId = cursor.getLong(2);
+            String musicFilePath = cursor.getString(3);
+            String musicName = cursor.getString(4);
+            long duration = cursor.getLong(5);
+            String musicAddDate = cursor.getString(6);
+            return new Music(musicId, albumId, artistId, musicFilePath, musicName, duration, Long.valueOf(musicAddDate));
+        }
         return null;
     }
 
