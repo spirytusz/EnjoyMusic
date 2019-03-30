@@ -97,6 +97,7 @@ public class MainActivity extends BaseActivity
         AudioEffectConfig.onRestoreInstanceState(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         mViewModel.onRestoreInstanceState(savedInstanceState);
+        bindPlayMusicService();
     }
 
     @Override

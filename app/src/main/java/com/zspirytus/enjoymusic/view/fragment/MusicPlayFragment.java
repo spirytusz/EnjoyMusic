@@ -115,6 +115,7 @@ public class MusicPlayFragment extends BaseFragment
                 mode %= mViewModel.getPlayModeResId().size();
                 PlayModeEvent event = new PlayModeEvent(mode, true);
                 mViewModel.setPlayMode(event);
+                ForegroundMusicController.getInstance().setPlayMode(event.getPlayMode());
                 break;
             case R.id.cover:
             case R.id.lyricView:
@@ -207,13 +208,11 @@ public class MusicPlayFragment extends BaseFragment
             setView(values);
             viewModel.applyLyricFromDB(values);
         });
-        // TODO: 2019/3/27 NPE
         mViewModel.getPlayMode().observe(this, values -> {
             mPlayMode.setImageResource(mViewModel.getPlayModeResId(values.getPlayMode()));
             if (values.isFromUser()) {
                 ToastUtil.showToast(getContext(), mViewModel.getPlayModeText(values.getPlayMode()));
             }
-            ForegroundMusicController.getInstance().setPlayMode(values.getPlayMode());
         });
         viewModel.getLyricRows().observe(this, values -> mLyricView.setLyricRows(values));
     }
