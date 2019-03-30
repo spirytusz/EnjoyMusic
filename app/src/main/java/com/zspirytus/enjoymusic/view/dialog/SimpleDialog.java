@@ -15,8 +15,8 @@ import com.zspirytus.basesdk.utils.PixelsUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseDialogFragment;
 
-@LayoutIdInject(R.layout.dialog_permission_denied)
-public class PermissionDeniedDialog extends BaseDialogFragment {
+@LayoutIdInject(R.layout.dialog_simple)
+public class SimpleDialog extends BaseDialogFragment {
 
     private static final String CONTENT_KEY = "content";
 
@@ -73,8 +73,8 @@ public class PermissionDeniedDialog extends BaseDialogFragment {
         mListener = listener;
     }
 
-    public static PermissionDeniedDialog getInstance(@StringRes int content) {
-        PermissionDeniedDialog dialog = new PermissionDeniedDialog();
+    public static SimpleDialog getInstance(@StringRes int content) {
+        SimpleDialog dialog = new SimpleDialog();
         Bundle bundle = new Bundle();
         bundle.putInt(CONTENT_KEY, content);
         dialog.setArguments(bundle);

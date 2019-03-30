@@ -33,7 +33,7 @@ import com.zspirytus.enjoymusic.factory.FragmentFactory;
 import com.zspirytus.enjoymusic.global.AudioEffectConfig;
 import com.zspirytus.enjoymusic.impl.DrawerListenerImpl;
 import com.zspirytus.enjoymusic.services.PlayMusicService;
-import com.zspirytus.enjoymusic.view.dialog.PermissionDeniedDialog;
+import com.zspirytus.enjoymusic.view.dialog.SimpleDialog;
 import com.zspirytus.enjoymusic.view.fragment.HomePageFragment;
 import com.zspirytus.enjoymusic.view.fragment.MusicPlayFragment;
 import com.zspirytus.enjoymusic.view.widget.CustomNavigationView;
@@ -198,8 +198,8 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onDenied() {
-        PermissionDeniedDialog dialog = PermissionDeniedDialog.getInstance(R.string.permission_denied_tip_text);
-        dialog.setOnButtonClickListener(new PermissionDeniedDialog.OnButtonClickListener() {
+        SimpleDialog dialog = SimpleDialog.getInstance(R.string.permission_denied_tip_text);
+        dialog.setOnButtonClickListener(new SimpleDialog.OnButtonClickListener() {
             @Override
             public void onPositiveBtnClick() {
                 ZSPermission.getInstance().requestAgain();
@@ -217,8 +217,8 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onNeverAsk() {
-        PermissionDeniedDialog dialog = PermissionDeniedDialog.getInstance(R.string.permission_never_ask_tip_text);
-        dialog.setOnButtonClickListener(new PermissionDeniedDialog.OnButtonClickListener() {
+        SimpleDialog dialog = SimpleDialog.getInstance(R.string.permission_never_ask_tip_text);
+        dialog.setOnButtonClickListener(new SimpleDialog.OnButtonClickListener() {
             @Override
             public void onPositiveBtnClick() {
                 goToSettings();
