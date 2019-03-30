@@ -290,8 +290,6 @@ public class MainActivity extends BaseActivity
                     mViewModel.setCurrentPlayingMusic(music);
                     MusicPlayFragment fragment = FragmentFactory.getInstance().get(MusicPlayFragment.class);
                     showFragment(fragment);
-                    BaseFragment homeFragment = FragmentFactory.getInstance().get(HomePageFragment.class);
-                    FragmentVisibilityManager.getInstance().addToBackStack(homeFragment);
                 } else {
                     showFragment(FragmentFactory.getInstance().get(HomePageFragment.class));
                 }
