@@ -44,16 +44,16 @@ public class MusicPickFragment extends BaseFragment
 
     private int mSaveMusicCount;
 
-    private MainActivityViewModel mViewModel;
-    private MusicPickFragmentViewModel viewModel;
+    private MainActivityViewModel mMainViewModel;
+    private MusicPickFragmentViewModel mViewModel;
     private CommonRecyclerViewAdapter<MusicPickItem> mAdapter;
 
     private OnSaveSongListListener mListener;
 
     @Override
     protected void initData() {
-        mViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
-        viewModel = ViewModelProviders.of(this).get(MusicPickFragmentViewModel.class);
+        mMainViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(MusicPickFragmentViewModel.class);
         mAdapter = new CommonRecyclerViewAdapter<MusicPickItem>() {
             @Override
             public int getLayoutId() {
@@ -107,7 +107,7 @@ public class MusicPickFragment extends BaseFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel.getMusicList().observe(this, values -> {
+        mMainViewModel.getMusicList().observe(this, values -> {
             List<MusicPickItem> musicPickItems = new ArrayList<>();
             for (Music music : values) {
                 musicPickItems.add(MusicPickItem.create(music));
@@ -138,21 +138,28 @@ public class MusicPickFragment extends BaseFragment
     private void saveSongList() {
         SaveSongListDialog dialog = new SaveSongListDialog();
         dialog.setOnDialogButtonClickListener(content -> {
-            if (mListener != null && content != null && mSaveMusicCount > 0) {
-                boolean isSongListDuplicate = viewModel.isSongListNameDuplicate(content);
+            if (mListener != null) {
+                if (content == null || content.isEmpty()) {
+                    ToastUtil.showToast(getContext(), R.string.empty_song_list_name);
+                    return;
+                }
+                if (mSaveMusicCount > 0) {
+                    ToastUtil.showToast(getContext(), R.string.empty_song_List);
+                    return;
+                }
+                boolean isSongListDuplicate = mMainViewModel.isSongListNameDuplicate(content);
                 if (!isSongListDuplicate) {
-                    SongList songList = viewModel.saveSongListToDB(content, mAdapter.getList());
+                    SongList songList = mViewModel.saveSongListToDB(content, mAdapter.getList());
                     mListener.onNewSongList(songList);
                     dialog.dismiss();
+                    ToastUtil.showToast(getContext(), R.string.success);
                     goBack();
                 } else {
                     ToastUtil.showToast(getContext(), R.string.duplicate_song_list_name);
                 }
-            } else {
-                ToastUtil.showToast(getContext(), R.string.please_enter_leagl_song_list);
             }
         });
-        dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
+        FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
     }
 
     public static MusicPickFragment getInstance() {

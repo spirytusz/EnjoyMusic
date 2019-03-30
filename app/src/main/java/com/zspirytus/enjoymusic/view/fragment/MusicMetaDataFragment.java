@@ -21,6 +21,7 @@ import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
 import com.zspirytus.enjoymusic.view.dialog.ProgressDialog;
 import com.zspirytus.enjoymusic.view.dialog.SaveMusicInfoDialog;
+import com.zspirytus.enjoymusic.view.dialog.SimpleDialog;
 
 @LayoutIdInject(R.layout.fragment_music_meta_data)
 public class MusicMetaDataFragment extends BaseFragment implements View.OnClickListener {
@@ -48,12 +49,38 @@ public class MusicMetaDataFragment extends BaseFragment implements View.OnClickL
         mAdapter.setOnDownloadBtnClickListener(new MusicMetaDataListAdapter.OnClickEventListener() {
             @Override
             public void onAritstArtLongClickListener() {
-                mViewModel.applyArtistArt(music);
+                SimpleDialog dialog = SimpleDialog.getInstance(R.string.download_artist_art_or_not);
+                dialog.setOnButtonClickListener(new SimpleDialog.OnButtonClickListener() {
+                    @Override
+                    public void onPositiveBtnClick() {
+                        mViewModel.applyArtistArt(music);
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNegativeBtnClick() {
+                        dialog.dismiss();
+                    }
+                });
+                FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
             }
 
             @Override
             public void onAlbumArtLongClickListener() {
-                mViewModel.applyAlbumArt(music);
+                SimpleDialog dialog = SimpleDialog.getInstance(R.string.download_album_art_or_not);
+                dialog.setOnButtonClickListener(new SimpleDialog.OnButtonClickListener() {
+                    @Override
+                    public void onPositiveBtnClick() {
+                        mViewModel.applyAlbumArt(music);
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNegativeBtnClick() {
+                        dialog.dismiss();
+                    }
+                });
+                FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
             }
         });
     }

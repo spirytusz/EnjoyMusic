@@ -142,6 +142,8 @@
     <string name="press_agin_to_exit">再按一次返回键以退出</string>
     <string name="play_list_is_empty">播放列表为空</string>
     <string name="download_failed">下载失败, 请稍后重试…</string>
+    <string name="empty_song_list_name">歌单名称不能为空</string>
+    <string name="empty_song_List">歌单不能为空</string>
     <string name="duplicate_song_list_name">重复歌单名称…</string>
     <string name="no_search_text">请输入需要搜索的文本…</string>
     <string name="invalid_file">无效文件…</string>
@@ -169,5 +171,13 @@
     <string name="permission_denied_tip_text">享乐需要以下权限:\n\t1. 读写手机内置存储权限,以扫描音乐\n\t2. 录音权限,以实现音乐可视化.\n是否重新授权?</string>
     <string name="permission_never_ask_tip_text">享乐需要以下权限:\n\t1. 读写手机内置存储权限,以扫描音乐\n\t2. 录音权限,以实现音乐可视化.\n是否前往设置重新授权?</string>
     <!-- Permission Text end -->
+
+    <!-- Download AlbumArt Text start -->
+    <string name="download_album_art_or_not">是否下载专辑封面?</string>
+    <!-- Download AlbumArt Text end -->
+
+    <!-- Download ArtistArt Text start -->
+    <string name="download_artist_art_or_not">是否下载艺术家封面?</string>
+    <!-- Download ArtistArt Text end -->
 
 </resources>

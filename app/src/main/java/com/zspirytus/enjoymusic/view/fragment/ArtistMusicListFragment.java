@@ -13,15 +13,22 @@ import com.zspirytus.basesdk.annotations.LayoutIdInject;
 import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.basesdk.recyclerview.adapter.SegmentLoadAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
+import com.zspirytus.basesdk.recyclerview.listeners.OnItemLongClickListener;
+import com.zspirytus.basesdk.utils.ToastUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.ArtistListAdapter;
 import com.zspirytus.enjoymusic.base.LazyLoadBaseFragment;
+import com.zspirytus.enjoymusic.cache.constant.Constant;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.Music;
+import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
+import com.zspirytus.enjoymusic.global.MainApplication;
+import com.zspirytus.enjoymusic.view.dialog.PlainTextMenuDialog;
+import com.zspirytus.enjoymusic.view.dialog.SaveSongListDialog;
 
 import java.util.List;
 
@@ -31,10 +38,10 @@ import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
  * Fragment 以艺术家名筛选的音乐列表
  * Created by ZSpirytus on 2018/9/12.
  */
-// TODO: 2018/9/17 click recyclerview to navigate to corresponding music list
 @LayoutIdInject(R.layout.fragment_artist_music_list_layout)
 public class ArtistMusicListFragment extends LazyLoadBaseFragment
-        implements OnItemClickListener {
+        implements OnItemClickListener, OnItemLongClickListener,
+        ArtistListAdapter.OnMoreInfoBtnClickListener {
 
     @ViewInject(R.id.artist_music_recycler_view)
     private RecyclerView mArtistMusicRecyclerView;
@@ -57,9 +64,23 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
     }
 
     @Override
+    public void onLongClick(View view, int position) {
+        Artist artist = mAdapter.getList().get(position);
+        showDialog(artist);
+    }
+
+    @Override
+    public void onMoreInfoBtnClick(View v, int position) {
+        Artist artist = mAdapter.getList().get(position);
+        showDialog(artist);
+    }
+
+    @Override
     protected void initData() {
         mAdapter = new ArtistListAdapter();
         mAdapter.setOnItemClickListener(this);
+        mAdapter.setOnItemLongClickLisener(this);
+        mAdapter.setOnMoreInfoBtnClickListener(this);
         mAnimationWrapAdapter = new AlphaInAnimationAdapter(new SegmentLoadAdapter(mAdapter));
         mAnimationWrapAdapter.setDuration(618);
         mAnimationWrapAdapter.setInterpolator(new DecelerateInterpolator());
@@ -97,6 +118,37 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
     @Override
     public int getContainerId() {
         return 0;
+    }
+
+    private void showDialog(Artist artist) {
+        PlainTextMenuDialog dialog = PlainTextMenuDialog.create(artist.getArtistName(), Constant.MenuTexts.artistMenuTexts);
+        dialog.setOnMenuItemClickListener((menuText, pos) -> {
+            switch (pos) {
+                case 0:
+                    List<Music> artistFilterMusicList = QueryExecutor.findMusicList(artist);
+                    ForegroundMusicController.getInstance().addToPlayList(artistFilterMusicList);
+                    ToastUtil.showToast(MainApplication.getAppContext(), R.string.success);
+                    break;
+                case 1:
+                    SaveSongListDialog saveSongListDialog = new SaveSongListDialog();
+                    saveSongListDialog.setOnDialogButtonClickListener(content -> {
+                        List<Music> artistMusicList = QueryExecutor.findMusicList(artist);
+                        mMainViewModel.refreshSongLists(content, artistMusicList);
+                    });
+                    FragmentVisibilityManager.getInstance().showDialogFragment(saveSongListDialog);
+                    break;
+                case 2:
+                    List<Music> musicList = QueryExecutor.findMusicList(artist);
+                    FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
+                    FragmentVisibilityManager.getInstance().show(FilterMusicListFragment.getInstance(artist.getArtistName(), musicList, FilterMusicListFragment.ARTIST_FLAG));
+                    break;
+                case 3:
+                    FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
+                    FragmentVisibilityManager.getInstance().show(FilterAlbumListFragment.getInstance(artist));
+                    break;
+            }
+        });
+        FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
     }
 
     public static ArtistMusicListFragment getInstance() {

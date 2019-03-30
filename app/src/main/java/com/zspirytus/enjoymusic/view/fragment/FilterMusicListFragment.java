@@ -15,7 +15,6 @@ import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.basesdk.recyclerview.adapter.HeaderFooterViewWrapAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
-import com.zspirytus.basesdk.utils.ToastUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.adapter.FilterMusicListAdapter;
 import com.zspirytus.enjoymusic.base.BaseFragment;
@@ -26,7 +25,6 @@ import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
 import com.zspirytus.enjoymusic.db.table.ArtistArt;
 import com.zspirytus.enjoymusic.db.table.Music;
-import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.ForegroundMusicController;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.engine.ImageLoader;
@@ -57,6 +55,7 @@ public class FilterMusicListFragment extends BaseFragment
     @ViewInject(R.id.music_detail_toolbar)
     private Toolbar mToolbar;
 
+    private MainActivityViewModel mMainViewModel;
     private FilterMusicListFragmentViewModel mViewModel;
     private HeaderFooterViewWrapAdapter mAdapter;
     private FilterMusicListAdapter mInnerAdapter;
@@ -65,6 +64,7 @@ public class FilterMusicListFragment extends BaseFragment
     protected void initData() {
         int flag = getArguments().getInt(FLAG_KEY);
         mViewModel = ViewModelProviders.of(this).get(FilterMusicListFragmentViewModel.class);
+        mMainViewModel = ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class);
         List<Music> musicList = getArguments().getParcelableArrayList(MUSIC_LIST_EXTRA_KEY);
         mInnerAdapter = new FilterMusicListAdapter(flag);
         mInnerAdapter.setList(musicList);
@@ -113,16 +113,9 @@ public class FilterMusicListFragment extends BaseFragment
                 case R.id.menu_new_song_list:
                     SaveSongListDialog dialog = new SaveSongListDialog();
                     dialog.setOnDialogButtonClickListener(content -> {
-                        if (content != null) {
-                            SongList songList = mViewModel.createNewSongList(content, mInnerAdapter.getList());
-                            ViewModelProviders.of(getParentActivity()).get(MainActivityViewModel.class)
-                                    .getSongList().getValue().add(songList);
-                            dialog.dismiss();
-                        } else {
-                            ToastUtil.showToast(getContext(), R.string.please_enter_leagl_song_list);
-                        }
+                        mMainViewModel.refreshSongLists(content, mInnerAdapter.getList());
                     });
-                    dialog.show(getChildFragmentManager(), dialog.getClass().getSimpleName());
+                    FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
                     return true;
             }
             return false;

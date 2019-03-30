@@ -67,6 +67,7 @@ public class SaveSongListDialog extends BaseDialogFragment implements View.OnCli
                 if (mListener != null) {
                     mListener.onPositiveButtonClick(mEditText.getText().toString());
                 }
+                dismiss();
                 break;
             case R.id.cancel_btn:
                 dismiss();

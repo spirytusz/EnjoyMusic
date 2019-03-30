@@ -23,29 +23,30 @@
         android:id="@+id/tip_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="28dp"
         android:gravity="start"
         android:maxEms="18"
         android:singleLine="false"
         android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="@id/divider_line"
         app:layout_constraintStart_toStartOf="@id/title"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintBottom_toBottomOf="@id/divider_line" />
+        app:layout_constraintTop_toBottomOf="@id/title" />
 
     <View
         android:id="@+id/divider_line"
         android:layout_width="match_parent"
         android:layout_height="0.618dp"
         android:layout_marginBottom="54dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/grey" />
+        android:background="@color/grey"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <TextView
         android:id="@+id/ok_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
         android:text="@string/music_meta_data_dialog_ok"
         android:textColor="@color/colorPrimary"
         android:textSize="17sp"
@@ -56,9 +57,9 @@
 
     <TextView
         android:id="@+id/cancel_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
         android:text="@string/cancel"
         android:textColor="@color/colorPrimary"
         android:textSize="17sp"

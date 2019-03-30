@@ -8,13 +8,9 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 
 import com.zspirytus.enjoymusic.R;
-import com.zspirytus.enjoymusic.db.DBManager;
 import com.zspirytus.enjoymusic.db.table.Music;
-import com.zspirytus.enjoymusic.db.table.SongList;
-import com.zspirytus.enjoymusic.db.table.jointable.JoinMusicToSongList;
 import com.zspirytus.enjoymusic.global.MainApplication;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FilterMusicListFragmentViewModel extends ViewModel {
@@ -25,23 +21,6 @@ public class FilterMusicListFragmentViewModel extends ViewModel {
     private static final int ARTIST_FLAG = 2;
     private static final int FOLDER_FLAG = 3;
     private static final int SONG_LIST_FLAG = 4;
-
-    public SongList createNewSongList(String songListName, List<Music> musicList) {
-        SongList songList = new SongList();
-        songList.setMusicCount(musicList.size());
-        songList.setSongListName(songListName);
-        songList.setSongListId(System.currentTimeMillis());
-        List<JoinMusicToSongList> joinSongListToSongs = new ArrayList<>();
-        for (Music music : musicList) {
-            JoinMusicToSongList joinMusicToSongList = new JoinMusicToSongList();
-            joinMusicToSongList.setMusicId(music.getMusicId());
-            joinMusicToSongList.setSongListId(songList.getSongListId());
-            joinSongListToSongs.add(joinMusicToSongList);
-        }
-        DBManager.getInstance().getDaoSession().getSongListDao().insert(songList);
-        DBManager.getInstance().getDaoSession().getJoinMusicToSongListDao().insertInTx(joinSongListToSongs);
-        return songList;
-    }
 
     public SpannableString createSpannableString(String title, List<Music> musicList) {
         Resources resources = MainApplication.getAppContext().getResources();

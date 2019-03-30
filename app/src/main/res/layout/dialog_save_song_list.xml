@@ -3,20 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="40dp"
-    android:layout_marginEnd="40dp"
     android:background="@drawable/card_view_bg">
 
     <TextView
         android:id="@+id/text_view"
-        style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
         android:layout_marginTop="22dp"
         android:text="@string/create_new_song_list"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textSize="19sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,8 +25,10 @@
         android:layout_marginStart="18dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginBottom="12dp"
         android:hint="@string/create_new_song_list_hint"
         app:backgroundTint="@color/transparent"
+        app:layout_constraintBottom_toTopOf="@id/divider_line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view" />
@@ -37,40 +37,35 @@
         android:id="@+id/divider_line"
         android:layout_width="match_parent"
         android:layout_height="0.618dp"
+        android:layout_marginBottom="54dp"
         android:background="@color/grey"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text"
-        app:layout_constraintBottom_toTopOf="@id/ok_btn" />
-
-    <TextView
-        android:id="@+id/cancel_btn"
-        style="@style/MediumFont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel"
-        android:textColor="@color/colorPrimary"
-        android:textSize="16sp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/ok_btn"
-        app:layout_constraintTop_toTopOf="@id/ok_btn" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <TextView
         android:id="@+id/ok_btn"
-        style="@style/MediumFont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/save"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/music_meta_data_dialog_ok"
         android:textColor="@color/colorPrimary"
-        android:textSize="16sp"
-        android:layout_marginStart="24dp"
-        app:layout_constraintStart_toEndOf="@id/cancel_btn"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/cancel_btn"
+        app:layout_constraintTop_toBottomOf="@+id/divider_line" />
+
+    <TextView
+        android:id="@+id/cancel_btn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/cancel"
+        android:textColor="@color/colorPrimary"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ok_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_line" />
 
 
 </android.support.constraint.ConstraintLayout>
