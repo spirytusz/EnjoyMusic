@@ -43,13 +43,13 @@
                     android:id="@+id/search_btn"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:padding="4dp"
-                    android:src="@drawable/ic_search_white_24dp"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="20dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:focusable="true"
-                    android:tint="@color/white"
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="20dp" />
+                    android:padding="4dp"
+                    android:src="@drawable/ic_search_white_24dp"
+                    android:tint="@color/white" />
 
             </android.support.v7.widget.Toolbar>
 
@@ -61,26 +61,24 @@
         android:id="@+id/bg"
         android:layout_width="match_parent"
         android:layout_height="480dp"
+        android:alpha="0"
         android:background="@drawable/h_p_c"
         android:scaleType="centerCrop"
         android:src="@drawable/gradient_transparent_to_white"
-        android:translationZ="-1dp"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:translationZ="-1dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/home_page_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:alpha="0"
         android:background="@color/transparent"
         android:paddingBottom="25dp"
-        android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
         android:id="@+id/home_page_load_progress_bar"

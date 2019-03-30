@@ -184,14 +184,8 @@ public class HomePageFragment extends CommonHeaderBaseFragment
             mInnerAdapter.setList(values);
             mHomePageRecyclerView.setAdapter(mAnimationAdapter);
             mAnimationAdapter.notifyDataSetChanged();
-            mHomePageDisplayImg.post(() -> {
-                mHomePageDisplayImg.setVisibility(View.VISIBLE);
-                mHomePageDisplayImg.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
-            });
-            mHomePageRecyclerView.postDelayed(() -> {
-                mHomePageRecyclerView.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale_alpha_show));
-                mHomePageRecyclerView.setVisibility(View.VISIBLE);
-            }, 300);
+            mHomePageDisplayImg.animate().alpha(1f).setDuration(600).setInterpolator(new DecelerateInterpolator()).start();
+            mHomePageRecyclerView.animate().alpha(1f).setDuration(600).setInterpolator(new DecelerateInterpolator()).start();
         } else {
             mInfoTextView.setVisibility(View.VISIBLE);
             mInfoTextView.setText(R.string.no_music_in_device);
