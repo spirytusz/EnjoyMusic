@@ -3,15 +3,11 @@ package com.zspirytus.enjoymusic.services.media;
 import android.app.Service;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.PowerManager;
 import android.support.annotation.BinderThread;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import com.zspirytus.basesdk.utils.ToastUtil;
-import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
-import com.zspirytus.enjoymusic.cache.MusicScanner;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.engine.PlayHistoryManager;
@@ -146,16 +142,6 @@ public class MediaPlayController extends MusicStateObservable
             beginPlay(music);
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    @BinderThread
-    public synchronized void play(Uri uri) {
-        Music music = MusicScanner.getInstance().getMusicByUri(uri);
-        if (music != null) {
-            play(music);
-        } else {
-            ToastUtil.postToShow(MainApplication.getAppContext(), R.string.invalid_file);
         }
     }
 

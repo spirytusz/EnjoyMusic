@@ -53,6 +53,7 @@ public class MusicScanner {
     }
 
     public synchronized Music getMusicByUri(Uri uri) {
+        Music music = null;
         final String[] musicProjection = {
                 MediaStore.Audio.AudioColumns._ID,
                 MediaStore.Audio.AudioColumns.ALBUM_ID,
@@ -62,45 +63,27 @@ public class MusicScanner {
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.DATE_ADDED
         };
-
-        Cursor cursor = null;
-        String schema = uri.getScheme();
-        if ("file".equals(schema)) {
-            final String selection = MediaStore.Audio.AudioColumns.DATA + " == ? ";
-            final String[] selectionArgs = new String[]{uri.getPath()};
-            cursor = MainApplication.getAppContext().getContentResolver().query(
-                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                    musicProjection,
-                    selection,
-                    selectionArgs,
-                    null);
-        } else if ("content".equals(schema)) {
-            // TODO: 2019/3/27 add or remove content support.
-            cursor = MainApplication.getAppContext().getContentResolver().query(
-                    uri,
-                    musicProjection,
-                    null,
-                    null,
-                    null);
+        final String selection = MediaStore.Audio.AudioColumns.DATA + " == ? ";
+        final String[] selectionArgs = new String[]{uri.getPath()};
+        Cursor cursor = MainApplication.getAppContext().getContentResolver().query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                musicProjection,
+                selection,
+                selectionArgs,
+                null);
+        if (cursor != null && cursor.moveToNext()) {
+            long musicId = cursor.getLong(0);
+            long albumId = cursor.getLong(1);
+            long artistId = cursor.getLong(2);
+            String musicFilePath = cursor.getString(3);
+            String musicName = cursor.getString(4);
+            long duration = cursor.getLong(5);
+            String musicAddDate = cursor.getString(6);
+            cursor.close();
+            music = new Music(musicId, albumId, artistId, musicFilePath, musicName, duration, Long.valueOf(musicAddDate));
         }
-        if (cursor != null) {
-            Music music;
-            if (cursor.moveToNext()) {
-                long musicId = cursor.getLong(0);
-                long albumId = cursor.getLong(1);
-                long artistId = cursor.getLong(2);
-                String musicFilePath = cursor.getString(3);
-                String musicName = cursor.getString(4);
-                long duration = cursor.getLong(5);
-                String musicAddDate = cursor.getString(6);
-                music = new Music(musicId, albumId, artistId, musicFilePath, musicName, duration, Long.valueOf(musicAddDate));
-                return music;
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
+        cursor.close();
+        return music;
     }
 
     public synchronized List<Music> getAllMusicList() {

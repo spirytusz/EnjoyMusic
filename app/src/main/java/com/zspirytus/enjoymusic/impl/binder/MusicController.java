@@ -2,9 +2,13 @@ package com.zspirytus.enjoymusic.impl.binder;
 
 import android.net.Uri;
 
+import com.zspirytus.basesdk.utils.ToastUtil;
 import com.zspirytus.enjoymusic.IMusicControl;
+import com.zspirytus.enjoymusic.R;
+import com.zspirytus.enjoymusic.cache.MusicScanner;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
+import com.zspirytus.enjoymusic.global.MainApplication;
 import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
 public class MusicController extends IMusicControl.Stub {
@@ -22,7 +26,12 @@ public class MusicController extends IMusicControl.Stub {
 
     @Override
     public void playUri(Uri uri) {
-        MediaPlayController.getInstance().play(uri);
+        Music music = MusicScanner.getInstance().getMusicByUri(uri);
+        if (music != null) {
+            play(music);
+        } else {
+            ToastUtil.postToShow(MainApplication.getAppContext(), R.string.invalid_file);
+        }
     }
 
     @Override

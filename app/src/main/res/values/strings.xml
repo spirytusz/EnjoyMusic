@@ -180,4 +180,8 @@
     <string name="download_artist_art_or_not">是否下载艺术家封面?</string>
     <!-- Download ArtistArt Text end -->
 
+    <!-- other start -->
+    <string name="unknown">未知</string>
+    <!-- other end -->
+
 </resources>
