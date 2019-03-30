@@ -32,7 +32,6 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
         addArtistArtItemDelegate();
         addPreviewItemDelegate();
         addTitleItemDelegate();
-        addDownloadItemDelegate();
         addSingleEditTextItemDelegate();
     }
 
@@ -117,9 +116,12 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
                                 + "<font color='grey' style=\"line-height:150%;\">采样率: " + sampleRate + "kHz</font><br/>"
                 );
                 holder.setText(R.id.music_preview_text, previewText);
-                holder.setOnItemClickListener(R.id.music_preview_cover, view -> {
+                holder.getView(R.id.music_preview_cover).setOnLongClickListener(v -> {
                     if (mListener != null) {
-                        mListener.onAlbumArtClickListener();
+                        mListener.onAlbumArtLongClickListener();
+                        return true;
+                    } else {
+                        return false;
                     }
                 });
             }
@@ -142,30 +144,6 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
             @Override
             public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
                 holder.setText(R.id.title, data.getTitle());
-            }
-        };
-        addDelegate(delegate);
-    }
-
-    private void addDownloadItemDelegate() {
-        ItemViewDelegate<MusicMetaDataListItem> delegate = new ItemViewDelegate<MusicMetaDataListItem>() {
-            @Override
-            public boolean isForViewType(MusicMetaDataListItem data) {
-                return data.isDownloadAlbumArtView();
-            }
-
-            @Override
-            public int getLayoutId() {
-                return R.layout.item_download_cover;
-            }
-
-            @Override
-            public void convert(CommonViewHolder holder, MusicMetaDataListItem data) {
-                holder.setOnItemClickListener((view, position) -> {
-                    if (mListener != null) {
-                        mListener.onDownLoadBtnClick();
-                    }
-                });
             }
         };
         addDelegate(delegate);
@@ -215,8 +193,6 @@ public class MusicMetaDataListAdapter extends MultiItemAdapter<MusicMetaDataList
     public interface OnClickEventListener {
         void onAritstArtLongClickListener();
 
-        void onAlbumArtClickListener();
-
-        void onDownLoadBtnClick();
+        void onAlbumArtLongClickListener();
     }
 }

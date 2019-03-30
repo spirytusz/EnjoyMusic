@@ -67,14 +67,14 @@ public class MusicMetaDataFragmentViewModel extends ViewModel {
             item1.setAlbum(QueryExecutor.findAlbum(music));
             dataList.add(item1);
 
-            MusicMetaDataListItem item2 = new MusicMetaDataListItem();
+            /*MusicMetaDataListItem item2 = new MusicMetaDataListItem();
             item2.setTitle(true);
             item2.setTitle(MainApplication.getAppContext().getResources().getString(R.string.music_meta_data_download_music_info));
             dataList.add(item2);
 
             MusicMetaDataListItem item3 = new MusicMetaDataListItem();
             item3.setDownloadAlbumArtView(true);
-            dataList.add(item3);
+            dataList.add(item3);*/
 
             MusicMetaDataListItem item4 = new MusicMetaDataListItem();
             item4.setTitle(true);

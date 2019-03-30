@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="40dp"
     android:layout_marginEnd="40dp"
-    android:background="@drawable/card_view_bg"
-    tools:background="@color/grey">
+    android:background="@drawable/card_view_bg">
 
     <TextView
         android:id="@+id/text_view"
@@ -29,37 +27,50 @@
         android:layout_marginStart="18dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="24dp"
-        app:backgroundTint="@color/colorPrimary"
+        android:hint="@string/create_new_song_list_hint"
+        app:backgroundTint="@color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view" />
+
+    <View
+        android:id="@+id/divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.618dp"
+        android:background="@color/grey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text"
+        app:layout_constraintBottom_toTopOf="@id/ok_btn" />
 
     <TextView
         android:id="@+id/cancel_btn"
         style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
         android:text="@string/cancel"
         android:textColor="@color/colorPrimary"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/ok_btn"
-        app:layout_constraintEnd_toStartOf="@id/ok_btn" />
+        android:layout_marginEnd="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ok_btn"
+        app:layout_constraintTop_toTopOf="@id/ok_btn" />
 
     <TextView
         android:id="@+id/ok_btn"
         style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginTop="32dp"
         android:layout_marginBottom="16dp"
         android:text="@string/save"
         android:textColor="@color/colorPrimary"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toEndOf="@id/cancel_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text" />
+        app:layout_constraintTop_toBottomOf="@id/edit_text"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

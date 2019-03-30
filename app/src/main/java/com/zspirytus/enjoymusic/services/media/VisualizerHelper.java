@@ -67,10 +67,8 @@ public class VisualizerHelper extends RemoteObservable<IFrequencyObserver, Float
     @Override
     public void onFftDataCapture(Visualizer visualizer, byte[] fft, int samplingRate) {
         Float[] magnitudes = new Float[fft.length / STEP];
-        float[] phases = new float[fft.length / STEP];
         for (int i = 0; i < fft.length; i += STEP) {
             magnitudes[i / STEP] = (float) Math.hypot(fft[i], fft[i + 1]);
-            //phases[i / STEP] = (float) Math.atan2(fft[i + 1], fft[i]);
         }
         notifyChange(magnitudes);
     }

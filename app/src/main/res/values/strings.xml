@@ -149,6 +149,7 @@
 
     <!-- SaveSongListDialog Text start -->
     <string name="create_new_song_list">创建新的歌单</string>
+    <string name="create_new_song_list_hint">输入歌单名称…</string>
     <string name="save">保存</string>
     <string name="cancel">取消</string>
     <!-- SaveSongListDialog Text end -->

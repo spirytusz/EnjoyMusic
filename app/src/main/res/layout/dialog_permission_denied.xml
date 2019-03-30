@@ -23,27 +23,36 @@
         android:id="@+id/tip_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="12dp"
+        android:gravity="start"
+        android:maxEms="18"
         android:singleLine="false"
         android:textSize="17sp"
-        android:maxEms="18"
-        android:gravity="left"
         app:layout_constraintStart_toStartOf="@id/title"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintBottom_toBottomOf="@id/divider_line" />
+
+    <View
+        android:id="@+id/divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.618dp"
+        android:layout_marginBottom="54dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/grey" />
 
     <TextView
         android:id="@+id/ok_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginStart="24dp"
         android:text="@string/music_meta_data_dialog_ok"
         android:textColor="@color/colorPrimary"
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tip_text" />
+        app:layout_constraintStart_toEndOf="@id/cancel_btn"
+        app:layout_constraintTop_toBottomOf="@+id/divider_line" />
 
     <TextView
         android:id="@+id/cancel_btn"
@@ -53,8 +62,9 @@
         android:text="@string/cancel"
         android:textColor="@color/colorPrimary"
         android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ok_btn"
-        app:layout_constraintTop_toBottomOf="@+id/tip_text"
-        app:layout_constraintTop_toTopOf="@id/ok_btn" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_line" />
 
 </android.support.constraint.ConstraintLayout>

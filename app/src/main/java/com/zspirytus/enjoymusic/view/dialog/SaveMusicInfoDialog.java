@@ -62,7 +62,7 @@ public class SaveMusicInfoDialog extends BaseDialogFragment {
         WindowManager.LayoutParams lp = getDialog().getWindow().getAttributes();
         lp.dimAmount = 0.8f;
         lp.width = PixelsUtil.getPixelsConfig()[0] - 2 * PixelsUtil.dp2px(getContext(), 40);
-        lp.height = PixelsUtil.dp2px(getContext(), 96);
+        lp.height = PixelsUtil.dp2px(getContext(), 132);
         window.setAttributes(lp);
         window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
