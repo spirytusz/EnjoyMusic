@@ -14,7 +14,6 @@ import com.zspirytus.basesdk.annotations.ViewInject;
 import com.zspirytus.basesdk.recyclerview.adapter.CommonRecyclerViewAdapter;
 import com.zspirytus.basesdk.recyclerview.listeners.OnItemClickListener;
 import com.zspirytus.basesdk.recyclerview.viewholder.CommonViewHolder;
-import com.zspirytus.basesdk.utils.ToastUtil;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.base.BaseFragment;
 import com.zspirytus.enjoymusic.cache.viewmodels.MainActivityViewModel;
@@ -22,7 +21,6 @@ import com.zspirytus.enjoymusic.cache.viewmodels.MusicPickFragmentViewModel;
 import com.zspirytus.enjoymusic.db.QueryExecutor;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Music;
-import com.zspirytus.enjoymusic.db.table.SongList;
 import com.zspirytus.enjoymusic.engine.FragmentVisibilityManager;
 import com.zspirytus.enjoymusic.entity.listitem.MusicPickItem;
 import com.zspirytus.enjoymusic.factory.LayoutManagerFactory;
@@ -42,13 +40,9 @@ public class MusicPickFragment extends BaseFragment
     @ViewInject(R.id.save_btn)
     private TextView mSaveBtn;
 
-    private int mSaveMusicCount;
-
     private MainActivityViewModel mMainViewModel;
     private MusicPickFragmentViewModel mViewModel;
     private CommonRecyclerViewAdapter<MusicPickItem> mAdapter;
-
-    private OnSaveSongListListener mListener;
 
     @Override
     protected void initData() {
@@ -85,11 +79,6 @@ public class MusicPickFragment extends BaseFragment
         CheckBox checkBox = view.findViewById(R.id.item_checkbox);
         mAdapter.getList().get(position).setSelected(!mAdapter.getList().get(position).isSelected());
         checkBox.setChecked(mAdapter.getList().get(position).isSelected());
-        if (mAdapter.getList().get(position).isSelected()) {
-            mSaveMusicCount++;
-        } else {
-            mSaveMusicCount--;
-        }
     }
 
     @Override
@@ -131,32 +120,15 @@ public class MusicPickFragment extends BaseFragment
         return R.id.full_fragment_container;
     }
 
-    public void setOnSaveSongListListener(OnSaveSongListListener l) {
-        mListener = l;
-    }
-
     private void saveSongList() {
         SaveSongListDialog dialog = new SaveSongListDialog();
         dialog.setOnDialogButtonClickListener(content -> {
-            if (mListener != null) {
-                if (content == null || content.isEmpty()) {
-                    ToastUtil.showToast(getContext(), R.string.empty_song_list_name);
-                    return;
-                }
-                if (mSaveMusicCount > 0) {
-                    ToastUtil.showToast(getContext(), R.string.empty_song_List);
-                    return;
-                }
-                boolean isSongListDuplicate = mMainViewModel.isSongListNameDuplicate(content);
-                if (!isSongListDuplicate) {
-                    SongList songList = mViewModel.saveSongListToDB(content, mAdapter.getList());
-                    mListener.onNewSongList(songList);
-                    dialog.dismiss();
-                    ToastUtil.showToast(getContext(), R.string.success);
-                    goBack();
-                } else {
-                    ToastUtil.showToast(getContext(), R.string.duplicate_song_list_name);
-                }
+            boolean isSucess = mMainViewModel.refreshSongLists(
+                    content,
+                    mViewModel.filterUnSelectedMusic(mAdapter.getList())
+            );
+            if (isSucess) {
+                goBack();
             }
         });
         FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
@@ -164,9 +136,5 @@ public class MusicPickFragment extends BaseFragment
 
     public static MusicPickFragment getInstance() {
         return new MusicPickFragment();
-    }
-
-    public interface OnSaveSongListListener {
-        void onNewSongList(SongList item);
     }
 }

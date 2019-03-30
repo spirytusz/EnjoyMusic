@@ -86,7 +86,7 @@ public class MainActivityViewModel extends MusicPlayingStateViewModel implements
         return mNewArtist;
     }
 
-    public void refreshSongLists(String songListName, List<Music> musicList) {
+    public boolean refreshSongLists(String songListName, List<Music> musicList) {
         if (songListName != null && !songListName.isEmpty()) {
             boolean isDuplicate = isSongListNameDuplicate(songListName);
             if (!isDuplicate) {
@@ -115,12 +115,14 @@ public class MainActivityViewModel extends MusicPlayingStateViewModel implements
 
                     ToastUtil.postToShow(MainApplication.getAppContext(), R.string.success);
                 });
+                return true;
             } else {
                 ToastUtil.showToast(MainApplication.getAppContext(), R.string.duplicate_song_list_name);
             }
         } else {
             ToastUtil.showToast(MainApplication.getAppContext(), R.string.empty_song_list_name);
         }
+        return false;
     }
 
     public boolean isSongListNameDuplicate(String songListName) {

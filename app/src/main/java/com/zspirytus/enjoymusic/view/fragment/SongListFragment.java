@@ -25,7 +25,7 @@ public class SongListFragment extends BaseFragment implements OnItemClickListene
     @ViewInject(R.id.recyclerview)
     private RecyclerView mRecyclerView;
 
-    private MainActivityViewModel mViewModel;
+    private MainActivityViewModel mMainViewModel;
     private HeaderFooterViewWrapAdapter mAdapter;
     private SongListAdapter mInnerAdapter;
 
@@ -47,9 +47,9 @@ public class SongListFragment extends BaseFragment implements OnItemClickListene
             }
         };
         mAdapter.addHeaderViews(R.layout.item_song_list);
-        mViewModel = ViewModelProviders.of(FragmentVisibilityManager.getInstance().getCurrentFragment().getParentActivity())
+        mMainViewModel = ViewModelProviders.of(FragmentVisibilityManager.getInstance().getCurrentFragment().getParentActivity())
                 .get(MainActivityViewModel.class);
-        mViewModel.applySongLists();
+        mMainViewModel.applySongLists();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class SongListFragment extends BaseFragment implements OnItemClickListene
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel.getSongList().observe(this, values -> {
+        mMainViewModel.getSongList().observe(this, values -> {
             mInnerAdapter.setList(values);
             mRecyclerView.setAdapter(mAdapter);
         });
@@ -70,9 +70,6 @@ public class SongListFragment extends BaseFragment implements OnItemClickListene
     public void onItemClick(View view, int position) {
         if (position == 0) {
             MusicPickFragment fragment = MusicPickFragment.getInstance();
-            fragment.setOnSaveSongListListener(item -> {
-                mViewModel.getSongList().getValue().add(item);
-            });
             FragmentVisibilityManager.getInstance().addCurrentFragmentToBackStack();
             FragmentVisibilityManager.getInstance().show(fragment);
         } else {

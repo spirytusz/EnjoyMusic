@@ -122,7 +122,7 @@ public class FolderListFragment extends LazyLoadBaseFragment
 
     private void showDialog(Folder folder) {
         PlainTextMenuDialog dialog = PlainTextMenuDialog.create(
-                folder.getFolderDir(),
+                folder.getFolderName(),
                 Constant.MenuTexts.folderMenuTexts
         );
         dialog.setOnMenuItemClickListener((menuText, pos) -> {
@@ -136,7 +136,10 @@ public class FolderListFragment extends LazyLoadBaseFragment
                     SaveSongListDialog saveSongListDialog = new SaveSongListDialog();
                     saveSongListDialog.setOnDialogButtonClickListener(content -> {
                         List<Music> folderMusicList = QueryExecutor.findMusicList(folder);
-                        mMainViewModel.refreshSongLists(content, folderMusicList);
+                        boolean isSuccess = mMainViewModel.refreshSongLists(content, folderMusicList);
+                        if (isSuccess) {
+                            saveSongListDialog.dismiss();
+                        }
                     });
                     FragmentVisibilityManager.getInstance().showDialogFragment(saveSongListDialog);
                     break;

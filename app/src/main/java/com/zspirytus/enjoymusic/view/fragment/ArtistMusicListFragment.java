@@ -133,7 +133,10 @@ public class ArtistMusicListFragment extends LazyLoadBaseFragment
                     SaveSongListDialog saveSongListDialog = new SaveSongListDialog();
                     saveSongListDialog.setOnDialogButtonClickListener(content -> {
                         List<Music> artistMusicList = QueryExecutor.findMusicList(artist);
-                        mMainViewModel.refreshSongLists(content, artistMusicList);
+                        boolean isSuccess = mMainViewModel.refreshSongLists(content, artistMusicList);
+                        if (isSuccess) {
+                            saveSongListDialog.dismiss();
+                        }
                     });
                     FragmentVisibilityManager.getInstance().showDialogFragment(saveSongListDialog);
                     break;

@@ -113,7 +113,10 @@ public class FilterMusicListFragment extends BaseFragment
                 case R.id.menu_new_song_list:
                     SaveSongListDialog dialog = new SaveSongListDialog();
                     dialog.setOnDialogButtonClickListener(content -> {
-                        mMainViewModel.refreshSongLists(content, mInnerAdapter.getList());
+                        boolean isSucess = mMainViewModel.refreshSongLists(content, mInnerAdapter.getList());
+                        if (isSucess) {
+                            dialog.dismiss();
+                        }
                     });
                     FragmentVisibilityManager.getInstance().showDialogFragment(dialog);
                     return true;
