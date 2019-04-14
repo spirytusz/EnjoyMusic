@@ -105,6 +105,7 @@ public class LyricWidget extends LinearLayout implements View.OnTouchListener {
                 if (a <= CLICK_EVENT_DELAY) {
                     showBackground();
                 }
+                break;
             default:
                 break;
         }
