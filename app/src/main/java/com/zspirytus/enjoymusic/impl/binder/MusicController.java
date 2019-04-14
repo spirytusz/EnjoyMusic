@@ -7,9 +7,9 @@ import com.zspirytus.enjoymusic.IMusicControl;
 import com.zspirytus.enjoymusic.R;
 import com.zspirytus.enjoymusic.cache.MusicScanner;
 import com.zspirytus.enjoymusic.db.table.Music;
+import com.zspirytus.enjoymusic.engine.BackgroundMusicController;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.global.MainApplication;
-import com.zspirytus.enjoymusic.services.media.MediaPlayController;
 
 public class MusicController extends IMusicControl.Stub {
 
@@ -36,12 +36,12 @@ public class MusicController extends IMusicControl.Stub {
 
     @Override
     public void play(Music music) {
-        MediaPlayController.getInstance().play(music);
+        BackgroundMusicController.getInstance().play(music);
     }
 
     @Override
     public void pause() {
-        MediaPlayController.getInstance().pause();
+        BackgroundMusicController.getInstance().pause();
     }
 
     @Override

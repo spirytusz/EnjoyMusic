@@ -8,6 +8,7 @@ import android.support.annotation.BinderThread;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.zspirytus.enjoymusic.cache.BackgroundMusicStateCache;
+import com.zspirytus.enjoymusic.cache.ThreadPool;
 import com.zspirytus.enjoymusic.db.table.Music;
 import com.zspirytus.enjoymusic.engine.MusicPlayOrderManager;
 import com.zspirytus.enjoymusic.engine.PlayHistoryManager;
@@ -56,14 +57,15 @@ public class MediaPlayController extends MusicStateObservable
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.setOnErrorListener(this);
         // init timer
-        mPlayingTimer = new MyTimer(200) {
+        mPlayingTimer = new MyTimer(300) {
             @Override
             public void onTime() {
-                long milliseconds = INSTANCE.getCurrentPosition();
+                long milliseconds = getCurrentPosition();
                 notifyAllObserverMusicPlayProgressChange((int) milliseconds);
                 notifyAllRemoteObserverPlayProgresChange(milliseconds);
             }
         };
+        mPlayingTimer.start();
         // set MediaPlayer State
         setState(STATE_IDLE);
     }
@@ -91,10 +93,9 @@ public class MediaPlayController extends MusicStateObservable
     @Override
     public void onCompletion(MediaPlayer mp) {
         setState(STATE_PLAYBACK_COMPLETED);
-        VisualizerHelper.setEnable(false);
         Music nextMusic = MusicPlayOrderManager.getInstance().getNextMusic(false);
         if (nextMusic != null) {
-            play(nextMusic);
+            ThreadPool.execute(() -> play(nextMusic));
         }
     }
 
@@ -140,6 +141,9 @@ public class MediaPlayController extends MusicStateObservable
              * 否则继续播放
              */
             if (currentMusic == null || !music.equals(currentMusic) || state == STATE_STOP) {
+                if (!VisualizerHelper.isEnable()) {
+                    VisualizerHelper.setEnable(true);
+                }
                 reset();
                 prepareMusic(music);
             }
@@ -173,7 +177,6 @@ public class MediaPlayController extends MusicStateObservable
 
     @BinderThread
     private void reset() {
-        mPlayingTimer.pause();
         mediaPlayer.reset();
     }
 
@@ -204,7 +207,6 @@ public class MediaPlayController extends MusicStateObservable
         audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN);
         mediaPlayer.start();
-        VisualizerHelper.setEnable(true);
         setState(STATE_STARTED);
         BackgroundMusicStateCache.getInstance().setPlaying(true);
         NotificationHelper.getInstance().showNotification(currentPlayingMusic);
@@ -221,5 +223,6 @@ public class MediaPlayController extends MusicStateObservable
     public void release() {
         mediaPlayer.stop();
         setState(STATE_STOP);
+        VisualizerHelper.setEnable(false);
     }
 }

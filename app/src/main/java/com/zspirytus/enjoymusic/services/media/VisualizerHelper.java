@@ -60,6 +60,10 @@ public class VisualizerHelper extends RemoteObservable<IFrequencyObserver, Float
         getInstance().mVisualizer.setEnabled(enable);
     }
 
+    static boolean isEnable() {
+        return getInstance().mVisualizer.getEnabled();
+    }
+
     @Override
     public void onWaveFormDataCapture(Visualizer visualizer, byte[] waveform, int samplingRate) {
     }

@@ -1,13 +1,14 @@
 package com.zspirytus.enjoymusic.services;
 
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public abstract class MyTimer {
 
-    private java.util.Timer mTimer;
-    private TimerTask mTimerTask;
-    private boolean isTiming = false;
-
+    private Disposable mDisposable;
     private int period;
 
     public MyTimer(int period) {
@@ -15,29 +16,18 @@ public abstract class MyTimer {
     }
 
     public void start() {
-        isTiming = true;
-        mTimer = new java.util.Timer();
-        mTimerTask = new TimerTask() {
-            @Override
-            public void run() {
-                onTime();
-            }
-        };
-        mTimer.schedule(mTimerTask, 0, period);
+        mDisposable = Observable.interval(period, TimeUnit.MILLISECONDS, Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(aLong -> {
+                    onTime();
+                });
+
     }
 
     public void pause() {
-        if (isTiming()) {
-            mTimer.cancel();
-            mTimer = null;
-            mTimerTask.cancel();
-            mTimerTask = null;
-            isTiming = false;
+        if (mDisposable != null) {
+            mDisposable.dispose();
         }
-    }
-
-    public boolean isTiming() {
-        return isTiming;
     }
 
     public abstract void onTime();

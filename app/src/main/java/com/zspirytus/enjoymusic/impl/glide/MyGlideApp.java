@@ -44,7 +44,7 @@ public class MyGlideApp extends AppGlideModule {
      */
     private boolean isLowRamDevice(ActivityManager activityManager) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return activityManager.isLowRamDevice() || activityManager.getLargeMemoryClass() < 512;
+            return activityManager.isLowRamDevice() || activityManager.getLargeMemoryClass() < 128;
         } else {
             return true;
         }
