@@ -303,11 +303,11 @@ public class MusicScanner {
                 joinFolderToMusic.setMusicId(musicId);
                 joinFolderToMusics.add(joinFolderToMusic);
             }
+            cursor.close();
         }
 
         DBManager.getInstance().getDaoSession().getJoinAlbumToArtistDao().insertOrReplaceInTx(joinAlbumToArtistSet);
         DBManager.getInstance().getDaoSession().getJoinFolderToMusicDao().insertOrReplaceInTx(joinFolderToMusics);
-        cursor.close();
     }
 
     private Map<String, ContentValues> prepareAlbums() {
@@ -332,7 +332,9 @@ public class MusicScanner {
         try {
             return queryMap.getRows();
         } finally {
-            cursor.close();
+            if (cursor != null) {
+                cursor.close();
+            }
             queryMap.close();
         }
     }
@@ -360,7 +362,9 @@ public class MusicScanner {
         try {
             return queryMap.getRows();
         } finally {
-            cursor.close();
+            if (cursor != null) {
+                cursor.close();
+            }
             queryMap.close();
         }
     }
