@@ -1,5 +1,6 @@
 package com.zspirytus.enjoymusic.receivers;
 
+import android.content.ContentResolver;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
@@ -7,6 +8,7 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.provider.MediaStore;
 
+import com.zspirytus.basesdk.utils.LogUtil;
 import com.zspirytus.enjoymusic.cache.MusicScanner;
 import com.zspirytus.enjoymusic.db.table.Album;
 import com.zspirytus.enjoymusic.db.table.Artist;
@@ -30,59 +32,81 @@ public class NewAudioFileReceiver {
 
     private NewAudioFileReceiver() {
         Handler handler = new Handler(Looper.getMainLooper());
-        MainApplication.getAppContext().getContentResolver().registerContentObserver(
+        ContentResolver resolver = MainApplication.getAppContext().getContentResolver();
+        ContentObserver musicAddedObserver = new ContentObserver(handler) {
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                super.onChange(selfChange, uri);
+                /*
+                 * 这里不知道为什么会有IllegalStateException异常，貌似是系统的Bug。。。
+                 * 捕捉它不做处理吧。。
+                 */
+                try {
+                    Music music = MusicScanner.getInstance().scanAddedMusicAndAdd(uri);
+                    if (music != null && mNewAudioFileObserver != null) {
+                        mNewAudioFileObserver.onNewMusic(music);
+                    }
+                } catch (IllegalStateException e) {
+                    LogUtil.log(MainApplication.getAppContext(), "caught_ex.log", e);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        ContentObserver albumAddedObserver = new ContentObserver(handler) {
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                super.onChange(selfChange, uri);
+                /*
+                 * 这里不知道为什么会有IllegalStateException异常，貌似是系统的Bug。。。
+                 * 捕捉它不做处理吧。。
+                 */
+                try {
+                    Album album = MusicScanner.getInstance().scanAddedAlbumAndAdd(uri);
+                    if (album != null && mNewAudioFileObserver != null) {
+                        mNewAudioFileObserver.onNewAlbum(album);
+                    }
+                } catch (IllegalStateException e) {
+                    LogUtil.log(MainApplication.getAppContext(), "caught_ex.log", e);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        ContentObserver artistAddedObserver = new ContentObserver(handler) {
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                super.onChange(selfChange, uri);
+                /*
+                 * 这里不知道为什么会有IllegalStateException异常，貌似是系统的Bug。。。
+                 * 捕捉它不做处理吧。。
+                 */
+                try {
+                    Artist artist = MusicScanner.getInstance().scanAddedArtistAndAdd(uri);
+                    if (artist != null && mNewAudioFileObserver != null) {
+                        mNewAudioFileObserver.onNewArtist(artist);
+                    }
+                } catch (IllegalStateException e) {
+                    LogUtil.log(MainApplication.getAppContext(), "caught_ex.log", e);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        resolver.registerContentObserver(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 true,
-                new ContentObserver(handler) {
-                    @Override
-                    public void onChange(boolean selfChange, Uri uri) {
-                        super.onChange(selfChange, uri);
-                        Music music = MusicScanner.getInstance().scanAddedMusicAndAdd(uri);
-                        if (music != null && mNewAudioFileObserver != null) {
-                            try {
-                                mNewAudioFileObserver.onNewMusic(music);
-                            } catch (RemoteException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
+                musicAddedObserver
         );
-        MainApplication.getAppContext().getContentResolver().registerContentObserver(
+        resolver.registerContentObserver(
                 MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                 true,
-                new ContentObserver(handler) {
-                    @Override
-                    public void onChange(boolean selfChange, Uri uri) {
-                        super.onChange(selfChange, uri);
-                        Album album = MusicScanner.getInstance().scanAddedAlbumAndAdd(uri);
-                        if (album != null && mNewAudioFileObserver != null) {
-                            try {
-                                mNewAudioFileObserver.onNewAlbum(album);
-                            } catch (RemoteException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
+                albumAddedObserver
         );
-        MainApplication.getAppContext().getContentResolver().registerContentObserver(
+        resolver.registerContentObserver(
                 MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
                 true,
-                new ContentObserver(handler) {
-                    @Override
-                    public void onChange(boolean selfChange, Uri uri) {
-                        super.onChange(selfChange, uri);
-                        Artist artist = MusicScanner.getInstance().scanAddedArtistAndAdd(uri);
-                        if (artist != null && mNewAudioFileObserver != null) {
-                            try {
-                                mNewAudioFileObserver.onNewArtist(artist);
-                            } catch (RemoteException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
+                artistAddedObserver
         );
     }
 
