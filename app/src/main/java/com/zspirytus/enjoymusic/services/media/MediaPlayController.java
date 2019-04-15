@@ -140,7 +140,7 @@ public class MediaPlayController extends MusicStateObservable
              * 如果和当前播放的音乐不同，或者处于stop状态，则reset并prepare
              * 否则继续播放
              */
-            if (currentMusic == null || !music.equals(currentMusic) || state == STATE_STOP) {
+            if (currentMusic == null || !music.equals(currentMusic) || state == STATE_STOP || state == STATE_IDLE) {
                 if (!VisualizerHelper.isEnable()) {
                     VisualizerHelper.setEnable(true);
                 }
