@@ -74,7 +74,7 @@ public class MusicPlayOrderManager extends RemoteObservable<IPlayListChangeObser
         return mPlayList;
     }
 
-    public void setPlayList(List<Music> playList) {
+    public synchronized void setPlayList(List<Music> playList) {
         orderPlayList(playList);
         notifyChange(mPlayList);
 
@@ -86,7 +86,7 @@ public class MusicPlayOrderManager extends RemoteObservable<IPlayListChangeObser
         DBManager.getInstance().getDaoSession().getPlayListDao().insertInTx(playLists);
     }
 
-    public void addMusicListToPlayList(List<Music> musicList) {
+    public synchronized void addMusicListToPlayList(List<Music> musicList) {
         if (mPlayList != null) {
             for (Music music : musicList) {
                 if (!mPlayList.contains(music)) {
@@ -107,7 +107,7 @@ public class MusicPlayOrderManager extends RemoteObservable<IPlayListChangeObser
         DBManager.getInstance().getDaoSession().getPlayListDao().insertInTx(playLists);
     }
 
-    public Music getNextMusic(boolean fromUser) {
+    public synchronized Music getNextMusic(boolean fromUser) {
         Music nextMusic = null;
         int nextPosition;
         switch (mPlayMode) {
@@ -135,13 +135,13 @@ public class MusicPlayOrderManager extends RemoteObservable<IPlayListChangeObser
         return nextMusic;
     }
 
-    public Music getPreviousMusic() {
+    public synchronized Music getPreviousMusic() {
         int currentPosition = mPlayList.indexOf(BackgroundMusicStateCache.getInstance().getCurrentPlayingMusic());
         int previousPosition = (currentPosition - 1 + mPlayList.size()) % mPlayList.size();
         return mPlayList.get(previousPosition);
     }
 
-    public void setPlayMode(int playMode) {
+    public synchronized void setPlayMode(int playMode) {
         mPlayMode = playMode;
         MusicSharedPreferences.savePlayMode(playMode);
         if (mPlayList != null) {
@@ -151,7 +151,7 @@ public class MusicPlayOrderManager extends RemoteObservable<IPlayListChangeObser
         }
     }
 
-    private void orderPlayList(List<Music> playList) {
+    private synchronized void orderPlayList(List<Music> playList) {
         if (mPlayMode == Constant.PlayMode.SINGLE_LOOP) {
             mPlayList = playList;
         } else if (mPlayMode == Constant.PlayMode.LIST_LOOP) {
